@@ -63,9 +63,8 @@ return [
     'home_link' => '',
 
     // Menu logo. You can replace this with an <img> tag if you have a logo.
-    //'project_logo' => '<b>Navlink</b>Billing',
-    'project_logo' => '<img src="/images/NAVLINK_LOGO.png" alt="..." width="120" height="59">',
-
+    'project_logo' => '<img src="/images/NAVLINK_LOGO.png" alt="..." width="120" height="59"><b>NavLink</b>&nbsp',
+    
     // Show / hide breadcrumbs on admin panel pages.
     'breadcrumbs' => true,
 
