@@ -6,17 +6,24 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "backpack/activity-log": "^2.0",
         "backpack/backupmanager": "^5.0",
         "backpack/crud": "^6.7",
+        "backpack/filemanager": "^3.0",
+        "backpack/logmanager": "^5.0",
         "backpack/permissionmanager": "^7.2",
+        "backpack/revise-operation": "^2.0",
+        "backpack/theme-coreuiv2": "^1.2",
         "backpack/theme-coreuiv4": "^1.1",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.4",
-        "livewire/volt": "^1.0"
+        "livewire/volt": "^1.0",
+        "orangehill/iseed": "^3.0"
     },
     "require-dev": {
         "backpack/generators": "^4.0",
+        "barryvdh/laravel-debugbar": "^3.13",
         "fakerphp/faker": "^1.23",
         "laravel/breeze": "^2.0",
         "laravel/pint": "^1.13",
