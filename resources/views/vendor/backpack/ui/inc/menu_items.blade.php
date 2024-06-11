@@ -14,3 +14,6 @@
     <x-backpack::menu-dropdown-item title="Activity Logs" icon="la la-stream" :link="backpack_url('activity-log')" />
 </x-backpack::menu-dropdown>
 
+
+<x-backpack::menu-item title="Barangays" icon="la la-question" :link="backpack_url('barangay')" />
+<x-backpack::menu-item title="Subscriptions" icon="la la-question" :link="backpack_url('subscription')" />
