@@ -17,3 +17,6 @@
 
 <x-backpack::menu-item title="Barangays" icon="la la-question" :link="backpack_url('barangay')" />
 <x-backpack::menu-item title="Subscriptions" icon="la la-question" :link="backpack_url('subscription')" />
+<x-backpack::menu-item title="Planned application types" icon="la la-question" :link="backpack_url('planned-application-type')" />
+<x-backpack::menu-item title="Planned applications" icon="la la-question" :link="backpack_url('planned-application')" />
+<x-backpack::menu-item title="Customers" icon="la la-question" :link="backpack_url('customer')" />
