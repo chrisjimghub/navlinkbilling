@@ -56,15 +56,28 @@ class PlannedApplicationCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            'planned_application_type' => 'required|integer|min:1',
-            'barangay' => 'required|integer|min:1',
+            'planned_application_type_id' => 'required|integer|min:1',
+            'barangay_id' => 'required|integer|min:1',
         ]);
         CRUD::setFromDb(); // set fields from db columns.
+        
+        $this->crud->modifyField('barangay_id', [
+            'type'=> 'select',
+        ]);
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+            // TODO:: fix error later
+        $this->crud->modifyField('planned_application_type_id', [
+            'type'      => 'select',
+            // optional
+            // 'entity' should point to the method that defines the relationship in your Model
+            // defining entity will make Backpack guess 'model' and 'attribute'
+            'entity'    => 'plannedApplicationType',
+
+            // optional - manually specify the related model and attribute
+            'model'     => "App\Models\PlannedApplicationType", // related model
+            'attribute' => 'name', // foreign key attribute that is shown to user
+        ]);
+
     }
 
     /**
