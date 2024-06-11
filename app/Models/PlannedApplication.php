@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Barangay;
 use App\Models\Traits\LogsActivity;
+use App\Models\PlannedApplicationType;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -42,6 +44,10 @@ class PlannedApplication extends Model
         return $this->belongsTo(PlannedApplicationType::class);
     }
 
+    public function barangay()
+    {
+        return $this->belongsTo(Barangay::class);
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES
