@@ -37,6 +37,10 @@ class PlannedApplicationType extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function plannedApplications()
+    {
+        return $this->hasMany(PlannedApplication::class);
+    }
 
     /*
     |--------------------------------------------------------------------------

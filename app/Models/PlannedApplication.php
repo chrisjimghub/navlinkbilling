@@ -16,7 +16,7 @@ class PlannedApplication extends Model
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
-    |--------------------------------------------------------------------------
+|--------------------------------------------------------------------------
     */
 
     protected $table = 'planned_applications';
@@ -37,6 +37,10 @@ class PlannedApplication extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function plannedApplicationType()
+    {
+        return $this->belongsTo(PlannedApplicationType::class);
+    }
 
     /*
     |--------------------------------------------------------------------------
