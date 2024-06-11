@@ -2,6 +2,17 @@
 
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('dashboard') }}"><i class="la la-home nav-icon"></i> {{ trans('backpack::base.dashboard') }}</a></li>
 
+
+<x-backpack::menu-item title="Customers" icon="las la-user-tie" :link="backpack_url('customer')" />
+<x-backpack::menu-item title="Planned applications" icon="las la-file-contract" :link="backpack_url('planned-application')" />
+
+
+<x-backpack::menu-separator title="APP Settings" />
+<x-backpack::menu-item title="Barangays" icon="las la-archway" :link="backpack_url('barangay')" />
+<x-backpack::menu-item title="Subscriptions" icon="las la-file-alt" :link="backpack_url('subscription')" />
+<x-backpack::menu-item title="Planned App. Types" icon="las la-file" :link="backpack_url('planned-application-type')" />
+
+
 <x-backpack::menu-dropdown title="Admin Only" icon="la la-puzzle-piece">
     <x-backpack::menu-dropdown-header title="Authentication" />
     <x-backpack::menu-dropdown-item title="Users" icon="la la-user" :link="backpack_url('user')" />
@@ -15,8 +26,4 @@
 </x-backpack::menu-dropdown>
 
 
-<x-backpack::menu-item title="Barangays" icon="la la-question" :link="backpack_url('barangay')" />
-<x-backpack::menu-item title="Subscriptions" icon="la la-question" :link="backpack_url('subscription')" />
-<x-backpack::menu-item title="Planned application types" icon="la la-question" :link="backpack_url('planned-application-type')" />
-<x-backpack::menu-item title="Planned applications" icon="la la-question" :link="backpack_url('planned-application')" />
-<x-backpack::menu-item title="Customers" icon="la la-question" :link="backpack_url('customer')" />
+

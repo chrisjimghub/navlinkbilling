@@ -56,7 +56,8 @@ class PlannedApplicationCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            'name' => 'required|min:2',
+            'planned_application_type' => 'required|integer|min:1',
+            'barangay' => 'required|integer|min:1',
         ]);
         CRUD::setFromDb(); // set fields from db columns.
 
