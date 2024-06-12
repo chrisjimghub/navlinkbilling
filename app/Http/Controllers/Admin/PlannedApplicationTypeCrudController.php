@@ -41,10 +41,9 @@ class PlannedApplicationTypeCrudController extends CrudController
     {
         CRUD::setFromDb(); // set columns from db columns.
 
-        /**
-         * Columns can be defined using the fluent syntax:
-         * - CRUD::column('price')->type('number');
-         */
+        $this->crud->modifyColumn('name', [
+            'limit' => 50
+        ]);
     }
 
     /**
