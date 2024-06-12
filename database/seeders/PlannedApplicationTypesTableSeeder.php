@@ -22,16 +22,16 @@ class PlannedApplicationTypesTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'name' => 'RESIDENTIAL / PERSONAL INTERNET CONNECTION',
+                'name' => 'Residential / Personal Internet Connection',
                 'created_at' => '2024-06-11 22:40:37',
-                'updated_at' => '2024-06-11 22:40:37',
+                'updated_at' => '2024-06-12 10:26:04',
             ),
             1 => 
             array (
                 'id' => 2,
-                'name' => 'FOR BUSINESS / COMMERCIAL INTERNET CONNECTION',
+                'name' => 'For Business / Commercial Internet Connection',
                 'created_at' => '2024-06-11 22:41:05',
-                'updated_at' => '2024-06-11 22:41:05',
+                'updated_at' => '2024-06-12 10:25:51',
             ),
         ));
         
