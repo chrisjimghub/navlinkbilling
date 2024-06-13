@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Customer;
 use App\Models\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
@@ -37,6 +38,10 @@ class Subscription extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
 
     /*
     |--------------------------------------------------------------------------

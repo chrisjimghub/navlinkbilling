@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\PlannedApplicationType;
 use App\Http\Requests\CustomerRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -18,6 +19,8 @@ class CustomerCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+
+    use PlannedApplicationType;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -41,10 +44,19 @@ class CustomerCrudController extends CrudController
     {
         CRUD::setFromDb(); // set columns from db columns.
 
-        /**
-         * Columns can be defined using the fluent syntax:
-         * - CRUD::column('price')->type('number');
-         */
+        
+        $this->crud->removeColumn('user_id');
+
+        foreach ([
+            'barangay_id',
+            'subscription_id',
+        ] as $name) {
+            $this->crud->modifyColumn($name, [
+                'type' => 'select'
+            ]);
+        }
+
+        $this->plannedApplicationTypeColumn();
     }
 
     /**
@@ -56,14 +68,39 @@ class CustomerCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            'name' => 'required|min:2',
+            'first_name' => 'required|min:2',
+            'last_name' => 'required|min:2',
+            'date_of_birth' => 'date',
+            'contact_number' => 'required',
+            'email' => ['nullable', 'email'],
+            'bill_recipients' => 'required|min:2',
+            'barangay_id' => 'required|integer|min:1',
+            'planned_application_type_id' => 'required|integer|min:1',
+            'subscription_id' => 'required|integer|min:1',
         ]);
+        
         CRUD::setFromDb(); // set fields from db columns.
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+        $this->crud->modifyField('notes', [
+            'type' => 'summernote',
+        ]);
+
+        $this->crud->removeField('user_id');
+
+        // $this->crud->addField([
+        //     'name' => 'user_id',
+        //     'type' => 'select'
+        // ]);
+
+        $this->crud->modifyField('subscription_id', [
+            'type' => 'select'
+        ]);
+        
+        $this->crud->modifyField('barangay_id', [
+            'type' => 'select'
+        ]);
+
+        $this->plannedApplicationTypeField();
     }
 
     /**

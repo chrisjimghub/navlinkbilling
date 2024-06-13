@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Customer;
 use App\Models\PlannedApplication;
 use App\Models\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
@@ -41,6 +42,11 @@ class Barangay extends Model
     public function plannedApplications()
     {
         return $this->hasMany(PlannedApplication::class);
+    }
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
     }
 
     /*
