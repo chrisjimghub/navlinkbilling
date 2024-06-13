@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('customers', function (Blueprint $table) {
             //
-            $table->text('notes')->change(); // Change the column type to text
+            $table->text('notes')->nullable()->change(); // Change the column type to text
         });
     }
 

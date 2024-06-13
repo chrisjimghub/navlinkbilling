@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\Subscription;
+use App\Models\Traits\LogsActivity;
+use App\Models\PlannedApplicationType;
+use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
     use CrudTrait;
     use HasFactory;
+    use LogsActivity;
 
     /*
     |--------------------------------------------------------------------------
@@ -35,6 +40,25 @@ class Customer extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class);
+    }
+
+    public function barangay()
+    {
+        return $this->belongsTo(Barangay::class);
+    }
+
+    public function plannedApplicationType()
+    {
+        return $this->belongsTo(PlannedApplicationType::class);
+    }
 
     /*
     |--------------------------------------------------------------------------
