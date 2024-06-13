@@ -69,7 +69,6 @@ class PlannedApplicationCrudController extends CrudController
             'planned_application_type_id' => 'required|integer|min:1',
             'barangay_id' => 'required|integer|min:1',
         ]);
-        
         CRUD::setFromDb(); // set fields from db columns.
         
         $this->crud->modifyField('barangay_id', [

@@ -77,7 +77,6 @@ class CustomerCrudController extends CrudController
             'barangay_id' => 'required|integer|min:1',
             'planned_application_type_id' => 'required|integer|min:1',
             'subscription_id' => 'required|integer|min:1',
-
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.
