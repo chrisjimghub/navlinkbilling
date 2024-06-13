@@ -87,11 +87,6 @@ class CustomerCrudController extends CrudController
 
         $this->crud->removeField('user_id');
 
-        // $this->crud->addField([
-        //     'name' => 'user_id',
-        //     'type' => 'select'
-        // ]);
-
         $this->crud->modifyField('subscription_id', [
             'type' => 'select'
         ]);
@@ -101,6 +96,19 @@ class CustomerCrudController extends CrudController
         ]);
 
         $this->plannedApplicationTypeField();
+
+
+        // TODO:: show application type of installation such as 10 mbs -- 9999 and etc. but use onchange event and filter it using barangay and planned application type he choose above
+        /* 
+            NOTE:: use radio button
+            ex:
+                10 Mbps ----- 999
+                12 Mbps ----- 1199
+                15 Mbps ----- 1,299
+                20 Mbps ----- 1,399
+                30 Mbps ----- 1,599
+                etc...
+        */
     }
 
     /**
