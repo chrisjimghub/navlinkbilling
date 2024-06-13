@@ -69,7 +69,8 @@ class PlannedApplicationCrudController extends CrudController
      * @return void
      */
     protected function setupCreateOperation()
-    {
+    {   
+        // TODO:: fix validation messages and remove the ID word
         CRUD::setValidation([
             'planned_application_type_id' => 'required|integer|min:1',
             'barangay_id' => 'required|integer|min:1',

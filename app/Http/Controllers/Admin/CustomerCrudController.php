@@ -56,14 +56,24 @@ class CustomerCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            'name' => 'required|min:2',
+            'first_name' => 'required|min:2',
+            'last_name' => 'required|min:2',
+            'date_of_birth' => 'date',
+            'contact_number' => 'required',
+            'email' => ['nullable', 'email'],
+            'bill_recipients' => 'required|min:2',
+            'barangay_id' => 'required|integer|min:1',
+            'planned_application_type_id' => 'required|integer|min:1',
+            'subscription_id' => 'required|integer|min:1',
+
         ]);
+        
         CRUD::setFromDb(); // set fields from db columns.
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+        $this->crud->modifyField('notes', [
+            'type' => 'summernote',
+        ]);
+
     }
 
     /**

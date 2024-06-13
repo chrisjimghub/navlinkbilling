@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('city_or_municipality');
             $table->foreignId('planned_application_type_id')->nullable()->index();
             $table->foreignId('subscription_id')->nullable()->index();
-            $table->double('notes'); // TODO:: double?, notes = kwarta? abi nakug notes = description
+            $table->double('notes'); 
             $table->timestamps();
         });
     }
