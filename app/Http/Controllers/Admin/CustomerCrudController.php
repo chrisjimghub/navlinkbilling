@@ -45,11 +45,26 @@ class CustomerCrudController extends CrudController
         }
 
         $this->crud->addColumn([
+            'label' => 'Planned Application Type',
             'name' => 'plannedApplicationType',
             'limit' => 100
         ])->beforeColumn('notes');
 
         $this->crud->addColumn('subscription')->beforeColumn('notes');
+
+        $this->crud->column([
+            'label' => 'One-Time Charge',
+            'name' => 'otcs',
+            'type'     => 'closure',
+            'function' => function($entry) {
+                debug($entry->otcs()->pluck('name'));
+
+                $otcs = $entry->otcs()->pluck('name')->implode("<br>");
+
+                return $otcs;
+            },
+            'escaped' => false,
+        ])->before('notes');
     }
 
     protected function setupShowOperation()
@@ -89,6 +104,23 @@ class CustomerCrudController extends CrudController
 
         $this->crud->field('plannedApplicationType')->before('notes');
         $this->crud->field('subscription')->before('notes');
+
+        $this->crud->field([
+            'label' => 'One-Time Charge',
+            'name' => 'otcs',
+            'type' => 'checklist',
+            'number_of_columns' => 1,
+        ])->before('notes');
+
+        // $this->crud->field([
+        //     'label'     => 'One Time Charge',
+        //     'type'      => 'checklist',
+        //     'name'      => 'otcs',
+        //     'entity'    => 'otcs',
+        //     'attribute' => 'name',
+        //     'model'     => "App\Models\Otc",
+        //     'pivot'     => true,
+        // ]);
         
         // TODO:: show application type of installation such as 10 mbs -- 9999 and etc. but use onchange event and filter it using location and planned application type he choose above
         /* 
