@@ -20,13 +20,12 @@ return new class extends Migration
             $table->string('contact_number');
             $table->string('email');
             $table->string('bill_recipients');
-            $table->string('address');
-            $table->string('block_street');
-            $table->foreignId('barangay_id')->nullable()->index();
-            $table->string('city_or_municipality');
+            $table->string('address')->nullable();
+            $table->string('block_street')->nullable();
+            $table->string('city_or_municipality')->nullable();
             $table->foreignId('planned_application_type_id')->nullable()->index();
             $table->foreignId('subscription_id')->nullable()->index();
-            $table->double('notes'); 
+            $table->double('notes')->nullable(); 
             $table->timestamps();
         });
     }

@@ -8,7 +8,6 @@
 
 
 <x-backpack::menu-separator title="APP Settings" />
-<x-backpack::menu-item title="Barangays" icon="las la-archway" :link="backpack_url('barangay')" />
 <x-backpack::menu-item title="Subscriptions" icon="las la-file-alt" :link="backpack_url('subscription')" />
 <x-backpack::menu-item title="Planned App. Types" icon="las la-file" :link="backpack_url('planned-application-type')" />
 

@@ -50,11 +50,6 @@ class Customer extends Model
         return $this->belongsTo(Subscription::class);
     }
 
-    public function barangay()
-    {
-        return $this->belongsTo(Barangay::class);
-    }
-
     public function plannedApplicationType()
     {
         return $this->belongsTo(PlannedApplicationType::class);
