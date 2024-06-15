@@ -47,8 +47,9 @@ class CustomerCrudController extends CrudController
         $this->crud->addColumn([
             'name' => 'plannedApplicationType',
             'limit' => 100
-        ]);
-        $this->crud->addColumn('subscription');
+        ])->beforeColumn('notes');
+
+        $this->crud->addColumn('subscription')->beforeColumn('notes');
     }
 
     protected function setupShowOperation()
@@ -82,12 +83,12 @@ class CustomerCrudController extends CrudController
         }
 
         $this->crud->modifyField('notes', [
-            'type' => 'summernote',
+            'type' => 'textarea',
         ]);
 
 
-        $this->crud->field('plannedApplicationType');
-        $this->crud->field('subscription');
+        $this->crud->field('plannedApplicationType')->before('notes');
+        $this->crud->field('subscription')->before('notes');
         
         // TODO:: show application type of installation such as 10 mbs -- 9999 and etc. but use onchange event and filter it using location and planned application type he choose above
         /* 

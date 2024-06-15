@@ -45,7 +45,7 @@ class PlannedApplicationCrudController extends CrudController
         $this->crud->addColumn([
             'name' => 'plannedApplicationType',
             'limit' => 100
-        ]);
+        ])->beforeColumn('mbps');
     }
 
     protected function setupShowOperation()
