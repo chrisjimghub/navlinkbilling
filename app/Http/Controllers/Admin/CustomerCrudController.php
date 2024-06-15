@@ -43,18 +43,13 @@ class CustomerCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::setFromDb(); // set columns from db columns.
-
         
         $this->crud->removeColumn('user_id');
 
-        foreach ([
-            'barangay_id',
-            'subscription_id',
-        ] as $name) {
-            $this->crud->modifyColumn($name, [
-                'type' => 'select'
-            ]);
-        }
+        $this->crud->modifyColumn('subscription_id', [
+            'type' => 'select'
+        ]);
+
 
         $this->plannedApplicationTypeColumn();
     }
@@ -74,7 +69,6 @@ class CustomerCrudController extends CrudController
             'contact_number' => 'required',
             'email' => ['nullable', 'email'],
             'bill_recipients' => 'required|min:2',
-            'barangay_id' => 'required|integer|min:1',
             'planned_application_type_id' => 'required|integer|min:1',
             'subscription_id' => 'required|integer|min:1',
         ]);
@@ -91,10 +85,6 @@ class CustomerCrudController extends CrudController
             'type' => 'select'
         ]);
         
-        $this->crud->modifyField('barangay_id', [
-            'type' => 'select'
-        ]);
-
         $this->plannedApplicationTypeField();
 
 

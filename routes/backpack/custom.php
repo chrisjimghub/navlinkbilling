@@ -16,7 +16,6 @@ Route::group([
     ),
     'namespace' => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
-    Route::crud('barangay', 'BarangayCrudController');
     Route::crud('subscription', 'SubscriptionCrudController');
     Route::crud('planned-application-type', 'PlannedApplicationTypeCrudController');
     Route::crud('planned-application', 'PlannedApplicationCrudController');
