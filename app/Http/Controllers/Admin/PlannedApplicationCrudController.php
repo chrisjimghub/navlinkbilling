@@ -63,6 +63,8 @@ class PlannedApplicationCrudController extends CrudController
     {   
         CRUD::setValidation([
             'plannedApplicationType' => 'required|integer|min:1',
+            'mbps' => 'required|integer|min:1',
+            'price' => ['required', 'numeric', 'regex:/^\d+(\.\d+)?$/'],
         ]);
         CRUD::setFromDb(); // set fields from db columns.
         
