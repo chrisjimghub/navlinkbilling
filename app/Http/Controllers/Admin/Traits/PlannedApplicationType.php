@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Traits;
 
 trait PlannedApplicationType {
 
+    // TODO:: DELETE, no longer needed.
     public function plannedApplicationTypeColumn()
     {
         $this->crud->modifyColumn('planned_application_type_id', [
@@ -17,6 +18,7 @@ trait PlannedApplicationType {
         ]);
     }
 
+    // TODO:: DELETE, no longer needed.
     public function plannedApplicationTypeField()
     {
         $this->crud->modifyField('planned_application_type_id', [

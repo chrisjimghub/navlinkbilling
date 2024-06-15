@@ -44,7 +44,10 @@ class CustomerCrudController extends CrudController
             $this->crud->removeColumn($name);
         }
 
-        $this->crud->addColumn('plannedApplicationType');
+        $this->crud->addColumn([
+            'name' => 'plannedApplicationType',
+            'limit' => 100
+        ]);
         $this->crud->addColumn('subscription');
     }
 

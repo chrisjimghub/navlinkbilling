@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
-use App\Http\Controllers\Admin\Traits\PlannedApplicationType;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -18,8 +17,6 @@ class PlannedApplicationCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-
-    use PlannedApplicationType;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -43,7 +40,12 @@ class PlannedApplicationCrudController extends CrudController
     {
         CRUD::setFromDb(); // set columns from db columns.
 
-        $this->plannedApplicationTypeColumn();
+        $this->crud->removeColumn('planned_application_type_id');
+
+        $this->crud->addColumn([
+            'name' => 'plannedApplicationType',
+            'limit' => 100
+        ]);
     }
 
     protected function setupShowOperation()
@@ -59,14 +61,13 @@ class PlannedApplicationCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {   
-        // TODO:: fix validation messages and remove the ID word
         CRUD::setValidation([
-            'planned_application_type_id' => 'required|integer|min:1',
+            'plannedApplicationType' => 'required|integer|min:1',
         ]);
         CRUD::setFromDb(); // set fields from db columns.
         
-        $this->plannedApplicationTypeField();
-
+        $this->crud->removeField('planned_application_type_id');
+        $this->crud->addField('plannedApplicationType')->beforeField('mbps');
     }
 
     /**
@@ -79,4 +80,5 @@ class PlannedApplicationCrudController extends CrudController
     {
         $this->setupCreateOperation();
     }
+
 }
