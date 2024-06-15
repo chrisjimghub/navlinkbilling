@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Otc;
 use App\Models\User;
 use App\Models\Subscription;
 use App\Models\Traits\LogsActivity;
@@ -53,6 +54,11 @@ class Customer extends Model
     public function plannedApplicationType()
     {
         return $this->belongsTo(PlannedApplicationType::class);
+    }
+
+    public function otcs()
+    {
+        return $this->belongsToMany(Otc::class, 'customer_otc', 'customer_id', 'otc_id');
     }
 
     /*

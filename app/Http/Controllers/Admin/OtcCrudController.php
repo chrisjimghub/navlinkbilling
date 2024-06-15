@@ -28,7 +28,7 @@ class OtcCrudController extends CrudController
     {
         CRUD::setModel(\App\Models\Otc::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/otc');
-        CRUD::setEntityNameStrings('one time charge', 'one time charges');
+        CRUD::setEntityNameStrings('one-time charge', 'one-time charges');
     }
 
     /**

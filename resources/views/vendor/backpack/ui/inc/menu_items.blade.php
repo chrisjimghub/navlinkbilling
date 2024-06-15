@@ -10,7 +10,7 @@
 <x-backpack::menu-separator title="APP Settings" />
 <x-backpack::menu-item title="Subscriptions" icon="las la-file-alt" :link="backpack_url('subscription')" />
 <x-backpack::menu-item title="Planned App. Types" icon="las la-file" :link="backpack_url('planned-application-type')" />
-<x-backpack::menu-item title="One Time Charge" icon="las la-file-alt" :link="backpack_url('otc')" />
+<x-backpack::menu-item title="One-Time Charges" icon="las la-file-alt" :link="backpack_url('otc')" />
 
 
 <x-backpack::menu-dropdown title="Admin Only" icon="la la-puzzle-piece">

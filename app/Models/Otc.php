@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Customer;
+use App\Models\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Otc extends Model
 {
     use CrudTrait;
     use HasFactory;
+    use LogsActivity;
 
     /*
     |--------------------------------------------------------------------------
@@ -35,6 +38,10 @@ class Otc extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function customers()
+    {
+        return $this->belongsToMany(Customer::class, 'customer_otc', 'otc_id', 'customer_id');
+    }
 
     /*
     |--------------------------------------------------------------------------
