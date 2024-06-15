@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Traits\PlannedApplicationType;
-use App\Http\Requests\CustomerRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -19,8 +17,6 @@ class CustomerCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-
-    use PlannedApplicationType;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -43,15 +39,13 @@ class CustomerCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::setFromDb(); // set columns from db columns.
-        
-        $this->crud->removeColumn('user_id');
 
-        $this->crud->modifyColumn('subscription_id', [
-            'type' => 'select'
-        ]);
+        foreach ($this->removeFK() as $name) {
+            $this->crud->removeColumn($name);
+        }
 
-
-        $this->plannedApplicationTypeColumn();
+        $this->crud->addColumn('subscription');
+        $this->crud->addColumn('plannedApplicationType');
     }
 
     /**
@@ -69,25 +63,24 @@ class CustomerCrudController extends CrudController
             'contact_number' => 'required',
             'email' => ['nullable', 'email'],
             'bill_recipients' => 'required|min:2',
-            'planned_application_type_id' => 'required|integer|min:1',
-            'subscription_id' => 'required|integer|min:1',
+            'plannedApplicationType' => 'required|integer|min:1',
+            'subscription' => 'required|integer|min:1',
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.
+
+        foreach ($this->removeFK() as $name) {
+            $this->crud->removeField($name);
+        }
 
         $this->crud->modifyField('notes', [
             'type' => 'summernote',
         ]);
 
-        $this->crud->removeField('user_id');
 
-        $this->crud->modifyField('subscription_id', [
-            'type' => 'select'
-        ]);
+        $this->crud->field('subscription');
+        $this->crud->field('plannedApplicationType');
         
-        $this->plannedApplicationTypeField();
-
-
         // TODO:: show application type of installation such as 10 mbs -- 9999 and etc. but use onchange event and filter it using location and planned application type he choose above
         /* 
             NOTE:: use radio button
@@ -110,5 +103,14 @@ class CustomerCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    private function removeFK()
+    {
+        return [
+            'user_id',
+            'subscription_id',
+            'planned_application_type_id',
+        ];
     }
 }
