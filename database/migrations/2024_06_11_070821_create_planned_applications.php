@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('planned_applications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('planned_application_type_id')->nullable()->index();
-            $table->string('mbps');
+            $table->integer('mbps');
             $table->decimal('price');
             $table->timestamps();
         });
