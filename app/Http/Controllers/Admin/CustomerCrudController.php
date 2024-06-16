@@ -40,10 +40,8 @@ class CustomerCrudController extends CrudController
     {
         CRUD::setFromDb(); // set columns from db columns.
 
-        foreach ($this->removeFK() as $name) {
-            $this->crud->removeColumn($name);
-        }
-
+        $this->crud->removeColumns($this->removeFK());
+        
         $this->crud->addColumn([
             'label' => 'Planned Application Type',
             'name' => 'plannedApplicationType',
@@ -51,20 +49,20 @@ class CustomerCrudController extends CrudController
         ])->beforeColumn('notes');
 
         $this->crud->addColumn('subscription')->beforeColumn('notes');
+        
+        foreach ($this->checkboxFields() as $name => $label) {
+            $this->crud->column([
+                'label' => $label,
+                'name' => $name,
+                'type'     => 'closure',
+                'function' => function($entry) use($name) {
+    
+                    return $entry->{$name}()->pluck('name')->implode("<br>");
+                },
+                'escaped' => false,
+            ])->before('notes');
+        }
 
-        $this->crud->column([
-            'label' => 'One-Time Charge',
-            'name' => 'otcs',
-            'type'     => 'closure',
-            'function' => function($entry) {
-                debug($entry->otcs()->pluck('name'));
-
-                $otcs = $entry->otcs()->pluck('name')->implode("<br>");
-
-                return $otcs;
-            },
-            'escaped' => false,
-        ])->before('notes');
     }
 
     protected function setupShowOperation()
@@ -80,6 +78,10 @@ class CustomerCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
+        // TODO:: add validation for OTC and contract period
+        // TODO:: add tabs
+        // TODO:: fix(refer sample file) input form view
+
         CRUD::setValidation([
             'first_name' => 'required|min:2',
             'last_name' => 'required|min:2',
@@ -93,46 +95,23 @@ class CustomerCrudController extends CrudController
         
         CRUD::setFromDb(); // set fields from db columns.
 
-        foreach ($this->removeFK() as $name) {
-            $this->crud->removeField($name);
-        }
+        $this->crud->removeFields($this->removeFK());
 
-        $this->crud->modifyField('notes', [
-            'type' => 'textarea',
-        ]);
+        $this->crud->modifyField('notes', ['type' => 'textarea']);
+        $this->crud->modifyField('date_of_birth', ['type' => 'date']);        
 
 
         $this->crud->field('plannedApplicationType')->before('notes');
         $this->crud->field('subscription')->before('notes');
-
-        $this->crud->field([
-            'label' => 'One-Time Charge',
-            'name' => 'otcs',
-            'type' => 'checklist',
-            'number_of_columns' => 1,
-        ])->before('notes');
-
-        // $this->crud->field([
-        //     'label'     => 'One Time Charge',
-        //     'type'      => 'checklist',
-        //     'name'      => 'otcs',
-        //     'entity'    => 'otcs',
-        //     'attribute' => 'name',
-        //     'model'     => "App\Models\Otc",
-        //     'pivot'     => true,
-        // ]);
         
-        // TODO:: show application type of installation such as 10 mbs -- 9999 and etc. but use onchange event and filter it using location and planned application type he choose above
-        /* 
-            NOTE:: use radio button
-            ex:
-                10 Mbps ----- 999
-                12 Mbps ----- 1199
-                15 Mbps ----- 1,299
-                20 Mbps ----- 1,399
-                30 Mbps ----- 1,599
-                etc...
-        */
+        foreach ($this->checkboxFields() as $name => $label) {
+            $this->crud->field([
+                'label' => $label,
+                'name' => $name,
+                'type' => 'checklist',
+                'number_of_columns' => 1,
+            ])->before('notes');
+        }
     }
 
     /**
@@ -144,6 +123,14 @@ class CustomerCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    private function checkboxFields()
+    {   
+        return [
+            'otcs' => 'One-Time Charge',
+            'contractPeriods' => 'Contact Periods',
+        ];
     }
 
     private function removeFK()

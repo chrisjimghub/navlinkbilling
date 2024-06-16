@@ -2,17 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Otc;
-use App\Models\User;
-use App\Models\Subscription;
-use App\Models\ContractPeriod;
 use App\Models\Traits\LogsActivity;
-use App\Models\PlannedApplicationType;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Customer extends Model
+class ContractPeriod extends Model
 {
     use CrudTrait;
     use HasFactory;
@@ -24,7 +19,7 @@ class Customer extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'customers';
+    protected $table = 'contract_periods';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -42,29 +37,9 @@ class Customer extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function user()
+    public function customers()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function subscription()
-    {
-        return $this->belongsTo(Subscription::class);
-    }
-
-    public function plannedApplicationType()
-    {
-        return $this->belongsTo(PlannedApplicationType::class);
-    }
-
-    public function otcs()
-    {
-        return $this->belongsToMany(Otc::class, 'customer_otc', 'customer_id', 'otc_id');
-    }
-
-    public function contractPeriods()
-    {
-        return $this->belongsToMany(ContractPeriod::class, 'contract_period_customer', 'customer_id', 'contract_period_id')->withTimestamps();
+        return $this->belongsToMany(Customer::class, 'contract_period_customer', 'contract_period_id', 'customer_id')->withTimestamps();
     }
 
     /*
