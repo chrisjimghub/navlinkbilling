@@ -93,9 +93,8 @@ class CustomerCrudController extends CrudController
 
         $this->crud->removeFields($this->removeFK());
 
-        $this->crud->modifyField('notes', [
-            'type' => 'textarea',
-        ]);
+        $this->crud->modifyField('notes', ['type' => 'textarea']);
+        $this->crud->modifyField('date_of_birth', ['type' => 'date']);        
 
 
         $this->crud->field('plannedApplicationType')->before('notes');
