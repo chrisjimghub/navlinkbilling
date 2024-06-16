@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SubscriptionsTableSeeder::class);
         $this->call(PlannedApplicationTypesTableSeeder::class);
         $this->call(OtcsTableSeeder::class);
+        $this->call(ContractPeriodsTableSeeder::class);
     }
 }

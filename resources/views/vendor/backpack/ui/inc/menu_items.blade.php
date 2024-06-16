@@ -11,6 +11,7 @@
 <x-backpack::menu-item title="Subscriptions" icon="las la-file-alt" :link="backpack_url('subscription')" />
 <x-backpack::menu-item title="Planned App. Types" icon="las la-file" :link="backpack_url('planned-application-type')" />
 <x-backpack::menu-item title="One-Time Charges" icon="las la-file-alt" :link="backpack_url('otc')" />
+<x-backpack::menu-item title="Contract Periods" icon="las la-file-contract" :link="backpack_url('contract-period')" />
 
 
 <x-backpack::menu-dropdown title="Admin Only" icon="la la-puzzle-piece">
@@ -24,6 +25,7 @@
     <x-backpack::menu-dropdown-item title='Logs' icon='la la-terminal' :link="backpack_url('log')" />
     <x-backpack::menu-dropdown-item title="Activity Logs" icon="la la-stream" :link="backpack_url('activity-log')" />
 </x-backpack::menu-dropdown>
+
 
 
 
