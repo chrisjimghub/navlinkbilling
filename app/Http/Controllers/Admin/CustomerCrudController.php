@@ -63,6 +63,11 @@ class CustomerCrudController extends CrudController
             ])->before('notes');
         }
 
+        $this->crud->modifyColumn('signature', [
+            'type' => 'image',
+                'height' => '150px',
+            'width'  => '150px',
+        ]);
     }
 
     protected function setupShowOperation()
@@ -112,6 +117,16 @@ class CustomerCrudController extends CrudController
                 'number_of_columns' => 1,
             ])->before('notes');
         }
+
+        // TODO:: signature
+        $this->crud->field([
+            'name' => 'signature',
+            'label' => 'Please sign here',
+            'type' => 'signature',
+            'view_namespace' => 'signature-field-for-backpack::fields',
+        ]);
+
+        // dd($this->crud);
     }
 
     /**

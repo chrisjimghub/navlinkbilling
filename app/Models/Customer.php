@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Models\Otc;
 use App\Models\User;
+use Illuminate\Support\Str;
 use App\Models\Subscription;
 use App\Models\ContractPeriod;
 use App\Models\Traits\LogsActivity;
 use App\Models\PlannedApplicationType;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -84,4 +86,24 @@ class Customer extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public function setSignatureAttribute($value)
+    {
+        if (Str::startsWith($value, 'data:image/png;base64,')) {
+            $base64Image = substr($value, strpos($value, ',') + 1);
+            $image = base64_decode($base64Image);
+
+            $imageName = 'signature_' . time() . '.png'; // Generate a unique image name
+            $path = 'signature/' . $imageName;
+
+            Storage::disk('public')->put($path, $image);
+
+            $this->attributes['signature'] = $path;
+        } else {
+            $this->attributes['signature'] = $value;
+        }
+    }
+
+    
+
+
 }

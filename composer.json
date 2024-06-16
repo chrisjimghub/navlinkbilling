@@ -4,6 +4,12 @@
     "description": "The skeleton application for the Laravel framework.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
+    "repositories": [ 
+        {
+            "type": "vcs",
+            "url": "https://github.com/malek77z/signature-field-for-backpack"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "backpack/activity-log": "^2.0",
@@ -19,7 +25,8 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.4",
         "livewire/volt": "^1.0",
-        "orangehill/iseed": "^3.0"
+        "orangehill/iseed": "^3.0",
+        "imokhles/signature-field-for-backpack": "dev-master"
     },
     "require-dev": {
         "backpack/generators": "^4.0",
