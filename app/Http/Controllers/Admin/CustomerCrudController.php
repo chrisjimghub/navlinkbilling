@@ -40,10 +40,8 @@ class CustomerCrudController extends CrudController
     {
         CRUD::setFromDb(); // set columns from db columns.
 
-        foreach ($this->removeFK() as $name) {
-            $this->crud->removeColumn($name);
-        }
-
+        $this->crud->removeColumns($this->removeFK());
+        
         $this->crud->addColumn([
             'label' => 'Planned Application Type',
             'name' => 'plannedApplicationType',
@@ -93,9 +91,7 @@ class CustomerCrudController extends CrudController
         
         CRUD::setFromDb(); // set fields from db columns.
 
-        foreach ($this->removeFK() as $name) {
-            $this->crud->removeField($name);
-        }
+        $this->crud->removeFields($this->removeFK());
 
         $this->crud->modifyField('notes', [
             'type' => 'textarea',
@@ -112,16 +108,6 @@ class CustomerCrudController extends CrudController
             'number_of_columns' => 1,
         ])->before('notes');
 
-        // $this->crud->field([
-        //     'label'     => 'One Time Charge',
-        //     'type'      => 'checklist',
-        //     'name'      => 'otcs',
-        //     'entity'    => 'otcs',
-        //     'attribute' => 'name',
-        //     'model'     => "App\Models\Otc",
-        //     'pivot'     => true,
-        // ]);
-        
         // TODO:: show application type of installation such as 10 mbs -- 9999 and etc. but use onchange event and filter it using location and planned application type he choose above
         /* 
             NOTE:: use radio button
