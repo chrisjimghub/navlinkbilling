@@ -59,11 +59,10 @@ class LocationCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            'name' => $this->validateUniqueRule('locations'),
+            'name' => $this->validateUniqueRule(),
         ]);
 
         CRUD::setFromDb(); // set fields from db columns.
-
     }
 
     /**
@@ -75,9 +74,5 @@ class LocationCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
-
-        $this->crud->setValidation([
-            'name' => $this->validateUniqueRule('locations'),
-        ]);
     }
 }
