@@ -23,9 +23,14 @@ return new class extends Migration
             $table->string('block_street_purok')->nullable();
             $table->string('barangay')->nullable();
             $table->string('city_municipality')->nullable();
-            $table->foreignId('planned_application_type_id')->nullable()->index();
-            $table->foreignId('subscription_id')->nullable()->index();
+
+            $table->foreignId('planned_application_type_id')->constrained('planned_application_types')->onDelete('cascade');
+            $table->foreignId('subscription_id')->constrained('subscriptions')->onDelete('cascade');
+
+
             $table->string('notes')->nullable(); 
+
+            $table->string('signature')->nullable();
 
             $table->foreignId('user_id')->nullable()->index();
 

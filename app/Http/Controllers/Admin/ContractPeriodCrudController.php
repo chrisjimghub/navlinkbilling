@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
 use App\Http\Requests\ContractPeriodRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -18,6 +19,8 @@ class ContractPeriodCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+
+    use ValidateUniqueRule;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -56,7 +59,7 @@ class ContractPeriodCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            // 'name' => 'required|min:2',
+            'name' => $this->validateUniqueRule(),
         ]);
         CRUD::setFromDb(); // set fields from db columns.
 

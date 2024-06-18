@@ -85,7 +85,6 @@ class CustomerCrudController extends CrudController
     {
         // TODO:: add validation for OTC and contract period
         // TODO:: add tabs
-        // TODO:: fix(refer sample file) input form view
 
         CRUD::setValidation([
             'first_name' => 'required|min:2',
@@ -106,7 +105,7 @@ class CustomerCrudController extends CrudController
         $this->crud->modifyField('date_of_birth', ['type' => 'date']);        
 
 
-        $this->crud->field('plannedApplicationType')->before('notes');
+        $this->crud->field('plannedApplicationType')->label('Planned Application Type')->before('notes');
         $this->crud->field('subscription')->before('notes');
         
         foreach ($this->checkboxFields() as $name => $label) {
@@ -118,7 +117,6 @@ class CustomerCrudController extends CrudController
             ])->before('notes');
         }
 
-        // TODO:: signature
         $this->crud->field([
             'name' => 'signature',
             'label' => 'Please sign here',

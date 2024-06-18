@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Location;
+use App\Models\PlannedApplication;
 use App\Models\Traits\LogsActivity;
-use App\Models\PlannedApplicationType;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class PlannedApplication extends Model
+class Location extends Model
 {
     use CrudTrait;
     use HasFactory;
@@ -18,10 +17,10 @@ class PlannedApplication extends Model
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
-|--------------------------------------------------------------------------
+    |--------------------------------------------------------------------------
     */
 
-    protected $table = 'planned_applications';
+    protected $table = 'locations';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -39,14 +38,9 @@ class PlannedApplication extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function plannedApplicationType()
+    public function plannedApplications()
     {
-        return $this->belongsTo(PlannedApplicationType::class);
-    }
-
-    public function location()
-    {
-        return $this->belongsTo(Location::class);
+        return $this->hasMany(PlannedApplication::class);
     }
 
     /*

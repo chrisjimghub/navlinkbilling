@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
-use App\Http\Requests\PlannedApplicationTypeRequest;
+use App\Http\Requests\LocationRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class PlannedApplicationTypeCrudController
+ * Class LocationCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class PlannedApplicationTypeCrudController extends CrudController
+class LocationCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -29,9 +29,9 @@ class PlannedApplicationTypeCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\PlannedApplicationType::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/planned-application-type');
-        CRUD::setEntityNameStrings('planned application type', 'planned application types');
+        CRUD::setModel(\App\Models\Location::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/location');
+        CRUD::setEntityNameStrings('location', 'locations');
     }
 
     /**
@@ -44,9 +44,10 @@ class PlannedApplicationTypeCrudController extends CrudController
     {
         CRUD::setFromDb(); // set columns from db columns.
 
-        $this->crud->modifyColumn('name', [
-            'limit' => 50
-        ]);
+        /**
+         * Columns can be defined using the fluent syntax:
+         * - CRUD::column('price')->type('number');
+         */
     }
 
     /**
@@ -60,12 +61,8 @@ class PlannedApplicationTypeCrudController extends CrudController
         CRUD::setValidation([
             'name' => $this->validateUniqueRule(),
         ]);
-        CRUD::setFromDb(); // set fields from db columns.
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+        CRUD::setFromDb(); // set fields from db columns.
     }
 
     /**
