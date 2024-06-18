@@ -92,7 +92,7 @@ class CustomerCrudController extends CrudController
             'last_name' => 'required|min:2',
             'date_of_birth' => 'date',
             'contact_number' => 'required',
-            'email' => ['nullable', 'email'],
+            'email' => 'required|email',
             'bill_recipients' => 'required|min:2',
             'plannedApplicationType' => 'required|integer|min:1',
             'subscription' => 'required|integer|min:1',

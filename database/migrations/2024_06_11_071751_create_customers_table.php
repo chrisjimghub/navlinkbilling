@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('city_municipality')->nullable();
             $table->foreignId('planned_application_type_id')->nullable()->index();
             $table->foreignId('subscription_id')->nullable()->index();
-            $table->double('notes')->nullable(); 
+            $table->string('notes')->nullable(); 
 
             $table->foreignId('user_id')->nullable()->index();
 
