@@ -38,12 +38,16 @@ class PlannedApplicationCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        // TODO:: fix datatable search input for relationship column
+        // TODO:: add filter also once have backpack pro licensed
+        
         CRUD::setFromDb(); // set columns from db columns.
 
         $this->crud->removeColumns($this->removeFK());
 
         $this->crud->column([
             'name' => 'plannedApplicationType',
+            'label' => 'Planned Application Type',
             'limit' => 100
         ])->before('mbps');
 

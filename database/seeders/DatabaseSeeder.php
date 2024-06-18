@@ -25,5 +25,6 @@ class DatabaseSeeder extends Seeder
         $this->call(OtcsTableSeeder::class);
         $this->call(ContractPeriodsTableSeeder::class);
         $this->call(LocationsTableSeeder::class);
+        $this->call(PlannedApplicationsTableSeeder::class);
     }
 }
