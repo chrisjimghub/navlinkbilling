@@ -30,3 +30,5 @@
 
 
 
+
+<x-backpack::menu-item title="Locations" icon="la la-question" :link="backpack_url('location')" />
