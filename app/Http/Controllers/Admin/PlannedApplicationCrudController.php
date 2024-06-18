@@ -40,12 +40,16 @@ class PlannedApplicationCrudController extends CrudController
     {
         CRUD::setFromDb(); // set columns from db columns.
 
-        $this->crud->removeColumn('planned_application_type_id');
+        $this->crud->removeColumns($this->removeFK());
 
-        $this->crud->addColumn([
+        $this->crud->column([
             'name' => 'plannedApplicationType',
             'limit' => 100
-        ])->beforeColumn('mbps');
+        ])->before('mbps');
+
+        $this->crud->column([
+            'name' => 'location',
+        ])->before('mbps');
     }
 
     protected function setupShowOperation()
@@ -63,13 +67,19 @@ class PlannedApplicationCrudController extends CrudController
     {   
         CRUD::setValidation([
             'plannedApplicationType' => 'required|integer|min:1',
+            'location' => 'required|integer|min:1',
             'mbps' => 'required|integer|min:1',
             'price' => ['required', 'numeric', 'regex:/^\d+(\.\d+)?$/'],
         ]);
         CRUD::setFromDb(); // set fields from db columns.
         
         $this->crud->removeField('planned_application_type_id');
-        $this->crud->addField('plannedApplicationType')->beforeField('mbps');
+        $this->crud->removeField('location_id');
+
+        $this->crud->removeFields($this->removeFK());
+
+        $this->crud->field('plannedApplicationType')->label('Planned Application Type')->before('mbps');
+        $this->crud->field('location')->before('mbps');
     }
 
     /**
@@ -83,4 +93,11 @@ class PlannedApplicationCrudController extends CrudController
         $this->setupCreateOperation();
     }
 
+    private function removeFK()
+    {
+        return [
+            'planned_application_type_id',
+            'location_id',
+        ];
+    }
 }

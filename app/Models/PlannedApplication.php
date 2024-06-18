@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Location;
 use App\Models\Traits\LogsActivity;
 use App\Models\PlannedApplicationType;
 use Illuminate\Database\Eloquent\Model;
@@ -41,6 +42,11 @@ class PlannedApplication extends Model
     public function plannedApplicationType()
     {
         return $this->belongsTo(PlannedApplicationType::class);
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
     }
 
     /*
