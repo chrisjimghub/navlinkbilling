@@ -95,6 +95,7 @@ class CustomerCrudController extends CrudController
             'bill_recipients' => 'required|min:2',
             'plannedApplicationType' => 'required|integer|min:1',
             'subscription' => 'required|integer|min:1',
+            // TODO:: validation plannedApplicationType
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.
@@ -124,6 +125,24 @@ class CustomerCrudController extends CrudController
             'view_namespace' => 'signature-field-for-backpack::fields',
         ]);
 
+
+        // TODO:: 
+        $this->crud->field([
+            'type'      => 'select_grouped', //https://github.com/Laravel-Backpack/CRUD/issues/502
+            'name'      => 'planned_application_id',
+            'entity'    => 'plannedApplication',
+
+            'attribute' => 'mbpsPrice', // accessor
+
+            'model' => 'App\Models\PlannedApplication',  // Parent model
+            
+            'group_by'  => 'location', // the relationship to entity you want to use for grouping
+            'group_by_attribute' => 'name', // the attribute on related model, that you want shown
+            'group_by_relationship_back' => 'plannedApplications', // relationship from related model back to this model
+
+        ])->before('first_name'); // TODO:: fix before
+
+
         // dd($this->crud);
     }
 
@@ -152,6 +171,7 @@ class CustomerCrudController extends CrudController
             'user_id',
             'subscription_id',
             'planned_application_type_id',
+            'planned_application_id',
         ];
     }
 }

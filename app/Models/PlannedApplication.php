@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Customer;
 use App\Models\Location;
 use App\Models\Traits\LogsActivity;
 use App\Models\PlannedApplicationType;
@@ -49,6 +50,11 @@ class PlannedApplication extends Model
         return $this->belongsTo(Location::class);
     }
 
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | SCOPES
@@ -60,6 +66,10 @@ class PlannedApplication extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getMbpsPriceAttribute()
+    {
+        return $this->mbps . 'Mbps ----- ' . $this->price;
+    }
 
     /*
     |--------------------------------------------------------------------------

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use App\Models\Subscription;
 use App\Models\ContractPeriod;
+use App\Models\PlannedApplication;
 use App\Models\Traits\LogsActivity;
 use App\Models\PlannedApplicationType;
 use Illuminate\Database\Eloquent\Model;
@@ -57,6 +58,11 @@ class Customer extends Model
     public function plannedApplicationType()
     {
         return $this->belongsTo(PlannedApplicationType::class);
+    }
+
+    public function plannedApplication()
+    {
+        return $this->belongsTo(PlannedApplication::class);
     }
 
     public function otcs()
