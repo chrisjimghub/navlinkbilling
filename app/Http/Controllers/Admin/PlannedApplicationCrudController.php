@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -17,6 +18,8 @@ class PlannedApplicationCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+
+    use CurrencyFormat;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -54,6 +57,12 @@ class PlannedApplicationCrudController extends CrudController
         $this->crud->column([
             'name' => 'location',
         ])->before('mbps');
+
+        $this->currencyFormatColumn('price');
+
+        $this->crud->modifyColumn('price', [
+            'decimals' => false
+        ]);
     }
 
     protected function setupShowOperation()
@@ -73,7 +82,7 @@ class PlannedApplicationCrudController extends CrudController
             'plannedApplicationType' => 'required|integer|min:1',
             'location' => 'required|integer|min:1',
             'mbps' => 'required|integer|min:1',
-            'price' => ['required', 'numeric', 'regex:/^\d+(\.\d+)?$/'],
+            'price' => 'required|numeric|min:0',
         ]);
         CRUD::setFromDb(); // set fields from db columns.
         
@@ -84,6 +93,12 @@ class PlannedApplicationCrudController extends CrudController
 
         $this->crud->field('plannedApplicationType')->label('Planned Application Type')->before('mbps');
         $this->crud->field('location')->before('mbps');
+    
+        $this->currencyFormatField('price');
+
+        $this->crud->modifyColumn('price', [
+            'decimals' => false
+        ]);
     }
 
     /**

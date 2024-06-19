@@ -38,15 +38,18 @@ class CustomerCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->with('plannedApplication');
+
+
         CRUD::setFromDb(); // set columns from db columns.
 
         $this->crud->removeColumns($this->removeFK());
         
-        $this->crud->addColumn([
-            'label' => 'Planned Application Type',
-            'name' => 'plannedApplicationType',
-            'limit' => 100
-        ])->beforeColumn('notes');
+        // $this->crud->column([
+        //     'label' => 'Planned Application Type',
+        //     'name' => 'plannedApplicationType',
+        //     'limit' => 100
+        // ])->before('planned_application_id');
 
         $this->crud->addColumn('subscription')->beforeColumn('notes');
         
@@ -68,6 +71,13 @@ class CustomerCrudController extends CrudController
                 'height' => '150px',
             'width'  => '150px',
         ]);
+
+        $this->crud->modifyColumn('planned_application_id', [
+            'type' => 'closure',
+            'function' => function($entry) {
+                return $entry->plannedApplication->mbpsPrice;
+            },
+        ]);
     }
 
     protected function setupShowOperation()
@@ -83,9 +93,7 @@ class CustomerCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        // TODO:: add validation for OTC and contract period
-        // TODO:: add tabs
-
+        // TODO:: validation for OTC and contract period
         CRUD::setValidation([
             'first_name' => 'required|min:2',
             'last_name' => 'required|min:2',
@@ -93,9 +101,10 @@ class CustomerCrudController extends CrudController
             'contact_number' => 'required',
             'email' => 'required|email',
             'bill_recipients' => 'required|min:2',
-            'plannedApplicationType' => 'required|integer|min:1',
+            // 'plannedApplicationType' => 'required|integer|min:1',
             'subscription' => 'required|integer|min:1',
-            // TODO:: validation plannedApplicationType
+            // TODO:: fix the validation messsage
+            'planned_application_id' => 'required|integer|min:1',
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.
@@ -105,8 +114,9 @@ class CustomerCrudController extends CrudController
         $this->crud->modifyField('notes', ['type' => 'textarea']);
         $this->crud->modifyField('date_of_birth', ['type' => 'date']);        
 
-
-        $this->crud->field('plannedApplicationType')->label('Planned Application Type')->before('notes');
+        // Planned Application Type
+        // $this->crud->field('plannedApplicationType')->label('Planned Application Type')->before('planned_application_id');
+        
         $this->crud->field('subscription')->before('notes');
         
         foreach ($this->checkboxFields() as $name => $label) {
@@ -125,11 +135,10 @@ class CustomerCrudController extends CrudController
             'view_namespace' => 'signature-field-for-backpack::fields',
         ]);
 
-
-        // TODO:: 
-        $this->crud->field([
+        // Planned Application
+        $this->crud->modifyField('planned_application_id', [
             'type'      => 'select_grouped', //https://github.com/Laravel-Backpack/CRUD/issues/502
-            'name'      => 'planned_application_id',
+            // 'name'      => '',
             'entity'    => 'plannedApplication',
 
             'attribute' => 'mbpsPrice', // accessor
@@ -140,10 +149,9 @@ class CustomerCrudController extends CrudController
             'group_by_attribute' => 'name', // the attribute on related model, that you want shown
             'group_by_relationship_back' => 'plannedApplications', // relationship from related model back to this model
 
-        ])->before('first_name'); // TODO:: fix before
+            'relation_type' => 'BelongsTo',
+        ]); 
 
-
-        // dd($this->crud);
     }
 
     /**
@@ -171,7 +179,6 @@ class CustomerCrudController extends CrudController
             'user_id',
             'subscription_id',
             'planned_application_type_id',
-            'planned_application_id',
         ];
     }
 }

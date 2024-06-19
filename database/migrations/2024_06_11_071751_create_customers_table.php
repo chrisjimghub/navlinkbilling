@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('barangay')->nullable();
             $table->string('city_municipality')->nullable();
 
-            $table->foreignId('planned_application_type_id')->constrained('planned_application_types')->onDelete('cascade');
+            $table->foreignId('planned_application_type_id')->nullable()->constrained('planned_application_types')->onDelete('cascade');
             $table->foreignId('subscription_id')->constrained('subscriptions')->onDelete('cascade');
 
 
