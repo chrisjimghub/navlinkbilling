@@ -54,11 +54,28 @@ class AccountCrudController extends CrudController
             // 'name' => 'required|min:2',
         ]);
 
-        // CRUD::setFromDb(); // set fields from db columns.
-        $this->crud->field([
-            'name' => 'customer',
-            'label' => 'Account / Bill Recipients',
-        ]);
+        foreach ($this->datas() as $name => $label) {
+            $this->crud->field([
+                'name' => $name,
+                'label' => $label,
+            ]);
+        }
+
+
+        $this->crud->modifyField('planned_application_id', [
+            'type'      => 'select_grouped', //https://github.com/Laravel-Backpack/CRUD/issues/502
+            'entity'    => 'plannedApplication',
+
+            'attribute' => 'mbpsPrice', // accessor
+
+            'model' => 'App\Models\PlannedApplication',  // Parent model
+            
+            'group_by'  => 'location', // the relationship to entity you want to use for grouping
+            'group_by_attribute' => 'name', // the attribute on related model, that you want shown
+            'group_by_relationship_back' => 'plannedApplications', // relationship from related model back to this model
+
+            'relation_type' => 'BelongsTo',
+        ]); 
     }
 
     /**
@@ -70,5 +87,15 @@ class AccountCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    public function datas()
+    {
+        return [
+            'customer.full_name' => 'Account Name (Customer)',
+            'plannedApplicationType' => 'Planned Application Type',
+            'planned_application_id' => 'Planned Application',
+            'subscription' => 'Subscription',
+        ];
     }
 }

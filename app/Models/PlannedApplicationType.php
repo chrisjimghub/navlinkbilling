@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Customer;
+use App\Models\Account;
 use App\Models\PlannedApplication;
 use App\Models\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
@@ -44,10 +44,10 @@ class PlannedApplicationType extends Model
         return $this->hasMany(PlannedApplication::class);
     }
 
-    // public function customers()
-    // {
-    //     return $this->hasMany(Customer::class);
-    // }
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES
