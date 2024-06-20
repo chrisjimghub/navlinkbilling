@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Otc;
 use App\Models\User;
+use App\Models\Account;
 use Illuminate\Support\Str;
 use App\Models\Subscription;
 use App\Models\ContractPeriod;
@@ -50,6 +51,11 @@ class Customer extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
     // public function subscription()
     // {
     //     return $this->belongsTo(Subscription::class);
@@ -86,6 +92,11 @@ class Customer extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getFullNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+    
 
     /*
     |--------------------------------------------------------------------------

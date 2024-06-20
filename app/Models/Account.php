@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Customer;
 use App\Models\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
@@ -37,6 +38,10 @@ class Account extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 
     /*
     |--------------------------------------------------------------------------
