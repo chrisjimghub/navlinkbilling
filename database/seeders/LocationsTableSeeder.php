@@ -22,9 +22,9 @@ class LocationsTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'name' => 'Palompon to Jordan',
+                'name' => 'Palompon',
                 'created_at' => '2024-06-18 12:51:33',
-                'updated_at' => '2024-06-18 12:52:39',
+                'updated_at' => '2024-06-20 15:04:16',
             ),
             1 => 
             array (
