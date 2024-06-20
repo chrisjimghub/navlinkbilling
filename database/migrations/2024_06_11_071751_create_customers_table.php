@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('date_of_birth');
+            $table->date('date_of_birth')->nullable();
             $table->string('contact_number')->nullable();
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('block_street')->nullable();
             $table->string('barangay')->nullable();
             $table->string('city_or_municipality')->nullable();
