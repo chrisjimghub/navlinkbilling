@@ -3,6 +3,7 @@
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('dashboard') }}"><i class="la la-home nav-icon"></i> {{ trans('backpack::base.dashboard') }}</a></li>
 
 
+<x-backpack::menu-item title="Accounts" icon="las la-list" :link="backpack_url('account')" />
 <x-backpack::menu-item title="Customers" icon="las la-user-tie" :link="backpack_url('customer')" />
 <x-backpack::menu-item title="Planned Applications" icon="las la-file-contract" :link="backpack_url('planned-application')" />
 
@@ -27,6 +28,7 @@
     <x-backpack::menu-dropdown-item title='Logs' icon='la la-terminal' :link="backpack_url('log')" />
     <x-backpack::menu-dropdown-item title="Activity Logs" icon="la la-stream" :link="backpack_url('activity-log')" />
 </x-backpack::menu-dropdown>
+
 
 
 
