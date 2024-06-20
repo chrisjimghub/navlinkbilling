@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
-use App\Http\Requests\ContractPeriodRequest;
+use App\Http\Requests\AccountStatusRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class ContractPeriodCrudController
+ * Class AccountStatusCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class ContractPeriodCrudController extends CrudController
+class AccountStatusCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -29,9 +29,9 @@ class ContractPeriodCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\ContractPeriod::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/contract-period');
-        CRUD::setEntityNameStrings('contract period', 'contract periods');
+        CRUD::setModel(\App\Models\AccountStatus::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/account-status');
+        CRUD::setEntityNameStrings('account status', 'account statuses');
     }
 
     /**

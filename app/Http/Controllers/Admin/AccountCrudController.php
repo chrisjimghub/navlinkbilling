@@ -2,25 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
-use App\Http\Requests\ContractPeriodRequest;
+use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class ContractPeriodCrudController
+ * Class AccountCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class ContractPeriodCrudController extends CrudController
+class AccountCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-
-    use ValidateUniqueRule;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -29,9 +26,9 @@ class ContractPeriodCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\ContractPeriod::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/contract-period');
-        CRUD::setEntityNameStrings('contract period', 'contract periods');
+        CRUD::setModel(\App\Models\Account::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/account');
+        CRUD::setEntityNameStrings('account', 'accounts');
     }
 
     /**
@@ -54,9 +51,31 @@ class ContractPeriodCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            'name' => $this->validateUniqueRule(),
+            // 'name' => 'required|min:2',
         ]);
-        CRUD::setFromDb(); // set fields from db columns.
+
+        foreach ($this->datas() as $name => $label) {
+            $this->crud->field([
+                'name' => $name,
+                'label' => $label,
+            ]);
+        }
+
+
+        $this->crud->modifyField('planned_application_id', [
+            'type'      => 'select_grouped', //https://github.com/Laravel-Backpack/CRUD/issues/502
+            'entity'    => 'plannedApplication',
+
+            'attribute' => 'mbpsPrice', // accessor
+
+            'model' => 'App\Models\PlannedApplication',  // Parent model
+            
+            'group_by'  => 'location', // the relationship to entity you want to use for grouping
+            'group_by_attribute' => 'name', // the attribute on related model, that you want shown
+            'group_by_relationship_back' => 'plannedApplications', // relationship from related model back to this model
+
+            'relation_type' => 'BelongsTo',
+        ]); 
     }
 
     /**
@@ -68,5 +87,15 @@ class ContractPeriodCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    public function datas()
+    {
+        return [
+            'customer.full_name' => 'Account Name (Customer)',
+            'plannedApplicationType' => 'Planned Application Type',
+            'planned_application_id' => 'Planned Application',
+            'subscription' => 'Subscription',
+        ];
     }
 }

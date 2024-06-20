@@ -38,10 +38,10 @@ class Otc extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function customers()
-    {
-        return $this->belongsToMany(Customer::class, 'customer_otc', 'otc_id', 'customer_id');
-    }
+    // public function customers()
+    // {
+    //     return $this->belongsToMany(Customer::class, 'customer_otc', 'otc_id', 'customer_id');
+    // }
 
     /*
     |--------------------------------------------------------------------------

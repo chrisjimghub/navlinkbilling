@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Account;
-use App\Models\Customer;
 use App\Models\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Subscription extends Model
+class AccountStatus extends Model
 {
     use CrudTrait;
     use HasFactory;
@@ -21,7 +19,7 @@ class Subscription extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'subscriptions';
+    protected $table = 'account_statuses';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -39,10 +37,6 @@ class Subscription extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function customers()
-    {
-        return $this->hasMany(Account::class);
-    }
 
     /*
     |--------------------------------------------------------------------------

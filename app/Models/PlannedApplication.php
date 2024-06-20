@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Customer;
+use App\Models\Account;
 use App\Models\Location;
-use Illuminate\Support\Str;
 use App\Models\Traits\LogsActivity;
 use App\Models\PlannedApplicationType;
 use Illuminate\Database\Eloquent\Model;
@@ -54,9 +53,9 @@ class PlannedApplication extends Model
         return $this->belongsTo(Location::class);
     }
 
-    public function customers()
+    public function accounts()
     {
-        return $this->hasMany(Customer::class);
+        return $this->hasMany(Account::class);
     }
 
     /*
