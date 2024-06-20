@@ -101,7 +101,7 @@ class CustomerCrudController extends CrudController
             'last_name' => 'required|min:2',
             'date_of_birth' => 'date',
             'contact_number' => 'required',
-            'email' => 'required|email',
+            'email' => 'nullable|email',
 
 
             // TODO:: remove later once transfered
