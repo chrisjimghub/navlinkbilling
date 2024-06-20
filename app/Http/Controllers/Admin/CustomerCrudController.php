@@ -38,12 +38,18 @@ class CustomerCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        $this->crud->with('plannedApplication');
-
-
         CRUD::setFromDb(); // set columns from db columns.
+        
+        $this->crud->modifyColumn('signature', [
+            'type' => 'image',
+            'height' => '150px',
+            'width'  => '150px',
+        ]);
+        
 
-        $this->crud->removeColumns($this->removeFK());
+        // $this->crud->with('plannedApplication');
+
+        // $this->crud->removeColumns($this->removeFK());
         
         // $this->crud->column([
         //     'label' => 'Planned Application Type',
@@ -51,33 +57,30 @@ class CustomerCrudController extends CrudController
         //     'limit' => 100
         // ])->before('planned_application_id');
 
-        $this->crud->addColumn('subscription')->beforeColumn('notes');
+        // TODO:: remove later once transfered
+        // $this->crud->addColumn('subscription')->beforeColumn('notes');
         
-        foreach ($this->checkboxFields() as $name => $label) {
-            $this->crud->column([
-                'label' => $label,
-                'name' => $name,
-                'type'     => 'closure',
-                'function' => function($entry) use($name) {
+        // foreach ($this->checkboxFields() as $name => $label) {
+        //     $this->crud->column([
+        //         'label' => $label,
+        //         'name' => $name,
+        //         'type'     => 'closure',
+        //         'function' => function($entry) use($name) {
     
-                    return $entry->{$name}()->pluck('name')->implode("<br>");
-                },
-                'escaped' => false,
-            ])->before('notes');
-        }
+        //             return $entry->{$name}()->pluck('name')->implode("<br>");
+        //         },
+        //         'escaped' => false,
+        //     ])->before('notes');
+        // }
 
-        $this->crud->modifyColumn('signature', [
-            'type' => 'image',
-                'height' => '150px',
-            'width'  => '150px',
-        ]);
+        
 
-        $this->crud->modifyColumn('planned_application_id', [
-            'type' => 'closure',
-            'function' => function($entry) {
-                return $entry->plannedApplication->mbpsPrice;
-            },
-        ]);
+        // $this->crud->modifyColumn('planned_application_id', [
+        //     'type' => 'closure',
+        //     'function' => function($entry) {
+        //         return $entry->plannedApplication->mbpsPrice;
+        //     },
+        // ]);
     }
 
     protected function setupShowOperation()
@@ -93,40 +96,22 @@ class CustomerCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        // TODO:: validation for OTC and contract period
         CRUD::setValidation([
             'first_name' => 'required|min:2',
             'last_name' => 'required|min:2',
             'date_of_birth' => 'date',
             'contact_number' => 'required',
             'email' => 'required|email',
-            'bill_recipients' => 'required|min:2',
+
+
+            // TODO:: remove later once transfered
             // 'plannedApplicationType' => 'required|integer|min:1',
-            'subscription' => 'required|integer|min:1',
-            // TODO:: fix the validation messsage
-            'planned_application_id' => 'required|integer|min:1',
+            // 'planned_application_id' => 'required|integer|min:1',
+            // 'subscription' => 'required|integer|min:1',
+            // 'bill_recipients' => 'required|min:2',
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.
-
-        $this->crud->removeFields($this->removeFK());
-
-        $this->crud->modifyField('notes', ['type' => 'textarea']);
-        $this->crud->modifyField('date_of_birth', ['type' => 'date']);        
-
-        // Planned Application Type
-        // $this->crud->field('plannedApplicationType')->label('Planned Application Type')->before('planned_application_id');
-        
-        $this->crud->field('subscription')->before('notes');
-        
-        foreach ($this->checkboxFields() as $name => $label) {
-            $this->crud->field([
-                'label' => $label,
-                'name' => $name,
-                'type' => 'checklist',
-                'number_of_columns' => 1,
-            ])->before('notes');
-        }
 
         $this->crud->field([
             'name' => 'signature',
@@ -135,22 +120,42 @@ class CustomerCrudController extends CrudController
             'view_namespace' => 'signature-field-for-backpack::fields',
         ]);
 
-        // Planned Application
-        $this->crud->modifyField('planned_application_id', [
-            'type'      => 'select_grouped', //https://github.com/Laravel-Backpack/CRUD/issues/502
-            // 'name'      => '',
-            'entity'    => 'plannedApplication',
+        $this->crud->modifyField('notes', ['type' => 'textarea']);
+        $this->crud->modifyField('date_of_birth', ['type' => 'date']);        
 
-            'attribute' => 'mbpsPrice', // accessor
 
-            'model' => 'App\Models\PlannedApplication',  // Parent model
+        // TODO:: dont remove comments, remove later once transfered
+        // $this->crud->removeFields($this->removeFK());
+
+        // Planned Application Type
+        // $this->crud->field('plannedApplicationType')->label('Planned Application Type')->before('planned_application_id');
+        // $this->crud->field('subscription')->before('notes');
+        
+        // foreach ($this->checkboxFields() as $name => $label) {
+        //     $this->crud->field([
+        //         'label' => $label,
+        //         'name' => $name,
+        //         'type' => 'checklist',
+        //         'number_of_columns' => 1,
+        //     ])->before('notes');
+        // }
+
+        // // Planned Application
+        // $this->crud->modifyField('planned_application_id', [
+        //     'type'      => 'select_grouped', //https://github.com/Laravel-Backpack/CRUD/issues/502
+        //     // 'name'      => '',
+        //     'entity'    => 'plannedApplication',
+
+        //     'attribute' => 'mbpsPrice', // accessor
+
+        //     'model' => 'App\Models\PlannedApplication',  // Parent model
             
-            'group_by'  => 'location', // the relationship to entity you want to use for grouping
-            'group_by_attribute' => 'name', // the attribute on related model, that you want shown
-            'group_by_relationship_back' => 'plannedApplications', // relationship from related model back to this model
+        //     'group_by'  => 'location', // the relationship to entity you want to use for grouping
+        //     'group_by_attribute' => 'name', // the attribute on related model, that you want shown
+        //     'group_by_relationship_back' => 'plannedApplications', // relationship from related model back to this model
 
-            'relation_type' => 'BelongsTo',
-        ]); 
+        //     'relation_type' => 'BelongsTo',
+        // ]); 
 
     }
 
@@ -165,20 +170,21 @@ class CustomerCrudController extends CrudController
         $this->setupCreateOperation();
     }
 
-    private function checkboxFields()
-    {   
-        return [
-            'otcs' => 'One-Time Charge',
-            'contractPeriods' => 'Contact Periods',
-        ];
-    }
+    // TODO:: remove later once transfered
+    // private function checkboxFields()
+    // {   
+    //     return [
+    //         'otcs' => 'One-Time Charge',
+    //         'contractPeriods' => 'Contact Periods',
+    //     ];
+    // }
 
-    private function removeFK()
-    {
-        return [
-            'user_id',
-            'subscription_id',
-            'planned_application_type_id',
-        ];
-    }
+    // private function removeFK()
+    // {
+    //     return [
+    //         'user_id',
+    //         'subscription_id',
+    //         'planned_application_type_id',
+    //     ];
+    // }
 }

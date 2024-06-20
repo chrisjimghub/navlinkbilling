@@ -37,10 +37,10 @@ class ContractPeriod extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function customers()
-    {
-        return $this->belongsToMany(Customer::class, 'contract_period_customer', 'contract_period_id', 'customer_id')->withTimestamps();
-    }
+    // public function customers()
+    // {
+    //     return $this->belongsToMany(Customer::class, 'contract_period_customer', 'contract_period_id', 'customer_id')->withTimestamps();
+    // }
 
     /*
     |--------------------------------------------------------------------------

@@ -54,10 +54,10 @@ class PlannedApplication extends Model
         return $this->belongsTo(Location::class);
     }
 
-    public function customers()
-    {
-        return $this->hasMany(Customer::class);
-    }
+    // public function customers()
+    // {
+    //     return $this->hasMany(Customer::class);
+    // }
 
     /*
     |--------------------------------------------------------------------------

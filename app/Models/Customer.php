@@ -50,30 +50,30 @@ class Customer extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function subscription()
-    {
-        return $this->belongsTo(Subscription::class);
-    }
+    // public function subscription()
+    // {
+    //     return $this->belongsTo(Subscription::class);
+    // }
 
-    public function plannedApplicationType()
-    {
-        return $this->belongsTo(PlannedApplicationType::class);
-    }
+    // public function plannedApplicationType()
+    // {
+    //     return $this->belongsTo(PlannedApplicationType::class);
+    // }
 
-    public function plannedApplication()
-    {
-        return $this->belongsTo(PlannedApplication::class);
-    }
+    // public function plannedApplication()
+    // {
+    //     return $this->belongsTo(PlannedApplication::class);
+    // }
 
-    public function otcs()
-    {
-        return $this->belongsToMany(Otc::class, 'customer_otc', 'customer_id', 'otc_id');
-    }
+    // public function otcs()
+    // {
+    //     return $this->belongsToMany(Otc::class, 'customer_otc', 'customer_id', 'otc_id');
+    // }
 
-    public function contractPeriods()
-    {
-        return $this->belongsToMany(ContractPeriod::class, 'contract_period_customer', 'customer_id', 'contract_period_id')->withTimestamps();
-    }
+    // public function contractPeriods()
+    // {
+    //     return $this->belongsToMany(ContractPeriod::class, 'contract_period_customer', 'customer_id', 'contract_period_id')->withTimestamps();
+    // }
 
     /*
     |--------------------------------------------------------------------------

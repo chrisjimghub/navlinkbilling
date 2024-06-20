@@ -16,23 +16,18 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('date_of_birth');
-            $table->string('contact_number');
+            $table->string('contact_number')->nullable();
             $table->string('email');
-            $table->string('social_media')->nullable();
-            $table->string('bill_recipients');
-            $table->string('block_street_purok')->nullable();
+            $table->string('block_street')->nullable();
             $table->string('barangay')->nullable();
-            $table->string('city_municipality')->nullable();
-
-            $table->foreignId('planned_application_type_id')->nullable()->constrained('planned_application_types')->onDelete('cascade');
-            $table->foreignId('subscription_id')->constrained('subscriptions')->onDelete('cascade');
-
-
+            $table->string('city_or_municipality')->nullable();
+            $table->string('social_media')->nullable();
             $table->string('notes')->nullable(); 
-
             $table->string('signature')->nullable();
 
-            $table->foreignId('user_id')->nullable()->index();
+            // $table->foreignId('user_id')->nullable()->index();
+            // $table->foreignId('planned_application_type_id')->nullable()->constrained('planned_application_types')->onDelete('cascade');
+            // $table->foreignId('subscription_id')->constrained('subscriptions')->onDelete('cascade');
 
             $table->softDeletes(); // soft deletes
             $table->timestamps();

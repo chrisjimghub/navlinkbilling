@@ -44,10 +44,10 @@ class PlannedApplicationType extends Model
         return $this->hasMany(PlannedApplication::class);
     }
 
-    public function customers()
-    {
-        return $this->hasMany(Customer::class);
-    }
+    // public function customers()
+    // {
+    //     return $this->hasMany(Customer::class);
+    // }
     /*
     |--------------------------------------------------------------------------
     | SCOPES
