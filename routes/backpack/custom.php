@@ -23,4 +23,5 @@ Route::group([
     Route::crud('otc', 'OtcCrudController');
     Route::crud('contract-period', 'ContractPeriodCrudController');
     Route::crud('location', 'LocationCrudController');
+    Route::crud('account-status', 'AccountStatusCrudController');
 }); // this should be the absolute last line of this file
