@@ -14,7 +14,7 @@ class UpdateNavLink extends Command
      *
      * @var string
      */
-    protected $signature = 'navlink:update';
+    protected $signature = 'navlink:update {--no-composer : Do not run composer update}';
 
     /**
      * The console command description.
@@ -28,8 +28,19 @@ class UpdateNavLink extends Command
      */
     public function handle()
     {
-        $this->info('Running composer update...');
-        $this->runProcess(['composer', 'update']);
+        if (!$this->option('no-composer')) {
+            $this->info('Running composer update...');
+
+            $composerCommand = ['composer', 'update'];
+
+            if (App::environment('production')) {
+                $composerCommand[] = '--no-dev';
+            }
+
+            $this->runProcess($composerCommand);
+        } else {
+            $this->info('Skipping composer update due to --no-composer flag.');
+        }
 
         $this->info('Stashing git changes...');
         $this->runProcess(['git', 'stash']);
