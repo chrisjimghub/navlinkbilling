@@ -65,6 +65,11 @@ class AccountCrudController extends CrudController
             ]);
         }
 
+        $this->crud->modifyField('customer_id', [
+            'attribute' => 'full_name', // accessor
+            'allows_null' => true,
+        ]);
+
 
         $this->crud->modifyField('planned_application_id', [
             'type'      => 'select_grouped_planned_application', //https://github.com/Laravel-Backpack/CRUD/issues/502
@@ -83,6 +88,20 @@ class AccountCrudController extends CrudController
             // custom option attribute, i created a custome field that append a custom model attribute
             'data-location' => 'dataLocation',
         ]); 
+
+
+        foreach ($this->checkboxFields() as $name => $label) {
+            $this->crud->field([
+                'label' => $label,
+                'name' => $name,
+                'type' => 'checklist',
+                'number_of_columns' => 1,
+            ]);
+        }
+
+
+        $this->crud->field('accountStatus');
+        
     }
 
     /**
@@ -96,12 +115,20 @@ class AccountCrudController extends CrudController
         $this->setupCreateOperation();
     }
 
-    public function datas()
+    private function datas()
     {
         return [
-            'customer.full_name' => 'Account Name (Customer)',
+            'customer_id' => 'Account Name (Customer)',
             'planned_application_id' => 'Planned Application',
             'subscription' => 'Subscription',
+        ];
+    }
+    
+    private function checkboxFields()
+    {   
+        return [
+            'otcs' => 'One-Time Charge',
+            // 'contractPeriods' => 'Contact Periods',
         ];
     }
 }

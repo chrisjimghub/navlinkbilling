@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Customer;
+use App\Models\Otc;
 use App\Models\Subscription;
+use App\Models\AccountStatus;
 use App\Models\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
@@ -54,15 +55,21 @@ class Account extends Model
         return $this->belongsTo(Subscription::class);
     }
 
-    // public function otcs()
-    // {
-    //     return $this->belongsToMany(Otc::class, 'customer_otc', 'customer_id', 'otc_id');
-    // }
+    public function otcs()
+    {
+        return $this->belongsToMany(Otc::class, 'account_otc', 'account_id', 'otc_id');
+    }
+
 
     // public function contractPeriods()
     // {
     //     return $this->belongsToMany(ContractPeriod::class, 'contract_period_customer', 'customer_id', 'contract_period_id')->withTimestamps();
     // }
+
+    public function accountStatus()
+    {
+        return $this->belongsTo(AccountStatus::class);
+    }
 
     /*
     |--------------------------------------------------------------------------

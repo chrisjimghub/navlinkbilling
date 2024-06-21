@@ -25,10 +25,6 @@ return new class extends Migration
             $table->string('notes')->nullable(); 
             $table->string('signature')->nullable();
 
-            // $table->foreignId('user_id')->nullable()->index();
-            // $table->foreignId('planned_application_type_id')->nullable()->constrained('planned_application_types')->onDelete('cascade');
-            // $table->foreignId('subscription_id')->constrained('subscriptions')->onDelete('cascade');
-
             $table->softDeletes(); // soft deletes
             $table->timestamps();
         });
