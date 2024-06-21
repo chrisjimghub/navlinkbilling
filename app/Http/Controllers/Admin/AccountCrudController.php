@@ -53,12 +53,13 @@ class AccountCrudController extends CrudController
     {
         Widget::add()->type('script')->content(asset('assets/js/admin/forms/planned_application.js'));
 
-
-        CRUD::setValidation([
-            // 'name' => 'required|min:2',
-        ]);
-
-        foreach ($this->datas() as $name => $label) {
+        $this->crud->setValidation(AccountRequest::class);
+        
+        foreach ([
+            'customer_id' => 'Account Name (Customer)',
+            'planned_application_id' => 'Planned Application',
+            'subscription' => 'Subscription',
+        ] as $name => $label) {
             $this->crud->field([
                 'name' => $name,
                 'label' => $label,
@@ -90,7 +91,10 @@ class AccountCrudController extends CrudController
         ]); 
 
 
-        foreach ($this->checkboxFields() as $name => $label) {
+        foreach ([
+            'otcs' => 'One-Time Charge',
+            'contractPeriods' => 'Contract Periods',
+        ] as $name => $label) {
             $this->crud->field([
                 'label' => $label,
                 'name' => $name,
@@ -114,7 +118,10 @@ class AccountCrudController extends CrudController
             'type' => 'textarea',
         ]);
 
-        $this->crud->field('accountStatus');
+        $this->crud->field([
+            'name' => 'accountStatus',
+            'label' => 'Account Status'
+        ]);
         
     }
 
@@ -128,21 +135,5 @@ class AccountCrudController extends CrudController
     {
         $this->setupCreateOperation();
     }
-
-    private function datas()
-    {
-        return [
-            'customer_id' => 'Account Name (Customer)',
-            'planned_application_id' => 'Planned Application',
-            'subscription' => 'Subscription',
-        ];
-    }
     
-    private function checkboxFields()
-    {   
-        return [
-            'otcs' => 'One-Time Charge',
-            'contractPeriods' => 'Contract Periods',
-        ];
-    }
 }
