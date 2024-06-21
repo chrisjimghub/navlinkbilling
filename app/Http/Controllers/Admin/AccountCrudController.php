@@ -71,7 +71,13 @@ class AccountCrudController extends CrudController
         
         $this->crud->column([
             'name' => 'accountStatus',
-            'label' => 'Account Status'
+            'label' => 'Account Status',
+            'wrapper' => [
+                'element' => 'span',
+                'class' => function ($crud, $column, $entry, $related_key) {
+                    return $entry->accountStatus->badge_css;
+                },
+            ],
         ]);
     }
 

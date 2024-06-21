@@ -55,6 +55,7 @@ class AccountStatusCrudController extends CrudController
     {
         CRUD::setValidation([
             'name' => $this->validateUniqueRule(),
+            'badge_css' => 'required|string',
         ]);
         CRUD::setFromDb(); // set fields from db columns.
     }
