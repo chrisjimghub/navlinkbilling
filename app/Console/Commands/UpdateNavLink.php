@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Symfony\Component\Process\Process;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\App;
 
 class UpdateNavLink extends Command
 {
@@ -27,7 +28,6 @@ class UpdateNavLink extends Command
      */
     public function handle()
     {
-        //
         $this->info('Running composer update...');
         $this->runProcess(['composer', 'update']);
 
@@ -40,9 +40,17 @@ class UpdateNavLink extends Command
         $this->info('Cleaning untracked files...');
         $this->runProcess(['git', 'clean', '-fd']);
 
-        $this->info('Refreshing the database...');
-        Artisan::call('migrate:fresh', ['--seed' => true]);
-        $this->info(Artisan::output());
+        if (App::environment('local')) {
+            $this->info('Refreshing the database...');
+            Artisan::call('migrate:fresh', ['--seed' => true]);
+            $this->info(Artisan::output());
+        } elseif (App::environment('production')) {
+            $this->info('Running database migrations...');
+            Artisan::call('migrate', ['--force' => true]);
+            $this->info(Artisan::output());
+        } else {
+            $this->info('Skipping database operations since environment is neither local nor production.');
+        }
 
         $this->info('Clearing cache...');
         Artisan::call('optimize:clear');
@@ -51,7 +59,7 @@ class UpdateNavLink extends Command
         $this->info('All tasks have been completed successfully.');
     }
 
-     // Run an external process and handle errors.
+    // Run an external process and handle errors.
     private function runProcess($command)
     {
         $process = new Process($command);
