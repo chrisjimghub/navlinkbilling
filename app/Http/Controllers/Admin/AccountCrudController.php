@@ -62,7 +62,7 @@ class AccountCrudController extends CrudController
 
         $this->crud->column([
             'name' => 'contractPeriods',
-            'label' => 'contract Periods',
+            'label' => 'Contract Periods',
         ]);
 
         $this->crud->column('installed_date');

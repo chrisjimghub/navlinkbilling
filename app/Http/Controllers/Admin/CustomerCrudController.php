@@ -45,42 +45,6 @@ class CustomerCrudController extends CrudController
             'height' => '150px',
             'width'  => '150px',
         ]);
-        
-
-        // $this->crud->with('plannedApplication');
-
-        // $this->crud->removeColumns($this->removeFK());
-        
-        // $this->crud->column([
-        //     'label' => 'Planned Application Type',
-        //     'name' => 'plannedApplicationType',
-        //     'limit' => 100
-        // ])->before('planned_application_id');
-
-        // TODO:: remove later once transfered
-        // $this->crud->addColumn('subscription')->beforeColumn('notes');
-        
-        // foreach ($this->checkboxFields() as $name => $label) {
-        //     $this->crud->column([
-        //         'label' => $label,
-        //         'name' => $name,
-        //         'type'     => 'closure',
-        //         'function' => function($entry) use($name) {
-    
-        //             return $entry->{$name}()->pluck('name')->implode("<br>");
-        //         },
-        //         'escaped' => false,
-        //     ])->before('notes');
-        // }
-
-        
-
-        // $this->crud->modifyColumn('planned_application_id', [
-        //     'type' => 'closure',
-        //     'function' => function($entry) {
-        //         return $entry->plannedApplication->mbpsPrice;
-        //     },
-        // ]);
     }
 
     protected function setupShowOperation()
@@ -102,13 +66,6 @@ class CustomerCrudController extends CrudController
             'date_of_birth' => 'date',
             'contact_number' => 'required',
             'email' => 'nullable|email',
-
-
-            // TODO:: remove later once transfered
-            // 'plannedApplicationType' => 'required|integer|min:1',
-            // 'planned_application_id' => 'required|integer|min:1',
-            // 'subscription' => 'required|integer|min:1',
-            // 'bill_recipients' => 'required|min:2',
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.
@@ -122,41 +79,6 @@ class CustomerCrudController extends CrudController
 
         // $this->crud->modifyField('notes', ['type' => 'textarea']);
         $this->crud->modifyField('date_of_birth', ['type' => 'date']);        
-
-
-        // TODO:: dont remove comments, remove later once transfered
-        // $this->crud->removeFields($this->removeFK());
-
-        // Planned Application Type
-        // $this->crud->field('plannedApplicationType')->label('Planned Application Type')->before('planned_application_id');
-        // $this->crud->field('subscription')->before('notes');
-        
-        // foreach ($this->checkboxFields() as $name => $label) {
-        //     $this->crud->field([
-        //         'label' => $label,
-        //         'name' => $name,
-        //         'type' => 'checklist',
-        //         'number_of_columns' => 1,
-        //     ])->before('notes');
-        // }
-
-        // // Planned Application
-        // $this->crud->modifyField('planned_application_id', [
-        //     'type'      => 'select_grouped', //https://github.com/Laravel-Backpack/CRUD/issues/502
-        //     // 'name'      => '',
-        //     'entity'    => 'plannedApplication',
-
-        //     'attribute' => 'mbpsPrice', // accessor
-
-        //     'model' => 'App\Models\PlannedApplication',  // Parent model
-            
-        //     'group_by'  => 'location', // the relationship to entity you want to use for grouping
-        //     'group_by_attribute' => 'name', // the attribute on related model, that you want shown
-        //     'group_by_relationship_back' => 'plannedApplications', // relationship from related model back to this model
-
-        //     'relation_type' => 'BelongsTo',
-        // ]); 
-
     }
 
     /**
@@ -170,21 +92,4 @@ class CustomerCrudController extends CrudController
         $this->setupCreateOperation();
     }
 
-    // TODO:: remove later once transfered
-    // private function checkboxFields()
-    // {   
-    //     return [
-    //         'otcs' => 'One-Time Charge',
-    //         'contractPeriods' => 'Contact Periods',
-    //     ];
-    // }
-
-    // private function removeFK()
-    // {
-    //     return [
-    //         'user_id',
-    //         'subscription_id',
-    //         'planned_application_type_id',
-    //     ];
-    // }
 }
