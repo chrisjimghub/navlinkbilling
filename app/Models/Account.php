@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Customer;
+use App\Models\Otc;
 use App\Models\Subscription;
+use App\Models\AccountStatus;
+use App\Models\ContractPeriod;
 use App\Models\Traits\LogsActivity;
-use App\Models\PlannedApplicationType;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -45,11 +46,6 @@ class Account extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function plannedApplicationType()
-    {
-        return $this->belongsTo(PlannedApplicationType::class);
-    }
-
     public function plannedApplication()
     {
         return $this->belongsTo(PlannedApplication::class);
@@ -60,15 +56,20 @@ class Account extends Model
         return $this->belongsTo(Subscription::class);
     }
 
-    // public function otcs()
-    // {
-    //     return $this->belongsToMany(Otc::class, 'customer_otc', 'customer_id', 'otc_id');
-    // }
+    public function otcs()
+    {
+        return $this->belongsToMany(Otc::class, 'account_otc', 'account_id', 'otc_id')->withTimestamps();
+    }
 
-    // public function contractPeriods()
-    // {
-    //     return $this->belongsToMany(ContractPeriod::class, 'contract_period_customer', 'customer_id', 'contract_period_id')->withTimestamps();
-    // }
+    public function contractPeriods()
+    {
+        return $this->belongsToMany(ContractPeriod::class, 'account_contract_period', 'account_id', 'contract_period_id')->withTimestamps();
+    }
+
+    public function accountStatus()
+    {
+        return $this->belongsTo(AccountStatus::class);
+    }
 
     /*
     |--------------------------------------------------------------------------

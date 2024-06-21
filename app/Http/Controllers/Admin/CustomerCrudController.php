@@ -120,7 +120,7 @@ class CustomerCrudController extends CrudController
             'view_namespace' => 'signature-field-for-backpack::fields',
         ]);
 
-        $this->crud->modifyField('notes', ['type' => 'textarea']);
+        // $this->crud->modifyField('notes', ['type' => 'textarea']);
         $this->crud->modifyField('date_of_birth', ['type' => 'date']);        
 
 

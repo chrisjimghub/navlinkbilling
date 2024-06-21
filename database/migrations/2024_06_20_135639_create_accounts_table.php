@@ -15,16 +15,15 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
-            $table->foreignId('planned_application_type_id')->constrained('planned_application_types')->onDelete('cascade');
             $table->foreignId('planned_application_id')->constrained('planned_applications')->onDelete('cascade');
             $table->foreignId('subscription_id')->constrained('subscriptions')->onDelete('cascade');
-            $table->foreignId('otc_id')->constrained('otcs')->onDelete('cascade');
-            $table->foreignId('contract_period_id')->constrained('contract_periods')->onDelete('cascade');
             
             $table->date('installed_date')->nullable();
             $table->string('installed_address')->nullable();
             
-            $table->foreignId('account_statuses_id')->constrained('account_statuses')->onDelete('cascade');
+            $table->string('notes')->nullable();
+
+            $table->foreignId('account_status_id')->constrained('account_statuses')->onDelete('cascade');
 
             $table->timestamps();
         });
