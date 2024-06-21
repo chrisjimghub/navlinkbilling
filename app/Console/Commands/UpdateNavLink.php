@@ -51,6 +51,9 @@ class UpdateNavLink extends Command
         $this->info('Cleaning untracked files...');
         $this->runProcess(['git', 'clean', '-fd']);
 
+        $this->info('Pulling latest changes from origin master...');
+        $this->runProcess(['git', 'pull', 'origin', 'master']);
+
         if (App::environment('local')) {
             $this->info('Refreshing the database...');
             Artisan::call('migrate:fresh', ['--seed' => true]);
