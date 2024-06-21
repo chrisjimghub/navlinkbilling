@@ -70,6 +70,23 @@ class CustomersTableSeeder extends Seeder
                 'created_at' => '2024-06-21 03:21:56',
                 'updated_at' => '2024-06-21 03:21:56',
             ),
+            3 => 
+            array (
+                'id' => 4,
+                'first_name' => 'Kelsey',
+                'last_name' => 'Rosario',
+                'date_of_birth' => '2011-02-17',
+                'contact_number' => '388',
+                'email' => 'gipuqiw@mailinator.com',
+                'block_street' => 'Aliquid modi sed asp',
+                'barangay' => 'Ut quia deserunt et',
+                'city_or_municipality' => 'Similique accusantiu',
+                'social_media' => 'Aliquid quos mollit',
+                'signature' => 'signature/signature_1718948027.png',
+                'deleted_at' => NULL,
+                'created_at' => '2024-06-21 05:33:47',
+                'updated_at' => '2024-06-21 05:33:47',
+            ),
         ));
         
         

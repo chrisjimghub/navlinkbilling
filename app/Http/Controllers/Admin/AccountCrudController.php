@@ -40,7 +40,44 @@ class AccountCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
+        $this->crud->with('plannedApplication');
+
+        $this->crud->column([
+            'name' => 'customer.full_name',
+            'label' => 'Acount Name (Customer)',
+        ]);
+
+        $this->crud->column([
+            'name' => 'plannedApplication.columnDisplay',
+            'label' => 'Planned Applicaton',
+            'limit' => 100
+        ]);
+
+        $this->crud->column('subscription');
+
+        $this->crud->column([
+            'name' => 'otcs',
+            'label' => 'One-Time Charge'
+        ]);
+
+        $this->crud->column([
+            'name' => 'contractPeriods',
+            'label' => 'contract Periods',
+        ]);
+
+        $this->crud->column('installed_date');
+        $this->crud->column('installed_address');
+        $this->crud->column('notes');
+        
+        $this->crud->column([
+            'name' => 'accountStatus',
+            'label' => 'Account Status'
+        ]);
+    }
+
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**

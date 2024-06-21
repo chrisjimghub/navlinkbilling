@@ -69,6 +69,8 @@ class PlannedApplication extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+
+    // use in crud field
     public function getOptionLabelAttribute()
     {
         $type = $this->plannedApplicationType->name;
@@ -88,6 +90,11 @@ class PlannedApplication extends Model
         return $this->location->name;
     }
 
+
+    public function getColumnDisplayAttribute()
+    {
+        return $this->location->name . ' - '. $this->optionLabel;
+    }
     /*
     |--------------------------------------------------------------------------
     | MUTATORS
