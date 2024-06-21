@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('barangay')->nullable();
             $table->string('city_or_municipality')->nullable();
             $table->string('social_media')->nullable();
-            $table->string('notes')->nullable(); 
             $table->string('signature')->nullable();
 
             $table->softDeletes(); // soft deletes

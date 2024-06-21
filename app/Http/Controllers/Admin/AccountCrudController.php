@@ -99,6 +99,20 @@ class AccountCrudController extends CrudController
             ]);
         }
 
+        $this->crud->field([
+            'name' => 'installed_date',
+            'type' => 'date'
+        ]);
+
+        $this->crud->field([
+            'name' => 'installed_address',
+            'type' => 'text'
+        ]);
+
+        $this->crud->field([
+            'name' => 'notes',
+            'type' => 'textarea',
+        ]);
 
         $this->crud->field('accountStatus');
         
