@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Models\Customer;
 use App\Models\Subscription;
 use App\Models\Traits\LogsActivity;
-use App\Models\PlannedApplicationType;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,11 +42,6 @@ class Account extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class);
-    }
-
-    public function plannedApplicationType()
-    {
-        return $this->belongsTo(PlannedApplicationType::class);
     }
 
     public function plannedApplication()

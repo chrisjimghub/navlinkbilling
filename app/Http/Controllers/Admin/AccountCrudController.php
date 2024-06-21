@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\AccountRequest;
+use Backpack\CRUD\app\Library\Widget;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -50,6 +51,9 @@ class AccountCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
+        Widget::add()->type('script')->content(asset('assets/js/admin/forms/planned_application.js'));
+
+
         CRUD::setValidation([
             // 'name' => 'required|min:2',
         ]);
@@ -63,10 +67,10 @@ class AccountCrudController extends CrudController
 
 
         $this->crud->modifyField('planned_application_id', [
-            'type'      => 'select_grouped', //https://github.com/Laravel-Backpack/CRUD/issues/502
+            'type'      => 'select_grouped_planned_application', //https://github.com/Laravel-Backpack/CRUD/issues/502
             'entity'    => 'plannedApplication',
 
-            'attribute' => 'mbpsPrice', // accessor
+            'attribute' => 'optionLabel', // accessor
 
             'model' => 'App\Models\PlannedApplication',  // Parent model
             
@@ -75,6 +79,9 @@ class AccountCrudController extends CrudController
             'group_by_relationship_back' => 'plannedApplications', // relationship from related model back to this model
 
             'relation_type' => 'BelongsTo',
+
+            // custom option attribute, i created a custome field that append a custom model attribute
+            'data-location' => 'dataLocation',
         ]); 
     }
 
@@ -93,7 +100,6 @@ class AccountCrudController extends CrudController
     {
         return [
             'customer.full_name' => 'Account Name (Customer)',
-            'plannedApplicationType' => 'Planned Application Type',
             'planned_application_id' => 'Planned Application',
             'subscription' => 'Subscription',
         ];

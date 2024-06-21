@@ -32,7 +32,10 @@
                     @foreach ($categories as $category)
                         <optgroup label="{{ $category->{$field['group_by_attribute']} }}">
                             @foreach ($category->{$field['group_by_relationship_back']} as $subEntry)
-                                <option value="{{ $subEntry->getKey() }}"
+                                <option 
+                                    value="{{ $subEntry->getKey() }}"
+                                    data-location="{{ $subEntry->{$field['data-location']} }}"
+
                                     @if ( ( old($field['name']) && old($field['name']) == $subEntry->getKey() ) || (isset($field['value']) && $subEntry->getKey()==$field['value']))
                                         selected
                                     @endif

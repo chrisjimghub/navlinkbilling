@@ -69,7 +69,7 @@ class PlannedApplication extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
-    public function getMbpsPriceAttribute()
+    public function getOptionLabelAttribute()
     {
         $type = $this->plannedApplicationType->name;
         
@@ -80,6 +80,12 @@ class PlannedApplication extends Model
         }
 
         return $type .' :   '.$this->mbps . 'Mbps ----- ' . $this->currencyFormatAccessor($this->price);
+    }
+    
+    // check custom field select_grouped_planned_application / AccountCrudController
+    public function getDataLocationAttribute()
+    {
+        return $this->location->name;
     }
 
     /*
