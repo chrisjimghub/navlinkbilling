@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Account;
 use App\Models\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
@@ -37,10 +38,10 @@ class ContractPeriod extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    // public function customers()
-    // {
-    //     return $this->belongsToMany(Customer::class, 'contract_period_customer', 'contract_period_id', 'customer_id')->withTimestamps();
-    // }
+    public function customers()
+    {
+        return $this->belongsToMany(Account::class, 'account_contract_period', 'contract_period_id', 'account_id')->withTimestamps();
+    }
 
     /*
     |--------------------------------------------------------------------------

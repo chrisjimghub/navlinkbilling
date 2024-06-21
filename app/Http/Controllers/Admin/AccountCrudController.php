@@ -128,7 +128,7 @@ class AccountCrudController extends CrudController
     {   
         return [
             'otcs' => 'One-Time Charge',
-            // 'contractPeriods' => 'Contact Periods',
+            'contractPeriods' => 'Contact Periods',
         ];
     }
 }

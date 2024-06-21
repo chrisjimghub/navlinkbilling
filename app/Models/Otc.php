@@ -38,10 +38,11 @@ class Otc extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function customers()
+    public function accounts()
     {
-        return $this->belongsToMany(Account::class, 'account_otc', 'otc_id', 'account_id');
+        return $this->belongsToMany(Account::class, 'account_otc', 'otc_id', 'account_id')->withTimestamps();
     }
+    
 
     /*
     |--------------------------------------------------------------------------
