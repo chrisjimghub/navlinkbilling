@@ -21,24 +21,31 @@ class OtcsTableSeeder extends Seeder
         \DB::table('otcs')->insert(array (
             0 => 
             array (
-                'id' => 1,
-                'name' => '2,500 OTC',
-                'created_at' => '2024-06-15 13:12:34',
-                'updated_at' => '2024-06-15 13:12:34',
-            ),
-            1 => 
-            array (
                 'id' => 2,
                 'name' => 'Free Installation',
                 'created_at' => '2024-06-15 13:12:42',
                 'updated_at' => '2024-06-15 13:12:42',
             ),
-            2 => 
+            1 => 
             array (
                 'id' => 3,
                 'name' => 'Swap Antenna / Router Free Installation',
                 'created_at' => '2024-06-15 13:13:01',
                 'updated_at' => '2024-06-15 13:13:01',
+            ),
+            2 => 
+            array (
+                'id' => 4,
+            'name' => '4,500 OTC (P2P)',
+                'created_at' => '2024-06-22 00:51:09',
+                'updated_at' => '2024-06-22 00:51:09',
+            ),
+            3 => 
+            array (
+                'id' => 5,
+            'name' => '2,500 OTC (FIBER)',
+                'created_at' => '2024-06-22 00:51:26',
+                'updated_at' => '2024-06-22 00:51:26',
             ),
         ));
         
