@@ -83,6 +83,21 @@ class Account extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    // OTC display in view or column
+    public function getOtcDetailsAttribute()
+    {
+        $temp = $this->otcs->pluck('amountName')->toArray();
+
+        return implode('<br>', $temp);
+    }
+
+    // Contract Period display in view or column
+    public function getContractPeriodDetailsAttribute()
+    {
+        $temp = $this->contractPeriods->pluck('name')->toArray();
+
+        return implode('<br>', $temp);
+    }
 
     /*
     |--------------------------------------------------------------------------

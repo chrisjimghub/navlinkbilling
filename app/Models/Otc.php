@@ -64,10 +64,10 @@ class Otc extends Model
         if ($amount == 0) {
             $amount = '';
         }else {
-            $amount = $this->currencyFormatAccessor($amount);
+            $amount = $this->currencyFormatAccessor($amount). ' ';
         }
 
-        return $amount .' '. $this->name;
+        return $amount . $this->name;
     }
 
     /*

@@ -59,12 +59,22 @@ class AccountCrudController extends CrudController
         $this->crud->column([
             'name' => 'otcs',
             'label' => 'One-Time Charge',
-            'attribute' => 'amountName'
+            'type'     => 'closure',
+            'function' => function($entry) {
+                return $entry->otcDetails;
+            },
+            'escaped' => false
+
         ]);
 
         $this->crud->column([
             'name' => 'contractPeriods',
             'label' => 'Contract Periods',
+            'type'     => 'closure',
+            'function' => function($entry) {
+                return $entry->contractPeriodDetails;
+            },
+            'escaped' => false
         ]);
 
         $this->crud->column('installed_date');
