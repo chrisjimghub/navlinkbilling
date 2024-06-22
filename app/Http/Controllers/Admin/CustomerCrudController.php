@@ -53,8 +53,6 @@ class CustomerCrudController extends CrudController
             'type' => 'image',
             'height' => '100px',
             'width'  => '100px',
-            'image' => ValidUpload::field('required')
-                ->file('file|mimes:jpeg,png,jpg,gif,svg|max:2048'),
         ]);
     }
 
@@ -82,6 +80,7 @@ class CustomerCrudController extends CrudController
             'date_of_birth' => 'date',
             'contact_number' => 'required',
             'email' => 'nullable|email',
+            'photo' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.
