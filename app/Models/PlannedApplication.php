@@ -2,21 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Model;
 use App\Models\Account;
 use App\Models\Location;
-use App\Models\Traits\LogsActivity;
 use App\Models\PlannedApplicationType;
-use Illuminate\Database\Eloquent\Model;
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PlannedApplication extends Model
 {
-    use CrudTrait;
-    use HasFactory;
-    use LogsActivity;
-
     use CurrencyFormat;
 
     /*
@@ -37,6 +30,12 @@ class PlannedApplication extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    // Revisson
+    public function identifiableName()
+    {
+        return $this->optionLabel;
+    }
+
 
     /*
     |--------------------------------------------------------------------------

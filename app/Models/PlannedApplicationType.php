@@ -2,18 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Model;
 use App\Models\PlannedApplication;
-use App\Models\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Model;
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PlannedApplicationType extends Model
 {
-    use CrudTrait;
-    use HasFactory;
-    use LogsActivity;
-
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES

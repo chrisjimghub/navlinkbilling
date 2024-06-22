@@ -21,12 +21,12 @@
         "backpack/revise-operation": "^2.0",
         "backpack/theme-coreuiv2": "^1.2",
         "backpack/theme-coreuiv4": "^1.1",
+        "imokhles/signature-field-for-backpack": "dev-master",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.4",
         "livewire/volt": "^1.0",
-        "orangehill/iseed": "^3.0",
-        "imokhles/signature-field-for-backpack": "dev-master"
+        "orangehill/iseed": "^3.0"
     },
     "require-dev": {
         "backpack/generators": "^4.0",

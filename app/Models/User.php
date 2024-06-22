@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Customer;
 use App\Models\Traits\LogsActivity;
 use Illuminate\Notifications\Notifiable;
+use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;// <---------------------- and this one
@@ -17,6 +18,8 @@ class User extends Authenticatable
     use HasRoles;
     use CrudTrait;
     use LogsActivity;
+
+    use RevisionableTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -58,15 +61,18 @@ class User extends Authenticatable
     |--------------------------------------------------------------------------
     */
 
+    // Revisson
+    public function identifiableName()
+    {
+        return $this->email;
+    }
+
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class);
-    }
+    
 
     /*
     |--------------------------------------------------------------------------

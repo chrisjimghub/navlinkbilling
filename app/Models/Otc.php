@@ -2,21 +2,14 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\Admin\Traits\CurrencyFormat;
+use App\Models\Model;
 use App\Models\Account;
-use App\Models\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Model;
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 
 class Otc extends Model
 {
-    use CrudTrait;
-    use HasFactory;
-    use LogsActivity;
-
     use CurrencyFormat;
-
+    
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
@@ -30,6 +23,11 @@ class Otc extends Model
     // protected $fillable = [];
     // protected $hidden = [];
 
+    // Revisson
+    public function identifiableName()
+    {
+        return $this->amountName;
+    }
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS

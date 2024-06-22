@@ -3,20 +3,13 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Model;
 use App\Models\Account;
 use Illuminate\Support\Str;
-use App\Models\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Customer extends Model
 {
-    use CrudTrait;
-    use HasFactory;
-    use LogsActivity;
-
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
@@ -35,6 +28,12 @@ class Customer extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    // Revisson
+    public function identifiableName()
+    {
+        return $this->fullName;
+    }
+
 
     /*
     |--------------------------------------------------------------------------
