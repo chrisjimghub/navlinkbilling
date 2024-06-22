@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Backpack\CRUD\app\Library\Validation\Rules\ValidUpload;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -41,10 +42,19 @@ class CustomerCrudController extends CrudController
     {
         CRUD::setFromDb(); // set columns from db columns.
         
+        $this->crud->modifyColumn('photo', [
+            'type'   => 'image',
+            'height' => '50px',
+            'width'  => '40px',
+            'orderable' => false,
+        ]);
+
         $this->crud->modifyColumn('signature', [
             'type' => 'image',
-            'height' => '150px',
-            'width'  => '150px',
+            'height' => '100px',
+            'width'  => '100px',
+            'image' => ValidUpload::field('required')
+                ->file('file|mimes:jpeg,png,jpg,gif,svg|max:2048'),
         ]);
     }
 
@@ -71,6 +81,12 @@ class CustomerCrudController extends CrudController
         
         CRUD::setFromDb(); // set fields from db columns.
 
+        $this->crud->modifyField('photo',[   // Upload
+            'type' => 'upload',
+            'upload' => true,
+            'disk' => 'public', // if you store files in the /public folder, please omit this; if you store them in /storage or S3, please specify it;
+        ]);
+    
         $this->crud->field([
             'name' => 'signature',
             'label' => 'Please sign here',
@@ -80,6 +96,7 @@ class CustomerCrudController extends CrudController
 
         // $this->crud->modifyField('notes', ['type' => 'textarea']);
         $this->crud->modifyField('date_of_birth', ['type' => 'date']);        
+    
     }
 
     /**

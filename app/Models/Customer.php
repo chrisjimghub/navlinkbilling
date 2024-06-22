@@ -89,7 +89,28 @@ class Customer extends Model
         }
     }
 
-    
+    public function setPhotoAttribute($value)
+    {
+        $attribute_name = "photo";
+        $disk = "public";
+        $destination_path = "photos";
 
+        $this->uploadFileToDisk($value, $attribute_name, $disk, $destination_path, $fileName = null);
+
+    // return $this->attributes[{$attribute_name}]; // uncomment if this is a translatable field
+    }
+
+    // public function setPhotoAttribute($value)
+    // {
+    //     $attribute_name = 'photo';
+    //     // or use your own disk, defined in config/filesystems.php
+
+    //     $disk = config('appsettings.manga_image_disk'); 
+        
+    //     // destination path relative to the disk above
+    //     $destination_path = config('appsettings.manga_image_destination_path');  
+
+    //     $this->uploadImageToDisk($value, $attribute_name, $disk, $destination_path);
+    // }
 
 }
