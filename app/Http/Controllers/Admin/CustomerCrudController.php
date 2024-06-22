@@ -61,6 +61,11 @@ class CustomerCrudController extends CrudController
     protected function setupShowOperation()
     {
         $this->setupListOperation();
+
+        $this->crud->modifyColumn('photo', [
+            'height' => '150px',
+            'width'  => '140px',
+        ]);
     }
 
     /**
