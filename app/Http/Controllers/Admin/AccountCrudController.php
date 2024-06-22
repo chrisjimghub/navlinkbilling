@@ -19,6 +19,7 @@ class AccountCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use \Backpack\ReviseOperation\ReviseOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -58,12 +59,22 @@ class AccountCrudController extends CrudController
         $this->crud->column([
             'name' => 'otcs',
             'label' => 'One-Time Charge',
-            'attribute' => 'amountName'
+            'type'     => 'closure',
+            'function' => function($entry) {
+                return $entry->otcDetails;
+            },
+            'escaped' => false
+
         ]);
 
         $this->crud->column([
             'name' => 'contractPeriods',
             'label' => 'Contract Periods',
+            'type'     => 'closure',
+            'function' => function($entry) {
+                return $entry->contractPeriodDetails;
+            },
+            'escaped' => false
         ]);
 
         $this->crud->column('installed_date');

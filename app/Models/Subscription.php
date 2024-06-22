@@ -2,19 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Model;
 use App\Models\Account;
-use App\Models\Customer;
-use App\Models\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Model;
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Subscription extends Model
 {
-    use CrudTrait;
-    use HasFactory;
-    use LogsActivity;
-
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES

@@ -26,6 +26,8 @@ return new class extends Migration
             $table->foreignId('account_status_id')->constrained('account_statuses')->onDelete('cascade');
 
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 

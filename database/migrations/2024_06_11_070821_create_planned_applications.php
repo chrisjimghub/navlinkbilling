@@ -17,6 +17,8 @@ return new class extends Migration
             $table->integer('mbps');
             $table->decimal('price');
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 

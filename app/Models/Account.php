@@ -3,19 +3,14 @@
 namespace App\Models;
 
 use App\Models\Otc;
+use App\Models\Model;
 use App\Models\Subscription;
 use App\Models\AccountStatus;
 use App\Models\ContractPeriod;
-use App\Models\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Model;
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Account extends Model
 {
-    use CrudTrait;
-    use HasFactory;
-    use LogsActivity;
+    // TODO:: fix revision for pivot table
 
     /*
     |--------------------------------------------------------------------------
@@ -29,6 +24,12 @@ class Account extends Model
     protected $guarded = ['id'];
     // protected $fillable = [];
     // protected $hidden = [];
+
+    // Revisson
+    public function identifiableName()
+    {
+        return $this->customer->fullName;
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -82,6 +83,21 @@ class Account extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    // OTC display in view or column
+    public function getOtcDetailsAttribute()
+    {
+        $temp = $this->otcs->pluck('amountName')->toArray();
+
+        return implode('<br>', $temp);
+    }
+
+    // Contract Period display in view or column
+    public function getContractPeriodDetailsAttribute()
+    {
+        $temp = $this->contractPeriods->pluck('name')->toArray();
+
+        return implode('<br>', $temp);
+    }
 
     /*
     |--------------------------------------------------------------------------
