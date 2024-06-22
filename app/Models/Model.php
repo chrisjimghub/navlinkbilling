@@ -18,6 +18,19 @@ class Model extends BaseModel
     use RevisionableTrait;
 
 
+    protected $revisionFormattedFields = [
+        // 'title'      => 'string:<strong>%s</strong>',
+        // 'public'     => 'boolean:No|Yes',
+        // 'modified'   => 'datetime:m/d/Y g:i A',
+        'deleted_at' => 'isEmpty:Active|Deleted'
+    ];
+
+    protected $revisionFormattedFieldNames = [
+        // 'title'      => 'Title',
+        // 'small_name' => 'Nickname',
+        // 'deleted_at' => 'Deleted At'
+    ];
+
     protected $revisionCreationsEnabled = true;
     protected $revisionEnabled = true;
     protected $historyLimit = 500; //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
