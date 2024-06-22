@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('planned_applications', function (Blueprint $table) {
             // Add the foreign key column
-            $table->unsignedBigInteger('location_id');
+            $table->unsignedBigInteger('location_id')->after('planned_application_type_id');
 
             // Define the foreign key constraint
             $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');

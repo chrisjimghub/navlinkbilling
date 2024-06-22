@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Models\Account;
 use App\Models\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,8 @@ class Otc extends Model
     use CrudTrait;
     use HasFactory;
     use LogsActivity;
+
+    use CurrencyFormat;
 
     /*
     |--------------------------------------------------------------------------
@@ -55,6 +58,19 @@ class Otc extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getAmountNameAttribute()
+    {
+        $amount = $this->amount;
+
+        
+        if ($amount == 0) {
+            $amount = '';
+        }else {
+            $amount = $this->currencyFormatAccessor($amount);
+        }
+
+        return $amount .' '. $this->name;
+    }
 
     /*
     |--------------------------------------------------------------------------
