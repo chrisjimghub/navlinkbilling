@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('social_media')->nullable();
             $table->string('signature')->nullable();
 
-            $table->softDeletes(); // soft deletes
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
