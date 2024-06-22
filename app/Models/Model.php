@@ -17,12 +17,11 @@ class Model extends BaseModel
     use SoftDeletes;
     use RevisionableTrait;
 
+
+    protected $revisionCreationsEnabled = true;
     protected $revisionEnabled = true;
     protected $historyLimit = 500; //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
     protected $revisionCleanup = true; //Remove old revisions (works only when used with $historyLimit)
-
-
-    protected $revisionCreationsEnabled = true;
 
     // NOTE:: if you want to use boot method in your child's class
     // If you are using another bootable trait
