@@ -57,7 +57,8 @@ class AccountCrudController extends CrudController
 
         $this->crud->column([
             'name' => 'otcs',
-            'label' => 'One-Time Charge'
+            'label' => 'One-Time Charge',
+            'attribute' => 'amountName'
         ]);
 
         $this->crud->column([
