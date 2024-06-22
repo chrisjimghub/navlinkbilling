@@ -65,10 +65,6 @@ class OtcCrudController extends CrudController
         CRUD::setFromDb(); // set fields from db columns.
 
         $this->currencyFormatField('amount');
-
-        $this->crud->modifyField('amount', [
-            'value' => 0
-        ]);
     }
 
     /**

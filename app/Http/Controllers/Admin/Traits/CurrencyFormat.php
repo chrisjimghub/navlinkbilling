@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Admin\Traits;
 
 trait CurrencyFormat {
 
+    const CURRENCY_PREFIX = '₱';
+    
+
     public function currencyFormat($modifyType, $fieldName)
     {
         $modifyType = ucfirst($modifyType);
 
         return $this->crud->{'modify'.$modifyType}($fieldName, [
             'type'          => 'number',
-            'prefix'        => '₱',
+            'prefix'        => self::CURRENCY_PREFIX,
             // 'suffix'     => ' PHP',
-            'decimals'   => 2,
+            // 'decimals'   => 2,
             // 'dec_point'     => '.',
             'thousands_sep' => ',',
         ]);
@@ -32,6 +35,6 @@ trait CurrencyFormat {
     {
         // return $amount;
 
-        return '₱' . number_format($amount, 0, '.', ',');
+        return self::CURRENCY_PREFIX . number_format($amount, 0, '.', ',');
     }
 }

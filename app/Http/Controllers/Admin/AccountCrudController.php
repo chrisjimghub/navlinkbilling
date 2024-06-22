@@ -134,17 +134,21 @@ class AccountCrudController extends CrudController
         ]); 
 
 
-        foreach ([
-            'otcs' => 'One-Time Charge',
-            'contractPeriods' => 'Contract Periods',
-        ] as $name => $label) {
-            $this->crud->field([
-                'label' => $label,
-                'name' => $name,
-                'type' => 'checklist',
-                'number_of_columns' => 1,
-            ]);
-        }
+        $this->crud->field([
+            'name' => 'contractPeriods',
+            'label' => 'Contract Periods',
+            'type' => 'checklist',
+            'number_of_columns' => 1,
+        ]);
+
+        $this->crud->field([
+            'name' => 'otcs',
+            'label' => 'One-Time Charge',
+            'type' => 'checklist',
+            'number_of_columns' => 1,
+            'attribute' => 'amountName',
+        ]);
+
 
         $this->crud->field([
             'name' => 'installed_date',

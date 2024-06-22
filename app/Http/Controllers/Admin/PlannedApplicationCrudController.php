@@ -59,10 +59,6 @@ class PlannedApplicationCrudController extends CrudController
         ])->before('mbps');
 
         $this->currencyFormatColumn('price');
-
-        $this->crud->modifyColumn('price', [
-            'decimals' => false
-        ]);
     }
 
     protected function setupShowOperation()
