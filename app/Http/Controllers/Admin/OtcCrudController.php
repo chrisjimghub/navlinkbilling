@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
-use App\Http\Requests\OtcRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -21,6 +21,7 @@ class OtcCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use ValidateUniqueRule;
+    use CurrencyFormat;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -45,6 +46,8 @@ class OtcCrudController extends CrudController
         CRUD::setFromDb(); // set columns from db columns.
 
         $this->crud->modifyColumn('name', ['limit' => 100]);
+
+        $this->currencyFormatColumn('amount');
     }
 
     /**
@@ -57,8 +60,15 @@ class OtcCrudController extends CrudController
     {
         CRUD::setValidation([
             'name' => $this->validateUniqueRule(),
+            'amount' => 'required|numeric|min:0',
         ]);
         CRUD::setFromDb(); // set fields from db columns.
+
+        $this->currencyFormatField('amount');
+
+        $this->crud->modifyField('amount', [
+            'value' => 0
+        ]);
     }
 
     /**

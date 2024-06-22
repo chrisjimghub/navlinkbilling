@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('account_statuses', function (Blueprint $table) {
-            //
-            $table->string('badge_css')->default('badge badge-default')->after('name');
+        Schema::table('otcs', function (Blueprint $table) {
+            $table->double('amount')->after('name');
         });
     }
 
@@ -22,9 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('account_statuses', function (Blueprint $table) {
+        Schema::table('otcs', function (Blueprint $table) {
             //
-            $table->dropColumn('badge_css');
+            $table->dropColumn('amount');
         });
     }
 };
