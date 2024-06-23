@@ -23,6 +23,7 @@
         "backpack/theme-coreuiv4": "^1.1",
         "imokhles/signature-field-for-backpack": "dev-master",
         "laravel/framework": "^11.9",
+        "laravel/telescope": "^5.1",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.4",
         "livewire/volt": "^1.0",
