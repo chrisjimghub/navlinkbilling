@@ -147,13 +147,6 @@ class AccountCrudController extends CrudController
 
 
         $this->crud->field([
-            'name' => 'contractPeriods',
-            'label' => 'Contract Periods',
-            'type' => 'checklist',
-            'number_of_columns' => 1,
-        ]);
-
-        $this->crud->field([
             'name' => 'otcs',
             'label' => 'One-Time Charge',
             'type' => 'checklist',
@@ -161,6 +154,12 @@ class AccountCrudController extends CrudController
             'attribute' => 'amountName',
         ]);
 
+        $this->crud->field([
+            'name' => 'contractPeriods',
+            'label' => 'Contract Periods',
+            'type' => 'checklist',
+            'number_of_columns' => 1,
+        ]);
 
         $this->crud->field([
             'name' => 'installed_date',
