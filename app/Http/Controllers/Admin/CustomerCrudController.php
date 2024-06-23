@@ -32,7 +32,7 @@ class CustomerCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/customer');
         CRUD::setEntityNameStrings('customer', 'customers');
 
-        // $this->userPermissions();
+        $this->userPermissions();
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\UserPermissions;
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
 use App\Http\Requests\SubscriptionRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -20,6 +21,7 @@ class SubscriptionCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     
+    use UserPermissions;
     use ValidateUniqueRule;
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -31,6 +33,8 @@ class SubscriptionCrudController extends CrudController
         CRUD::setModel(\App\Models\Subscription::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/subscription');
         CRUD::setEntityNameStrings('subscription', 'subscriptions');
+        
+        $this->userPermissions();
     }
 
     /**
