@@ -2,12 +2,6 @@
 
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('dashboard') }}"><i class="la la-home nav-icon"></i> {{ trans('backpack::base.dashboard') }}</a></li>
 
-{{-- @php
-    // TODO:: menu crud
-    $testComponent = '<x-backpack::menu-item title="Accounts" icon="las la-list" :link="backpack_url(\'account\')" />';
-@endphp
-
-{!! Blade::render($testComponent) !!} --}}
 
 <x-backpack::menu-item title="Accounts" icon="las la-list" :link="backpack_url('account')" />
 <x-backpack::menu-item title="Customers" icon="las la-user-tie" :link="backpack_url('customer')" />
