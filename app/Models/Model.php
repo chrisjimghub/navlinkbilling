@@ -31,6 +31,8 @@ class Model extends BaseModel
         // 'deleted_at' => 'Deleted At'
     ];
 
+    // NOTE:: package error: if $revisionCreationsEnabled is enabled, factory wont worked, set to False and run Factory
+
     protected $revisionCreationsEnabled = true;
     protected $revisionEnabled = true;
     protected $historyLimit = 500; //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
