@@ -61,12 +61,6 @@ class User extends Authenticatable
     |--------------------------------------------------------------------------
     */
 
-    // Revisson
-    public function identifiableName()
-    {
-        return $this->email;
-    }
-
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
