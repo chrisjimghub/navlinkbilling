@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\UserPermissions;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -21,6 +22,8 @@ class AccountCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     use \Backpack\ReviseOperation\ReviseOperation;
 
+    use UserPermissions;
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -31,6 +34,8 @@ class AccountCrudController extends CrudController
         CRUD::setModel(\App\Models\Account::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/account');
         CRUD::setEntityNameStrings('account', 'accounts');
+
+        $this->userPermissions();
     }
 
     /**
