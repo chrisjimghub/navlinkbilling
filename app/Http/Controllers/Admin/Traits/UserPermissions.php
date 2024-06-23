@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin\Traits;
 
 use Illuminate\Support\Str;
-use Backpack\PermissionManager\app\Models\Permission;
 
 /**
  * import in backpack crud controller
@@ -27,7 +26,7 @@ trait UserPermissions
     {
         $role = ($role == null) ? $this->crud->model->getTable() : $role;
 
-        $allRolePermissions = Permission::where('name', 'LIKE', "$role%")
+        $allRolePermissions = config('permission.models.permission')::where('name', 'LIKE', "$role%")
                             ->pluck('name')->map(function ($item) use ($role) {
                                 $value = str_replace($role.'_', '', $item);
                                 $value = Str::camel($value);
