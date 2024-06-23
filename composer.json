@@ -18,7 +18,6 @@
         "backpack/filemanager": "^3.0",
         "backpack/logmanager": "^5.0",
         "backpack/permissionmanager": "^7.2",
-        "backpack/revise-operation": "^2.0",
         "backpack/theme-coreuiv2": "^1.2",
         "backpack/theme-coreuiv4": "^1.1",
         "imokhles/signature-field-for-backpack": "dev-master",

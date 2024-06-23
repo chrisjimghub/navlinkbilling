@@ -38,7 +38,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'accounts_show', 
             'accounts_update', 
             'accounts_delete', 
-            'accounts_revise',
         ],
 
        'customers' => [
@@ -47,7 +46,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'customers_show', 
             'customers_update', 
             'customers_delete', 
-            'customers_revise',
         ],
         
         'planned_applications' => [
@@ -56,7 +54,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'planned_applications_show', 
             'planned_applications_update', 
             'planned_applications_delete', 
-            'planned_applications_revise',
         ],
 
         'account_statuses' => [
@@ -65,7 +62,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'account_statuses_show', 
             'account_statuses_update', 
             'account_statuses_delete', 
-            'account_statuses_revise',
         ],
 
         'locations' => [
@@ -74,7 +70,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'locations_show', 
             'locations_update', 
             'locations_delete', 
-            'locations_revise',
         ],
 
         'subscriptions' => [
@@ -83,7 +78,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'subscriptions_show', 
             'subscriptions_update', 
             'subscriptions_delete', 
-            'subscriptions_revise',
         ],
 
         // One-Time Charge
@@ -93,7 +87,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'otcs_show', 
             'otcs_update', 
             'otcs_delete', 
-            'otcs_revise',
         ],
 
         'contract_periods' => [
@@ -102,7 +95,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'contract_periods_show', 
             'contract_periods_update', 
             'contract_periods_delete', 
-            'contract_periods_revise',
         ],
 
         'planned_application_types' => [
@@ -111,7 +103,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'planned_application_types_show', 
             'planned_application_types_update', 
             'planned_application_types_delete', 
-            'planned_application_types_revise',
         ],
 
     ];

@@ -23,11 +23,6 @@ class Otc extends Model
     // protected $fillable = [];
     // protected $hidden = [];
 
-    // Revisson
-    public function identifiableName()
-    {
-        return $this->amountName;
-    }
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS

@@ -28,12 +28,6 @@ class Customer extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-    // Revisson
-    public function identifiableName()
-    {
-        return $this->fullName;
-    }
-
 
     /*
     |--------------------------------------------------------------------------

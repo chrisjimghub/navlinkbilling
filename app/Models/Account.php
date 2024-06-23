@@ -10,8 +10,6 @@ use App\Models\ContractPeriod;
 
 class Account extends Model
 {
-    // TODO:: fix revision for pivot table
-
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
@@ -25,11 +23,6 @@ class Account extends Model
     // protected $fillable = [];
     // protected $hidden = [];
 
-    // Revisson
-    public function identifiableName()
-    {
-        return $this->customer->fullName;
-    }
 
     /*
     |--------------------------------------------------------------------------

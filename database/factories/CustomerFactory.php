@@ -21,7 +21,6 @@ class CustomerFactory extends Factory
     {
         return [
             //
-            // 'photo' => $this->faker->imageUrl(),
             'last_name' => $this->faker->lastName,
             'first_name' => $this->faker->firstName,
             'date_of_birth' => $this->faker->date,

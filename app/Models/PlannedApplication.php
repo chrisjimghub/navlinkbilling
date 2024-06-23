@@ -30,12 +30,6 @@ class PlannedApplication extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-    // Revisson
-    public function identifiableName()
-    {
-        return $this->optionLabel;
-    }
-
 
     /*
     |--------------------------------------------------------------------------
