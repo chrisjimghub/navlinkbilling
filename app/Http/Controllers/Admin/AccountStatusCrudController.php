@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\UserPermissions;
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
 use App\Http\Requests\AccountStatusRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -19,6 +20,7 @@ class AccountStatusCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 
+    use UserPermissions;
     use ValidateUniqueRule;
 
     /**
@@ -31,6 +33,8 @@ class AccountStatusCrudController extends CrudController
         CRUD::setModel(\App\Models\AccountStatus::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/account-status');
         CRUD::setEntityNameStrings('account status', 'account statuses');
+
+        $this->userPermissions();
     }
 
     /**

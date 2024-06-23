@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\UserPermissions;
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
 use App\Http\Requests\LocationRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -19,6 +20,7 @@ class LocationCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 
+    use UserPermissions;
     use ValidateUniqueRule;
 
     /**
@@ -31,6 +33,8 @@ class LocationCrudController extends CrudController
         CRUD::setModel(\App\Models\Location::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/location');
         CRUD::setEntityNameStrings('location', 'locations');
+
+        $this->userPermissions();
     }
 
     /**

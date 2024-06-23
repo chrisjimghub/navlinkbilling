@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
+use App\Http\Controllers\Admin\Traits\UserPermissions;
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -19,6 +20,7 @@ class OtcCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 
+    use UserPermissions;
     use ValidateUniqueRule;
     use CurrencyFormat;
 
@@ -32,6 +34,8 @@ class OtcCrudController extends CrudController
         CRUD::setModel(\App\Models\Otc::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/otc');
         CRUD::setEntityNameStrings('one-time charge', 'one-time charges');
+
+        $this->userPermissions();
     }
 
     /**
