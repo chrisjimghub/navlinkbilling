@@ -66,9 +66,17 @@ class AccountCrudController extends CrudController
             'type' => 'google_map_coordinates',
             'name' => 'google_map_coordinates',
             'label' => 'Coordinates',
-            'link' => function($entry) {
-                return backpack_url($entry->google_map_coordinates);
-            }
+            'wrapper'   => [
+                'href' => function ($crud, $column, $entry, $related_key) {
+                    if ($entry->google_map_coordinates) {
+                        return url($entry->google_map_coordinates);
+                    }
+
+                    return '';
+                },
+                'target' => '_blank',
+            ],
+            'value' => 'Google Map'
         ]);
 
         $this->crud->column([
