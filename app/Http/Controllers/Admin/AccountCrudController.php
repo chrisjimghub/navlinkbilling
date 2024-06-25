@@ -60,6 +60,17 @@ class AccountCrudController extends CrudController
 
         $this->crud->column('subscription');
 
+        //$this->crud->column('google_map_coordinates');
+
+        $this->crud->column([
+            'type' => 'google_map_coordinates',
+            'name' => 'google_map_coordinates',
+            'label' => 'Coordinates',
+            'link' => function($entry) {
+                return backpack_url($entry->google_map_coordinates);
+            }
+        ]);
+
         $this->crud->column([
             'name' => 'otcs',
             'label' => 'One-Time Charge',
@@ -173,6 +184,11 @@ class AccountCrudController extends CrudController
         $this->crud->field([
             'name' => 'installed_address',
             'type' => 'text'
+        ]);
+
+        $this->crud->field([
+            'name' => 'google_map_coordinates',
+            'type' => 'text',
         ]);
 
         $this->crud->field([

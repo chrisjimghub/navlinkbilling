@@ -20,7 +20,7 @@ return new class extends Migration
             
             $table->date('installed_date')->nullable();
             $table->string('installed_address')->nullable();
-            
+            $table->string('google_map_coordinates')->nullable();
             $table->string('notes')->nullable();
 
             $table->foreignId('account_status_id')->constrained('account_statuses')->onDelete('cascade');
