@@ -2,16 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Model;
 use App\Models\Customer;
-use Illuminate\Database\Eloquent\Model;
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CustomerCredit extends Model
 {
-    use CrudTrait;
-    use HasFactory;
-
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES

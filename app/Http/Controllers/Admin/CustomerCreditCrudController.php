@@ -46,15 +46,24 @@ class CustomerCreditCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        $this->crud->column([
-            'name' => 'customer.full_name',
-            'label' => __('navlink.customer'),
-        ]);
+        CRUD::setFromDb();
 
-        $this->crud->column('amount');
-        $this->currencyFormatColumn('amount');
+        // TODO:: wip
+        // $this->crud->column('customer_id');
+
+        // $this->crud->column([
+        //     'name' => 'customer.full_name',
+        //     'label' => __('navlink.customer'),
+        // ]);
+
+        // $this->crud->column('amount');
+        // $this->currencyFormatColumn('amount');
     
         // TODO:: add updated_at / last updated at
+   
+        // $this->crud->column('updated_at');
+
+        $this->crud->column('created_at');
     }
 
     /**

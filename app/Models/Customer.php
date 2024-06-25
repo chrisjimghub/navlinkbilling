@@ -7,6 +7,7 @@ use App\Models\Model;
 use App\Models\Account;
 use Illuminate\Support\Str;
 use App\Models\CustomerCredit;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class Customer extends Model
@@ -66,6 +67,33 @@ class Customer extends Model
         return "{$this->last_name}, {$this->first_name}";
     }
     
+    /**
+     * Get the customer's remaining credits.
+     *
+     * @return float
+     */
+    public function getRemainingCreditsAttribute()
+    {
+        $result = $this->customerCredits()
+            ->select(DB::raw('SUM(amount) as total_credits'))
+            ->first();
+
+        return $result ? $result->total_credits : 0;
+    }
+
+    /**
+     * Get the latest update date of the customer's credits.
+     *
+     * @return string
+     */
+    public function getCreditsLatestUpdatedAttribute()
+    {
+        $result = $this->customerCredits()
+            ->select(DB::raw('MAX(created_at) as latest_created_at'))
+            ->first();
+
+        return $result ? $result->latest_created_at : null;
+    }
 
     /*
     |--------------------------------------------------------------------------
