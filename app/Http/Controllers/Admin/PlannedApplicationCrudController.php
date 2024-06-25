@@ -54,7 +54,7 @@ class PlannedApplicationCrudController extends CrudController
 
         $this->crud->column([
             'name' => 'plannedApplicationType',
-            'label' => 'Planned Application Type',
+            'label' => __('navlink.planned_application_type'),
             'limit' => 100
         ])->before('mbps');
 
@@ -91,7 +91,7 @@ class PlannedApplicationCrudController extends CrudController
 
         $this->crud->removeFields($this->removeFK());
 
-        $this->crud->field('plannedApplicationType')->label('Planned Application Type')->before('mbps');
+        $this->crud->field('plannedApplicationType')->label(__('navlink.planned_application_type'))->before('mbps');
         $this->crud->field('location')->before('mbps');
     
         $this->currencyFormatField('price');

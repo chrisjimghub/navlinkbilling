@@ -105,6 +105,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'planned_application_types_delete', 
         ],
 
+        'customer_credits' => [
+            'customer_credits_list',
+            'customer_credits_create', 
+            'customer_credits_show', 
+            'customer_credits_update', 
+            'customer_credits_delete', 
+        ],
+
     ];
 
     /**

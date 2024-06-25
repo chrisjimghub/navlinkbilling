@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Traits;
 
 trait CurrencyFormat {
 
-    const CURRENCY_PREFIX = '₱';
+    const CURRENCY_PREFIX = '₱ ';
     
 
     public function currencyFormat($modifyType, $fieldName)
@@ -15,8 +15,8 @@ trait CurrencyFormat {
             'type'          => 'number',
             'prefix'        => self::CURRENCY_PREFIX,
             // 'suffix'     => ' PHP',
-            // 'decimals'   => 2,
-            // 'dec_point'     => '.',
+            'decimals'   => 2,
+            'dec_point'     => '.',
             'thousands_sep' => ',',
         ]);
     }
