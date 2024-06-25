@@ -22,7 +22,19 @@ return [
     'account_name' => 'Acount Name (Customer)',
     'account_names' => 'Acount Names (Customers)',
 
+    // Account Status
+    'account_status' => 'Account Status',
+    'account_statuses' => 'Account Statuses',
+
+    // Contract Period
+    'contract_period' => 'Contract Period',
+    'contract_periods' => 'Contract Periods',
+
     'google_map_coordinates' => 'Coordiantes',
+
+    // OTC 
+    'otc' => 'One-Time Charge',
+    'otcs' => 'One-Time Charges',
 
     // Planned Application
     'planned_application' => 'Planned Applicaton',
@@ -32,22 +44,10 @@ return [
     'planned_application_type' => 'Planned Applicaton Type',
     'planned_applications_types' => 'Planned Applicaton Types',
 
-
-    // OTC 
-    'otc' => 'One-Time Charge',
-    'otcs' => 'One-Time Charges',
-
-    // Contract Period
-    'contract_period' => 'Contract Period',
-    'contract_periods' => 'Contract Periods',
-
-    // Account Status
-    'account_status' => 'Account Status',
-    'account_statuses' => 'Account Statuses',
-    
     // Subscription
     'subscription' => 'Subscription',
     'subscriptions' => 'Subscriptions',
+    
     
 
 ];
