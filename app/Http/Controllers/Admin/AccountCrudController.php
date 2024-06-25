@@ -60,12 +60,10 @@ class AccountCrudController extends CrudController
 
         $this->crud->column('subscription');
 
-        //$this->crud->column('google_map_coordinates');
-
         $this->crud->column([
             'type' => 'google_map_coordinates',
             'name' => 'google_map_coordinates',
-            'label' => __('navlink.google_map_coordinates'),
+            'label' => __('navlink.account_google_map_coordinates'),
             'wrapper'   => [
                 'href' => function ($crud, $column, $entry, $related_key) {
                     if ($entry->google_map_coordinates) {

@@ -13,36 +13,38 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-
-    // Customers
-    'please_sign_here' => 'Please sign here',
-
-
+    // Misc.
+    
     // Accounts
     'account_name' => 'Acount Name (Customer)',
     'account_names' => 'Acount Names (Customers)',
-
+    'account_google_map_coordinates' => 'Coordiantes',
+    
     // Account Status
     'account_status' => 'Account Status',
     'account_statuses' => 'Account Statuses',
-
+    
     // Contract Period
     'contract_period' => 'Contract Period',
     'contract_periods' => 'Contract Periods',
-
-    'google_map_coordinates' => 'Coordiantes',
-
+    
+    // Customers
+    'customer' => 'Customer',
+    'customer_signature' => 'Please sign here',
+    'customer_select_field' => 'The customer field is required.',
+    
     // OTC 
     'otc' => 'One-Time Charge',
     'otcs' => 'One-Time Charges',
-
+    
     // Planned Application
     'planned_application' => 'Planned Applicaton',
     'planned_applications' => 'Planned Applicatons',
-
+    
     // Planned Application Type
     'planned_application_type' => 'Planned Applicaton Type',
     'planned_applications_types' => 'Planned Applicaton Types',
+    
 
     // Subscription
     'subscription' => 'Subscription',

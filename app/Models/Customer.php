@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Model;
 use App\Models\Account;
 use Illuminate\Support\Str;
+use App\Models\CustomerCredit;
 use Illuminate\Support\Facades\Storage;
 
 class Customer extends Model
@@ -34,14 +35,19 @@ class Customer extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+    
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function accounts()
+    public function customerCredits()
     {
-        return $this->hasMany(Account::class);
+        return $this->hasMany(CustomerCredit::class);
     }
 
     /*

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
+use App\Http\Controllers\Admin\Traits\UserPermissions;
 use App\Http\Requests\CustomerCreditRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -19,6 +21,9 @@ class CustomerCreditCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
+    use UserPermissions;
+    use CurrencyFormat;
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -29,6 +34,8 @@ class CustomerCreditCrudController extends CrudController
         CRUD::setModel(\App\Models\CustomerCredit::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/customer-credit');
         CRUD::setEntityNameStrings('customer credit', 'customer credits');
+    
+        $this->userPermissions();
     }
 
     /**
@@ -39,12 +46,13 @@ class CustomerCreditCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
+        $this->crud->column([
+            'name' => 'customer.full_name',
+            'label' => __('navlink.customer'),
+        ]);
 
-        /**
-         * Columns can be defined using the fluent syntax:
-         * - CRUD::column('price')->type('number');
-         */
+        $this->crud->column('amount');
+        $this->currencyFormatColumn('amount');
     }
 
     /**
@@ -55,15 +63,26 @@ class CustomerCreditCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation([
-            // 'name' => 'required|min:2',
-        ]);
-        CRUD::setFromDb(); // set fields from db columns.
+        $rules = [
+            'customer_id' => 'required|integer|min:1',
+            'amount' => 'required|numeric',
+        ];
+        $messages = [
+            'customer_id.required' => __('navlink.customer_select_field'),
+        ];
+        $this->crud->setValidation($rules, $messages);
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+        CRUD::setFromDb();
+
+        $this->crud->field([
+            'name' => 'customer_id',
+            'label' => __('navlink.customer'),
+            'attribute' => 'full_name', // accessor
+            'allows_null' => true,
+        ]);
+
+        $this->crud->field('amount');
+        $this->currencyFormatField('amount');
     }
 
     /**
