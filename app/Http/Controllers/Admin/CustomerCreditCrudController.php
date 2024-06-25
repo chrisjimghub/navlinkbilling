@@ -53,6 +53,8 @@ class CustomerCreditCrudController extends CrudController
 
         $this->crud->column('amount');
         $this->currencyFormatColumn('amount');
+    
+        // TODO:: add updated_at / last updated at
     }
 
     /**
