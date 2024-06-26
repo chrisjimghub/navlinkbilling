@@ -15,7 +15,7 @@ trait UserPermissions
     | Check Auth User Permissions
     |--------------------------------------------------------------------------
     */ 
-    public function userPermissions($role = null)
+    private function userPermissions($role = null)
     {
         // check access for current role & admin
         $this->checkAccess($role);

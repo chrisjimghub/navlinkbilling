@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\CustomerHelper;
+use Illuminate\Support\Arr;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\UrlQueryString;
@@ -24,6 +26,7 @@ class AccountCrudController extends CrudController
 
     use UserPermissions;
     use UrlQueryString;
+    use CustomerHelper;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -55,10 +58,7 @@ class AccountCrudController extends CrudController
         $this->crud->with('otcs');
         $this->crud->with('contractPeriods');
 
-        $this->crud->column([
-            'name' => 'customer.full_name',
-            'label' => __('navlink.account_name'),
-        ]);
+        $this->showCustomerNameColumn(label: __('navlink.account_name'));
 
         $this->crud->column([
             'name' => 'plannedApplication.columnDisplay',
@@ -120,10 +120,7 @@ class AccountCrudController extends CrudController
             'escaped' => false
         ]);
 
-
-        $this->crud->column('notes');
-        
-      
+        $this->crud->column('notes');        
     }
 
     protected function setupShowOperation()
