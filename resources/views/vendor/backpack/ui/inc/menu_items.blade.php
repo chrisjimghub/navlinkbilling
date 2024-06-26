@@ -2,8 +2,10 @@
 
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('dashboard') }}"><i class="la la-home nav-icon"></i> {{ trans('backpack::base.dashboard') }}</a></li>
 
+{{-- TODO:: create menu crud and add permission rights and show menu if has _list permission --}}
 
 <x-backpack::menu-item title="Accounts" icon="las la-list" :link="backpack_url('account')" />
+<x-backpack::menu-item title="Billings" icon="las la-file-invoice" :link="backpack_url('billing')" />
 <x-backpack::menu-item title="Customers" icon="las la-user-tie" :link="backpack_url('customer')" />
 <x-backpack::menu-item title="Customer Credits" icon="las la-credit-card" :link="backpack_url('customer-credit')" />
 <x-backpack::menu-item title="Planned Applications" icon="las la-business-time" :link="backpack_url('planned-application')" />
@@ -29,6 +31,7 @@
     <x-backpack::menu-dropdown-item title='Logs' icon='la la-terminal' :link="backpack_url('log')" />
     <x-backpack::menu-dropdown-item title="Activity Logs" icon="la la-stream" :link="backpack_url('activity-log')" />
 </x-backpack::menu-dropdown>
+
 
 
 
