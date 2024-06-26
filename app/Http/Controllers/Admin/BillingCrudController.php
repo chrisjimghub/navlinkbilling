@@ -33,6 +33,8 @@ class BillingCrudController extends CrudController
         CRUD::setEntityNameStrings('billing', 'billings');
         
         $this->userPermissions();
+
+        dd('test');
     }
 
     /**
