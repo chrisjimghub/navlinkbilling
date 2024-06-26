@@ -20,7 +20,6 @@ class CustomerCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use UserPermissions;
-
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -32,6 +31,7 @@ class CustomerCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/customer');
         CRUD::setEntityNameStrings('customer', 'customers');
 
+        // dont delete
         $this->userPermissions();
     }
 
@@ -54,19 +54,15 @@ class CustomerCrudController extends CrudController
 
         $this->crud->modifyColumn('signature', [
             'type' => 'image',
-            'height' => '100px',
-            'width'  => '100px',
+            'height' => '150px',
+            'width'  => '150px',
         ]);
     }
+
 
     protected function setupShowOperation()
     {
         $this->setupListOperation();
-
-        $this->crud->modifyColumn('photo', [
-            'height' => '150px',
-            'width'  => '140px',
-        ]);
     }
 
     /**
@@ -83,24 +79,26 @@ class CustomerCrudController extends CrudController
             'date_of_birth' => 'date',
             'contact_number' => 'required',
             'email' => 'nullable|email',
-            'photo' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.
 
-        $this->crud->modifyField('photo',[   // Upload
+        $this->crud->modifyField('photo', [
             'type' => 'upload',
             'upload' => true,
-            'disk' => 'public', // if you store files in the /public folder, please omit this; if you store them in /storage or S3, please specify it;
+            'disk' => 'public'
         ]);
-    
+
         $this->crud->field([
             'name' => 'signature',
-            'label' => __('navlink.customer_signature'),
+            'lable' => ('navlink.customer_signature'),
+            'label' => 'Please sign here',
             'type' => 'signature',
             'view_namespace' => 'signature-field-for-backpack::fields',
         ]);
 
+        // $this->crud->modifyField('notes', ['type' => 'textarea']);
+        $this->crud->modifyField('date_of_birth', ['type' => 'date']);        
     }
 
     /**

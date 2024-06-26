@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->foreignId('planned_application_id')->constrained('planned_applications')->onDelete('cascade');
             $table->foreignId('subscription_id')->constrained('subscriptions')->onDelete('cascade');
-            
             $table->date('installed_date')->nullable();
             $table->string('installed_address')->nullable();
             $table->string('google_map_coordinates')->nullable();
