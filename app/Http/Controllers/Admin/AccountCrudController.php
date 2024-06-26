@@ -57,7 +57,7 @@ class AccountCrudController extends CrudController
         $this->crud->with('otcs');
         $this->crud->with('contractPeriods');
 
-        $this->showCustomerNameColumn(label: __('navlink.account_name'));
+        $this->customerNameColumn(label: __('navlink.account_name'));
 
         // TODO:: orderLogic and search logic
         $this->crud->column([
@@ -66,10 +66,10 @@ class AccountCrudController extends CrudController
             'limit' => 100
         ]);
         
-        $this->showRelationshipColumn('subscription');
+        $this->relationshipColumn('subscription');
         
-        $this->showRelationshipColumn('account_status_id');
-        $this->crud->modifyColumn('account_status_id', [
+        $this->relationshipColumn('account_status');
+        $this->crud->modifyColumn('account_status', [
             'wrapper' => [
                 'element' => 'span',
                 'class' => function ($crud, $column, $entry, $related_key) {

@@ -19,24 +19,49 @@ trait CrudColumn
         return true;
     }
 
-    public function showCustomerNameColumn($label = null)
+    // not relationship
+    public function customerNameCol($label)
+    {
+        $this->crud->column([
+            'name' => 'full_name',
+            'label' => $label ?? __('navlink.customer'),
+            'type' => 'text',
+            'searchLogic' => function ($query, $column, $searchTerm) {
+                $query->orWhere('first_name', 'like', '%'.$searchTerm.'%')
+                      ->orWhere('last_name', 'like', '%'.$searchTerm.'%');
+            },
+            'orderLogic' => function ($query, $column, $columnDirection) {
+                return $query
+                        ->orderBy('last_name', $columnDirection)
+                        ->orderBy('first_name', $columnDirection)
+                        ->select('*');
+            },
+            'orderable' => true,
+        ]);
+    }
+
+    // relationship
+    public function customerNameColumn($label = null)
     {
         $currentTable = $this->crud->model->getTable();
+
+        if ($currentTable == 'customers') {
+            return $this->customerNameCol($label);
+        } 
 
         if (!$this->listColumnExist('customer_id')) {
             $this->crud->column('customer_id');
         }
 
         $this->crud->modifyColumn('customer_id', [
+            'label' => $label ?? __('navlink.customer'),
             'type'     => 'closure',
             'function' => function($entry) {
                 if ($entry->customer) {
                     // debug($entry->customer);
                     return $entry->customer->fullName;
                 }
-
                 return;
-
             },
             'searchLogic' => function ($query, $column, $searchTerm) {
                 $query->orWhereHas('customer', function ($q) use ($column, $searchTerm) {
@@ -68,7 +93,7 @@ trait CrudColumn
 
     // TODO:: refactor and transfer this to other file
 
-    public function showRelationshipColumn($columnId, $relationshipColumn = 'name', $label = null)
+    public function relationshipColumn($columnId, $relationshipColumn = 'name', $label = null)
     {
         $col = str_replace('_id', '', $columnId);
         $method = $this->relationshipMethodName($col);

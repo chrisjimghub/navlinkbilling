@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\CrudColumn;
 use App\Models\Customer;
 use App\Models\CustomerCredit;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
@@ -24,6 +25,7 @@ class CustomerCreditCrudController extends CrudController
 
     use UserPermissions;
     use CurrencyFormat;
+    use CrudColumn;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -55,16 +57,7 @@ class CustomerCreditCrudController extends CrudController
         $this->crud->orderBy('last_name');
         $this->crud->orderBy('first_name');
 
-        $this->crud->column([
-            'name' => 'full_name',
-            'label' => __('navlink.customer'),
-            'type' => 'text',
-            'searchLogic' => function ($query, $column, $searchTerm) {
-                $query->orWhere('first_name', 'like', '%'.$searchTerm.'%')
-                      ->orWhere('last_name', 'like', '%'.$searchTerm.'%');
-            },
-        ]);
-
+        $this->customerNameColumn();
 
         $this->crud->column([
             'name' => 'remaining_credits',
