@@ -91,6 +91,7 @@ class CustomerCrudController extends CrudController
 
         $this->crud->field([
             'name' => 'signature',
+            'lable' => ('navlink.customer_signature'),
             'label' => 'Please sign here',
             'type' => 'signature',
             'view_namespace' => 'signature-field-for-backpack::fields',
