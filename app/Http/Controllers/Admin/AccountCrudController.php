@@ -45,6 +45,7 @@ class AccountCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        // eager loading improves performance
         $this->crud->with('customer');
         $this->crud->with('plannedApplication');
         $this->crud->with('subscription');
