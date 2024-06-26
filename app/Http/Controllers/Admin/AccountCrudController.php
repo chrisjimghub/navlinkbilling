@@ -45,7 +45,12 @@ class AccountCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->with('customer');
         $this->crud->with('plannedApplication');
+        $this->crud->with('subscription');
+        $this->crud->with('accountStatus');
+        $this->crud->with('otcs');
+        $this->crud->with('contractPeriods');
 
         $this->crud->column([
             'name' => 'customer.full_name',
