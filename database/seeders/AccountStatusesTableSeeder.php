@@ -23,33 +23,37 @@ class AccountStatusesTableSeeder extends Seeder
             array (
                 'id' => 1,
                 'name' => 'Connected',
+                'badge_css' => 'badge badge-success',
                 'created_at' => '2024-06-20 13:36:42',
                 'updated_at' => '2024-06-21 05:47:33',
-                'badge_css' => 'badge badge-success',
+                'deleted_at' => NULL,
             ),
             1 => 
             array (
                 'id' => 2,
                 'name' => 'Processing...',
+                'badge_css' => 'badge badge-primary',
                 'created_at' => '2024-06-20 13:36:49',
                 'updated_at' => '2024-06-21 05:52:08',
-                'badge_css' => 'badge badge-primary',
+                'deleted_at' => NULL,
             ),
             2 => 
             array (
                 'id' => 3,
                 'name' => 'Disconnected',
+                'badge_css' => 'badge badge-danger',
                 'created_at' => '2024-06-20 13:36:56',
                 'updated_at' => '2024-06-21 05:47:40',
-                'badge_css' => 'badge badge-danger',
+                'deleted_at' => NULL,
             ),
             3 => 
             array (
                 'id' => 4,
                 'name' => 'Technical Issues',
-                'created_at' => '2024-06-20 13:37:11',
-                'updated_at' => '2024-06-21 05:47:57',
                 'badge_css' => 'badge badge-warning',
+                'created_at' => '2024-06-20 13:37:11',
+                'updated_at' => '2024-06-26 19:48:23',
+                'deleted_at' => '2024-06-26 19:48:23',
             ),
         ));
         
