@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Traits\CurrencyFormat;
+use App\Http\Controllers\Admin\Traits\CrudColumn;
 use App\Http\Controllers\Admin\Traits\UserPermissions;
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -22,7 +22,7 @@ class OtcCrudController extends CrudController
 
     use UserPermissions;
     use ValidateUniqueRule;
-    use CurrencyFormat;
+    use CrudColumn;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -50,7 +50,7 @@ class OtcCrudController extends CrudController
 
         $this->crud->modifyColumn('name', ['limit' => 100]);
 
-        $this->currencyFormatColumn('amount');
+        $this->currencyColumn('amount');
     }
 
     /**

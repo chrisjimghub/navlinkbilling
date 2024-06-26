@@ -58,16 +58,11 @@ class CustomerCreditCrudController extends CrudController
         $this->crud->orderBy('first_name');
 
         $this->customerNameColumn();
-
-        $this->crud->column([
-            'name' => 'remaining_credits',
-            'label' => __('navlink.remaining_credits'),
-        ]);
-        $this->currencyFormatColumn('remaining_credits');
+        $this->currencyColumn('remaining_credits', __('app.remaining_credits'));
 
         $this->crud->column([
             'name' => 'credits_latest_updated',
-            'label' => __('navlink.latest_updated'),
+            'label' => __('app.latest_updated'),
         ]);
 
     }
@@ -85,7 +80,7 @@ class CustomerCreditCrudController extends CrudController
             'amount' => 'required|numeric',
         ];
         $messages = [
-            'customer_id.required' => __('navlink.customer_select_field'),
+            'customer_id.required' => __('app.customer_select_field'),
         ];
         $this->crud->setValidation($rules, $messages);
 
@@ -93,7 +88,7 @@ class CustomerCreditCrudController extends CrudController
 
         $this->crud->field([
             'name' => 'customer_id',
-            'label' => __('navlink.customer'),
+            'label' => __('app.customer'),
             'attribute' => 'full_name', // accessor
             'allows_null' => true,
         ]);

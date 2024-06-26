@@ -57,18 +57,18 @@ class AccountCrudController extends CrudController
         $this->crud->with('otcs');
         $this->crud->with('contractPeriods');
 
-        $this->customerNameColumn(label: __('navlink.account_name'));
+        $this->customerNameColumn(label: __('app.account_name'));
 
         // TODO:: orderLogic and search logic
         $this->crud->column([
             'name' => 'plannedApplication.columnDisplay',
-            'label' => __('navlink.planned_application'),
+            'label' => __('app.planned_application'),
             'limit' => 100
         ]);
         
-        $this->relationshipColumn('subscription');
+        $this->relationshipColumn('subscription', __('app.subscription'));
         
-        $this->relationshipColumn('account_status');
+        $this->relationshipColumn('account_status', __('app.account_status'));
         $this->crud->modifyColumn('account_status', [
             'wrapper' => [
                 'element' => 'span',
@@ -81,7 +81,7 @@ class AccountCrudController extends CrudController
         $this->crud->column([
             'type' => 'google_map_coordinates',
             'name' => 'google_map_coordinates',
-            'label' => __('navlink.account_google_map_coordinates'),
+            'label' => __('app.account_google_map_coordinates'),
             'wrapper'   => [
                 'href' => function ($crud, $column, $entry, $related_key) {
                     if ($entry->google_map_coordinates) {
@@ -100,7 +100,7 @@ class AccountCrudController extends CrudController
         // TODO:: search and order logic
         $this->crud->column([
             'name' => 'otcs',
-            'label' => __('navlink.otc'),
+            'label' => __('app.otc'),
             'type'     => 'closure',
             'function' => function($entry) {
                 return $entry->otcDetails;
@@ -112,7 +112,7 @@ class AccountCrudController extends CrudController
         // TODO:: order and search logic
         $this->crud->column([
             'name' => 'contractPeriods',
-            'label' => __('navlink.contract_period'),
+            'label' => __('app.contract_period'),
             'type'     => 'closure',
             'function' => function($entry) {
                 return $entry->contractPeriodDetails;
@@ -141,9 +141,9 @@ class AccountCrudController extends CrudController
         $this->crud->setValidation(AccountRequest::class);
         
         foreach ([
-            'customer_id' => __('navlink.account_name'),
-            'planned_application_id' => __('navlink.planned_application'),
-            'subscription' => __('navlink.subscription'),
+            'customer_id' => __('app.account_name'),
+            'planned_application_id' => __('app.planned_application'),
+            'subscription' => __('app.subscription'),
         ] as $name => $label) {
             $this->crud->field([
                 'name' => $name,
@@ -178,7 +178,7 @@ class AccountCrudController extends CrudController
 
         $this->crud->field([
             'name' => 'otcs',
-            'label' => __('navlink.otc'),
+            'label' => __('app.otc'),
             'type' => 'checklist',
             'number_of_columns' => 1,
             'attribute' => 'amountName',
@@ -186,7 +186,7 @@ class AccountCrudController extends CrudController
 
         $this->crud->field([
             'name' => 'contractPeriods',
-            'label' => __('navlink.contract_period'),
+            'label' => __('app.contract_period'),
             'type' => 'checklist',
             'number_of_columns' => 1,
         ]);
@@ -213,7 +213,7 @@ class AccountCrudController extends CrudController
 
         $this->crud->field([
             'name' => 'accountStatus',
-            'label' => __('navlink.account_status')
+            'label' => __('app.account_status')
         ]);
         
     }

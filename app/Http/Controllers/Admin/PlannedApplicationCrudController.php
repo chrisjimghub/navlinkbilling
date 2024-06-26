@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\CrudColumn;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Http\Controllers\Admin\Traits\UserPermissions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -22,6 +23,7 @@ class PlannedApplicationCrudController extends CrudController
 
     use UserPermissions;
     use CurrencyFormat;
+    use CrudColumn;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -45,24 +47,14 @@ class PlannedApplicationCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        // TODO:: fix datatable search input for relationship column
-        // TODO:: add filter also once have backpack pro licensed
-        
-        CRUD::setFromDb(); // set columns from db columns.
+        $this->relationshipColumn('plannedApplicationType');
+        $this->relationshipColumn('location');
+        $this->crud->column('mbps');
+        $this->currencyColumn('price');
 
-        $this->crud->removeColumns($this->removeFK());
-
-        $this->crud->column([
-            'name' => 'plannedApplicationType',
-            'label' => __('navlink.planned_application_type'),
-            'limit' => 100
-        ])->before('mbps');
-
-        $this->crud->column([
-            'name' => 'location',
-        ])->before('mbps');
-
-        $this->currencyFormatColumn('price');
+        $this->crud->modifyColumn('price', [
+            'decimals' => false
+        ]);
     }
 
     protected function setupShowOperation()
@@ -89,16 +81,15 @@ class PlannedApplicationCrudController extends CrudController
         $this->crud->removeField('planned_application_type_id');
         $this->crud->removeField('location_id');
 
-        $this->crud->removeFields($this->removeFK());
+        $this->crud->removeFields([
+            'planned_application_type_id',
+            'location_id',
+        ]);
 
-        $this->crud->field('plannedApplicationType')->label(__('navlink.planned_application_type'))->before('mbps');
+        $this->crud->field('plannedApplicationType')->label(__('app.planned_application_type'))->before('mbps');
         $this->crud->field('location')->before('mbps');
     
         $this->currencyFormatField('price');
-
-        $this->crud->modifyColumn('price', [
-            'decimals' => false
-        ]);
     }
 
     /**
@@ -110,13 +101,5 @@ class PlannedApplicationCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
-    }
-
-    private function removeFK()
-    {
-        return [
-            'planned_application_type_id',
-            'location_id',
-        ];
     }
 }

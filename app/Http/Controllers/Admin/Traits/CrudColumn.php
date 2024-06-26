@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Traits;
 
-use Illuminate\Support\Str;
+use App\Http\Controllers\Admin\Traits\UtilityHelper;
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 
 trait CrudColumn
 {
+    use CurrencyFormat;
+    use UtilityHelper;
+
     public function listColumnExist($columnName)
     {
         // check if column exist in list operation
@@ -24,7 +28,7 @@ trait CrudColumn
     {
         $this->crud->column([
             'name' => 'full_name',
-            'label' => $label ?? __('navlink.customer'),
+            'label' => $label ?? __('app.customer'),
             'type' => 'text',
             'searchLogic' => function ($query, $column, $searchTerm) {
                 $query->orWhere('first_name', 'like', '%'.$searchTerm.'%')
@@ -54,7 +58,7 @@ trait CrudColumn
         }
 
         $this->crud->modifyColumn('customer_id', [
-            'label' => $label ?? __('navlink.customer'),
+            'label' => $label ?? __('app.customer'),
             'type'     => 'closure',
             'function' => function($entry) {
                 if ($entry->customer) {
@@ -85,25 +89,17 @@ trait CrudColumn
         }
     }
 
-
-
-
-
-
-
-    // TODO:: refactor and transfer this to other file
-
-    public function relationshipColumn($columnId, $relationshipColumn = 'name', $label = null)
+    public function relationshipColumn($column, $label = null, $relationshipColumn = 'name',)
     {
-        $col = str_replace('_id', '', $columnId);
+        $col = str_replace('_id', '', $column);
         $method = $this->relationshipMethodName($col);
         $currentTable = $this->crud->model->getTable();
 
-        if (!$this->listColumnExist($columnId)) {
-            $this->crud->column($columnId);
+        if (!$this->listColumnExist($column)) {
+            $this->crud->column($column);
         }
 
-        $this->crud->modifyColumn($columnId, [
+        $this->crud->modifyColumn($column, [
             'label' => $label ?? $this->convertColumnToHumanReadable($col),
             'type'  => 'closure',
             'function' => function($entry) use ($method, $relationshipColumn) {
@@ -127,51 +123,14 @@ trait CrudColumn
         ]);
     }
 
-
-    public function classInstance($class, $useFullPath = false) 
+    public function currencyColumn($column, $label = null)
     {
-		if ($useFullPath) {
-			return new $class;
-		}
-
-		// remove App\Models\ so i could have choice
-		// to provide it in parameter
-		$class = str_replace('App\\Models\\','', $class);
-
-		$class = str_replace('_id','', $class);
-        $class = ucfirst(Str::camel($class));
-        $class = "\\App\\Models\\".$class;
+        if (!$this->listColumnExist($column)) {
+            $this->crud->column($column);
+        }
         
-        return new $class;
-	}
-
-
-
-    public function relationshipMethodName($col) 
-    {
-        $method = str_replace('_id', '', $col);
-        $method = Str::camel($method);
-        
-        return $method;
+        $this->currencyFormatColumn($column);
     }
-    
-    public function convertToClassName($str) 
-    {
-        $str = $this->relationshipMethodName($str); 
-        return ucfirst($str);
-    }
-
-    public function convertColumnToHumanReadable($col) 
-    {
-		$col = Str::snake($col);
-		
-		$col = Str::endsWith($col, '_id') ? str_replace('_id', '', $col) : $col;
-
-        $col = str_replace('_', ' ', $col);
-        $col = ucwords($col);
-
-        return $col;
-	}
 
 }
 
