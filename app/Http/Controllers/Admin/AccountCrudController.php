@@ -61,6 +61,21 @@ class AccountCrudController extends CrudController
         $this->crud->column('subscription');
 
         $this->crud->column([
+            'name' => 'accountStatus',
+            'label' => __('navlink.account_status'),
+            'wrapper' => [
+                'element' => 'span',
+                'class' => function ($crud, $column, $entry, $related_key) {
+                    return $entry->accountStatus->badge_css;
+                },
+            ],
+        ]);
+
+        
+        $this->crud->column('google_map_coordinates');
+        
+        /***
+        $this->crud->column([
             'type' => 'google_map_coordinates',
             'name' => 'google_map_coordinates',
             'label' => __('navlink.account_google_map_coordinates'),
@@ -76,6 +91,10 @@ class AccountCrudController extends CrudController
             ],
             'value' => 'Google Map'
         ]);
+        */
+
+        $this->crud->column('installed_date');
+        $this->crud->column('installed_address');       
 
         $this->crud->column([
             'name' => 'otcs',
@@ -98,20 +117,10 @@ class AccountCrudController extends CrudController
             'escaped' => false
         ]);
 
-        $this->crud->column('installed_date');
-        $this->crud->column('installed_address');
+
         $this->crud->column('notes');
         
-        $this->crud->column([
-            'name' => 'accountStatus',
-            'label' => __('navlink.account_status'),
-            'wrapper' => [
-                'element' => 'span',
-                'class' => function ($crud, $column, $entry, $related_key) {
-                    return $entry->accountStatus->badge_css;
-                },
-            ],
-        ]);
+      
     }
 
     protected function setupShowOperation()
