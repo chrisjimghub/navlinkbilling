@@ -108,9 +108,6 @@ class RolesAndPermissionsSeeder extends Seeder
         'customer_credits' => [
             'customer_credits_list',
             'customer_credits_create', 
-            'customer_credits_show', 
-            'customer_credits_update', 
-            'customer_credits_delete', 
         ],
 
     ];
