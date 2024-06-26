@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Traits\UserPermissions;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
+use App\Http\Controllers\Admin\Traits\UrlQueryString;
+use App\Http\Controllers\Admin\Traits\UserPermissions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -22,6 +23,7 @@ class AccountCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use UserPermissions;
+    use UrlQueryString;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -78,9 +80,6 @@ class AccountCrudController extends CrudController
         ]);
 
         
-        $this->crud->column('google_map_coordinates');
-        
-        /***
         $this->crud->column([
             'type' => 'google_map_coordinates',
             'name' => 'google_map_coordinates',
@@ -88,16 +87,14 @@ class AccountCrudController extends CrudController
             'wrapper'   => [
                 'href' => function ($crud, $column, $entry, $related_key) {
                     if ($entry->google_map_coordinates) {
-                        return url($entry->google_map_coordinates);
+                        return $this->googleMapLink($entry->google_map_coordinates);
                     }
 
                     return '';
                 },
                 'target' => '_blank',
             ],
-            'value' => 'Google Map'
         ]);
-        */
 
         $this->crud->column('installed_date');
         $this->crud->column('installed_address');       
