@@ -49,15 +49,6 @@ class AccountCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        /* Search Logic & Order Logic
-            DONE:: Account Name / Customer
-            TODO:: Planned Application - 
-            TODO:: Subscription -
-            TODO:: One-Time Charge -
-            TODO:: Contract Period - 
-            TODO:: Account Status -
-        */
-
         // eager loading improves performance
         $this->crud->with('customer');
         $this->crud->with('plannedApplication');
@@ -68,18 +59,17 @@ class AccountCrudController extends CrudController
 
         $this->showCustomerNameColumn(label: __('navlink.account_name'));
 
+        // TODO:: orderLogic and search logic
         $this->crud->column([
             'name' => 'plannedApplication.columnDisplay',
             'label' => __('navlink.planned_application'),
             'limit' => 100
         ]);
-
         
-        $this->crud->column('subscription');
-
-        $this->crud->column([
-            'name' => 'accountStatus',
-            'label' => __('navlink.account_status'),
+        $this->showRelationshipColumn('subscription');
+        
+        $this->showRelationshipColumn('account_status_id');
+        $this->crud->modifyColumn('account_status_id', [
             'wrapper' => [
                 'element' => 'span',
                 'class' => function ($crud, $column, $entry, $related_key) {
@@ -88,7 +78,6 @@ class AccountCrudController extends CrudController
             ],
         ]);
 
-        
         $this->crud->column([
             'type' => 'google_map_coordinates',
             'name' => 'google_map_coordinates',
@@ -108,6 +97,7 @@ class AccountCrudController extends CrudController
         $this->crud->column('installed_date');
         $this->crud->column('installed_address');       
 
+        // TODO:: search and order logic
         $this->crud->column([
             'name' => 'otcs',
             'label' => __('navlink.otc'),
@@ -119,6 +109,7 @@ class AccountCrudController extends CrudController
 
         ]);
 
+        // TODO:: order and search logic
         $this->crud->column([
             'name' => 'contractPeriods',
             'label' => __('navlink.contract_period'),
