@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\UserPermissions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -18,6 +19,7 @@ class CustomerCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
+    use UserPermissions;
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -28,6 +30,9 @@ class CustomerCrudController extends CrudController
         CRUD::setModel(\App\Models\Customer::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/customer');
         CRUD::setEntityNameStrings('customer', 'customers');
+
+        // dont delete
+        $this->userPermissions();
     }
 
     /**
@@ -40,6 +45,13 @@ class CustomerCrudController extends CrudController
     {
         CRUD::setFromDb(); // set columns from db columns.
         
+        $this->crud->modifyColumn('photo', [
+            'type'   => 'image',
+            'height' => '50px',
+            'width'  => '40px',
+            'orderable' => false,
+        ]);
+
         $this->crud->modifyColumn('signature', [
             'type' => 'image',
             'height' => '150px',
@@ -70,6 +82,12 @@ class CustomerCrudController extends CrudController
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.
+
+        $this->crud->modifyField('photo', [
+            'type' => 'upload',
+            'upload' => true,
+            'disk' => 'public'
+        ]);
 
         $this->crud->field([
             'name' => 'signature',
