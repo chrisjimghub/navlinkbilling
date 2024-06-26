@@ -78,7 +78,7 @@ class CustomerCrudController extends CrudController
             'last_name' => 'required|min:2',
             'date_of_birth' => 'date',
             'contact_number' => 'required',
-            'email' => 'nullable|email',
+            'photo' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.
@@ -92,7 +92,6 @@ class CustomerCrudController extends CrudController
         $this->crud->field([
             'name' => 'signature',
             'lable' => ('navlink.customer_signature'),
-            'label' => 'Please sign here',
             'type' => 'signature',
             'view_namespace' => 'signature-field-for-backpack::fields',
         ]);
