@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\GoogleMapCoordinatesValidator;
 
 class AccountRequest extends FormRequest
 {
@@ -32,6 +33,10 @@ class AccountRequest extends FormRequest
             'otcs.*' => 'integer|exists:otcs,id',
             
             'accountStatus' => 'required|integer|min:1',
+            
+            // Validate Google Maps coordinates
+            'google_map_coordinates' => ['nullable', new GoogleMapCoordinatesValidator],
+
         ];
     }
 

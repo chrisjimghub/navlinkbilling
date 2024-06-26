@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\CrudColumn;
 use App\Models\Customer;
 use App\Models\CustomerCredit;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
@@ -24,6 +25,7 @@ class CustomerCreditCrudController extends CrudController
 
     use UserPermissions;
     use CurrencyFormat;
+    use CrudColumn;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -55,26 +57,12 @@ class CustomerCreditCrudController extends CrudController
         $this->crud->orderBy('last_name');
         $this->crud->orderBy('first_name');
 
-        $this->crud->column([
-            'name' => 'full_name',
-            'label' => __('navlink.customer'),
-            'type' => 'text',
-            'searchLogic' => function ($query, $column, $searchTerm) {
-                $query->orWhere('first_name', 'like', '%'.$searchTerm.'%')
-                      ->orWhere('last_name', 'like', '%'.$searchTerm.'%');
-            },
-        ]);
-
-
-        $this->crud->column([
-            'name' => 'remaining_credits',
-            'label' => __('navlink.remaining_credits'),
-        ]);
-        $this->currencyFormatColumn('remaining_credits');
+        $this->customerNameColumn();
+        $this->currencyColumn('remaining_credits', __('app.remaining_credits'));
 
         $this->crud->column([
             'name' => 'credits_latest_updated',
-            'label' => __('navlink.latest_updated'),
+            'label' => __('app.latest_updated'),
         ]);
 
     }
@@ -92,7 +80,7 @@ class CustomerCreditCrudController extends CrudController
             'amount' => 'required|numeric',
         ];
         $messages = [
-            'customer_id.required' => __('navlink.customer_select_field'),
+            'customer_id.required' => __('app.customer_select_field'),
         ];
         $this->crud->setValidation($rules, $messages);
 
@@ -100,7 +88,7 @@ class CustomerCreditCrudController extends CrudController
 
         $this->crud->field([
             'name' => 'customer_id',
-            'label' => __('navlink.customer'),
+            'label' => __('app.customer'),
             'attribute' => 'full_name', // accessor
             'allows_null' => true,
         ]);

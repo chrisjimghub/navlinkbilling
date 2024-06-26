@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Traits\CrudColumn;
-use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Http\Controllers\Admin\Traits\UserPermissions;
+use App\Http\Requests\BillingRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class PlannedApplicationCrudController
+ * Class BillingCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class PlannedApplicationCrudController extends CrudController
+class BillingCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -22,9 +21,6 @@ class PlannedApplicationCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use UserPermissions;
-    use CurrencyFormat;
-    use CrudColumn;
-
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -32,11 +28,13 @@ class PlannedApplicationCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\PlannedApplication::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/planned-application');
-        CRUD::setEntityNameStrings('planned application', 'planned applications');
-    
+        CRUD::setModel(\App\Models\Billing::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/billing');
+        CRUD::setEntityNameStrings('billing', 'billings');
+        
         $this->userPermissions();
+
+        dd('test');
     }
 
     /**
@@ -47,19 +45,8 @@ class PlannedApplicationCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        $this->relationshipColumn('plannedApplicationType');
-        $this->relationshipColumn('location');
-        $this->crud->column('mbps');
-        $this->currencyColumn('price');
-
-        $this->crud->modifyColumn('price', [
-            'decimals' => false
-        ]);
-    }
-
-    protected function setupShowOperation()
-    {
-        $this->setupListOperation();
+        CRUD::setFromDb(); // set columns from db columns.
+        
     }
 
     /**
@@ -69,27 +56,13 @@ class PlannedApplicationCrudController extends CrudController
      * @return void
      */
     protected function setupCreateOperation()
-    {   
+    {
         CRUD::setValidation([
-            'plannedApplicationType' => 'required|integer|min:1',
-            'location' => 'required|integer|min:1',
-            'mbps' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
+            // 'name' => 'required|min:2',
         ]);
         CRUD::setFromDb(); // set fields from db columns.
-        
-        $this->crud->removeField('planned_application_type_id');
-        $this->crud->removeField('location_id');
-
-        $this->crud->removeFields([
-            'planned_application_type_id',
-            'location_id',
-        ]);
-
-        $this->crud->field('plannedApplicationType')->label(__('app.planned_application_type'))->before('mbps');
-        $this->crud->field('location')->before('mbps');
     
-        $this->currencyFormatField('price');
+        // TODO:: add scope that only those connection account_status in dropdown account.
     }
 
     /**
