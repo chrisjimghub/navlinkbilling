@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Customer;
+use App\Models\CustomerCredit;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Http\Controllers\Admin\Traits\UserPermissions;
-use App\Http\Requests\CustomerCreditRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -17,9 +18,9 @@ class CustomerCreditCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use UserPermissions;
     use CurrencyFormat;
@@ -31,10 +32,10 @@ class CustomerCreditCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\CustomerCredit::class);
+        CRUD::setModel(CustomerCredit::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/customer-credit');
         CRUD::setEntityNameStrings('customer credit', 'customer credits');
-    
+        
         $this->userPermissions();
     }
 
@@ -46,24 +47,36 @@ class CustomerCreditCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb();
+        // Set the model for the CRUD operation
+        $this->crud->setModel(Customer::class);
 
-        // TODO:: wip
-        // $this->crud->column('customer_id');
+        // Apply the scope to filter customers with remaining credits > 0
+        $this->crud->addClause('hasRemainingCredits');
+        $this->crud->orderBy('last_name');
+        $this->crud->orderBy('first_name');
 
-        // $this->crud->column([
-        //     'name' => 'customer.full_name',
-        //     'label' => __('navlink.customer'),
-        // ]);
+        $this->crud->column([
+            'name' => 'full_name',
+            'label' => __('navlink.customer'),
+            'type' => 'text',
+            'searchLogic' => function ($query, $column, $searchTerm) {
+                $query->orWhere('first_name', 'like', '%'.$searchTerm.'%')
+                      ->orWhere('last_name', 'like', '%'.$searchTerm.'%');
+            },
+        ]);
 
-        // $this->crud->column('amount');
-        // $this->currencyFormatColumn('amount');
-    
-        // TODO:: add updated_at / last updated at
-   
-        // $this->crud->column('updated_at');
 
-        $this->crud->column('created_at');
+        $this->crud->column([
+            'name' => 'remaining_credits',
+            'label' => __('navlink.remaining_credits'),
+        ]);
+        $this->currencyFormatColumn('remaining_credits');
+
+        $this->crud->column([
+            'name' => 'credits_latest_updated',
+            'label' => __('navlink.latest_updated'),
+        ]);
+
     }
 
     /**

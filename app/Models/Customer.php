@@ -56,6 +56,13 @@ class Customer extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    // Scope method to filter customers with remaining credits > 0
+    public function scopeHasRemainingCredits($query)
+    {
+        return $query->whereHas('customerCredits', function ($query) {
+            $query->where('amount', '>', 0);
+        });
+    }
 
     /*
     |--------------------------------------------------------------------------
