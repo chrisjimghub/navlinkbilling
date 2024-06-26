@@ -32,6 +32,10 @@ return [
     'customer' => 'Customer',
     'customer_signature' => 'Please sign here',
     'customer_select_field' => 'The customer field is required.',
+
+    // Customer Credits
+    'remaining_credits' => 'Remaining Credits',
+    'latest_updated' => 'Last Updated',
     
     // OTC 
     'otc' => 'One-Time Charge',
