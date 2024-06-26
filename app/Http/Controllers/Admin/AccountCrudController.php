@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Traits\CustomerHelper;
-use Illuminate\Support\Arr;
+use App\Http\Controllers\Admin\Traits\CrudColumn;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\UrlQueryString;
@@ -26,7 +25,7 @@ class AccountCrudController extends CrudController
 
     use UserPermissions;
     use UrlQueryString;
-    use CustomerHelper;
+    use CrudColumn;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -50,6 +49,15 @@ class AccountCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        /* Search Logic & Order Logic
+            DONE:: Account Name / Customer
+            TODO:: Planned Application - 
+            TODO:: Subscription -
+            TODO:: One-Time Charge -
+            TODO:: Contract Period - 
+            TODO:: Account Status -
+        */
+
         // eager loading improves performance
         $this->crud->with('customer');
         $this->crud->with('plannedApplication');
@@ -66,6 +74,7 @@ class AccountCrudController extends CrudController
             'limit' => 100
         ]);
 
+        
         $this->crud->column('subscription');
 
         $this->crud->column([
