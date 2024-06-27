@@ -55,13 +55,6 @@ class AccountCrudController extends CrudController
 
         $this->customerNameColumn(label: __('app.account_name'));
 
-        // TODO:: orderLogic and search logic
-        // $this->crud->column([
-        //     'name' => 'plannedApplication.details',
-        //     'label' => __('app.planned_application'),
-        //     'limit' => 100,
-        // ]);
-
         $this->plannedApplicationColumn(__('app.planned_application'));
 
         $this->relationshipColumn(column: 'subscription', label: __('app.subscription'));
@@ -169,7 +162,7 @@ class AccountCrudController extends CrudController
 
             'relation_type' => 'BelongsTo',
 
-            // custom option attribute, i created a custome field that append a custom model attribute
+            // custom option attribute, i created a custom field that append a custom model attribute
             'data-location' => 'dataLocation',
         ]); 
 
