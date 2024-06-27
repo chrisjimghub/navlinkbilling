@@ -77,14 +77,14 @@ class PlannedApplication extends Model
         return $type .' :   '.$this->mbps . 'Mbps ----- ' . $this->currencyFormatAccessor($this->price);
     }
     
-    // check custom field select_grouped_planned_application / AccountCrudController
+    // use in custom field select_grouped_planned_application.blade.php in AccountCrudController
     public function getDataLocationAttribute()
     {
         return $this->location->name;
     }
 
 
-    public function getColumnDisplayAttribute()
+    public function getDetailsAttribute()
     {
         return $this->location->name . ' - '. $this->optionLabel;
     }

@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Traits\CrudColumn;
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
-use App\Http\Controllers\Admin\Traits\UrlQueryString;
-use App\Http\Controllers\Admin\Traits\UserPermissions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -23,9 +21,7 @@ class AccountCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
-    use UserPermissions;
-    use UrlQueryString;
-    use CrudColumn;
+    use CrudExtend;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -59,16 +55,11 @@ class AccountCrudController extends CrudController
 
         $this->customerNameColumn(label: __('app.account_name'));
 
-        // TODO:: orderLogic and search logic
-        $this->crud->column([
-            'name' => 'plannedApplication.columnDisplay',
-            'label' => __('app.planned_application'),
-            'limit' => 100
-        ]);
+        $this->plannedApplicationColumn(__('app.planned_application'));
+
+        $this->relationshipColumn(column: 'subscription', label: __('app.subscription'));
         
-        $this->relationshipColumn('subscription', __('app.subscription'));
-        
-        $this->relationshipColumn('account_status', __('app.account_status'));
+        $this->relationshipColumn(column: 'account_status', label: __('app.account_status'));
         $this->crud->modifyColumn('account_status', [
             'wrapper' => [
                 'element' => 'span',
@@ -171,7 +162,7 @@ class AccountCrudController extends CrudController
 
             'relation_type' => 'BelongsTo',
 
-            // custom option attribute, i created a custome field that append a custom model attribute
+            // custom option attribute, i created a custom field that append a custom model attribute
             'data-location' => 'dataLocation',
         ]); 
 
