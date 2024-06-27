@@ -23,12 +23,21 @@ trait PlannedApplicationCrud
                 }
                 return;
             },
-            // 'searchLogic' => function ($query, $column, $searchTerm) {
-            //     $query->orWhereHas('customer', function ($q) use ($column, $searchTerm) {
-            //         $q->where('last_name', 'like', '%'.$searchTerm.'%')
-            //           ->orWhere('first_name', 'like', '%'.$searchTerm.'%');
-            //     });
-            // },
+
+            'searchLogic' => function ($query, $column, $searchTerm) {
+                $query->orWhereHas('plannedApplication', function ($query) use ($searchTerm) {
+                    $query->whereHas('location', function ($q) use ($searchTerm) {
+                        $q->where('name', 'like', '%'.$searchTerm.'%');
+                    })
+                    ->orWhereHas('plannedApplicationType', function ($q) use ($searchTerm) {
+                        $q->where('name', 'like', '%'.$searchTerm.'%');
+                    })
+                    ->orWhere(function ($q) use ($searchTerm) {
+                        $q->where('mbps', 'like', '%'.$searchTerm.'%')
+                          ->orWhere('price', 'like', '%'.$searchTerm.'%');
+                    });
+                });
+            },
 
             'orderLogic' => function ($query, $column, $columnDirection) use ($currentTable) {
                 $query->leftJoin('planned_applications', 'planned_applications.id', '=', $currentTable.'.planned_application_id')
