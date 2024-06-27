@@ -58,7 +58,7 @@ class CustomerCreditCrudController extends CrudController
         $this->crud->orderBy('first_name');
 
         $this->customerNameColumn();
-        $this->currencyColumn('remaining_credits', __('app.remaining_credits'));
+        $this->currencyColumn(column: 'remaining_credits', label: __('app.remaining_credits'));
 
         $this->crud->column([
             'name' => 'credits_latest_updated',

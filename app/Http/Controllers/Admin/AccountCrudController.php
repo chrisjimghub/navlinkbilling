@@ -66,9 +66,9 @@ class AccountCrudController extends CrudController
             'limit' => 100
         ]);
         
-        $this->relationshipColumn('subscription', __('app.subscription'));
+        $this->relationshipColumn(column: 'subscription', label: __('app.subscription'));
         
-        $this->relationshipColumn('account_status', __('app.account_status'));
+        $this->relationshipColumn(column: 'account_status', label: __('app.account_status'));
         $this->crud->modifyColumn('account_status', [
             'wrapper' => [
                 'element' => 'span',
