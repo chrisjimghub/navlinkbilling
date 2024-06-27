@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 
 trait UtilityHelper
 {
-    public function relationshipColumn($column, $label = null, $relationshipColumn = 'name',)
+    public function relationshipColumn($column, $label = null, $relationshipColumn = 'name')
     {
         $col = str_replace('_id', '', $column);
         $method = $this->relationshipMethodName($col);

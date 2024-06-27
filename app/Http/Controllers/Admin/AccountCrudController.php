@@ -56,11 +56,13 @@ class AccountCrudController extends CrudController
         $this->customerNameColumn(label: __('app.account_name'));
 
         // TODO:: orderLogic and search logic
-        $this->crud->column([
-            'name' => 'plannedApplication.columnDisplay',
-            'label' => __('app.planned_application'),
-            'limit' => 100,
-        ]);
+        // $this->crud->column([
+        //     'name' => 'plannedApplication.details',
+        //     'label' => __('app.planned_application'),
+        //     'limit' => 100,
+        // ]);
+
+        $this->plannedApplicationColumn(__('app.planned_application'));
 
         $this->relationshipColumn(column: 'subscription', label: __('app.subscription'));
         

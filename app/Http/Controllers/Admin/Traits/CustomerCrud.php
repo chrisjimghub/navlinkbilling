@@ -66,12 +66,6 @@ trait CustomerCrud
             },
             'orderable' => true,
         ]);
-
-        if ($label) {
-            $this->crud->modifyColumn('customer_id', [
-                'label' => $label
-            ]);
-        }
     }
 
     

@@ -84,7 +84,7 @@ class PlannedApplication extends Model
     }
 
 
-    public function getColumnDisplayAttribute()
+    public function getDetailsAttribute()
     {
         return $this->location->name . ' - '. $this->optionLabel;
     }
