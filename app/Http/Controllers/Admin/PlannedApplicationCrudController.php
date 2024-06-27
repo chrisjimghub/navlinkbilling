@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Traits\CrudColumn;
-use App\Http\Controllers\Admin\Traits\CurrencyFormat;
-use App\Http\Controllers\Admin\Traits\UserPermissions;
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -21,9 +19,7 @@ class PlannedApplicationCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
-    use UserPermissions;
-    use CurrencyFormat;
-    use CrudColumn;
+    use CrudExtend;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
