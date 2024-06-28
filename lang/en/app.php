@@ -16,6 +16,8 @@ return [
     // Misc.
     
     // Accounts
+    
+    'account_field_validation' => 'The account field is required.',
     'account_name' => 'Acount Name (Customer)',
     'account_names' => 'Acount Names (Customers)',
     'account_google_map_coordinates' => 'Coordiantes',

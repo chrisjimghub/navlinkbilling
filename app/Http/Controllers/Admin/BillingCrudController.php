@@ -55,10 +55,25 @@ class BillingCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation([
-            // 'name' => 'required|min:2',
+    $rules = [
+            'account_id' => 'required|integer|min:1',
+        ];
+        $messages = [
+            'account_id.required' => __('app.account_field_validation'),
+        ];
+        $this->crud->setValidation($rules, $messages);
+
+        // CRUD::setFromDb(); // set fields from db columns.
+    
+        $this->crud->modifyField('customer_id', [
         ]);
-        CRUD::setFromDb(); // set fields from db columns.
+        
+        $this->crud->field([
+            'name' => 'account_id',
+            'allows_null' => true,
+            'attribute' => 'details', // accessor
+
+        ]);
     }
 
     /**

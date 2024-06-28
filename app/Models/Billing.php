@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Model;
+use App\Models\Account;
 
 class Billing extends Model
 {
@@ -30,6 +31,10 @@ class Billing extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
 
     /*
     |--------------------------------------------------------------------------

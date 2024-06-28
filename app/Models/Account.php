@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Otc;
 use App\Models\Model;
+use App\Models\Billing;
 use App\Models\Subscription;
 use App\Models\AccountStatus;
 use App\Models\ContractPeriod;
@@ -35,6 +36,11 @@ class Account extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function billings()
+    {
+        return $this->hasMany(Billing::class);
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
@@ -76,6 +82,17 @@ class Account extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getDetailsAttribute()
+    {
+        $name = $this->customer->fullName;
+        $subscription = $this->subscription->name;
+        $location = $this->plannedApplication->location->name;
+
+        return $name .': ' . $subscription .' - ' . $location;
+    }
+
+
+    // I put this accessor here instead in OTC model because this is many records, i pluck it.
     // OTC display in view or column
     public function getOtcDetailsAttribute()
     {
@@ -84,6 +101,7 @@ class Account extends Model
         return implode('<br>', $temp);
     }
 
+    // I put this accessor here instead in contract period model because this is many records, i pluck it.
     // Contract Period display in view or column
     public function getContractPeriodDetailsAttribute()
     {
