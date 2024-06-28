@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\BillingType;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -56,12 +57,17 @@ class BillingCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-    $rules = [
+        $rules = [
             'account_id' => 'required|integer|min:1',
+            'billing_type_id' => 'required|exists:billing_types,id',
         ];
+        
         $messages = [
             'account_id.required' => __('app.account_field_validation'),
+            'billing_type_id.required' => __('validation.required', ['attribute' => strtolower(__('app.billing_type'))]),
+            'billing_type_id.exists' => __('validation.exists', ['attribute' => strtolower(__('app.billing_type'))]),
         ];
+
         $this->crud->setValidation($rules, $messages);
 
         $this->crud->field([
@@ -69,6 +75,15 @@ class BillingCrudController extends CrudController
             'allows_null' => true,
             'attribute' => 'details', // accessor
 
+        ]);
+
+        $this->crud->field([   // radio
+            'name'        => 'billing_type_id', // the name of the db column
+            'label'       => __('app.billing_type'), // the input label
+            'type'        => 'radio',
+            'options'     =>  BillingType::all()->pluck('name', 'id')->toArray(),
+            // optional
+            'inline'      => false, // show the radios all on the same line?
         ]);
     }
 

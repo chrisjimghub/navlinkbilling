@@ -27,6 +27,9 @@ return [
     'account_status' => 'Account Status',
     'account_statuses' => 'Account Statuses',
     
+    // Billing Type
+    'billing_type' => 'Billing Type',
+
     // Contract Period
     'contract_period' => 'Contract Period',
     'contract_periods' => 'Contract Periods',

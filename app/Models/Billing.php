@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Model;
 use App\Models\Account;
+use App\Models\BillingType;
 
 class Billing extends Model
 {
@@ -31,6 +32,11 @@ class Billing extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function billingType()
+    {
+        return $this->belongsTo(BillingType::class);
+    }
+
     public function account()
     {
         return $this->belongsTo(Account::class);
