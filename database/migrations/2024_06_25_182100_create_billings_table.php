@@ -19,15 +19,15 @@ return new class extends Migration
             $table->foreignId('account_id')->constrained('accounts')->onDelete('cascade');
 
             // Billing date
-            $table->date('date_start');
-            $table->date('date_end');
-            $table->date('date_cut_off');
+            $table->date('date_start')->nullable();
+            $table->date('date_end')->nullable();
+            $table->date('date_cut_off')->nullable();
 
-            $table->string('prepared_by');
-            $table->string('prepared_by_signature');
+            $table->string('prepared_by')->nullable();
+            $table->string('prepared_by_signature')->nullable();
 
-            $table->string('approved_by');
-            $table->string('approved_by_signature');
+            $table->string('approved_by')->nullable();
+            $table->string('approved_by_signature')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
