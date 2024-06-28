@@ -30,7 +30,7 @@ class CustomerFactory extends Factory
             'barangay' => $this->faker->citySuffix,
             'city_or_municipality' => $this->faker->city,
             'social_media' => $this->faker->userName,
-            'signature' => $this->faker->imageUrl(),
+            // 'signature' => $this->faker->imageUrl(),
         ];
     }
 }
