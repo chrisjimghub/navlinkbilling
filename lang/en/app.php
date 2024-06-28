@@ -27,6 +27,14 @@ return [
     'account_status' => 'Account Status',
     'account_statuses' => 'Account Statuses',
     
+    // Billing 
+    'billing_date_start' => 'Date Start',
+    'billing_date_end' => 'Date End',
+    'billing_date_cut_off' => 'Date Cut Off',
+
+    // Billing Type
+    'billing_type' => 'Billing Type',
+
     // Contract Period
     'contract_period' => 'Contract Period',
     'contract_periods' => 'Contract Periods',

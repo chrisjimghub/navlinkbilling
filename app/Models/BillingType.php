@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Model;
+use App\Models\Billing;
 
 class BillingType extends Model
 {
@@ -31,6 +32,10 @@ class BillingType extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function billings()
+    {
+        return $this->hasMany(Billing::class);
+    }
 
     /*
     |--------------------------------------------------------------------------
