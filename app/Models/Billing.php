@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Models\Model;
 use App\Models\Account;
 use App\Models\BillingType;
 
 class Billing extends Model
 {
+    use CurrencyFormat;
+
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
@@ -20,6 +23,10 @@ class Billing extends Model
     protected $guarded = ['id'];
     // protected $fillable = [];
     // protected $hidden = [];
+
+    protected $casts = [
+        'particulars' => 'array',
+    ];
 
     /*
     |--------------------------------------------------------------------------
@@ -53,6 +60,15 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getParticularDetailsAttribute()
+    {
+        $details = [];
+        foreach ($this->particulars as $particular) {
+            $amount = $this->currencyFormatAccessor($particular['Amount']);
+            $details[] = "<strong>{$particular['description']}</strong> : {$amount}";
+        }
+        return implode('<br>', $details);
+    }
 
     /*
     |--------------------------------------------------------------------------

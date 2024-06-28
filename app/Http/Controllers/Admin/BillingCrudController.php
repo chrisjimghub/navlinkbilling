@@ -46,8 +46,16 @@ class BillingCrudController extends CrudController
     protected function setupListOperation()
     {
         $this->accountColumn(label: __('app.account'));
-        
-        
+        $this->relationshipColumn(column: 'billing_type_id', label: __('app.billing_type'));
+
+        $this->crud->column([
+            'name' => 'particulars',
+            'type'     => 'closure',
+            'function' => function($entry) {
+                return $entry->particularDetails;
+            },
+            'escaped' => false
+        ]);
     }
 
     /**
@@ -128,7 +136,7 @@ class BillingCrudController extends CrudController
             'label' => __('app.billing_date_start'),
             'type'  => 'date',
             'wrapper' => [
-                'class' => 'form-group col-sm-3 mb-3 d-none' // d-none = hidden
+                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
             ]
         ]);
 
@@ -137,7 +145,7 @@ class BillingCrudController extends CrudController
             'label' => __('app.billing_date_end'),
             'type'  => 'date',
             'wrapper' => [
-                'class' => 'form-group col-sm-3 mb-3 d-none' // d-none = hidden
+                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
             ]
         ]);
 
@@ -146,8 +154,33 @@ class BillingCrudController extends CrudController
             'label' => __('app.billing_date_cut_off'),
             'type'  => 'date',
             'wrapper' => [
-                'class' => 'form-group col-sm-3 mb-3 d-none' // d-none = hidden
+                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
             ]
+        ]);
+
+        // TODO:: add validation
+        $this->crud->field([   // repeatable
+            'name'  => 'particulars',
+            'label' => __('app.billing_particulars'),
+            'type'  => 'unlimited_field',
+            'fields' => [ // also works as: "fields"
+                [
+                    'name'    => 'description',
+                    'type'    => 'text',
+                    'label'   => __('app.billing_description'),
+                    'wrapper' => ['class' => 'form-group col-sm-6'],
+                ],
+                [
+                    'name'    => 'Amount',
+                    'type'    => 'number',
+                    'label'   => 'Amount',
+                    'wrapper' => ['class' => 'form-group col-sm-6'],
+                ],
+                
+            ],
+            'init_rows' => 1, // number of empty rows to be initialized, by default 1
+            'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
+        
         ]);
     }
 
