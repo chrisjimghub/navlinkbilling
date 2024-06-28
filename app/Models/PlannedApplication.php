@@ -30,6 +30,17 @@ class PlannedApplication extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public static function boot() 
+    {
+        parent::boot();
+
+        static::addGlobalScope('orderByPriceMbps', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $orderBy = 'asc';
+            $builder->orderBy('price', $orderBy);
+            $builder->orderBy('mbps', $orderBy);
+        });
+    }
+    
 
     /*
     |--------------------------------------------------------------------------

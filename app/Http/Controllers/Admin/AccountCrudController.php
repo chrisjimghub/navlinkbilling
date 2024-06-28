@@ -53,6 +53,9 @@ class AccountCrudController extends CrudController
         $this->crud->with('otcs');
         $this->crud->with('contractPeriods');
 
+        // remove the global scope in boot order because it will conflict with the column order.
+        $this->crud->query->withoutGlobalScope('orderByCustomerFullName');
+
         $this->customerNameColumn(label: __('app.account_name'));
 
         $this->plannedApplicationColumn(__('app.planned_application'));
@@ -111,7 +114,7 @@ class AccountCrudController extends CrudController
             'escaped' => false
         ]);
 
-        $this->crud->column('notes');        
+        $this->crud->column('notes');
     }
 
     protected function setupShowOperation()

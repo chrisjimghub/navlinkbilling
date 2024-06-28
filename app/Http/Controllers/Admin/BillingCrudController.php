@@ -33,8 +33,6 @@ class BillingCrudController extends CrudController
         CRUD::setEntityNameStrings('billing', 'billings');
         
         $this->userPermissions();
-
-        dd('test');
     }
 
     /**
@@ -45,7 +43,8 @@ class BillingCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
+        $this->accountColumn(label: __('app.account'));
+        
         
     }
 
@@ -57,12 +56,20 @@ class BillingCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation([
-            // 'name' => 'required|min:2',
+    $rules = [
+            'account_id' => 'required|integer|min:1',
+        ];
+        $messages = [
+            'account_id.required' => __('app.account_field_validation'),
+        ];
+        $this->crud->setValidation($rules, $messages);
+
+        $this->crud->field([
+            'name' => 'account_id',
+            'allows_null' => true,
+            'attribute' => 'details', // accessor
+
         ]);
-        CRUD::setFromDb(); // set fields from db columns.
-    
-        // TODO:: add scope that only those connection account_status in dropdown account.
     }
 
     /**

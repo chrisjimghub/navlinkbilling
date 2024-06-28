@@ -43,6 +43,9 @@ class CustomerCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->orderBy('last_name');
+        $this->crud->orderBy('first_name');
+
         CRUD::setFromDb(); // set columns from db columns.
         
         $this->crud->modifyColumn('photo', [

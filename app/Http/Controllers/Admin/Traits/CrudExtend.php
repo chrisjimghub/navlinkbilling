@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Traits;
 
+use App\Http\Controllers\Admin\Traits\AccountCrud;
 use App\Http\Controllers\Admin\Traits\CustomerCrud;
 use App\Http\Controllers\Admin\Traits\UtilityHelper;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
@@ -20,4 +21,5 @@ trait CrudExtend
 
     use CustomerCrud;
     use PlannedApplicationCrud;
+    use AccountCrud;
 }

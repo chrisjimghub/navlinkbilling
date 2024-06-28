@@ -26,6 +26,13 @@ trait CustomerCrud
                         ->select('*');
             },
             'orderable' => true,
+
+            'wrapper' => [
+                'href' => function ($crud, $column, $entry, $related_key) {
+                    return backpack_url('customer/'.$entry->id.'/show');
+                },
+                // 'target' => '_blank'
+            ]
         ]);
     }
 
@@ -65,6 +72,13 @@ trait CustomerCrud
                         ->select($currentTable.'.*');
             },
             'orderable' => true,
+
+            'wrapper' => [
+                'href' => function ($crud, $column, $entry, $related_key) {
+                    return backpack_url('customer/'.$entry->customer_id.'/show');
+                },
+                // 'target' => '_blank'
+            ]
         ]);
     }
 
