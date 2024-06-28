@@ -53,6 +53,14 @@ class AccountCrudController extends CrudController
         $this->crud->with('otcs');
         $this->crud->with('contractPeriods');
 
+         // Join customers table to order by last_name and first_name
+        // $this->crud->addClause('join', 'customers', 'accounts.customer_id', '=', 'customers.id');
+
+        // Order by customer last_name
+        // $this->crud->orderBy('customers.last_name');
+        // $this->crud->orderBy('customers.first_name');
+
+
         $this->customerNameColumn(label: __('app.account_name'));
 
         $this->plannedApplicationColumn(__('app.planned_application'));

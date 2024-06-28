@@ -30,6 +30,16 @@ class Customer extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public static function boot() 
+    {
+        parent::boot();
+
+        static::addGlobalScope('orderByFullName', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $orderBy = 'asc';
+            $builder->orderBy('last_name', $orderBy);
+            $builder->orderBy('first_name', $orderBy);
+        });
+    }
 
     /*
     |--------------------------------------------------------------------------

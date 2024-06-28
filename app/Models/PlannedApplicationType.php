@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Model;
 use App\Models\PlannedApplication;
+use App\Models\Scopes\OrderByName;
 
 class PlannedApplicationType extends Model
 {
@@ -25,6 +26,11 @@ class PlannedApplicationType extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public static function boot() 
+    {
+        parent::boot();
+        static::addGlobalScope(new OrderByName());
+    }
 
     /*
     |--------------------------------------------------------------------------

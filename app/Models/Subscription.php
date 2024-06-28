@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Model;
 use App\Models\Account;
+use App\Models\Scopes\OrderByName;
 
 class Subscription extends Model
 {
@@ -25,6 +26,11 @@ class Subscription extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public static function boot() 
+    {
+        parent::boot();
+        static::addGlobalScope(new OrderByName());
+    }
 
     /*
     |--------------------------------------------------------------------------
