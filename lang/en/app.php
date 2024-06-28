@@ -17,6 +17,7 @@ return [
     
     // Accounts
     
+    'account' => 'Account',
     'account_field_validation' => 'The account field is required.',
     'account_name' => 'Acount Name (Customer)',
     'account_names' => 'Acount Names (Customers)',

@@ -43,8 +43,32 @@ class BillingCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
-        
+        $this->accountColumn(label: __('app.account'));
+
+        /* $this->crud->column([
+            'name' => 'account_id',
+            'label' => __('app.account'),
+            'type'  => 'closure',
+            'function' => function($entry)  {
+                if ($entry->details == null) {
+                    return;
+                }
+
+                return $entry->details;
+            },
+            'searchLogic' => function ($query, $column, $searchTerm) {
+                // $query->orWhereHas($method, function ($q) use ($column, $searchTerm, $relationshipColumn) {
+                //     $q->where($relationshipColumn, 'like', '%'.$searchTerm.'%');
+                // });
+            },
+            'orderLogic' => function ($query, $column, $columnDirection) {
+                // $table = $this->classInstance($this->convertToClassName($col))->getTable();
+                // return $query->leftJoin($table, $table.'.id', '=', $currentTable.'.'.$col.'_id')
+                //         ->orderBy($table.'.'.$relationshipColumn, $columnDirection)
+                //         ->select($currentTable.'.*');
+            },
+            'orderable' => true,
+        ]); */
     }
 
     /**
