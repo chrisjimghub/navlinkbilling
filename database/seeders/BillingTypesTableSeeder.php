@@ -22,7 +22,7 @@ class BillingTypesTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'name' => 'Paid',
+                'name' => 'Installation Fee',
                 'created_at' => '2024-06-28 17:11:34',
                 'updated_at' => '2024-06-28 17:11:34',
                 'deleted_at' => NULL,
@@ -30,7 +30,7 @@ class BillingTypesTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 2,
-                'name' => 'Unpaid',
+                'name' => 'Monthly Fee',
                 'created_at' => '2024-06-28 17:11:40',
                 'updated_at' => '2024-06-28 17:11:40',
                 'deleted_at' => NULL,
