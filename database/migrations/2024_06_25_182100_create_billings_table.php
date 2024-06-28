@@ -18,6 +18,8 @@ return new class extends Migration
             // Customer address
             $table->foreignId('account_id')->constrained('accounts')->onDelete('cascade');
 
+            // $table->boolean('one_time')->default(false);
+
             // Billing date
             $table->date('date_start')->nullable();
             $table->date('date_end')->nullable();
