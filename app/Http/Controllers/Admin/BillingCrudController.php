@@ -33,8 +33,6 @@ class BillingCrudController extends CrudController
         CRUD::setEntityNameStrings('billing', 'billings');
         
         $this->userPermissions();
-
-        dd('test');
     }
 
     /**
@@ -61,8 +59,6 @@ class BillingCrudController extends CrudController
             // 'name' => 'required|min:2',
         ]);
         CRUD::setFromDb(); // set fields from db columns.
-    
-        // TODO:: add scope that only those connection account_status in dropdown account.
     }
 
     /**
