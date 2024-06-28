@@ -30,6 +30,18 @@ class Account extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public static function boot() 
+    {
+        parent::boot();
+
+        static::addGlobalScope('orderByCustomerFullName', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $orderBy = 'asc';
+            $builder->join('customers', 'customers.id', '=', 'accounts.customer_id')
+                    ->orderBy('customers.last_name', $orderBy)
+                    ->orderBy('customers.first_name', $orderBy)
+                    ->select('accounts.*'); // Ensure only Account fields are selected
+        });
+    }
 
     /*
     |--------------------------------------------------------------------------

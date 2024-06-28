@@ -63,11 +63,6 @@ class BillingCrudController extends CrudController
         ];
         $this->crud->setValidation($rules, $messages);
 
-        // CRUD::setFromDb(); // set fields from db columns.
-    
-        $this->crud->modifyField('customer_id', [
-        ]);
-        
         $this->crud->field([
             'name' => 'account_id',
             'allows_null' => true,
