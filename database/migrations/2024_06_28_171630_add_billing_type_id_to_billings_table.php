@@ -26,7 +26,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('billings', function (Blueprint $table) {
-            //
+            // Drop the foreign key constraint first
+            $table->dropForeign(['billing_type_id']);
+
+            // Then drop the billing_type_id column
+            $table->dropColumn('billing_type_id');
         });
     }
 };
