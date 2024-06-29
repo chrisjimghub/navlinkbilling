@@ -133,7 +133,7 @@ class BillingCrudController extends CrudController
         $this->crud->field([   // repeatable
             'name'  => 'particulars',
             'label' => __('app.billing_particulars'),
-            'type'  => 'unlimited_field',
+            'type'  => 'repeat',
             'fields' => [ // also works as: "fields"
                 [
                     'name'    => 'description',
