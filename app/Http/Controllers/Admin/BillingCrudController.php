@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Account;
 use App\Models\BillingType;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
@@ -117,10 +118,25 @@ class BillingCrudController extends CrudController
         $this->crud->setValidation($rules, $messages);
 
         $this->crud->field([
-            'name' => 'account_id',
-            'allows_null' => true,
-            'attribute' => 'details', // accessor
+            'type'      => 'select',
+            'name'      => 'account_id', // the db column for the foreign key
+            'label'     => __('app.account'),
+
+            // optional
+            // 'entity' should point to the method that defines the relationship in your Model
+            // defining entity will make Backpack guess 'model' and 'attribute'
+            'entity'    => 'account',
+        
+            // optional - manually specify the related model and attribute
+            'model'     => Account::class, // related model
+            'attribute' => 'details', // foreign key attribute that is shown to user
+        
+            // optional - force the related options to be a custom query, instead of all();
+            'options'   => (function ($query) {
+                return $query->connected()->get(); // use the local scope
+            }), // you can use this to filter the results shown in the select
         ]);
+
 
         $this->crud->field([
             'name'        => 'billing_type_id', // the name of the db column
