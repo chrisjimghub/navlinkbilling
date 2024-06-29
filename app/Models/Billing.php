@@ -64,7 +64,13 @@ class Billing extends Model
     {
         $details = [];
         foreach ($this->particulars as $particular) {
-            $amount = $this->currencyFormatAccessor($particular['amount']);
+
+            $amount = $particular['amount'];
+
+            if ($amount) {
+                $amount = $this->currencyFormatAccessor($amount);
+            }
+
             $details[] = "<strong>{$particular['description']}</strong> : {$amount}";
         }
         return implode('<br>', $details);
