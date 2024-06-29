@@ -142,7 +142,7 @@ class BillingCrudController extends CrudController
                     'wrapper' => ['class' => 'form-group col-sm-6'],
                 ],
                 [
-                    'name'    => 'Amount',
+                    'name'    => 'amount',
                     'type'    => 'number',
                     'label'   => 'Amount',
                     'wrapper' => ['class' => 'form-group col-sm-6'],
