@@ -81,4 +81,35 @@ class Billing extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public function setParticularsAttribute($value)
+    {
+        if ($this->attributes['billing_type_id'] == 1) { // Installation Fee
+
+            $data = [];
+
+            $otcs = $this->account->otcs;
+
+            if ($otcs) {
+                foreach ($otcs as $otc) {
+                    $data[] = [
+                        'description' => $otc->name,
+                        'amount' => $otc->amount,
+                    ];
+                }
+                
+                // Modify particulars attribute as needed
+                $this->attributes['particulars'] = json_encode($data);
+                
+                $this->attributes['date_start'] = null;
+                $this->attributes['date_end'] = null;
+                $this->attributes['date_cut_off'] = null;
+            }
+
+        }else {
+            $this->attributes['particulars'] = json_encode($value);
+        }
+        
+    }
+
+    
 }

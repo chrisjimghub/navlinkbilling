@@ -100,6 +100,7 @@ class BillingCrudController extends CrudController
             'options'     =>  BillingType::all()->pluck('name', 'id')->toArray(),
             // optional
             'inline'      => false, // show the radios all on the same line?
+            'hint'        => __('app.billing_type_id_hint')
         ]);
 
         $this->crud->field([
@@ -149,12 +150,12 @@ class BillingCrudController extends CrudController
                 ],
                 
             ],
-            // 'init_rows' => 2, // number of empty rows to be initialized, by default 1
+            'init_rows' => 0, // number of empty rows to be initialized, by default 1
             // 'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
 
-            'wrapper' => [
-                'class' => 'form-group col-sm-12 mb-3 d-none'
-            ]
+            // 'wrapper' => [
+            //     'class' => 'form-group col-sm-12 mb-3 d-none'
+            // ]
         
         ]);
     }
@@ -169,5 +170,36 @@ class BillingCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    public function update()
+    {
+        $this->crud->hasAccessOrFail('update');
+
+        // execute the FormRequest authorization and validation, if one is required
+        $request = $this->crud->validateRequest();
+
+        // register any Model Events defined on fields
+        $this->crud->registerFieldEvents();
+
+        // dd($request->get($this->crud->model->getKeyName()));
+
+        // update the row in the db
+        $item = $this->crud->update(
+            $request->get($this->crud->model->getKeyName()),
+            $this->crud->getStrippedSaveRequest($request)
+        );
+        
+        // dd($item);
+
+        $this->data['entry'] = $this->crud->entry = $item;
+
+        // show a success message
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
+
+        // save the redirect choice for next time
+        $this->crud->setSaveAction();
+
+        return $this->crud->performSaveAction($item->getKey());
     }
 }
