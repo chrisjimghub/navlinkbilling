@@ -149,7 +149,7 @@ class BillingCrudController extends CrudController
                 ],
                 
             ],
-            'init_rows' => 1, // number of empty rows to be initialized, by default 1
+            'init_rows' => 2, // number of empty rows to be initialized, by default 1
             'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
         
         ]);
