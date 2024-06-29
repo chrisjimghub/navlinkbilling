@@ -60,6 +60,22 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getBillingPeriodDetailsAttribute()
+    {
+
+        if ($this->billing_type_id == 1) {
+            return "<strong>{$this->billingType->name}</strong>";
+        }
+
+        // return $this->date_start . ' - '. $this->date_end;
+
+        return "
+            <strong>Date Start</strong> : {$this->date_start} <br>
+            <strong>Date End</strong> : {$this->date_end} <br>
+            <strong>Cut Off</strong> : {$this->date_cut_off} <br>
+        ";
+    }
+
     public function getParticularDetailsAttribute()
     {
         $details = [];
@@ -72,6 +88,8 @@ class Billing extends Model
             }
 
             $details[] = "<strong>{$particular['description']}</strong> : {$amount}";
+            // $details[] = "{$particular['description']} : <strong>{$amount}</strong>";
+            // $details[] = "{$particular['description']} : {$amount}";
         }
         return implode('<br>', $details);
     }

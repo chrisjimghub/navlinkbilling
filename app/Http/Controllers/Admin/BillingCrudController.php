@@ -48,7 +48,22 @@ class BillingCrudController extends CrudController
     protected function setupListOperation()
     {
         $this->accountColumn(label: __('app.account'));
-        $this->relationshipColumn(column: 'billing_type_id', label: __('app.billing_type'));
+        // $this->relationshipColumn(column: 'billing_type_id', label: __('app.billing_type')); // NOTE:: uncomment this if you want to show column for billing type
+
+        $this->crud->column([
+            'name' => 'billing_period',
+            'label' => __('app.billing_period'),
+            'type'     => 'closure',
+            'function' => function($entry) {
+                return $entry->billingPeriodDetails;
+            },
+            'escaped' => false
+        ]);
+
+        // $this->crud->column([
+        //     'name' => 'date_cut_off',
+        //     'label' => __('app.billing_date_cut_off'),
+        // ]);
 
         $this->crud->column([
             'name' => 'particulars',

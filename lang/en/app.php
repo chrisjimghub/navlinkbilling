@@ -33,6 +33,8 @@ return [
     'billing_date_cut_off' => 'Date Cut Off',
     'billing_particulars' => 'Particulars',
     'billing_description' => 'Description',
+    'billing_period' => 'Billing Period',
+    'billing_date_cut_off' => 'Cut Off',
 
     // Billing Type
     'billing_type' => 'Billing Type',
