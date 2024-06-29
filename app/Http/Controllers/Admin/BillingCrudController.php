@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Account;
 use App\Models\BillingType;
+use App\Http\Requests\BillingRequest;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -69,53 +70,7 @@ class BillingCrudController extends CrudController
     {
         Widget::add()->type('script')->content('assets/js/admin/forms/billing.js');
 
-        $rules = [
-            'account_id' => 'required|integer|min:1',
-            'billing_type_id' => 'required|exists:billing_types,id',
-            'date_start' => function ($attribute, $value, $fail) {
-                // Check if billing_type_id is 2 (Monthly Fee)
-                if (request()->input('billing_type_id') == 2) {
-                    // Required validation
-                    if (empty($value)) {
-                        $fail(__('validation.required', ['attribute' => strtolower(__('app.billing_date_start'))]));
-                    }
-                }
-            },
-            'date_end' => function ($attribute, $value, $fail) {
-                if (request()->input('billing_type_id') == 2) {
-                    // Required validation
-                    if (empty($value)) {
-                        $fail(__('validation.required', ['attribute' => strtolower(__('app.billing_date_end'))]));
-                    }
-                    // Additional validation: date_end must be greater than date_start
-                    $date_start = request()->input('date_start');
-                    if (!empty($date_start) && $value <= $date_start) {
-                        $fail(__('validation.after', ['attribute' => strtolower(__('app.billing_date_end')), 'date' => strtolower(__('app.billing_date_start'))]));
-                    }
-                }
-            },
-            'date_cut_off' => function ($attribute, $value, $fail) {
-                if (request()->input('billing_type_id') == 2) {
-                    // Required validation
-                    if (empty($value)) {
-                        $fail(__('validation.required', ['attribute' => strtolower(__('app.billing_date_cut_off'))]));
-                    }
-                    // Additional validation: date_cut_off must be greater than date_end
-                    $date_end = request()->input('date_end');
-                    if (!empty($date_end) && $value <= $date_end) {
-                        $fail(__('validation.after', ['attribute' => strtolower(__('app.billing_date_cut_off')), 'date' => strtolower(__('app.billing_date_end'))]));
-                    }
-                }
-            },
-        ];
-
-        $messages = [
-            'account_id.required' => __('app.account_field_validation'),
-            'billing_type_id.required' => __('validation.required', ['attribute' => strtolower(__('app.billing_type'))]),
-            'billing_type_id.exists' => __('validation.exists', ['attribute' => strtolower(__('app.billing_type'))]),
-        ];
-
-        $this->crud->setValidation($rules, $messages);
+        $this->crud->setValidation(BillingRequest::class);
 
         $this->crud->field([
             'type'      => 'select',
