@@ -183,35 +183,4 @@ class BillingCrudController extends CrudController
         
         ]);
     }
-
-    public function update()
-    {
-        $this->crud->hasAccessOrFail('update');
-
-        // execute the FormRequest authorization and validation, if one is required
-        $request = $this->crud->validateRequest();
-
-        // register any Model Events defined on fields
-        $this->crud->registerFieldEvents();
-
-        // dd($request->get($this->crud->model->getKeyName()));
-
-        // update the row in the db
-        $item = $this->crud->update(
-            $request->get($this->crud->model->getKeyName()),
-            $this->crud->getStrippedSaveRequest($request)
-        );
-        
-        // dd($item);
-
-        $this->data['entry'] = $this->crud->entry = $item;
-
-        // show a success message
-        \Alert::success(trans('backpack::crud.update_success'))->flash();
-
-        // save the redirect choice for next time
-        $this->crud->setSaveAction();
-
-        return $this->crud->performSaveAction($item->getKey());
-    }
 }
