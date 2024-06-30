@@ -60,11 +60,6 @@ class BillingCrudController extends CrudController
             'escaped' => false
         ]);
 
-        // $this->crud->column([
-        //     'name' => 'date_cut_off',
-        //     'label' => __('app.billing_date_cut_off'),
-        // ]);
-
         $this->crud->column([
             'name' => 'particulars',
             'type'     => 'closure',
@@ -73,6 +68,8 @@ class BillingCrudController extends CrudController
             },
             'escaped' => false
         ]);
+
+        $this->currencyFormatColumn(fieldName: 'total');
     }
 
     /**

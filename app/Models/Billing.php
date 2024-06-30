@@ -60,6 +60,13 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getTotalAttribute()
+    {
+        return collect($this->particulars)->sum(function ($item) {
+            return (float) $item['amount'];
+        });
+    }
+
     public function getBillingPeriodDetailsAttribute()
     {
 
