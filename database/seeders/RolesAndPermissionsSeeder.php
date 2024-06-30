@@ -15,13 +15,17 @@ class RolesAndPermissionsSeeder extends Seeder
     protected $rolesAndPermissions = [
 
         'admin' => [
-            'admin_debugbar', 
-            'admin_telescope', 
+            'admin_debugbar', // TODO:: add middleware
+            'admin_telescope', // TODO:: add midleware
             'admin_file_manager',
             'admin_backups',
             'admin_logs',
             'admin_activity_logs',
             // 'admin_settings',
+        ],
+
+        'menu_separator' => [
+            'menu_separator_app_settings'
         ],
 
         'menus' => [

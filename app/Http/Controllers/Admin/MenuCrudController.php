@@ -66,6 +66,11 @@ class MenuCrudController extends CrudController
         
     }
 
+    protected function autoSetupShowOperation()
+    {
+        $this->setupListOperation();
+    }
+
     /**
      * Define what happens when the Create operation is loaded.
      * 
@@ -94,6 +99,7 @@ class MenuCrudController extends CrudController
             'options'     => config('backpack.permissionmanager.models.permission')
                             ::where('name', 'like', '%_list%')
                             ->orWhere('name', 'like', '%admin_%')
+                            ->orWhere('name', 'like', '%menu_separator_%')
                             ->pluck('name', 'name'),
             'allows_multiple' => true, 
         ]);
