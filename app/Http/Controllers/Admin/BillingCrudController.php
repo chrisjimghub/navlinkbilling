@@ -70,6 +70,13 @@ class BillingCrudController extends CrudController
         ]);
 
         $this->currencyFormatColumn(fieldName: 'total');
+
+        $this->crud->column('created_at');
+    }
+
+    protected function autoSetupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**
