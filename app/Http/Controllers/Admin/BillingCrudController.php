@@ -141,6 +141,18 @@ class BillingCrudController extends CrudController
                 'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
             ]
         ]);
+    }
+
+
+    /**
+     * Define what happens when the Update operation is loaded.
+     * 
+     * @see https://backpackforlaravel.com/docs/crud-operation-update
+     * @return void
+     */
+    protected function setupUpdateOperation()
+    {
+        $this->setupCreateOperation();
 
         // TODO:: add validation
         $this->crud->field([   // repeatable
@@ -170,18 +182,6 @@ class BillingCrudController extends CrudController
             // ]
         
         ]);
-    }
-
-
-    /**
-     * Define what happens when the Update operation is loaded.
-     * 
-     * @see https://backpackforlaravel.com/docs/crud-operation-update
-     * @return void
-     */
-    protected function setupUpdateOperation()
-    {
-        $this->setupCreateOperation();
     }
 
     public function update()
