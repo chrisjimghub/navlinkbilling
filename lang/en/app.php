@@ -53,6 +53,9 @@ return [
     'remaining_credits' => 'Remaining Credits',
     'latest_updated' => 'Last Updated',
     
+    // Menus
+    'menu_icon_hint' => '<a href="https://icons8.com/line-awesome" target="_blank">https://icons8.com/line-awesome</a>',
+
     // OTC 
     'otc' => 'One-Time Charge',
     'otcs' => 'One-Time Charges',

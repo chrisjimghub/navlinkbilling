@@ -1,0 +1,356 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+
+class MenusTableSeeder extends Seeder
+{
+
+    /**
+     * Auto generated seed file
+     *
+     * @return void
+     */
+    public function run()
+    {
+        
+
+        \DB::table('menus')->delete();
+        
+        \DB::table('menus')->insert(array (
+            0 => 
+            array (
+                'id' => 1,
+                'label' => 'Menus',
+                'icon' => 'la la-list',
+                'url' => 'menu',
+                'permissions' => '["menus_list"]',
+                'parent_id' => 13,
+                'lft' => 43,
+                'rgt' => 44,
+                'depth' => 2,
+                'created_at' => '2024-06-30 16:29:49',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            1 => 
+            array (
+                'id' => 2,
+                'label' => 'Accounts',
+                'icon' => 'las la-list',
+                'url' => 'account',
+                'permissions' => '["accounts_list"]',
+                'parent_id' => NULL,
+                'lft' => 2,
+                'rgt' => 3,
+                'depth' => 1,
+                'created_at' => '2024-06-30 16:36:03',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            2 => 
+            array (
+                'id' => 3,
+                'label' => 'Billings',
+                'icon' => 'las la-file-invoice',
+                'url' => 'billing',
+                'permissions' => '["billings_list"]',
+                'parent_id' => NULL,
+                'lft' => 4,
+                'rgt' => 5,
+                'depth' => 1,
+                'created_at' => '2024-06-30 16:50:13',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            3 => 
+            array (
+                'id' => 4,
+                'label' => 'Customers',
+                'icon' => 'las la-user-tie',
+                'url' => 'customer',
+                'permissions' => '["customers_list"]',
+                'parent_id' => NULL,
+                'lft' => 6,
+                'rgt' => 7,
+                'depth' => 1,
+                'created_at' => '2024-06-30 16:50:34',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            4 => 
+            array (
+                'id' => 5,
+                'label' => 'Planned Applications',
+                'icon' => 'las la-business-time',
+                'url' => 'planned-application',
+                'permissions' => '["planned_applications_list"]',
+                'parent_id' => NULL,
+                'lft' => 8,
+                'rgt' => 9,
+                'depth' => 1,
+                'created_at' => '2024-06-30 16:51:15',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            5 => 
+            array (
+                'id' => 6,
+                'label' => 'APP Settings',
+                'icon' => NULL,
+                'url' => NULL,
+                'permissions' => NULL,
+                'parent_id' => NULL,
+                'lft' => 10,
+                'rgt' => 11,
+                'depth' => 1,
+                'created_at' => '2024-06-30 16:52:54',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            6 => 
+            array (
+                'id' => 7,
+                'label' => 'Account Statuses',
+                'icon' => 'las la-rss',
+                'url' => 'account-status',
+                'permissions' => '["account_statuses_list"]',
+                'parent_id' => NULL,
+                'lft' => 12,
+                'rgt' => 13,
+                'depth' => 1,
+                'created_at' => '2024-06-30 16:54:18',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            7 => 
+            array (
+                'id' => 8,
+                'label' => 'Locations',
+                'icon' => 'las la-map-marked',
+                'url' => 'location',
+                'permissions' => '["locations_list"]',
+                'parent_id' => NULL,
+                'lft' => 14,
+                'rgt' => 15,
+                'depth' => 1,
+                'created_at' => '2024-06-30 16:54:37',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            8 => 
+            array (
+                'id' => 9,
+                'label' => 'Subscriptions',
+                'icon' => 'lab la-youtube',
+                'url' => 'subscription',
+                'permissions' => '["subscriptions_list"]',
+                'parent_id' => NULL,
+                'lft' => 16,
+                'rgt' => 17,
+                'depth' => 1,
+                'created_at' => '2024-06-30 16:55:33',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            9 => 
+            array (
+                'id' => 10,
+                'label' => 'One-Time Charges',
+                'icon' => 'las la-money-bill-alt',
+                'url' => 'otc',
+                'permissions' => '["otcs_list"]',
+                'parent_id' => NULL,
+                'lft' => 18,
+                'rgt' => 19,
+                'depth' => 1,
+                'created_at' => '2024-06-30 16:56:00',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            10 => 
+            array (
+                'id' => 11,
+                'label' => 'Contract Periods',
+                'icon' => 'las la-file-contract',
+                'url' => 'contract-period',
+                'permissions' => '["contract_periods_list"]',
+                'parent_id' => NULL,
+                'lft' => 20,
+                'rgt' => 21,
+                'depth' => 1,
+                'created_at' => '2024-06-30 16:57:41',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            11 => 
+            array (
+                'id' => 12,
+                'label' => 'Planned App. Types',
+                'icon' => 'las la-briefcase',
+                'url' => 'planned-application-type',
+                'permissions' => '["planned_application_types_list"]',
+                'parent_id' => NULL,
+                'lft' => 22,
+                'rgt' => 23,
+                'depth' => 1,
+                'created_at' => '2024-06-30 16:58:06',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            12 => 
+            array (
+                'id' => 13,
+                'label' => 'Admin Only',
+                'icon' => 'la la-puzzle-piece',
+                'url' => NULL,
+                'permissions' => NULL,
+                'parent_id' => NULL,
+                'lft' => 24,
+                'rgt' => 45,
+                'depth' => 1,
+                'created_at' => '2024-06-30 17:08:32',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            13 => 
+            array (
+                'id' => 14,
+                'label' => 'Authentication',
+                'icon' => NULL,
+                'url' => NULL,
+                'permissions' => NULL,
+                'parent_id' => 13,
+                'lft' => 25,
+                'rgt' => 26,
+                'depth' => 2,
+                'created_at' => '2024-06-30 17:10:43',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            14 => 
+            array (
+                'id' => 15,
+                'label' => 'Users',
+                'icon' => 'la la-user',
+                'url' => 'user',
+                'permissions' => '["users_list"]',
+                'parent_id' => 13,
+                'lft' => 27,
+                'rgt' => 28,
+                'depth' => 2,
+                'created_at' => '2024-06-30 17:11:54',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            15 => 
+            array (
+                'id' => 16,
+                'label' => 'Roles',
+                'icon' => 'la la-group',
+                'url' => 'role',
+                'permissions' => '["roles_list"]',
+                'parent_id' => 13,
+                'lft' => 29,
+                'rgt' => 30,
+                'depth' => 2,
+                'created_at' => '2024-06-30 17:14:39',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            16 => 
+            array (
+                'id' => 17,
+                'label' => 'Permissions',
+                'icon' => 'la la-key',
+                'url' => 'permission',
+                'permissions' => '["permissions_list"]',
+                'parent_id' => 13,
+                'lft' => 31,
+                'rgt' => 32,
+                'depth' => 2,
+                'created_at' => '2024-06-30 17:14:58',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            17 => 
+            array (
+                'id' => 18,
+                'label' => 'Tools',
+                'icon' => NULL,
+                'url' => NULL,
+                'permissions' => NULL,
+                'parent_id' => 13,
+                'lft' => 33,
+                'rgt' => 34,
+                'depth' => 2,
+                'created_at' => '2024-06-30 17:15:46',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            18 => 
+            array (
+                'id' => 19,
+                'label' => 'Backups',
+                'icon' => 'la la-hdd-o',
+                'url' => 'backup',
+                'permissions' => '["admin_backups"]',
+                'parent_id' => 13,
+                'lft' => 35,
+                'rgt' => 36,
+                'depth' => 2,
+                'created_at' => '2024-06-30 17:18:30',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            19 => 
+            array (
+                'id' => 20,
+                'label' => 'File Manager',
+                'icon' => 'la la-files-o',
+                'url' => 'elfinder',
+                'permissions' => '["admin_file_manager"]',
+                'parent_id' => 13,
+                'lft' => 37,
+                'rgt' => 38,
+                'depth' => 2,
+                'created_at' => '2024-06-30 17:19:32',
+                'updated_at' => '2024-06-30 17:23:57',
+                'deleted_at' => NULL,
+            ),
+            20 => 
+            array (
+                'id' => 21,
+                'label' => 'Logs',
+                'icon' => 'la la-terminal',
+                'url' => 'log',
+                'permissions' => '["admin_logs"]',
+                'parent_id' => 13,
+                'lft' => 39,
+                'rgt' => 40,
+                'depth' => 2,
+                'created_at' => '2024-06-30 17:20:15',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+            21 => 
+            array (
+                'id' => 22,
+                'label' => 'Activity Logs',
+                'icon' => 'la la-stream',
+                'url' => 'activity-log',
+                'permissions' => '["admin_activity_logs"]',
+                'parent_id' => 13,
+                'lft' => 41,
+                'rgt' => 42,
+                'depth' => 2,
+                'created_at' => '2024-06-30 17:21:06',
+                'updated_at' => '2024-06-30 17:22:59',
+                'deleted_at' => NULL,
+            ),
+        ));
+        
+        
+    }
+}
