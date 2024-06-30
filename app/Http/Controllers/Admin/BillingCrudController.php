@@ -88,6 +88,7 @@ class BillingCrudController extends CrudController
             'type'      => 'select',
             'name'      => 'account_id', // the db column for the foreign key
             'label'     => __('app.account'),
+            'allows_null' => true,
 
             // optional
             // 'entity' should point to the method that defines the relationship in your Model

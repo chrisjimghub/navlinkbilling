@@ -22,16 +22,18 @@ class ContractPeriodsTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'name' => 'With 12 months Lock-in',
+                'name' => 'Advance 1-month monthly payment',
                 'created_at' => '2024-06-16 10:27:17',
-                'updated_at' => '2024-06-16 10:27:17',
+                'updated_at' => '2024-06-30 14:59:03',
+                'deleted_at' => NULL,
             ),
             1 => 
             array (
                 'id' => 2,
-                'name' => 'Advance 1-month monthly payment',
+                'name' => 'With 12 months Lock-in',
                 'created_at' => '2024-06-16 10:27:33',
-                'updated_at' => '2024-06-16 10:27:33',
+                'updated_at' => '2024-06-30 14:59:12',
+                'deleted_at' => NULL,
             ),
         ));
         
