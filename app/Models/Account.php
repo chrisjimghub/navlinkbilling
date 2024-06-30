@@ -88,10 +88,10 @@ class Account extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
-    public function scopeConnected($query)
+    public function scopeNotDisconnected($query)
     {
         return $query->whereHas('accountStatus', function ($q) {
-            $q->where('id', 1); // 1 is the ID for 'connected' status
+            $q->where('id', '!=', 3); // Disconnected
         });
     }
 

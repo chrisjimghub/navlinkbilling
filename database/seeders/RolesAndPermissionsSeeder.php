@@ -105,6 +105,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'planned_application_types_delete', 
         ],
 
+        // TODO:: DELETE THIS
         'customer_credits' => [
             'customer_credits_list',
             'customer_credits_create', 

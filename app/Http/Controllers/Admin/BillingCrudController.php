@@ -60,11 +60,6 @@ class BillingCrudController extends CrudController
             'escaped' => false
         ]);
 
-        // $this->crud->column([
-        //     'name' => 'date_cut_off',
-        //     'label' => __('app.billing_date_cut_off'),
-        // ]);
-
         $this->crud->column([
             'name' => 'particulars',
             'type'     => 'closure',
@@ -73,6 +68,8 @@ class BillingCrudController extends CrudController
             },
             'escaped' => false
         ]);
+
+        $this->currencyFormatColumn(fieldName: 'total');
     }
 
     /**
@@ -91,6 +88,7 @@ class BillingCrudController extends CrudController
             'type'      => 'select',
             'name'      => 'account_id', // the db column for the foreign key
             'label'     => __('app.account'),
+            'allows_null' => true,
 
             // optional
             // 'entity' should point to the method that defines the relationship in your Model
@@ -103,7 +101,7 @@ class BillingCrudController extends CrudController
         
             // optional - force the related options to be a custom query, instead of all();
             'options'   => (function ($query) {
-                return $query->connected()->get(); // use the local scope
+                return $query->notDisconnected()->get(); // use the local scope
             }), // you can use this to filter the results shown in the select
         ]);
 
@@ -144,6 +142,18 @@ class BillingCrudController extends CrudController
                 'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
             ]
         ]);
+    }
+
+
+    /**
+     * Define what happens when the Update operation is loaded.
+     * 
+     * @see https://backpackforlaravel.com/docs/crud-operation-update
+     * @return void
+     */
+    protected function setupUpdateOperation()
+    {
+        $this->setupCreateOperation();
 
         // TODO:: add validation
         $this->crud->field([   // repeatable
@@ -173,48 +183,5 @@ class BillingCrudController extends CrudController
             // ]
         
         ]);
-    }
-
-
-    /**
-     * Define what happens when the Update operation is loaded.
-     * 
-     * @see https://backpackforlaravel.com/docs/crud-operation-update
-     * @return void
-     */
-    protected function setupUpdateOperation()
-    {
-        $this->setupCreateOperation();
-    }
-
-    public function update()
-    {
-        $this->crud->hasAccessOrFail('update');
-
-        // execute the FormRequest authorization and validation, if one is required
-        $request = $this->crud->validateRequest();
-
-        // register any Model Events defined on fields
-        $this->crud->registerFieldEvents();
-
-        // dd($request->get($this->crud->model->getKeyName()));
-
-        // update the row in the db
-        $item = $this->crud->update(
-            $request->get($this->crud->model->getKeyName()),
-            $this->crud->getStrippedSaveRequest($request)
-        );
-        
-        // dd($item);
-
-        $this->data['entry'] = $this->crud->entry = $item;
-
-        // show a success message
-        \Alert::success(trans('backpack::crud.update_success'))->flash();
-
-        // save the redirect choice for next time
-        $this->crud->setSaveAction();
-
-        return $this->crud->performSaveAction($item->getKey());
     }
 }

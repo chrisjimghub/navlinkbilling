@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Admin\Traits;
 
+use App\Http\Controllers\Admin\Traits\UtilityHelper;
+
 trait CurrencyFormat {
+
+    use UtilityHelper;
 
     const CURRENCY_PREFIX = '₱ ';
     
@@ -28,6 +32,10 @@ trait CurrencyFormat {
     
     public function currencyFormatColumn($fieldName)
     {
+        if (!$this->listColumnExist($fieldName)) {
+            $this->crud->column($fieldName);
+        }
+
         return $this->currencyFormat('column', $fieldName);
     }
 

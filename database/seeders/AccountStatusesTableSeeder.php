@@ -31,10 +31,10 @@ class AccountStatusesTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 2,
-                'name' => 'Processing...',
+                'name' => 'Installing...',
                 'badge_css' => 'badge badge-primary',
                 'created_at' => '2024-06-20 13:36:49',
-                'updated_at' => '2024-06-21 05:52:08',
+                'updated_at' => '2024-06-30 13:53:38',
                 'deleted_at' => NULL,
             ),
             2 => 
@@ -45,15 +45,6 @@ class AccountStatusesTableSeeder extends Seeder
                 'created_at' => '2024-06-20 13:36:56',
                 'updated_at' => '2024-06-21 05:47:40',
                 'deleted_at' => NULL,
-            ),
-            3 => 
-            array (
-                'id' => 4,
-                'name' => 'Technical Issues',
-                'badge_css' => 'badge badge-warning',
-                'created_at' => '2024-06-20 13:37:11',
-                'updated_at' => '2024-06-26 19:48:23',
-                'deleted_at' => '2024-06-26 19:48:23',
             ),
         ));
         
