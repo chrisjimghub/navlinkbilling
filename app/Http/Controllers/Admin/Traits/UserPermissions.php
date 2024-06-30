@@ -20,6 +20,7 @@ trait UserPermissions
         // check access for current role & admin
         $this->checkAccess($role);
         $this->checkAccess('admin');
+        $this->checkAccess('menu_separator');
     }
 
     private function checkAccess($role)

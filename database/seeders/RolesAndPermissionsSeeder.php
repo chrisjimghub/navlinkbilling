@@ -15,22 +15,27 @@ class RolesAndPermissionsSeeder extends Seeder
     protected $rolesAndPermissions = [
 
         'admin' => [
-            'admin_debugbar', 
-            'admin_telescope', 
+            'admin_debugbar', // TODO:: add middleware
+            'admin_telescope', // TODO:: add midleware
+            'admin_file_manager',
+            'admin_backups',
+            'admin_logs',
+            'admin_activity_logs',
+            // 'admin_settings',
         ],
 
-        // 'employees' => [
-        //     'employees_list',
-        //     'employees_create', 
-        //     'employees_show', 
-        //     'employees_update', 
-        //     'employees_delete', 
-        //     'employees_bulk_delete',
-        //     'employees_export',
-        //     'employees_force_delete',
-        //     'employees_force_bulk_delete',
-        //     'employees_revise',
-        // ],
+        'menu_separator' => [
+            'menu_separator_app_settings'
+        ],
+
+        'menus' => [
+            'menus_list',
+            'menus_create', 
+            'menus_show', 
+            'menus_update', 
+            'menus_delete', 
+            'menus_reorder', 
+        ],
 
         'accounts' => [
             'accounts_list',
@@ -105,10 +110,39 @@ class RolesAndPermissionsSeeder extends Seeder
             'planned_application_types_delete', 
         ],
 
-        // TODO:: DELETE THIS
-        'customer_credits' => [
-            'customer_credits_list',
-            'customer_credits_create', 
+        // 'customer_credits' => [
+        //     'customer_credits_list',
+        //     'customer_credits_create', 
+        // ],
+
+        'billings' => [
+            'billings_list',
+            'billings_create', 
+            'billings_show', 
+            'billings_update', 
+            'billings_delete', 
+        ],
+        
+        'users' => [
+            'users_list',
+            'users_create', 
+            'billings_show', 
+            'users_update', 
+            'users_delete', 
+        ],
+
+        'roles' => [
+            'roles_list',
+            'roles_create', 
+            'roles_update', 
+            'roles_delete', 
+        ],
+
+        'permissions' => [
+            'permissions_list',
+            'permissions_create', 
+            'permissions_update', 
+            'permissions_delete', 
         ],
 
     ];

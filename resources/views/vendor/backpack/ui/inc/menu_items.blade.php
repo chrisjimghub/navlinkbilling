@@ -1,33 +1,111 @@
-{{-- This file is used for menu items by any Backpack v6 theme --}}
+@php
+	$menus = \App\Models\Menu::whereNull('parent_id')->orderBy('lft')->get();
+@endphp
 
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('dashboard') }}"><i class="la la-home nav-icon"></i> {{ trans('backpack::base.dashboard') }}</a></li>
+@foreach ($menus as $menu)
 
-{{-- TODO:: create menu crud and add permission rights and show menu if has _list permission --}}
+    {{-- normal menu --}}
+    @if($menu->label && $menu->url)
 
-<x-backpack::menu-item title="Accounts" icon="las la-list" :link="backpack_url('account')" />
-<x-backpack::menu-item title="Billings" icon="las la-file-invoice" :link="backpack_url('billing')" />
-<x-backpack::menu-item title="Customers" icon="las la-user-tie" :link="backpack_url('customer')" />
-<x-backpack::menu-item title="Customer Credits" icon="las la-credit-card" :link="backpack_url('customer-credit')" />
-<x-backpack::menu-item title="Planned Applications" icon="las la-business-time" :link="backpack_url('planned-application')" />
+        @if($menu->permissions)
+            @canany($menu->permissions)
+                <x-backpack::menu-item 
+                    title="{{ $menu->label }}" 
+                    icon="{{ $menu->icon }}" 
+                    :link="backpack_url($menu->url)" 
+                />                
+            @endcanany
+        @else
+            <x-backpack::menu-item 
+                title="{{ $menu->label }}" 
+                icon="{{ $menu->icon }}" 
+                :link="backpack_url($menu->url)" 
+            />
+        @endif
+
+    {{-- separator / header --}}
+    @elseif($menu->label && !$menu->icon && !$menu->url)
+
+        @if($menu->permissions)
+            @canany($menu->permissions)
+                <x-backpack::menu-separator 
+                    title="{{ $menu->label }}" 
+                />                
+            @endcanany
+        @else
+            <x-backpack::menu-separator 
+                title="{{ $menu->label }}" 
+            />
+        @endif
+
+    @endif
 
 
-<x-backpack::menu-separator title="APP Settings" />
-<x-backpack::menu-item title="Account Statuses" icon="las la-rss" :link="backpack_url('account-status')" />
-<x-backpack::menu-item title="Locations" icon="las la-map-marked" :link="backpack_url('location')" />
-<x-backpack::menu-item title="Subscriptions" icon="lab la-youtube" :link="backpack_url('subscription')" />
-<x-backpack::menu-item title="One-Time Charges" icon="las la-money-bill-alt" :link="backpack_url('otc')" />
-<x-backpack::menu-item title="Contract Periods" icon="las la-file-contract" :link="backpack_url('contract-period')" />
-<x-backpack::menu-item title="Planned App. Types" icon="las la-briefcase" :link="backpack_url('planned-application-type')" />
+    {{-- Sub Menu --}}
+    @php
+        $subMenus = \App\Models\Menu::where('parent_id', $menu->id)->orderBy('lft')->get();
+    @endphp
 
+    @if($subMenus->isNotEmpty())
+          @php
+              $subMenusPermissions = $subMenus->pluck('permissions')  
+                                        ->filter()  // Remove null values
+                                        ->flatten() // Flatten the array of arrays into a single array
+                                        ->toArray(); // Convert the collection to an array if needed
+          @endphp     
 
-<x-backpack::menu-dropdown title="Admin Only" icon="la la-puzzle-piece">
-    <x-backpack::menu-dropdown-header title="Authentication" />
-    <x-backpack::menu-dropdown-item title="Users" icon="la la-user" :link="backpack_url('user')" />
-    <x-backpack::menu-dropdown-item title="Roles" icon="la la-group" :link="backpack_url('role')" />
-    <x-backpack::menu-dropdown-item title="Permissions" icon="la la-key" :link="backpack_url('permission')" />
-    <x-backpack::menu-dropdown-header title="Tools" />
-    <x-backpack::menu-dropdown-item title='Backups' icon='la la-hdd-o' :link="backpack_url('backup')" />
-    <x-backpack::menu-dropdown-item :title="trans('backpack::crud.file_manager')" icon="la la-files-o" :link="backpack_url('elfinder')" />
-    <x-backpack::menu-dropdown-item title='Logs' icon='la la-terminal' :link="backpack_url('log')" />
-    <x-backpack::menu-dropdown-item title="Activity Logs" icon="la la-stream" :link="backpack_url('activity-log')" />
-</x-backpack::menu-dropdown>
+    @endif
+
+    @if($subMenus->isNotEmpty() && auth()->user()->canAny($subMenusPermissions))
+        {{-- subMenu opening dropdown tag --}}
+        <x-backpack::menu-dropdown title="{{ $menu->label }}" icon="{{ $menu->icon }}">
+    @endif
+
+    {{-- subMenu lists --}}
+    @foreach ($subMenus as $subMenu)
+
+        {{-- normal subMenu --}}
+        @if($subMenu->label && $subMenu->url)
+
+            @if($subMenu->permissions)
+                @canany($subMenu->permissions)  
+                    <x-backpack::menu-dropdown-item 
+                        title="{{ $subMenu->label }}" 
+                        icon="{{ $subMenu->icon }}" 
+                        :link="backpack_url($subMenu->url)" 
+                    />             
+                @endcanany
+            @else
+                <x-backpack::menu-dropdown-item 
+                    title="{{ $subMenu->label }}" 
+                    icon="{{ $subMenu->icon }}" 
+                    :link="backpack_url($subMenu->url)" 
+                />
+            @endif
+
+        {{-- subMenu separator / header --}}
+        @elseif($subMenu->label && !$subMenu->icon && !$subMenu->url)
+
+            @if($subMenu->permissions)
+                @canany($subMenu->permissions)
+                    <x-backpack::menu-dropdown-header 
+                        title="{{ $subMenu->label }}" 
+                    />    
+                @endcanany
+            @else
+                <x-backpack::menu-dropdown-header 
+                    title="{{ $subMenu->label }}" 
+                />
+            @endif
+
+        @endif
+
+    {{-- end subMenus foreach --}}
+    @endforeach
+
+    @if($subMenus->isNotEmpty() && auth()->user()->canAny($subMenusPermissions))
+        {{-- subMenu closing dropdown tag --}}
+        </x-backpack::menu-dropdown>
+    @endif
+
+@endforeach
