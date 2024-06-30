@@ -103,7 +103,7 @@ class BillingCrudController extends CrudController
         
             // optional - force the related options to be a custom query, instead of all();
             'options'   => (function ($query) {
-                return $query->connected()->get(); // use the local scope
+                return $query->notDisconnected()->get(); // use the local scope
             }), // you can use this to filter the results shown in the select
         ]);
 
