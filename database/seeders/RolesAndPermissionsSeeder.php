@@ -110,11 +110,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'planned_application_types_delete', 
         ],
 
-        // 'customer_credits' => [
-        //     'customer_credits_list',
-        //     'customer_credits_create', 
-        // ],
-
         'billings' => [
             'billings_list',
             'billings_create', 

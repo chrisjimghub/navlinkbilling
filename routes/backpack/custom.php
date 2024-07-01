@@ -25,7 +25,6 @@ Route::group([
     Route::crud('location', 'LocationCrudController');
     Route::crud('account-status', 'AccountStatusCrudController');
     Route::crud('account', 'AccountCrudController');
-    Route::crud('customer-credit', 'CustomerCreditCrudController');
     Route::crud('billing', 'BillingCrudController');
     Route::crud('menu', 'MenuCrudController');
 }); // this should be the absolute last line of this file
