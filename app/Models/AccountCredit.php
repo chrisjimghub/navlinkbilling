@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Models\Model;
-use App\Models\Customer;
+use App\Models\Account;
 
-class CustomerCredit extends Model
+class AccountCredit extends Model
 {
     /*
     |--------------------------------------------------------------------------
@@ -13,7 +13,7 @@ class CustomerCredit extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'customer_credits';
+    protected $table = 'account_credits';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -25,9 +25,9 @@ class CustomerCredit extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-    public function customer()
+    public function account()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Account::class);
     }
 
     /*
