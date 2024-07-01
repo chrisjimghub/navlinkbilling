@@ -166,43 +166,5 @@ class Billing extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
-    // TODO:: Delete later if no longer use
-    public function setTempParticularsAttribute($value)
-    {
-        if ($this->attributes['billing_type_id'] == 1) { // Installation Fee
-
-            $data = [];
-
-            $otcs = $this->account->otcs;
-
-            // OTC record from account
-            if ($otcs) {
-                foreach ($otcs as $otc) {
-                    $data[] = [
-                        'description' => $otc->name,
-                        'amount' => $otc->amount,
-                    ];
-                }
-            }
-
-            if ($value) {
-                $data = collect($data)->merge($value)->unique('description')->values()->all();
-            } 
-
-            // Modify particulars attribute as needed
-            $this->attributes['particulars'] = json_encode($data);
-
-            // Reset other attributes as needed
-            $this->attributes['date_start'] = null;
-            $this->attributes['date_end'] = null;
-            $this->attributes['date_cut_off'] = null;
-
-        } else {
-            // For other billing types, simply encode $value as JSON
-            $this->attributes['particulars'] = json_encode($value);
-        }
-    }
-
-
     
 }
