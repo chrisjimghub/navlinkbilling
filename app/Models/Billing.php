@@ -42,7 +42,7 @@ class Billing extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new ExcludeSoftDeletedAccountsScope);
+        // static::addGlobalScope(new ExcludeSoftDeletedAccountsScope);
 
         static::creating(function ($billing) {
             // Setting date fields to null based on billing_type_id

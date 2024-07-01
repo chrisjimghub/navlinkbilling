@@ -145,7 +145,7 @@ class Account extends Model
 
     public function getDetailsAttribute()
     {
-        $name = $this->customer->fullName;
+        $name = $this->customer->fullName ?? '';
         $subscription = $this->subscription->name;
         $location = $this->plannedApplication->location->name;
 
