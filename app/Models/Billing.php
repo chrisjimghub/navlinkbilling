@@ -45,6 +45,9 @@ class Billing extends Model
         // static::addGlobalScope(new ExcludeSoftDeletedAccountsScope);
 
         static::creating(function ($billing) {
+
+            $particulars = [];
+
             // Setting date fields to null based on billing_type_id
             if ($billing->billing_type_id == 1) { // installment
                 $billing->date_start = null;
@@ -53,7 +56,6 @@ class Billing extends Model
                 
 
                 // OTCS
-                $particulars = [];
                 // Accessing the 'account' relationship and iterating over 'otcs'
                 if ($billing->account->otcs) {
                     foreach ($billing->account->otcs as $otc) {
@@ -79,13 +81,21 @@ class Billing extends Model
                     ];
                 } 
 
-                $billing->particulars = array_values($particulars);
-
             }elseif ($billing->billing_type_id == 2) { // monthly
+                
+                // get the monthly subscription fee and add as particulars
+                $particulars[] = [
+                    'description' => $billing->billingType->name,
+                    'amount' => $billing->account->monthlyFeeAmount
+                ];
+
                 // TODO:: dont forget to compute service interruption
+
             }else {
                 // do nothing
             }
+
+            $billing->particulars = array_values($particulars);
         });
     }
 
@@ -166,43 +176,5 @@ class Billing extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
-    // TODO:: Delete later if no longer use
-    public function setTempParticularsAttribute($value)
-    {
-        if ($this->attributes['billing_type_id'] == 1) { // Installation Fee
-
-            $data = [];
-
-            $otcs = $this->account->otcs;
-
-            // OTC record from account
-            if ($otcs) {
-                foreach ($otcs as $otc) {
-                    $data[] = [
-                        'description' => $otc->name,
-                        'amount' => $otc->amount,
-                    ];
-                }
-            }
-
-            if ($value) {
-                $data = collect($data)->merge($value)->unique('description')->values()->all();
-            } 
-
-            // Modify particulars attribute as needed
-            $this->attributes['particulars'] = json_encode($data);
-
-            // Reset other attributes as needed
-            $this->attributes['date_start'] = null;
-            $this->attributes['date_end'] = null;
-            $this->attributes['date_cut_off'] = null;
-
-        } else {
-            // For other billing types, simply encode $value as JSON
-            $this->attributes['particulars'] = json_encode($value);
-        }
-    }
-
-
     
 }
