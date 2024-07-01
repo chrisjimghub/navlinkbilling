@@ -126,7 +126,7 @@ class Account extends Model
             ->select(DB::raw('SUM(amount) as total_credits'))
             ->first();
 
-        return $result ? $result->total_credits : 0;
+        return $result && $result->total_credits !== null ? $result->total_credits : 0;
     }
 
     /**
