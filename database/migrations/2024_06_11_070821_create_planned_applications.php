@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('planned_application_type_id')->constrained('planned_application_types')->onDelete('cascade');
             $table->integer('mbps');
-            $table->decimal('price');
+            $table->decimal('price', 8, 2);
             $table->timestamps();
 
             $table->softDeletes();
