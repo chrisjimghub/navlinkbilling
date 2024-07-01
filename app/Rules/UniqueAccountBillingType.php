@@ -47,8 +47,8 @@ class UniqueAccountBillingType implements ValidationRule
                 }
 
                 // Check if the account has an installed date for pro-rated computations
-                $exists = Account::where('id', $this->accountId)
-                    ->whereNull('installed_date')
+                $exists = Account::where('accounts.id', $this->accountId)
+                    ->whereNull('accounts.installed_date')
                     ->exists();
 
                 if ($exists) {
