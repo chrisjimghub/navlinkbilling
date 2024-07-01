@@ -28,6 +28,10 @@ class Billing extends Model
         'particulars' => 'array',
     ];
 
+    protected $attributes = [
+        'billing_status_id' => 2, // Newly created bill default value 2 or Unpaid
+    ];
+
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS
