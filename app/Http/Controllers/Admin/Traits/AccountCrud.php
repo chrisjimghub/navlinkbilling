@@ -16,11 +16,11 @@ trait AccountCrud
             'label' => $label ?? __('app.account'),
             'type'  => 'closure',
             'function' => function($entry)  {
-                if ($entry->account->details == null) {
-                    return;
+                if ($entry->account) {
+                    return $entry->account->details;
                 }
-
-                return $entry->account->details;
+                
+                return;
             },
             'searchLogic' => function ($query, $column, $searchTerm) {
                 $query->orWhereHas('account.customer', function ($q) use ($searchTerm) {

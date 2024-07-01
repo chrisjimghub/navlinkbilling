@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Models\Model;
 use App\Models\Account;
 use App\Models\BillingType;
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
+use App\Models\Scopes\ExcludeSoftDeletedAccountsScope;
 
 class Billing extends Model
 {
@@ -40,6 +41,8 @@ class Billing extends Model
     protected static function boot()
     {
         parent::boot();
+
+        static::addGlobalScope(new ExcludeSoftDeletedAccountsScope);
 
         static::creating(function ($billing) {
             // Setting date fields to null based on billing_type_id
@@ -80,6 +83,7 @@ class Billing extends Model
 
             }elseif ($billing->billing_type_id == 2) { // monthly
                 // TODO:: dont forget to compute service interruption
+                // TODO:: make account.installed_date is not null before proceeding otherwise fire a validation
             }else {
                 // do nothing
             }
