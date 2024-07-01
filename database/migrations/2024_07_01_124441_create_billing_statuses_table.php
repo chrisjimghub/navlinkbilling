@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customer_credits', function (Blueprint $table) {
+        Schema::create('billing_statuses', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
-            $table->decimal('amount', 8, 2);
+            
+            $table->string('name')->unique();
 
             $table->timestamps();
             $table->softDeletes();
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customer_credits');
+        Schema::dropIfExists('billing_statuses');
     }
 };

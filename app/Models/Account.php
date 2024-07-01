@@ -6,8 +6,11 @@ use App\Models\Otc;
 use App\Models\Model;
 use App\Models\Billing;
 use App\Models\Subscription;
+use App\Models\AccountCredit;
 use App\Models\AccountStatus;
 use App\Models\ContractPeriod;
+use Illuminate\Support\Facades\DB;
+use App\Models\AccountServiceInterruption;
 
 class Account extends Model
 {
@@ -48,6 +51,16 @@ class Account extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function accountServiceInterruptions()
+    {
+        return $this->hasMany(AccountServiceInterruption::class);
+    }
+
+    public function accountCredits()
+    {
+        return $this->hasMany(AccountCredit::class);
+    }
+
     public function billings()
     {
         return $this->hasMany(Billing::class);
@@ -95,14 +108,50 @@ class Account extends Model
         });
     }
 
+    // Scope method to filter customers with remaining credits > 0
+    public function scopeHasRemainingCredits($query)
+    {
+        return $query->whereHas('accountCredits', function ($query) {
+            $query->where('amount', '>', 0);
+        });
+    }
+
     /*
     |--------------------------------------------------------------------------
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    /**
+     * Get the customer's remaining credits.
+     *
+     * @return float
+     */
+    public function getRemainingCreditsAttribute()
+    {
+        $result = $this->accountCredits()
+            ->select(DB::raw('SUM(amount) as total_credits'))
+            ->first();
+
+        return $result && $result->total_credits !== null ? $result->total_credits : 0;
+    }
+
+    /**
+     * Get the latest update date of the customer's credits.
+     *
+     * @return string
+     */
+    public function getCreditsLatestUpdatedAttribute()
+    {
+        $result = $this->accountCredits()
+            ->select(DB::raw('MAX(created_at) as latest_created_at'))
+            ->first();
+
+        return $result ? $result->latest_created_at : null;
+    }
+
     public function getDetailsAttribute()
     {
-        $name = $this->customer->fullName;
+        $name = $this->customer->fullName ?? '';
         $subscription = $this->subscription->name;
         $location = $this->plannedApplication->location->name;
 

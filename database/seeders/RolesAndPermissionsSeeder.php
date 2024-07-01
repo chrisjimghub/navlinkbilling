@@ -110,11 +110,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'planned_application_types_delete', 
         ],
 
-        // 'customer_credits' => [
-        //     'customer_credits_list',
-        //     'customer_credits_create', 
-        // ],
-
         'billings' => [
             'billings_list',
             'billings_create', 
@@ -143,6 +138,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'permissions_create', 
             'permissions_update', 
             'permissions_delete', 
+        ],
+
+        'account_service_interruptions' => [
+            'account_service_interruptions_list',
+            'account_service_interruptions_create', 
+            'account_service_interruptions_update', 
+            'account_service_interruptions_delete', 
         ],
 
     ];

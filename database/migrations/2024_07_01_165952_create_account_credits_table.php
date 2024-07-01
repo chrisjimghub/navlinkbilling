@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('otcs', function (Blueprint $table) {
-            $table->decimal('amount', 8, 2)->after('name');
+        Schema::create('account_credits', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('account_id')->constrained('accounts')->onDelete('cascade');
+            $table->decimal('amount', 8, 2);
+
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -21,9 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('otcs', function (Blueprint $table) {
-            //
-            $table->dropColumn('amount');
-        });
+        Schema::dropIfExists('account_credits');
     }
 };

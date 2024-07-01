@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Models\Model;
-use App\Models\Customer;
 
-class CustomerCredit extends Model
+
+class BillingStatus extends Model
 {
     /*
     |--------------------------------------------------------------------------
@@ -13,7 +13,7 @@ class CustomerCredit extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'customer_credits';
+    protected $table = 'billing_statuses';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -25,10 +25,6 @@ class CustomerCredit extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class);
-    }
 
     /*
     |--------------------------------------------------------------------------

@@ -34,7 +34,9 @@ return [
     'billing_particulars' => 'Particulars',
     'billing_description' => 'Description',
     'billing_period' => 'Billing Period',
-    'billing_date_cut_off' => 'Cut Off',
+    'billing_unique_account_billing_type_installation' => 'The selected account already has a billing Installation Fee.',
+    'billing_unique_account_billing_type_monthly' => 'The selected account already has unpaid billing Monthly Fee.',
+    'billing_account_must_have_installed_date' => 'The selected account must have installed date in his account record to proceed.',
 
     // Billing Type
     'billing_type' => 'Billing Type',
@@ -49,10 +51,9 @@ return [
     'customer_signature' => 'Please sign here',
     'customer_select_field' => 'The customer field is required.',
 
-    // Customer Credits
-    'remaining_credits' => 'Remaining Credits',
-    'latest_updated' => 'Last Updated',
-    
+    // 
+    'installation_fee' => 'Installation Fee',
+
     // Menus
     'menu_icon_hint' => '<a href="https://icons8.com/line-awesome" target="_blank">https://icons8.com/line-awesome</a>',
 

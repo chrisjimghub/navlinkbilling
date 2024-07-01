@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('planned_applications', function (Blueprint $table) {
+        Schema::create('account_service_interruptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('planned_application_type_id')->constrained('planned_application_types')->onDelete('cascade');
-            $table->integer('mbps');
-            $table->decimal('price', 8, 2);
-            $table->timestamps();
 
+            $table->foreignId('account_id')->constrained('accounts')->onDelete('cascade');
+
+            $table->timestamp('date_start');
+            $table->timestamp('date_end');
+
+            $table->timestamps();
             $table->softDeletes();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('planned_applications');
+        Schema::dropIfExists('account_service_interruptions');
     }
 };
