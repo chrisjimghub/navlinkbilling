@@ -83,7 +83,6 @@ class Billing extends Model
 
             }elseif ($billing->billing_type_id == 2) { // monthly
                 // TODO:: dont forget to compute service interruption
-                // TODO:: make account.installed_date is not null before proceeding otherwise fire a validation
             }else {
                 // do nothing
             }
