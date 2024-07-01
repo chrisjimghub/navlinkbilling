@@ -24,14 +24,25 @@ class UniqueAccountBillingType implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if ($this->billingTypeId == 1) {
+        if ($this->billingTypeId == 1) { // installation fee
             $exists = Billing::where('account_id', $this->accountId)
-                ->where('billing_type_id', 1)
+                ->where('billing_type_id', $this->billingTypeId)
                 ->exists();
 
             if ($exists) {
-                $fail(__('app.billing_unique_account_billing_type'));
+                $fail(__('app.billing_unique_account_billing_type_installation'));
             }
+        }elseif ($this->billingTypeId == 2) { // monthly fee
+            $exists = Billing::where('account_id', $this->accountId)
+                ->where('billing_type_id', $this->billingTypeId)
+                ->where('billing_status_id' , 2) // unpaid
+                ->exists();
+
+            if ($exists) {
+                $fail(__('app.billing_unique_account_billing_type_monthly'));
+            }
+        }else {
+            // do nothing
         }
     }
 }

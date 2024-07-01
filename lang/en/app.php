@@ -34,7 +34,8 @@ return [
     'billing_particulars' => 'Particulars',
     'billing_description' => 'Description',
     'billing_period' => 'Billing Period',
-    'billing_unique_account_billing_type' => 'The selected account already has a billing type Installation Fee.',
+    'billing_unique_account_billing_type_installation' => 'The selected account already has a billing type Installation Fee.',
+    'billing_unique_account_billing_type_monthly' => 'The selected account already has unpaid billing type Monthly Fee.',
 
     // Billing Type
     'billing_type' => 'Billing Type',
