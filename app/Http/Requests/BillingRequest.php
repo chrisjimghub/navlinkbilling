@@ -104,7 +104,6 @@ class BillingRequest extends FormRequest
             'account_id.required' => __('app.account_field_validation'),
             'billing_type_id.required' => __('validation.required', ['attribute' => strtolower(__('app.billing_type'))]),
             'billing_type_id.exists' => __('validation.exists', ['attribute' => strtolower(__('app.billing_type'))]),
-            // 'unique_account_billing_type' => 'The selected account already has a billing type '. __('app.installation_fee'),
         ];
     }
 }
