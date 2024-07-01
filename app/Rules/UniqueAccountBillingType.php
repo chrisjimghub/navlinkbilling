@@ -3,7 +3,9 @@
 namespace App\Rules;
 
 use Closure;
+use App\Models\Account;
 use App\Models\Billing;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class UniqueAccountBillingType implements ValidationRule
@@ -41,6 +43,16 @@ class UniqueAccountBillingType implements ValidationRule
             if ($exists) {
                 $fail(__('app.billing_unique_account_billing_type_monthly'));
             }
+
+            // make sure that if you create monthly fee bill that the account.installed_date is not empty, use for pro-rated computations
+            $exists = Account::where('accounts.id' , $this->accountId)
+                        ->whereNull('installed_date')
+                        ->exists();
+
+            if ($exists) {
+                $fail(__('app.billing_account_must_have_installed_date'));
+            }
+
         }else {
             // do nothing
         }
