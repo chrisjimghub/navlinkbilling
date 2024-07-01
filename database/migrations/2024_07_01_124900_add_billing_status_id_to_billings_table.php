@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('billings', function (Blueprint $table) {
             //
-            $table->unsignedBigInteger('billing_status_id')->nullable()->after('id'); // Adjust 'after' to position the column as needed
+            $table->unsignedBigInteger('billing_status_id')->nullable()->after('approved_by_signature'); // Adjust 'after' to position the column as needed
 
             // Assuming the billing_statuses table exists and has an id column
             $table->foreign('billing_status_id')->references('id')->on('billing_statuses')->onDelete('cascade');
