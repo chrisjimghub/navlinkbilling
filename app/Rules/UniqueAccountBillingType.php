@@ -35,22 +35,25 @@ class UniqueAccountBillingType implements ValidationRule
                 $fail(__('app.billing_unique_account_billing_type_installation'));
             }
         }elseif ($this->billingTypeId == 2) { // monthly fee
-            $exists = Billing::where('account_id', $this->accountId)
-                ->where('billing_type_id', $this->billingTypeId)
-                ->where('billing_status_id' , 2) // unpaid
-                ->exists();
+            // Run this validation in Create only, not in update/edit
+            if (request()->isMethod('post')) {
+                $exists = Billing::where('account_id', $this->accountId)
+                    ->where('billing_type_id', $this->billingTypeId)
+                    ->where('billing_status_id' , 2) // unpaid
+                    ->exists();
 
-            if ($exists) {
-                $fail(__('app.billing_unique_account_billing_type_monthly'));
-            }
+                if ($exists) {
+                    $fail(__('app.billing_unique_account_billing_type_monthly'));
+                }
 
-            // make sure that if you create monthly fee bill that the account.installed_date is not empty, use for pro-rated computations
-            $exists = Account::where('accounts.id' , $this->accountId)
-                        ->whereNull('installed_date')
-                        ->exists();
+                // Check if the account has an installed date for pro-rated computations
+                $exists = Account::where('id', $this->accountId)
+                    ->whereNull('installed_date')
+                    ->exists();
 
-            if ($exists) {
-                $fail(__('app.billing_account_must_have_installed_date'));
+                if ($exists) {
+                    $fail(__('app.billing_account_must_have_installed_date'));
+                }
             }
 
         }else {

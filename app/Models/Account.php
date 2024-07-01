@@ -121,6 +121,13 @@ class Account extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getMonthlyFeeAmountAttribute()
+    {
+        return $this->plannedApplication->price ?? 0;
+    }
+
+    // TODO:: add attribute for daily rate
+    // TODO:: add hourly rate for future if possible
     /**
      * Get the customer's remaining credits.
      *
