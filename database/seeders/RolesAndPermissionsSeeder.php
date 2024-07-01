@@ -140,6 +140,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'permissions_delete', 
         ],
 
+        'account_service_interruptions' => [
+            'account_service_interruptions_list',
+            'account_service_interruptions_create', 
+            'account_service_interruptions_update', 
+            'account_service_interruptions_delete', 
+        ],
+
     ];
 
     /**
