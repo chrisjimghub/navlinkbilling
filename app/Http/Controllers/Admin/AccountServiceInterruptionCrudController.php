@@ -54,10 +54,21 @@ class AccountServiceInterruptionCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation([
-            // 'name' => 'required|min:2',
-        ]);
+        $rules = [
+            'account_id' => 'required|integer|min:1',
+            'date_start' => 'required',
+            'date_end' => 'required|after:date_start',
+        ];
+
+        $message = [
+            'account_id.required' => __('app.account_field_validation'),
+            'date_end.after' => 'The end date must be after the start date.'
+        ];
+        $this->crud->setValidation($rules, $message);
+
         CRUD::setFromDb(); // set fields from db columns.
+
+        $this->accountField(label: __('app.account'));
     }
 
     /**

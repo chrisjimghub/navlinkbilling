@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Model;
+use App\Models\Account;
 
 
 class AccountServiceInterruption extends Model
@@ -31,6 +32,10 @@ class AccountServiceInterruption extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
 
     /*
     |--------------------------------------------------------------------------

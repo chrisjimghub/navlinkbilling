@@ -10,6 +10,7 @@ use App\Models\AccountCredit;
 use App\Models\AccountStatus;
 use App\Models\ContractPeriod;
 use Illuminate\Support\Facades\DB;
+use App\Models\AccountServiceInterruption;
 
 class Account extends Model
 {
@@ -50,6 +51,11 @@ class Account extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function accountServiceInterruptions()
+    {
+        return $this->hasMany(AccountServiceInterruption::class);
+    }
+
     public function accountCredits()
     {
         return $this->hasMany(AccountCredit::class);

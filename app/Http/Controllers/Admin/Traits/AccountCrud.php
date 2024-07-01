@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Traits;
 
+use App\Models\Account;
+
 trait AccountCrud
 {
     public function accountColumn($label = null)
@@ -55,6 +57,30 @@ trait AccountCrud
                 },
                 // 'target' => '_blank'
             ]
+        ]);
+    }
+
+    public function accountField($label = null)
+    {
+        $this->crud->field([
+            'type'      => 'select',
+            'name'      => 'account_id', // the db column for the foreign key
+            'label'     => $label ?? __('app.account'),
+            'allows_null' => true,
+
+            // optional
+            // 'entity' should point to the method that defines the relationship in your Model
+            // defining entity will make Backpack guess 'model' and 'attribute'
+            'entity'    => 'account',
+        
+            // optional - manually specify the related model and attribute
+            'model'     => Account::class, // related model
+            'attribute' => 'details', // foreign key attribute that is shown to user
+        
+            // optional - force the related options to be a custom query, instead of all();
+            'options'   => (function ($query) {
+                return $query->notDisconnected()->get(); // use the local scope
+            }), // you can use this to filter the results shown in the select
         ]);
     }
 }
