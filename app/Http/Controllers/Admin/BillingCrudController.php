@@ -73,7 +73,7 @@ class BillingCrudController extends CrudController
             'escaped' => false
         ]);
 
-        // $this->currencyFormatColumn(fieldName: 'total');
+        $this->currencyFormatColumn(fieldName: 'total');
 
         $this->crud->column([
             'name' => 'billing_status_id',
