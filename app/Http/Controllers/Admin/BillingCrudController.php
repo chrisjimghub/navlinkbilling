@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Operations\PaidBillOperation;
+use App\Models\Billing;
 use App\Models\BillingType;
 use App\Http\Requests\BillingRequest;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use App\Http\Controllers\Admin\Operations\PaidBillOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -19,8 +20,8 @@ class BillingCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation { edit as traitEdit;}
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation { destroy as traitDestroy;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
@@ -38,6 +39,8 @@ class BillingCrudController extends CrudController
         CRUD::setEntityNameStrings('billing', 'billings');
         
         $this->userPermissions();
+
+        $this->overrideButtonDeleteUpdate();
     }
 
     /**
@@ -155,7 +158,6 @@ class BillingCrudController extends CrudController
     {
         $this->setupCreateOperation();
 
-        // TODO:: add validation
         $this->crud->field([   // repeatable
             'name'  => 'particulars',
             'label' => __('app.billing_particulars'),
@@ -179,4 +181,52 @@ class BillingCrudController extends CrudController
             // 'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
         ]);
     }
+
+    private function overrideBUttonDeleteUpdate()
+    {
+        // override buttons and hide if status is paid
+        $this->crud->operation(['list', 'show'], function () {
+            $this->crud->addButton('line', 'delete', 'view', 'crud::buttons.delete_bill', 'end');
+        });
+
+        $this->crud->operation(['list', 'show'], function () {
+            $this->crud->addButton('line', 'update', 'view', 'crud::buttons.update_bill', 'end');
+        });
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function edit($id)
+    {
+        $this->denyAccessIfPaid($id);
+
+        $response = $this->traitEdit($id);
+
+        return $response;
+    }
+
+    public function destroy($id)
+    {
+        $this->denyAccessIfPaid($id);
+
+        $response = $this->traitDestroy($id);
+
+        return $response;
+    }
+
+    private function denyAccessIfPaid($id)
+    {
+        $bill = Billing::findOrFail($id);
+        // if already paid, then dont allow
+        if ($bill->billing_status_id == 1) { 
+            $this->crud->denyAccess('update');
+
+            \Alert::warning('Whooops, you\'re not allowed to do that.');
+        }
+    }
+    
 }

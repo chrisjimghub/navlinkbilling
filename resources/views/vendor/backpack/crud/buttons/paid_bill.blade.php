@@ -1,21 +1,11 @@
 @if ($crud->hasAccess('paidBill'))
     
-    @if($entry->billing_status_id == 1)
-        <a 
-            class="btn btn-sm btn-link text-success" 
-            disabled
-            title="{{ __('This item is already paid.') }}"
-        >
-                <i class="las la-thumbs-up"></i>
-                {{ __('Paid') }}
-        </a>
-
-    @else
+    @if($entry->billing_status_id == 2)
         <a 
             href="javascript:void(0)" 
             onclick="paidBillEntry(this)" 
             data-route="{{ url($crud->route.'/'.$entry->getKey().'/paidBill') }}" 
-            class="btn btn-sm btn-link" 
+            class="btn btn-sm btn-link text-success" 
             data-button-type="paidBill"
             title="Marked as paid?"
             >
