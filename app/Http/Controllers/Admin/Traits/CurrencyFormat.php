@@ -22,6 +22,9 @@ trait CurrencyFormat {
             'decimals'   => 2,
             'dec_point'     => '.',
             'thousands_sep' => ',',
+            'wrapper' => [
+                'class' => 'text-success'
+            ]
         ]);
     }
 
@@ -41,8 +44,14 @@ trait CurrencyFormat {
 
     public function currencyFormatAccessor($amount)
     {
-        // return $amount;
+        $amount = $this->currencyRound($amount);
+        
+        // return self::CURRENCY_PREFIX . $amount;
+        return self::CURRENCY_PREFIX . number_format($amount, 2, '.', ',');
+    }
 
-        return self::CURRENCY_PREFIX . number_format($amount, 0, '.', ',');
+    public function currencyRound($amount)
+    {
+        return round($amount, 2);
     }
 }

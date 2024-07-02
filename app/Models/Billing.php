@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Model;
 use App\Models\Account;
 use App\Models\BillingType;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Models\Scopes\ExcludeSoftDeletedAccountsScope;
 
@@ -46,59 +47,11 @@ class Billing extends Model
 
         static::creating(function ($billing) {
 
-            $particulars = [];
+            $billing->createParticulars();
 
-            // Setting date fields to null based on billing_type_id
-            if ($billing->billing_type_id == 1) { // installment
-                $billing->date_start = null;
-                $billing->date_end = null;
-                $billing->date_cut_off = null;
-                
-
-                // OTCS
-                // Accessing the 'account' relationship and iterating over 'otcs'
-                if ($billing->account->otcs) {
-                    foreach ($billing->account->otcs as $otc) {
-                        
-                        $particulars[] = [
-                            'description' => $otc->name,
-                            'amount' => $otc->amount,
-                        ];
-                    }
-                }
-
-                // Contract Periods
-                $contractPeriodExists = $billing->account->contractPeriods()->where('contract_periods.id', 1)->exists();
-
-                if ($contractPeriodExists) {
-                    // If the ContractPeriod with ID 1 exists for this Billing, 1 = one month advance
-                    $contractPeriod = $billing->account->contractPeriods()->where('contract_periods.id', 1)->first();
-                    
-                    // Perform operations with $contractPeriod
-                    $particulars[] = [
-                        'description' => $contractPeriod->name,
-                        'amount' => $billing->account->plannedApplication->price
-                    ];
-                } 
-
-            }elseif ($billing->billing_type_id == 2) { // monthly
-                
-                // get the monthly subscription fee and add as particulars
-                $particulars[] = [
-                    'description' => $billing->billingType->name,
-                    'amount' => $billing->account->monthlyFeeAmount
-                ];
-
-                // TODO:: dont forget to compute service interruption
-
-            }else {
-                // do nothing
-            }
-
-            $billing->particulars = array_values($particulars);
         });
     }
-
+    
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
@@ -127,9 +80,11 @@ class Billing extends Model
     */
     public function getTotalAttribute()
     {
-        return collect($this->particulars)->sum(function ($item) {
+        $totalAmount = collect($this->particulars)->sum(function ($item) {
             return (float) $item['amount'];
         });
+
+        return $this->currencyRound($totalAmount);
     }
 
     public function getBillingPeriodDetailsAttribute()
@@ -154,16 +109,20 @@ class Billing extends Model
 
         if ($this->particulars) {
             foreach ($this->particulars as $particular) {
-    
+                $textColor = 'text-info ';
                 $amount = $particular['amount'];
     
                 if ($amount) {
+                    
+                    if ($amount < 0) {
+                        $textColor = 'text-danger';
+                    }
+
                     $amount = $this->currencyFormatAccessor($amount);
                 }
     
-                $details[] = "<strong>{$particular['description']}</strong> : {$amount}";
-                // $details[] = "{$particular['description']} : <strong>{$amount}</strong>";
-                // $details[] = "{$particular['description']} : {$amount}";
+
+                $details[] = "<strong>{$particular['description']}</strong> : <span class='{ $textColor }'>{$amount}</span>";
             }
             return implode('<br>', $details);
         }
@@ -171,10 +130,156 @@ class Billing extends Model
         return;
     }
 
+
+    public function getMonthlyRateAttribute()
+    {
+        return $this->account->monthlyRate;
+    }
+
+    public function getDailyRateAttribute()
+    {
+        if ($this->monthlyRate && $this->totalNumberOfDays) {
+            return $this->monthlyRate / $this->totalNumberOfDays;
+        }
+
+        return;
+    }
+
+    public function getHourlyRateAttribute()
+    {
+        if ($this->dailyRate){
+            return $this->dailyRate / 24; // 24 hours
+        }
+
+        return;
+    }
+
+    public function getTotalNumberOfDaysAttribute()
+    {
+        if ($this->date_start && $this->date_end) {
+            $startDate = Carbon::parse($this->date_start);
+            $endDate = Carbon::parse($this->date_end);
+        
+            $totalNumberOfDays = $startDate->diffInDays($endDate);
+        
+            return $totalNumberOfDays;
+        }
+
+        return;
+    }
+
+    public function getIsProRatedMonthlyAttribute()
+    {
+        if ($this->account->installed_date > $this->date_start) {
+            return true;
+        }   
+
+        return false;
+    }
+
+    // return positive but this will be deductions in particulars
+    public function getProRatedServiceAdjustmentAmountAttribute()
+    {
+        if ($this->isProratedMonthly) {
+            $total = 0;
+
+            $total += $this->dailyRate * $this->proRatedDaysAndHoursService['days'];
+            $total += $this->hourlyRate * $this->proRatedDaysAndHoursService['hours'];
+            
+            return $this->currencyRound($total);
+        }
+
+        return;
+    }
+
+    // Accessor for attribute 'pro_rated_days_and_hours_service'
+    public function getProRatedDaysAndHoursServiceAttribute()
+    {
+        if ($this->account->installed_date && $this->date_end) {
+            return $this->proRatedDaysAndHoursService($this->account->installed_date, $this->date_end);
+        }
+
+        return;
+    }
+
+    // Method to calculate days and hours difference
+    public function proRatedDaysAndHoursService($dateStart = null, $dateEnd = null)
+    {
+        $dateStart = Carbon::parse($dateStart);
+        $dateEnd = Carbon::parse($dateEnd);
+
+        if ($dateStart && $dateEnd) {
+            // Calculate the difference in days
+            $days = $dateStart->diffInDays($dateEnd);
+
+            // Calculate remaining hours without counting full days
+            $hours = $dateStart->diffInHours($dateEnd) % 24; // Get the remaining hours within the last day
+
+            return [
+                "days" => (int) $days, 
+                "hours" => $hours, 
+            ];
+        }
+
+        return;
+    }
     /*
     |--------------------------------------------------------------------------
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public function createParticulars()
+    {
+        $particulars = [];
+
+        // Setting date fields to null based on billing_type_id
+        if ($this->billing_type_id == 1) { // installment
+            $this->date_start = null;
+            $this->date_end = null;
+            $this->date_cut_off = null;
+
+            // OTCS
+            if ($this->account->otcs) {
+                foreach ($this->account->otcs as $otc) {
+                    $particulars[] = [
+                        'description' => $otc->name,
+                        'amount' => $otc->amount,
+                    ];
+                }
+            }
+
+            // Contract Periods
+            $contractPeriodExists = $this->account->contractPeriods()->where('contract_periods.id', 1)->exists();
+
+            if ($contractPeriodExists) {
+                $contractPeriod = $this->account->contractPeriods()->where('contract_periods.id', 1)->first();
+                $particulars[] = [
+                    'description' => $contractPeriod->name,
+                    'amount' => $this->account->plannedApplication->price,
+                ];
+            }
+
+
+        } elseif ($this->billing_type_id == 2) { // monthly
+            $particulars[] = [
+                'description' => $this->billingType->name,
+                'amount' => $this->account->monthlyRate,
+            ];
+
+            // Pro-rated Service Adjustment
+            if ($this->isProRatedMonthly) {
+                $particulars[] = [
+                    'description' => 'Pro-rated Service Adjustment',
+                    'amount' => -$this->proRatedServiceAdjustmentAmount,
+                ];
+            }
+
+            // TODO:: Don't forget to compute service interruption
+        }
+
+        // debug($particulars);
+
+        $this->particulars = array_values($particulars);
+    }
     
 }
