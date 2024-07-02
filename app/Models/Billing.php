@@ -80,9 +80,11 @@ class Billing extends Model
     */
     public function getTotalAttribute()
     {
-        return collect($this->particulars)->sum(function ($item) {
+        $totalAmount = collect($this->particulars)->sum(function ($item) {
             return (float) $item['amount'];
         });
+
+        return $this->currencyRound($totalAmount);
     }
 
     public function getBillingPeriodDetailsAttribute()
@@ -184,7 +186,7 @@ class Billing extends Model
             $total += $this->dailyRate * $this->proRatedDaysAndHoursService['days'];
             $total += $this->hourlyRate * $this->proRatedDaysAndHoursService['hours'];
             
-            return $total;
+            return $this->currencyRound($total);
         }
 
         return;
