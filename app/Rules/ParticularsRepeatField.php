@@ -34,7 +34,8 @@ class ParticularsRepeatField implements ValidationRule
                     $fail(__('app.billing_particulars_description_required'));
                 }
                 
-                if (!$particular->amount) {
+                // make sure it accept 0
+                if (is_null($particular->amount) || $particular->amount === '') {
                     $fail(__('app.billing_particulars_amount_required'));
                 }
                 
