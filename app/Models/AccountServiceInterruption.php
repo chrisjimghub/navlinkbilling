@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Model;
 use App\Models\Account;
+use Illuminate\Support\Carbon;
 
 
 class AccountServiceInterruption extends Model
@@ -20,7 +21,7 @@ class AccountServiceInterruption extends Model
     protected $guarded = ['id'];
     // protected $fillable = [];
     // protected $hidden = [];
-
+    
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS
@@ -48,6 +49,15 @@ class AccountServiceInterruption extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getTotalDaysAttribute()
+    {
+        if ($this->date_start && $this->date_end) {
+            $start = Carbon::parse($this->date_start);
+            $end = Carbon::parse($this->date_end);
+            return $start->diffInDays($end);
+        }
+        return 0;
+    }
 
     /*
     |--------------------------------------------------------------------------

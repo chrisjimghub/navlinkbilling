@@ -44,6 +44,13 @@ class AccountServiceInterruptionCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::setFromDb(); // set columns from db columns.
+
+        $this->accountColumn();
+    }
+
+    protected function autoSetupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**
@@ -56,15 +63,15 @@ class AccountServiceInterruptionCrudController extends CrudController
     {
         $rules = [
             'account_id' => 'required|integer|min:1',
-            'date_start' => 'required',
-            'date_end' => 'required|after:date_start',
+            'date_start' => 'required|date',
+            'date_end' => 'required|date|after:date_start',
         ];
-
-        $message = [
+        
+        $messages = [
             'account_id.required' => __('app.account_field_validation'),
-            'date_end.after' => 'The end date must be after the start date.'
+            'date_end.after_or_equal' => 'The end date must be after the start date.'
         ];
-        $this->crud->setValidation($rules, $message);
+        $this->crud->setValidation($rules, $messages);
 
         CRUD::setFromDb(); // set fields from db columns.
 
