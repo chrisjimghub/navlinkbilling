@@ -24,26 +24,23 @@ class ParticularsRepeatField implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         //
-        if ($this->billingTypeId == 2) {
+        if(request()->isMethod('PUT')) {
 
-            if(request()->isMethod('PUT')) {
+            $particulars = json_decode(request()->particulars);
 
-                $particulars = json_decode(request()->particulars);
-    
-                foreach ($particulars as $particular) {
-    
-                    if (!$particular->description) {
-                        $fail(__('app.billing_particulars_description_required'));
-                    }
-                    
-                    if (!$particular->amount) {
-                        $fail(__('app.billing_particulars_amount_required'));
-                    }
-                    
+            foreach ($particulars as $particular) {
+
+                if (!$particular->description) {
+                    $fail(__('app.billing_particulars_description_required'));
                 }
+                
+                if (!$particular->amount) {
+                    $fail(__('app.billing_particulars_amount_required'));
+                }
+                
             }
+        }
 
-        }// end billingTypeId
         
     }
 }

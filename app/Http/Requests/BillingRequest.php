@@ -64,7 +64,7 @@ class BillingRequest extends FormRequest
             },  
 
             'particulars' => [
-                'required',
+                // 'required',
                 new ParticularsRepeatField($accountId, $billingTypeId)
             ],
 
