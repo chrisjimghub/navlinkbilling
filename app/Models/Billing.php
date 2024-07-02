@@ -209,16 +209,19 @@ class Billing extends Model
         $dateEnd = Carbon::parse($dateEnd);
 
         if ($dateStart && $dateEnd) {
-            // Calculate the difference in days
-            $days = $dateStart->diffInDays($dateEnd);
+            // Calculate the difference and format it
+            $difference = $dateEnd->diff($dateStart)->format('%a|%H|%I');
 
-            // Calculate remaining hours without counting full days
-            $hours = $dateStart->diffInHours($dateEnd) % 24; // Get the remaining hours within the last day
+            // Explode the formatted difference into an array
+            list($days, $hours, $minutes) = explode('|', $difference);
 
+            // Create the array with named keys
             return [
-                "days" => (int) $days, 
-                "hours" => $hours, 
+                'days' => (int) $days,
+                'hours' => (int) $hours,
+                'minutes' => (int) $minutes,
             ];
+
         }
 
         return;
