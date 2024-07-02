@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ParticularsRepeatField;
 use App\Rules\UniqueAccountBillingType;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -60,7 +61,13 @@ class BillingRequest extends FormRequest
                         $fail(__('validation.after', ['attribute' => strtolower(__('app.billing_date_cut_off')), 'date' => strtolower(__('app.billing_date_end'))]));
                     }
                 }
-            },
+            },  
+
+            'particulars' => [
+                'required',
+                new ParticularsRepeatField($accountId, $billingTypeId)
+            ],
+
         ];
     }
 
