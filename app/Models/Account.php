@@ -121,13 +121,13 @@ class Account extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
-    public function getMonthlyFeeAmountAttribute()
+
+    // For DailyRate and Hourly Rate, i cant compute it without the date_start and date_end if Billing, so i put it in billing model instad
+    public function getMonthlyRateAttribute()
     {
         return $this->plannedApplication->price ?? 0;
     }
 
-    // TODO:: add attribute for daily rate
-    // TODO:: add hourly rate for future if possible
     /**
      * Get the customer's remaining credits.
      *

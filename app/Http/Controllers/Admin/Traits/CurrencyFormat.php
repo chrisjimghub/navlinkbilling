@@ -45,4 +45,9 @@ trait CurrencyFormat {
 
         return self::CURRENCY_PREFIX . number_format($amount, 0, '.', ',');
     }
+
+    public function currencyRound($amount)
+    {
+        return round($amount, 2);
+    }
 }
