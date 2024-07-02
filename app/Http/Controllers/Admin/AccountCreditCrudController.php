@@ -7,11 +7,11 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class AccountServiceInterruptionCrudController
+ * Class AccountCreditCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class AccountServiceInterruptionCrudController extends CrudController
+class AccountCreditCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -20,7 +20,7 @@ class AccountServiceInterruptionCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
-
+    
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -28,9 +28,9 @@ class AccountServiceInterruptionCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\AccountServiceInterruption::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/account-service-interruption');
-        CRUD::setEntityNameStrings('service interruption', 'service interruptions');
+        CRUD::setModel(\App\Models\AccountCredit::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/account-credit');
+        CRUD::setEntityNameStrings('account credit', 'account credits');
 
         $this->userPermissions();
     }
@@ -45,7 +45,10 @@ class AccountServiceInterruptionCrudController extends CrudController
     {
         CRUD::setFromDb(); // set columns from db columns.
 
+        // TODO:: check search logic later.
         $this->accountColumn();
+
+        $this->currencyColumn('amount');
     }
 
     protected function autoSetupShowOperation()
@@ -61,21 +64,13 @@ class AccountServiceInterruptionCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        $rules = [
+        CRUD::setValidation([
             'account_id' => 'required|integer|min:1',
-            'date_start' => 'required|date',
-            'date_end' => 'required|date|after:date_start',
-        ];
-        
-        $messages = [
-            'account_id.required' => __('app.account_field_validation'),
-            'date_end.after_or_equal' => 'The end date must be after the start date.'
-        ];
-        $this->crud->setValidation($rules, $messages);
-
+            'amount' => 'required|numeric'
+        ]);
         CRUD::setFromDb(); // set fields from db columns.
 
-        $this->accountField(label: __('app.account'));
+        $this->accountField();
     }
 
     /**

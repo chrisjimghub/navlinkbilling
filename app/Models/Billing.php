@@ -276,19 +276,27 @@ class Billing extends Model
             // Pro-rated Service Adjustment
             if ($this->isProRatedMonthly) {
 
-                $less = $this->totalNumberOfDays - $this->proRatedDaysAndHoursService['days'];
-                $days = $less > 1 ? 'days' : 'day';
+                $num = $this->totalNumberOfDays - $this->proRatedDaysAndHoursService['days'];
+                $days = $num > 1 ? 'days' : 'day';
 
                 $particulars[] = [
-                    'description' => "Pro-rated Service Adjustment ($less $days)",
+                    'description' => "Pro-rated Service Adjustment ($num $days)",
                     'amount' => -($this->account->monthlyRate - $this->proRatedServiceTotalAmount),
                 ];
             }
 
-            // TODO:: Don't forget to compute service interruption
-        }
+            // Service Interrptions
+            $totalInterruptionDays = $this->account->total_service_interruption_days;
+            if ($totalInterruptionDays) {
+                $days = $totalInterruptionDays > 1 ? 'days' : 'day';
 
-        // debug($particulars);
+                $particulars[] = [
+                    'description' => "Service Interruptions ($totalInterruptionDays $days)",
+                    'amount' => -($this->currencyRound($totalInterruptionDays * $this->dailyRate)),
+                ];
+            }
+            
+        }
 
         $this->particulars = array_values($particulars);
     }

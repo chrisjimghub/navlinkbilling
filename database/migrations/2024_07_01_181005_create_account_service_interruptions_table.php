@@ -16,8 +16,11 @@ return new class extends Migration
 
             $table->foreignId('account_id')->constrained('accounts')->onDelete('cascade');
 
-            $table->timestamp('date_start');
-            $table->timestamp('date_end');
+            // $table->timestamp('date_start');
+            // $table->timestamp('date_end');
+
+            $table->date('date_start');
+            $table->date('date_end');
 
             $table->timestamps();
             $table->softDeletes();
