@@ -260,12 +260,13 @@ class Billing extends Model
                     ];
                 }
             }
-
+            
             // Contract Periods
-            $contractPeriodExists = $this->account->contractPeriods()->where('contract_periods.id', 1)->exists();
+            $contractId = 1; // 1-month advance
+            $contractPeriodExists = $this->account->contractPeriods()->where('contract_periods.id', $contractId)->exists();
 
             if ($contractPeriodExists) {
-                $contractPeriod = $this->account->contractPeriods()->where('contract_periods.id', 1)->first();
+                $contractPeriod = $this->account->contractPeriods()->where('contract_periods.id', $contractId)->first();
                 $particulars[] = [
                     'description' => $contractPeriod->name,
                     'amount' => $this->account->plannedApplication->price,

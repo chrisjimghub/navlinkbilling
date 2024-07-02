@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin\Operations;
 
 use App\Models\Billing;
-use function Laravel\Prompts\alert;
+use App\Models\AccountCredit;
 
+use Illuminate\Support\Facades\DB;
+use function Laravel\Prompts\alert;
 use Illuminate\Support\Facades\Route;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -47,11 +49,37 @@ trait PaidBillOperation
     {
         $this->crud->hasAccessOrFail('paidBill');
 
-        $model = Billing::findOrFail($id); 
+        try {
+            DB::beginTransaction();
 
-        $model->billing_status_id = 1;
-        $model->save();
+            $billing = Billing::findOrFail($id); 
 
-        return true;
+            // Update billing status
+            $billing->billing_status_id = 1;
+            $billing->save();
+            
+            // Find the label for one month advance
+            $oneMonthAdvanceLabel = $billing->account->contractPeriods()->where('contract_periods.id', 1)->first()->name;
+
+            // Create account credit for relevant particulars
+            foreach ($billing->particulars as $particular) {
+                if ($particular['description'] == $oneMonthAdvanceLabel) {
+                    AccountCredit::create([
+                        'account_id' => $billing->account_id,
+                        'amount' => $particular['amount'],
+                    ]);
+                }
+            }
+
+            // Commit the transaction
+            DB::commit();
+
+            return true;
+
+        } catch (\Exception $e) {
+            // If an error occurs, rollback the transaction
+            DB::rollback();
+            throw $e; // You may handle or log the exception as needed
+        }
     }
 }

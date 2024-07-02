@@ -38,8 +38,6 @@ class BillingCrudController extends CrudController
         CRUD::setEntityNameStrings('billing', 'billings');
         
         $this->userPermissions();
-
-        // <script src="{{ basset('https://cdn.jsdelivr.net/npm/sweetalert2@11') }}">
     }
 
     /**
