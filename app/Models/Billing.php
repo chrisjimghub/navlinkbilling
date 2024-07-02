@@ -154,6 +154,7 @@ class Billing extends Model
         return;
     }
 
+    // Total number of days for the period
     public function getTotalNumberOfDaysAttribute()
     {
         if ($this->date_start && $this->date_end) {
@@ -192,13 +193,14 @@ class Billing extends Model
         return;
     }
 
-    // Accessor for attribute 'pro_rated_days_and_hours_service'
     public function getProRatedDaysAndHoursServiceAttribute()
     {
-        if ($this->account->installed_date && $this->date_end) {
-            return $this->proRatedDaysAndHoursService($this->account->installed_date, $this->date_end);
+        if ($this->isProRatedMonthly) {
+            if ($this->account->installed_date && $this->date_end) {
+                return $this->proRatedDaysAndHoursService($this->account->installed_date, $this->date_end);
+            }
         }
-
+        
         return;
     }
 
