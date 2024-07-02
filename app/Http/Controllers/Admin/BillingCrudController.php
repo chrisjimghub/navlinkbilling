@@ -108,7 +108,8 @@ class BillingCrudController extends CrudController
             'type'  => 'date',
             'wrapper' => [
                 'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
-            ]
+            ],
+            'default' => '2024-06-21' // TODO:: add default value base on P2p/fiber
         ]);
 
         $this->crud->field([
@@ -117,7 +118,8 @@ class BillingCrudController extends CrudController
             'type'  => 'date',
             'wrapper' => [
                 'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
-            ]
+            ],
+            'default' => '2024-07-20' // TODO:: add default value base on P2p/fiber
         ]);
 
         $this->crud->field([
@@ -126,7 +128,8 @@ class BillingCrudController extends CrudController
             'type'  => 'date',
             'wrapper' => [
                 'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
-            ]
+            ],
+            'default' => '2024-07-25' // TODO:: add default value base on P2p/fiber
         ]);
     }
 

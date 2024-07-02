@@ -107,16 +107,20 @@ class Billing extends Model
 
         if ($this->particulars) {
             foreach ($this->particulars as $particular) {
-    
+                $textColor = 'text-info ';
                 $amount = $particular['amount'];
     
                 if ($amount) {
+                    
+                    if ($amount < 0) {
+                        $textColor = 'text-danger';
+                    }
+
                     $amount = $this->currencyFormatAccessor($amount);
                 }
     
-                $details[] = "<strong>{$particular['description']}</strong> : {$amount}";
-                // $details[] = "{$particular['description']} : <strong>{$amount}</strong>";
-                // $details[] = "{$particular['description']} : {$amount}";
+
+                $details[] = "<strong>{$particular['description']}</strong> : <span class='{ $textColor }'>{$amount}</span>";
             }
             return implode('<br>', $details);
         }
@@ -264,12 +268,14 @@ class Billing extends Model
             if ($this->isProRatedMonthly) {
                 $particulars[] = [
                     'description' => 'Pro-rated Service Adjustment',
-                    'amount' => -$this->proRatedServceAdjustmentAmount,
+                    'amount' => -$this->proRatedServiceAdjustmentAmount,
                 ];
             }
 
             // TODO:: Don't forget to compute service interruption
         }
+
+        // debug($particulars);
 
         $this->particulars = array_values($particulars);
     }
