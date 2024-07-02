@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Operations\PaidBillOperation;
 use App\Models\BillingType;
 use App\Http\Requests\BillingRequest;
 use Backpack\CRUD\app\Library\Widget;
@@ -23,6 +24,7 @@ class BillingCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
+    use PaidBillOperation;
     
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -36,6 +38,8 @@ class BillingCrudController extends CrudController
         CRUD::setEntityNameStrings('billing', 'billings');
         
         $this->userPermissions();
+
+        // <script src="{{ basset('https://cdn.jsdelivr.net/npm/sweetalert2@11') }}">
     }
 
     /**
@@ -68,7 +72,16 @@ class BillingCrudController extends CrudController
             'escaped' => false
         ]);
 
-        $this->currencyFormatColumn(fieldName: 'total');
+        // $this->currencyFormatColumn(fieldName: 'total');
+
+        $this->crud->column([
+            'name' => 'billing_status_id',
+            'type' => 'closure',
+            'function' => function ($entry) {
+                return $entry->billingStatus->badge;
+            },
+            'escaped' => false
+        ]);
 
         $this->crud->column('created_at');
     }

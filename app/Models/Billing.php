@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Model;
 use App\Models\Account;
 use App\Models\BillingType;
+use App\Models\BillingStatus;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Models\Scopes\ExcludeSoftDeletedAccountsScope;
@@ -57,6 +58,11 @@ class Billing extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function billingStatus()
+    {
+        return $this->belongsTo(BillingStatus::class);
+    }
+
     public function billingType()
     {
         return $this->belongsTo(BillingType::class);
@@ -294,8 +300,7 @@ class Billing extends Model
                     'description' => "Service Interruptions ($totalInterruptionDays $days)",
                     'amount' => -($this->currencyRound($totalInterruptionDays * $this->dailyRate)),
                 ];
-            }
-            
+            }            
         }
 
         $this->particulars = array_values($particulars);
