@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\AccountCreditRequest;
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -19,6 +19,8 @@ class AccountCreditCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
+    use CrudExtend;
+    
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -29,6 +31,8 @@ class AccountCreditCrudController extends CrudController
         CRUD::setModel(\App\Models\AccountCredit::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/account-credit');
         CRUD::setEntityNameStrings('account credit', 'account credits');
+
+        $this->userPermissions();
     }
 
     /**
@@ -40,11 +44,6 @@ class AccountCreditCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::setFromDb(); // set columns from db columns.
-
-        /**
-         * Columns can be defined using the fluent syntax:
-         * - CRUD::column('price')->type('number');
-         */
     }
 
     /**
@@ -59,11 +58,6 @@ class AccountCreditCrudController extends CrudController
             // 'name' => 'required|min:2',
         ]);
         CRUD::setFromDb(); // set fields from db columns.
-
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
     }
 
     /**
