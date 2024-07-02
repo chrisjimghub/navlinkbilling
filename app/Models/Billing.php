@@ -213,6 +213,7 @@ class Billing extends Model
         if ($dateStart && $dateEnd) {
             // Calculate the difference and format it
             $difference = $dateEnd->diff($dateStart)->format('%a|%H|%I');
+            $diff = $dateEnd->diff($dateStart)->format('%a days, %H:%I');
 
             // Explode the formatted difference into an array
             list($days, $hours, $minutes) = explode('|', $difference);
@@ -222,6 +223,7 @@ class Billing extends Model
                 'days' => (int) $days,
                 'hours' => (int) $hours,
                 'minutes' => (int) $minutes,
+                'diff' => $diff,
             ];
 
         }
@@ -273,8 +275,12 @@ class Billing extends Model
 
             // Pro-rated Service Adjustment
             if ($this->isProRatedMonthly) {
+
+                $less = $this->totalNumberOfDays - $this->proRatedDaysAndHoursService['days'];
+                $days = $less > 1 ? 'days' : 'day';
+
                 $particulars[] = [
-                    'description' => 'Pro-rated Service Adjustment',
+                    'description' => "Pro-rated Service Adjustment ($less $days)",
                     'amount' => -($this->account->monthlyRate - $this->proRatedServiceTotalAmount),
                 ];
             }
