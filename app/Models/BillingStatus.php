@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Model;
+use App\Models\Billing;
 
 
 class BillingStatus extends Model
@@ -31,6 +32,10 @@ class BillingStatus extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function billings()
+    {
+        return $this->hasMany(Billing::class);
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -43,6 +48,14 @@ class BillingStatus extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getBadgeAttribute()
+    {
+        if ($this->id == 1) {
+            return "<strong class='text-success'>{$this->name}</strong>";
+        }
+
+        return "<strong class='text-danger'>{$this->name}</strong>";
+    }
 
     /*
     |--------------------------------------------------------------------------
