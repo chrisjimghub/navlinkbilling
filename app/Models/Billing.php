@@ -177,8 +177,8 @@ class Billing extends Model
         return false;
     }
 
-    // return positive but this will be deductions in particulars
-    public function getProRatedServiceAdjustmentAmountAttribute()
+    // pro rated total
+    public function getProRatedServiceTotalAmountAttribute()
     {
         if ($this->isProratedMonthly) {
             $total = 0;
@@ -273,7 +273,7 @@ class Billing extends Model
             if ($this->isProRatedMonthly) {
                 $particulars[] = [
                     'description' => 'Pro-rated Service Adjustment',
-                    'amount' => -$this->proRatedServiceAdjustmentAmount,
+                    'amount' => -($this->account->monthlyRate - $this->proRatedServiceTotalAmount),
                 ];
             }
 
