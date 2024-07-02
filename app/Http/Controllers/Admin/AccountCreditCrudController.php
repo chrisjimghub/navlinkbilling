@@ -44,6 +44,16 @@ class AccountCreditCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::setFromDb(); // set columns from db columns.
+
+        // TODO:: check search logic later.
+        $this->accountColumn();
+
+        $this->currencyColumn('amount');
+    }
+
+    protected function autoSetupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**
@@ -55,9 +65,12 @@ class AccountCreditCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            // 'name' => 'required|min:2',
+            'account_id' => 'required|integer|min:1',
+            'amount' => 'required|numeric'
         ]);
         CRUD::setFromDb(); // set fields from db columns.
+
+        $this->accountField();
     }
 
     /**
