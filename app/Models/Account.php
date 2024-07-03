@@ -206,8 +206,15 @@ class Account extends Model
         $name = $this->customer->fullName ?? '';
         $subscription = $this->subscription->name;
         $location = $this->plannedApplication->location->name;
+        $type = $this->plannedApplication->plannedApplicationType->name;
 
-        return $name .': ' . $subscription .' - ' . $location;
+        $type = explode("/", $type);
+
+        if (is_array($type)) {
+            $type = $type[0];
+        }
+
+        return $name .': ' . $subscription .' - ' . $location .', ' .$type;
     }
 
     public function getDetailsAllAttribute()

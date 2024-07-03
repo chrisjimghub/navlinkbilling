@@ -31,13 +31,19 @@ trait CurrencyFormat {
         return $this->currencyFormat('field', $fieldName);
     }
     
-    public function currencyFormatColumn($fieldName)
+    public function currencyFormatColumn($fieldName, $label = null)
     {
         if (!$this->listColumnExist($fieldName)) {
             $this->crud->column($fieldName);
         }
 
-        return $this->currencyFormat('column', $fieldName);
+        $this->currencyFormat('column', $fieldName);
+    
+        if ($label != null) {
+            $this->crud->modifyColumn($fieldName, [
+                'label' => $label,
+            ]);
+        }
     }
 
     public function currencyFormatAccessor($amount)

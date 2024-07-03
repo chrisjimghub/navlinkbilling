@@ -137,7 +137,7 @@
                             <th>{{ __('Subscription') }}</th>
                             <th>{{ __('Coordinates') }}</th>
                             <th>{{ __('Cut Off Date') }}</th>
-                            <th>{{ __('Balance') }}</th>
+                            <th>{{ __('app.billing_total') }}</th>
                         </tr>
                     </thead>
                     <tbody>
