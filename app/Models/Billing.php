@@ -78,6 +78,19 @@ class Billing extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeUnpaid($query)
+    {
+        return $query->whereHas('billingStatus', function ($q) {
+            $q->where('id', 2); // Unpaid
+        });
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->whereHas('billingStatus', function ($q) {
+            $q->where('id', 1);
+        });
+    }
 
     /*
     |--------------------------------------------------------------------------
