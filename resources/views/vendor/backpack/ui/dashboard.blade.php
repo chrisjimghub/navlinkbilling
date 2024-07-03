@@ -110,69 +110,14 @@
 
 <div class="card bg-white">
     <div class="card-body">
-        <div class="row">
-                
-            @canany(['accounts_list', 'billings_list'])
-                
-                <strong class="text-danger">
-                    {{ __('Near Cut Off Accounts') }}
-                </strong>
 
-                @php
-                    $cutOffItems = modelInstance('Billing')::unpaid()
-                                                    ->monthly()
-                                                    ->whereBetween('date_cut_off', [
-                                                        carbonToday()->subDays(5), 
-                                                        carbonToday()->addDays(5)
-                                                    ])
-                                                    ->orderBy('date_cut_off', 'asc')
-                                                    ->simplePaginate(10); 
-                    
-                    $index = ($cutOffItems->currentPage() - 1) * $cutOffItems->perPage() + 1;
+        @include(backpack_view('my_widgets.near_cut_off_accounts'))
+        
+        <br>
+        
+        @include(backpack_view('my_widgets.to_be_installed'))
+        
 
-                @endphp
-                <table id="dummyTable" class="table table-striped ">
-                    <thead>
-                        <tr>
-                            <th>{{ __('Priority #') }}</th>
-                            <th>{{ __('Account Name') }}</th>
-                            <th>{{ __('Planned Application') }}</th>
-                            <th>{{ __('Subscription') }}</th>
-                            <th>{{ __('Coordinates') }}</th>
-                            <th>{{ __('Cut Off Date') }}</th>
-                            <th>{{ __('app.billing_total') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($cutOffItems as $item)
-                            <tr>
-                                <td>{{ $index++ }}</td>
-                                <td>{{ $item->account->customer->full_name }}</td>
-                                <td>{{ $item->account->plannedApplication->details }}</td>
-                                <td>{{ $item->account->subscription->name }}</td>
-                                <td>
-                                    <a href="{{ "https://www.google.com/maps?q=". $item->account->google_map_coordinates }}"
-                                        target="_blank"    
-                                    >
-                                        {{ $item->account->google_map_coordinates }}
-                                    </a>
-                                    
-                                </td>
-                                <td>
-                                    {!! $item->date_cut_off_badge !!}
-                                </td>
-                                <td class="">
-                                    {{ currencyFormat($item->total) }}
-                                </td>
-                            </tr>
-                        @endforeach
-                        
-                    </tbody>
-                </table>
-
-                {{ $cutOffItems->links() }}
-            @endcanany
-        </div>
     </div>
 </div>
 

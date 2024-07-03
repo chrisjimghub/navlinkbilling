@@ -143,6 +143,35 @@ class Account extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getInstalledDateBadgeAttribute()
+    {
+        $dateInstalled = $this->installed_date;
+        $class = '';
+        $daysDifference = '';
+
+        if ($dateInstalled) {
+            // Calculate difference in days from now
+            $tempDate = Carbon::parse($dateInstalled);
+            $now = Carbon::now();
+            $daysDifference = $now->diffInDays($tempDate);
+
+            // Determine badge class based on days difference
+            if ($daysDifference <= 0) {
+                $class = 'text-danger';
+            }elseif ($daysDifference <= 2) {
+                $class = 'text-warning'; 
+            } elseif ($daysDifference <= 4) {
+                $class = 'text-info'; 
+            }
+        }
+
+        return '<span 
+                    diff="'.$daysDifference.'"
+                    class="'.$class.'">'.
+                    Carbon::parse($dateInstalled)->format('j M Y').
+                '</span>'; // Return empty string if no condition matched
+    }
+
     // Return number of days interrupted
     // Method to get the total days of service interruptions
     public function getTotalServiceInterruptionDaysAttribute()

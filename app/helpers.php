@@ -44,3 +44,17 @@ if (! function_exists('currencyFormat')) {
         
 	}
 }
+
+
+if (! function_exists('coordinatesLink')) {
+	function coordinatesLink($value) {
+		return '
+			<a href="'."https://www.google.com/maps?q=".$value.'"
+				target="_blank"    
+			>
+				'.$value.'
+			</a>
+		';
+        
+	}
+}
