@@ -34,6 +34,8 @@ return [
     'billing_particulars' => 'Particulars',
     'billing_description' => 'Description',
     'billing_period' => 'Billing Period',
+    'billing_total' => 'Total Balance',
+
     'billing_unique_account_billing_type_installation' => 'The selected account already has a billing Installation Fee.',
     'billing_unique_account_billing_type_monthly' => 'The selected account already has unpaid billing Monthly Fee.',
     'billing_account_must_have_installed_date' => 'The selected account must have installed date in his account record to proceed.',
