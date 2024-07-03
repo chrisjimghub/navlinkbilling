@@ -1,7 +1,10 @@
 <?php
 
-if (! function_exists('classInstance')) {
-	function classInstance($class, $useFullPath = false) {
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+
+if (! function_exists('modelInstance')) {
+	function modelInstance($class, $useFullPath = false) {
 		if ($useFullPath) {
 			return new $class;
 		}
@@ -18,6 +21,18 @@ if (! function_exists('classInstance')) {
 	}
 }
 
+if (! function_exists('carbonInstance')) {
+	function carbonInstance($date) {
+        return Carbon::parse($date);
+	}
+}
+
+if (! function_exists('carbonToday')) {
+	function carbonToday() {
+        return Carbon::today();
+	}
+}
+
 
 if (! function_exists('currencyFormat')) {
 	function currencyFormat($value) {
@@ -26,6 +41,20 @@ if (! function_exists('currencyFormat')) {
 				$value, 
 				config('app-settings.decimal_precision')
 			);
+        
+	}
+}
+
+
+if (! function_exists('coordinatesLink')) {
+	function coordinatesLink($value) {
+		return '
+			<a href="'."https://www.google.com/maps?q=".$value.'"
+				target="_blank"    
+			>
+				'.$value.'
+			</a>
+		';
         
 	}
 }
