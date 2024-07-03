@@ -10,7 +10,7 @@
             title="Marked as paid?"
             >
                 <i class="las la-thumbs-up"></i>
-                {{ __('Paid') }}
+                {{ __('Pay') }}
         </a>
     @endif
 
@@ -29,33 +29,6 @@
             // e.preventDefault();
             var button = $(button);
             var route = button.attr('data-route');
-
-            // $.ajax({
-            //     url: route,
-            //     type: 'POST',
-            //     success: function(result) {
-            //         // Show an alert with the result
-            //         new Noty({
-            //             type: "success",
-            //             text: "<strong>Entry cloned</strong><br>A new entry has been added, with the same information as this one."
-            //         }).show();
-
-            //         // Hide the modal, if any
-            //         $('.modal').modal('hide');
-
-            //         if (typeof crud !== 'undefined') {
-            //             crud.table.ajax.reload();
-            //         }
-            //     },
-            //     error: function(result) {
-            //         // Show an alert with the result
-            //         new Noty({
-            //             type: "warning",
-            //             text: "<strong>Cloning failed</strong><br>The new entry could not be created. Please try again."
-            //         }).show();
-            //     }
-            // });
-
 
             swal({
                 title: "{!! trans('backpack::base.warning') !!}",
