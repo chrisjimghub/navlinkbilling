@@ -35,6 +35,14 @@ class ContractPeriodsTableSeeder extends Seeder
                 'updated_at' => '2024-06-30 14:59:12',
                 'deleted_at' => NULL,
             ),
+            2 => 
+            array (
+                'id' => 3,
+                'name' => 'Open Contract',
+                'created_at' => '2024-07-03 03:46:03',
+                'updated_at' => '2024-07-03 03:46:03',
+                'deleted_at' => NULL,
+            ),
         ));
         
         
