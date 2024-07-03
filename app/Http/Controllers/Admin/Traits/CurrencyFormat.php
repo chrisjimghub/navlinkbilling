@@ -8,8 +8,6 @@ trait CurrencyFormat {
 
     use UtilityHelper;
 
-    const CURRENCY_PREFIX = '₱ ';
-    
 
     public function currencyFormat($modifyType, $fieldName)
     {
@@ -17,9 +15,9 @@ trait CurrencyFormat {
 
         return $this->crud->{'modify'.$modifyType}($fieldName, [
             'type'          => 'number',
-            'prefix'        => self::CURRENCY_PREFIX,
+            'prefix'        => config('app-settings.currency_prefix'),
             // 'suffix'     => ' PHP',
-            'decimals'   => 2,
+            'decimals'   => config('app-settings.decimal_precision'),
             'dec_point'     => '.',
             'thousands_sep' => ',',
             'wrapper' => [
@@ -46,12 +44,11 @@ trait CurrencyFormat {
     {
         $amount = $this->currencyRound($amount);
         
-        // return self::CURRENCY_PREFIX . $amount;
-        return self::CURRENCY_PREFIX . number_format($amount, 2, '.', ',');
+        return config('app-settings.currency_prefix') . number_format($amount, config('app-settings.decimal_precision'), '.', ',');
     }
 
     public function currencyRound($amount)
     {
-        return round($amount, 2);
+        return round($amount, config('app-settings.decimal_precision'));
     }
 }

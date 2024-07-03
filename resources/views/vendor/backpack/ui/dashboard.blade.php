@@ -22,8 +22,8 @@
     $contents = [];
 
     if (auth()->user()->can('customers_list')) {
-        $totalCustomers = \App\Models\Customer::count();
-        $totalAccounts = \App\Models\Account::count();
+        $totalCustomers = classInstance('Customer')::count();
+        $totalAccounts = classInstance('Account')::count();
 
         $contents[] = 
             Widget::make()
@@ -39,10 +39,10 @@
     }
 
     if (auth()->user()->can('accounts_list')) {
-        $totalAccounts = \App\Models\Account::count();
-        $totalAccountsConnected = \App\Models\Account::connected()->count();
-        $totalAccountsInstalling = \App\Models\Account::installing()->count();
-        $totalAccountsDisconnected = \App\Models\Account::disconnected()->count();
+        $totalAccounts = classInstance('Account')::count();
+        $totalAccountsConnected = classInstance('Account')::connected()->count();
+        $totalAccountsInstalling = classInstance('Account')::installing()->count();
+        $totalAccountsDisconnected = classInstance('Account')::disconnected()->count();
 
         $contents[] = 
             Widget::make()
@@ -62,11 +62,11 @@
     }
     
     if (auth()->user()->can('billings_list')) {
-        $unpaidBillings = \App\Models\Billing::unpaid()->count();
-        $unpaidInstallment = \App\Models\Billing::where('billing_type_id', 1)->unpaid()->count();
-        $unpaidMonthly = \App\Models\Billing::where('billing_type_id', 2)->unpaid()->count();
-        $totalBillings = \App\Models\Billing::count();
-        $paidBillings = \App\Models\Billing::paid()->count();
+        $unpaidBillings = classInstance('Billing')::unpaid()->count();
+        $unpaidInstallment = classInstance('Billing')::where('billing_type_id', 1)->unpaid()->count();
+        $unpaidMonthly = classInstance('Billing')::where('billing_type_id', 2)->unpaid()->count();
+        $totalBillings = classInstance('Billing')::count();
+        $paidBillings = classInstance('Billing')::paid()->count();
         
         $contents[] = 
             Widget::make()
@@ -93,7 +93,7 @@
             ->progressClass('progress-bar')
             ->progress(100)
             ->value(
-                number_format(\App\Models\AccountCredit::sum('amount'))
+                number_format(classInstance('AccountCredit')::sum('amount'))
             )
             ->description('Total Advanced Payment.')
             ->hint('Sum of all customers advanced.');
@@ -120,9 +120,8 @@
 
                 @php
                     // TODO:: add print 
-                    // TODO:: format total column amount
                     // TODO:: add badge on cut_off_date column
-                    $cutOffItems = \App\Models\Billing::unpaid()
+                    $cutOffItems = classInstance('Billing')::unpaid()
                                                     ->monthly()
                                                     ->orderBy('date_cut_off', 'asc')
                                                     // ->get();
@@ -162,7 +161,7 @@
                                     {{ \Carbon\Carbon::parse($item->date_cut_off)->format('j M Y') }}
                                 </td>
                                 <td class="text-danger">
-                                    {{ $item->total }}
+                                    {{ currencyFormat($item->total) }}
                                 </td>
                             </tr>
                         @endforeach
