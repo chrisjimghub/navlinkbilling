@@ -80,7 +80,7 @@
             ->description('Paid Billings.')
             ->hint(
                 $unpaidInstallment .' installment, '.
-                $unpaidMonthly .' monthly.'
+                $unpaidMonthly .' monthly unpaid.'
             );
     }
 
