@@ -106,4 +106,78 @@
 
 
 @section('content')
+
+
+<div class="card bg-white">
+    <div class="card-body">
+        <div class="row">
+                
+            @canany(['accounts_list', 'billings_list'])
+                
+                <strong class="text-danger">
+                    {{ __('Near Cut Off Accounts') }}
+                </strong>
+
+                @php
+                    // TODO:: add print 
+                    // TODO:: format total column amount
+                    // TODO:: add badge on cut_off_date column
+                    $cutOffItems = \App\Models\Billing::unpaid()
+                                                    ->monthly()
+                                                    ->orderBy('date_cut_off', 'asc')
+                                                    // ->get();
+                                                    ->simplePaginate(10); 
+                    
+                    $index = ($cutOffItems->currentPage() - 1) * $cutOffItems->perPage() + 1;
+
+                @endphp
+                <table id="dummyTable" class="table table-striped ">
+                    <thead>
+                        <tr>
+                            <th>{{ __('Priority #') }}</th>
+                            <th>{{ __('Account Name') }}</th>
+                            <th>{{ __('Planned Application') }}</th>
+                            <th>{{ __('Subscription') }}</th>
+                            <th>{{ __('Coordinates') }}</th>
+                            <th>{{ __('Cut Off Date') }}</th>
+                            <th>{{ __('Balance') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($cutOffItems as $item)
+                            <tr>
+                                <td>{{ $index++ }}</td>
+                                <td>{{ $item->account->customer->full_name }}</td>
+                                <td>{{ $item->account->plannedApplication->details }}</td>
+                                <td>{{ $item->account->subscription->name }}</td>
+                                <td>
+                                    <a href="{{ "https://www.google.com/maps?q=". $item->account->google_map_coordinates }}"
+                                        target="_blank"    
+                                    >
+                                        {{ $item->account->google_map_coordinates }}
+                                    </a>
+                                    
+                                </td>
+                                <td>
+                                    {{ \Carbon\Carbon::parse($item->date_cut_off)->format('j M Y') }}
+                                </td>
+                                <td class="text-danger">
+                                    {{ $item->total }}
+                                </td>
+                            </tr>
+                        @endforeach
+                        
+                    </tbody>
+                </table>
+
+                {{ $cutOffItems->links() }}
+            @endcanany
+            {{-- end canAny - permission of cut off table --}}
+        </div>
+    </div>
+</div>
+
+
+
+
 @endsection

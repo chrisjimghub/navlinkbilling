@@ -78,6 +78,13 @@ class Billing extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeMonthly($query)
+    {
+        return $query->whereHas('billingType', function ($q) {
+            $q->where('id', 2); // monthly 
+        });
+    }
+
     public function scopeUnpaid($query)
     {
         return $query->whereHas('billingStatus', function ($q) {
