@@ -54,6 +54,19 @@ class BillingCrudController extends CrudController
         $this->accountColumn(label: __('app.account'));
         // $this->relationshipColumn(column: 'billing_type_id', label: __('app.billing_type')); // NOTE:: uncomment this if you want to show column for billing type
 
+        $this->crud->modifyColumn('account_id', [
+            'function' => function($entry)  {
+                if ($entry->account) {
+                    return $entry->account->detailsAll;
+                }
+                
+                return;
+            },
+            'escaped' => false,
+            'wrapper' => false
+        ]);
+
+
         $this->crud->column([
             'name' => 'billing_period',
             'label' => __('app.billing_period'),
@@ -123,7 +136,6 @@ class BillingCrudController extends CrudController
             'wrapper' => [
                 'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
             ],
-            'default' => '2024-06-21' // TODO:: add default value base on P2p/fiber
         ]);
 
         $this->crud->field([
@@ -133,7 +145,6 @@ class BillingCrudController extends CrudController
             'wrapper' => [
                 'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
             ],
-            'default' => '2024-07-20' // TODO:: add default value base on P2p/fiber
         ]);
 
         $this->crud->field([
@@ -143,7 +154,6 @@ class BillingCrudController extends CrudController
             'wrapper' => [
                 'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
             ],
-            'default' => '2024-07-25' // TODO:: add default value base on P2p/fiber
         ]);
     }
 
