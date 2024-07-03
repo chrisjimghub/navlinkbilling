@@ -119,8 +119,6 @@
                 </strong>
 
                 @php
-                    // TODO:: add print 
-                    // TODO:: add badge on cut_off_date column
                     $cutOffItems = classInstance('Billing')::unpaid()
                                                     ->monthly()
                                                     ->orderBy('date_cut_off', 'asc')
@@ -158,7 +156,7 @@
                                     
                                 </td>
                                 <td>
-                                    {{ \Carbon\Carbon::parse($item->date_cut_off)->format('j M Y') }}
+                                    {!! $item->date_cut_off_badge !!}
                                 </td>
                                 <td class="text-danger">
                                     {{ currencyFormat($item->total) }}
@@ -171,7 +169,6 @@
 
                 {{ $cutOffItems->links() }}
             @endcanany
-            {{-- end canAny - permission of cut off table --}}
         </div>
     </div>
 </div>

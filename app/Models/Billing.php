@@ -104,6 +104,33 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getDateCutOffBadgeAttribute()
+    {
+        $dateCutOff = $this->date_cut_off;
+        $class = 'text-success';
+        $daysDifference = '';
+
+        if ($dateCutOff) {
+            // Calculate difference in days from now
+            $cutOffDate = Carbon::parse($dateCutOff);
+            $now = Carbon::now();
+            $daysDifference = $now->diffInDays($cutOffDate);
+
+            // Determine badge class based on days difference
+            if ($daysDifference < 2) {
+                $class = 'text-danger'; 
+            } elseif ($daysDifference <= 4) {
+                $class = 'text-warning'; 
+            }
+        }
+
+        return '<span 
+                    diff="'.$daysDifference.'"
+                    class="'.$class.'">'.
+                    Carbon::parse($this->date_cut_off)->format('j M Y').
+                '</span>'; // Return empty string if no condition matched
+    }
+
     public function getTotalAttribute()
     {
         $totalAmount = collect($this->particulars)->sum(function ($item) {
