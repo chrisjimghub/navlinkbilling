@@ -22,8 +22,8 @@
     $contents = [];
 
     if (auth()->user()->can('customers_list')) {
-        $totalCustomers = \App\Models\Customer::count();
-        $totalAccounts = \App\Models\Account::count();
+        $totalCustomers = classInstance('Customer')::count();
+        $totalAccounts = classInstance('Account')::count();
 
         $contents[] = 
             Widget::make()
@@ -39,10 +39,10 @@
     }
 
     if (auth()->user()->can('accounts_list')) {
-        $totalAccounts = \App\Models\Account::count();
-        $totalAccountsConnected = \App\Models\Account::connected()->count();
-        $totalAccountsInstalling = \App\Models\Account::installing()->count();
-        $totalAccountsDisconnected = \App\Models\Account::disconnected()->count();
+        $totalAccounts = classInstance('Account')::count();
+        $totalAccountsConnected = classInstance('Account')::connected()->count();
+        $totalAccountsInstalling = classInstance('Account')::installing()->count();
+        $totalAccountsDisconnected = classInstance('Account')::disconnected()->count();
 
         $contents[] = 
             Widget::make()
@@ -62,11 +62,11 @@
     }
     
     if (auth()->user()->can('billings_list')) {
-        $unpaidBillings = \App\Models\Billing::unpaid()->count();
-        $unpaidInstallment = \App\Models\Billing::where('billing_type_id', 1)->unpaid()->count();
-        $unpaidMonthly = \App\Models\Billing::where('billing_type_id', 2)->unpaid()->count();
-        $totalBillings = \App\Models\Billing::count();
-        $paidBillings = \App\Models\Billing::paid()->count();
+        $unpaidBillings = classInstance('Billing')::unpaid()->count();
+        $unpaidInstallment = classInstance('Billing')::where('billing_type_id', 1)->unpaid()->count();
+        $unpaidMonthly = classInstance('Billing')::where('billing_type_id', 2)->unpaid()->count();
+        $totalBillings = classInstance('Billing')::count();
+        $paidBillings = classInstance('Billing')::paid()->count();
         
         $contents[] = 
             Widget::make()
@@ -93,7 +93,7 @@
             ->progressClass('progress-bar')
             ->progress(100)
             ->value(
-                number_format(\App\Models\AccountCredit::sum('amount'))
+                number_format(classInstance('AccountCredit')::sum('amount'))
             )
             ->description('Total Advanced Payment.')
             ->hint('Sum of all customers advanced.');
@@ -106,4 +106,77 @@
 
 
 @section('content')
+
+
+<div class="card bg-white">
+    <div class="card-body">
+        <div class="row">
+                
+            @canany(['accounts_list', 'billings_list'])
+                
+                <strong class="text-danger">
+                    {{ __('Near Cut Off Accounts') }}
+                </strong>
+
+                @php
+                    // TODO:: add print 
+                    // TODO:: add badge on cut_off_date column
+                    $cutOffItems = classInstance('Billing')::unpaid()
+                                                    ->monthly()
+                                                    ->orderBy('date_cut_off', 'asc')
+                                                    // ->get();
+                                                    ->simplePaginate(10); 
+                    
+                    $index = ($cutOffItems->currentPage() - 1) * $cutOffItems->perPage() + 1;
+
+                @endphp
+                <table id="dummyTable" class="table table-striped ">
+                    <thead>
+                        <tr>
+                            <th>{{ __('Priority #') }}</th>
+                            <th>{{ __('Account Name') }}</th>
+                            <th>{{ __('Planned Application') }}</th>
+                            <th>{{ __('Subscription') }}</th>
+                            <th>{{ __('Coordinates') }}</th>
+                            <th>{{ __('Cut Off Date') }}</th>
+                            <th>{{ __('Balance') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($cutOffItems as $item)
+                            <tr>
+                                <td>{{ $index++ }}</td>
+                                <td>{{ $item->account->customer->full_name }}</td>
+                                <td>{{ $item->account->plannedApplication->details }}</td>
+                                <td>{{ $item->account->subscription->name }}</td>
+                                <td>
+                                    <a href="{{ "https://www.google.com/maps?q=". $item->account->google_map_coordinates }}"
+                                        target="_blank"    
+                                    >
+                                        {{ $item->account->google_map_coordinates }}
+                                    </a>
+                                    
+                                </td>
+                                <td>
+                                    {{ \Carbon\Carbon::parse($item->date_cut_off)->format('j M Y') }}
+                                </td>
+                                <td class="text-danger">
+                                    {{ currencyFormat($item->total) }}
+                                </td>
+                            </tr>
+                        @endforeach
+                        
+                    </tbody>
+                </table>
+
+                {{ $cutOffItems->links() }}
+            @endcanany
+            {{-- end canAny - permission of cut off table --}}
+        </div>
+    </div>
+</div>
+
+
+
+
 @endsection
