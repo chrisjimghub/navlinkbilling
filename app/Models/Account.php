@@ -210,6 +210,32 @@ class Account extends Model
         return $name .': ' . $subscription .' - ' . $location;
     }
 
+    public function getDetailsAllAttribute()
+    {
+        $name = $this->customer->fullName ?? '';
+        $subscription = $this->subscription->name;
+        $location = $this->plannedApplication->location->name;
+        $type = $this->plannedApplication->plannedApplicationType->name;
+        $plannedApp = $this->plannedApplication;
+
+        $type = explode("/", $type);
+
+        if (is_array($type)) {
+            $type = $type[0];
+        }
+
+        return 
+            '<strong>Name: </strong><a href='.backpack_url('account/'.$this->id.'/show').'>'.$name.'</a><br/>'.
+            '<strong>Location: </strong>' . $location . '<br/>'.
+            '<strong>Type: </strong>' . $type . '<br/>'.
+            '<strong>Sub: </strong>' . $subscription . '<br/>'.
+            '<strong>Mbps: </strong>' . $plannedApp->mbps . '<br/>'.
+            // '<strong>Price: </strong>' . $plannedApp->price . '<br/>'.
+        
+            '';
+
+        // return $name .': ' . $subscription .' - ' . $location;
+    }
 
     // I put this accessor here instead in OTC model because this is many records, i pluck it.
     // OTC display in view or column
