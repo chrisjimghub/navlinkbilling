@@ -58,19 +58,22 @@ trait PaidBillOperation
             $billing->billing_status_id = 1;
             $billing->save();
             
-            // Find the label for one month advance
-            $oneMonthAdvanceLabel = $billing->account->contractPeriods()->where('contract_periods.id', 1)->first()->name;
 
-            // Create account credit for relevant particulars
-            foreach ($billing->particulars as $particular) {
-                if ($particular['description'] == $oneMonthAdvanceLabel) {
-                    AccountCredit::create([
-                        'account_id' => $billing->account_id,
-                        'amount' => $particular['amount'],
-                    ]);
+            // Find the label for one month advancem ID = 1 = 1 Month advance
+            $oneMonthAdvanceLabel = $billing->account->contractPeriods()->where('contract_periods.id', 1)->first();
+
+            if ($oneMonthAdvanceLabel) {
+                // Create account credit for relevant particulars
+                foreach ($billing->particulars as $particular) {
+                    if ($particular['description'] == $oneMonthAdvanceLabel->name) {
+                        AccountCredit::create([
+                            'account_id' => $billing->account_id,
+                            'amount' => $particular['amount'],
+                        ]);
+                    }
                 }
             }
-
+            
             // Commit the transaction
             DB::commit();
 
