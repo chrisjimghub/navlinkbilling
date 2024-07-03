@@ -10,7 +10,8 @@
                 modelInstance('Account')::
                 installing()
                 ->orderBy('installed_date', 'asc')
-                ->simplePaginate(10); 
+                ->simplePaginate(10, ['*'], 'install_page')
+                ->appends(request()->except('install_page')); 
             
             $index = ($items->currentPage() - 1) * $items->perPage() + 1;
 

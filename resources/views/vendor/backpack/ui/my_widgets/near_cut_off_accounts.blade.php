@@ -14,7 +14,8 @@
                     carbonToday()->addDays(5)
                 ])
                 ->orderBy('date_cut_off', 'asc')
-                ->simplePaginate(10); 
+                ->simplePaginate(10, ['*'], 'cutoff_page')
+                ->appends(request()->except('cutoff_page')); 
             
             $index = ($cutOffItems->currentPage() - 1) * $cutOffItems->perPage() + 1;
 
