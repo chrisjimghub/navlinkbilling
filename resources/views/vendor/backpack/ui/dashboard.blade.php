@@ -31,7 +31,7 @@
             ->class('card border-0 text-white bg-info my-widgets mb-2')
             ->progressClass('progress-bar')
             ->progress(round(
-                $totalAccounts / $totalCustomers * 100
+                $totalAccounts / ($totalCustomers == 0 ? 1 : $totalCustomers) * 100
             ))
             ->value($totalCustomers)
             ->description('Registered Customers.')
@@ -51,7 +51,7 @@
             ->progressClass('progress-bar')
             ->progress(round(
                 // connected accounts / total accounts * 100
-                $totalAccountsConnected / $totalAccounts * 100
+                $totalAccountsConnected / ($totalAccounts == 0 ? 1 : $totalAccounts) * 100
             ))
             ->value($totalAccountsConnected)
             ->description('Accounts Connected.')
@@ -74,7 +74,7 @@
             ->class('card border-0 text-white bg-dark my-widgets mb-2')
             ->progressClass('progress-bar')
             ->progress(round(
-                $paidBillings / $totalBillings * 100
+                $paidBillings / ($totalBillings == 0 ? 1 : $totalBillings) * 100
             ))
             ->value($paidBillings)
             ->description('Paid Billings.')
