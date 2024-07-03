@@ -1,7 +1,10 @@
 <?php
 
-if (! function_exists('classInstance')) {
-	function classInstance($class, $useFullPath = false) {
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+
+if (! function_exists('modelInstance')) {
+	function modelInstance($class, $useFullPath = false) {
 		if ($useFullPath) {
 			return new $class;
 		}
@@ -15,6 +18,18 @@ if (! function_exists('classInstance')) {
         $class = "\\App\\Models\\".$class;
         
         return new $class;
+	}
+}
+
+if (! function_exists('carbonInstance')) {
+	function carbonInstance($date) {
+        return Carbon::parse($date);
+	}
+}
+
+if (! function_exists('carbonToday')) {
+	function carbonToday() {
+        return Carbon::today();
 	}
 }
 
