@@ -109,6 +109,27 @@ class Account extends Model
         });
     }
 
+    public function scopeConnected($query) 
+    {
+        return $query->whereHas('accountStatus', function ($q) {
+            $q->where('id', 1); // 
+        });
+    }
+
+    public function scopeInstalling($query) 
+    {
+        return $query->whereHas('accountStatus', function ($q) {
+            $q->where('id', 2); // 
+        });
+    }
+
+    public function scopeDisconnected($query) 
+    {
+        return $query->whereHas('accountStatus', function ($q) {
+            $q->where('id', 3); // 
+        });
+    }
+
     // Scope method to filter customers with remaining credits > 0
     public function scopeHasRemainingCredits($query)
     {
