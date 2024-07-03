@@ -158,7 +158,7 @@
                                 <td>
                                     {!! $item->date_cut_off_badge !!}
                                 </td>
-                                <td class="text-danger">
+                                <td class="">
                                     {{ currencyFormat($item->total) }}
                                 </td>
                             </tr>

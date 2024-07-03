@@ -107,7 +107,7 @@ class Billing extends Model
     public function getDateCutOffBadgeAttribute()
     {
         $dateCutOff = $this->date_cut_off;
-        $class = 'text-success';
+        $class = '';
         $daysDifference = '';
 
         if ($dateCutOff) {
@@ -117,10 +117,12 @@ class Billing extends Model
             $daysDifference = $now->diffInDays($cutOffDate);
 
             // Determine badge class based on days difference
-            if ($daysDifference < 2) {
-                $class = 'text-danger'; 
-            } elseif ($daysDifference <= 4) {
+            if ($daysDifference <= 0) {
+                $class = 'text-danger';
+            }elseif ($daysDifference <= 2) {
                 $class = 'text-warning'; 
+            } elseif ($daysDifference <= 4) {
+                $class = 'text-info'; 
             }
         }
 
