@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Billing;
 use App\Models\BillingType;
+use App\Models\ContractPeriod;
 use App\Http\Requests\BillingRequest;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
@@ -189,6 +190,7 @@ class BillingCrudController extends CrudController
                 ],
                 
             ],
+            'hint' => '<span class="text-success">Use "'.ContractPeriod::find(1)->name.'" description if you want to automatically add account credit.</span>',
             'init_rows' => 0, // number of empty rows to be initialized, by default 1
             // 'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
         ]);
