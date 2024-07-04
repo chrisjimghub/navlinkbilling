@@ -5,6 +5,10 @@
             {{ __('Install Accounts') }}
         </strong>
 
+        <a class="ml-1" href="{{ route('widget.installAccounts') }}">
+            {{ __('Download Excel') }} 
+        </a>
+
         @php
             $items = 
                 modelInstance('Account')::
@@ -23,7 +27,7 @@
                     <th>{{ __('app.widgets.account_name') }}</th>
                     <th>{{ __('app.widgets.planned_app') }}</th>
                     <th>{{ __('app.widgets.sub') }}</th>
-                    <th>{{ __('app.widgets.barangay') }}</th>
+                    <th>{{ __('app.widgets.address') }}</th>
                     <th>{{ __('app.widgets.coordiantes') }}</th>
                     <th>{{ __('app.widgets.date_created') }}</th>
                 </tr>
@@ -35,7 +39,7 @@
                         <td>{{ $item->customer->full_name }}</td>
                         <td>{{ $item->plannedApplication->details }}</td>
                         <td>{{ $item->subscription->name }}</td>
-                        <td>{{ $item->customer->barangay }}</td>
+                        <td>{{ $item->installed_address }}</td>
                         <td>{!! coordinatesLink($item->google_map_coordinates) !!}</td>
                         <td>{!! $item->created_badge !!}</td>
                     </tr>

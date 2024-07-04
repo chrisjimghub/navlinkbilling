@@ -34,6 +34,11 @@ if (! function_exists('carbonToday')) {
 	}
 }
 
+if (! function_exists('carbonNow')) {
+	function carbonNow() {
+        return Carbon::now();
+	}
+}
 
 if (! function_exists('dateHumanReadable')) {
 	function dateHumanReadable() {
