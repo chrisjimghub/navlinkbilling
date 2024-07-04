@@ -21,6 +21,7 @@ if (! function_exists('modelInstance')) {
 	}
 }
 
+// carbon
 if (! function_exists('carbonInstance')) {
 	function carbonInstance($date) {
         return Carbon::parse($date);
@@ -34,6 +35,14 @@ if (! function_exists('carbonToday')) {
 }
 
 
+if (! function_exists('dateHumanReadable')) {
+	function dateHumanReadable() {
+        return 'j M Y';
+	}
+}
+// end carbon
+
+
 if (! function_exists('currencyFormat')) {
 	function currencyFormat($value) {
 		return config('app-settings.currency_prefix').' '.
@@ -45,7 +54,7 @@ if (! function_exists('currencyFormat')) {
 	}
 }
 
-
+// link
 if (! function_exists('coordinatesLink')) {
 	function coordinatesLink($value) {
 		return '

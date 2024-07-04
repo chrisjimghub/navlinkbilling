@@ -89,6 +89,8 @@ return [
         'coordiantes'  => 'Coordiantes',
         'date_cut_off' => 'Cut Off Date',
         'date_installed' => 'Installed Date',
+        'date_created' => 'Created Date',
+        'barangay' => 'Barangay',
 
     ]
     

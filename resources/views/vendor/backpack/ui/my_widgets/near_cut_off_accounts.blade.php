@@ -8,11 +8,7 @@
         @php
             $cutOffItems = 
                 modelInstance('Billing')::unpaid()
-                ->monthly()
-                ->whereBetween('date_cut_off', [
-                    carbonToday()->subDays(5), 
-                    carbonToday()->addDays(5)
-                ])
+                ->cutOffAccountLists()
                 ->orderBy('date_cut_off', 'asc')
                 ->simplePaginate(10, ['*'], 'cutoff_page')
                 ->appends(request()->except('cutoff_page')); 
