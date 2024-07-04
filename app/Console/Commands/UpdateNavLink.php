@@ -28,19 +28,19 @@ class UpdateNavLink extends Command
      */
     public function handle()
     {
-        if (!$this->option('no-composer')) {
-            $this->info('Running composer update...');
+        // if (!$this->option('no-composer')) {
+        //     $this->info('Running composer update...');
+        //     $composerCommand = ['composer', 'update'];
+        //     if (App::environment('production')) {
+        //         $composerCommand[] = '--no-dev';
+        //     }
+        //     $this->runProcess($composerCommand);
 
-            $composerCommand = ['composer', 'update'];
+        // } else {
+        //     $this->info('Skipping composer due to --no-composer flag.');
+        // }
 
-            if (App::environment('production')) {
-                $composerCommand[] = '--no-dev';
-            }
-
-            $this->runProcess($composerCommand);
-        } else {
-            $this->info('Skipping composer update due to --no-composer flag.');
-        }
+        
 
         $this->info('Stashing git changes...');
         $this->runProcess(['git', 'stash']);
