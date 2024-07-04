@@ -125,6 +125,13 @@ class Account extends Model
         });
     }
 
+    public function scopeConnectedNoBilling($query) 
+    {
+        return $query->whereHas('accountStatus', function ($q) {
+            $q->where('id', 4); // Connected - No Billing 
+        });
+    }
+
     public function scopeConnected($query) 
     {
         return $query->whereHas('accountStatus', function ($q) {
