@@ -102,6 +102,12 @@ class Account extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeAllowedBill($query)
+    {
+        return $query->connected()
+                ->installing();
+    }
+
     public function scopeNotInstalled($query)
     {
         return $query->whereNull('installed_date')

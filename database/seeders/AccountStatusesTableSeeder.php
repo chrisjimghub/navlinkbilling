@@ -46,6 +46,15 @@ class AccountStatusesTableSeeder extends Seeder
                 'updated_at' => '2024-06-21 05:47:40',
                 'deleted_at' => NULL,
             ),
+            3 => 
+            array (
+                'id' => 4,
+                'name' => 'Connected - No Billing',
+                'badge_css' => 'badge badge-warning',
+                'created_at' => '2024-07-04 16:52:56',
+                'updated_at' => '2024-07-04 16:52:56',
+                'deleted_at' => NULL,
+            ),
         ));
         
         
