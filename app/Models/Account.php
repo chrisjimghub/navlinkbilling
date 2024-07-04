@@ -102,10 +102,14 @@ class Account extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
-    public function scopeAllowedBill($query)
+    public function scopeallowedBill($query)
     {
-        return $query->connected()
-                ->installing();
+        return $query->whereHas('accountStatus', function ($q) {
+            $q->whereIn('id', [1,2]);
+            // connected
+            // installing 
+        });
+                
     }
 
     public function scopeNotInstalled($query)
