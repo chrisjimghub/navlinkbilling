@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\CutOffAccountExport;
+use App\Exports\InstallAccountExport;
 use Illuminate\Support\Facades\Route;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
@@ -35,9 +36,9 @@ class WidgetCrudController extends CrudController
     {
         return (new CutOffAccountExport)->download('cut-off-accounts-'.carbonNow().'.xlsx');
     }
-
+    
     public function installAccounts()
     {
-        dd('lorem ipsum');
+        return (new InstallAccountExport)->download('install-accounts-'.carbonNow().'.xlsx');
     }
 }
