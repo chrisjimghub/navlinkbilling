@@ -39,7 +39,6 @@ class UpdateNavLink extends Command
         // } else {
         //     $this->info('Skipping composer due to --no-composer flag.');
         // }
-
         
 
         $this->info('Stashing git changes...');
