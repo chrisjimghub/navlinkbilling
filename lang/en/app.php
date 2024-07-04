@@ -82,13 +82,15 @@ return [
 
     // Widgets
     'widgets' => [
-        'priority_num' => 'Priority #',
-        'account_name' => 'Account Name',
-        'planned_app'  => 'Planned Application',
-        'sub'          => 'Subscription',
-        'coordiantes'  => 'Coordiantes',
-        'date_cut_off' => 'Cut Off Date',
+        'priority_num'   => 'Priority #',
+        'account_name'   => 'Account Name',
+        'planned_app'    => 'Planned Application',
+        'sub'            => 'Subscription',
+        'coordiantes'    => 'Coordiantes',
+        'date_cut_off'   => 'Cut Off Date',
         'date_installed' => 'Installed Date',
+        'date_created'   => 'Created Date',
+        'address'        => 'Address',
 
     ]
     

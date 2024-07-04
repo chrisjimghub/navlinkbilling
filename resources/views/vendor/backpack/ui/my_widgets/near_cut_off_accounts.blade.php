@@ -5,14 +5,14 @@
             {{ __('Near Cut Off Accounts') }}
         </strong>
 
+        <a class="ml-1" href="{{ route('widget.cutOffAccounts') }}">
+            {{ __('Download Excel') }} 
+        </a>
+
         @php
             $cutOffItems = 
                 modelInstance('Billing')::unpaid()
-                ->monthly()
-                ->whereBetween('date_cut_off', [
-                    carbonToday()->subDays(5), 
-                    carbonToday()->addDays(5)
-                ])
+                ->cutOffAccountLists()
                 ->orderBy('date_cut_off', 'asc')
                 ->simplePaginate(10, ['*'], 'cutoff_page')
                 ->appends(request()->except('cutoff_page')); 
@@ -39,7 +39,7 @@
                         <td>{{ $item->account->customer->full_name }}</td>
                         <td>{{ $item->account->plannedApplication->details }}</td>
                         <td>{{ $item->account->subscription->name }}</td>
-                        <td>{!! coordinatesLink($item->google_map_coordinates) !!}</td>
+                        <td>{!! coordinatesLink($item->account->google_map_coordinates) !!}</td>
                         <td>{!! $item->date_cut_off_badge !!}</td>
                         <td>{{ currencyFormat($item->total) }}</td>
                     </tr>

@@ -102,6 +102,12 @@ class Account extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeNotInstalled($query)
+    {
+        return $query->whereNull('installed_date')
+                ->notDisconnected();
+    }
+
     public function scopeNotDisconnected($query)
     {
         return $query->whereHas('accountStatus', function ($q) {
@@ -143,6 +149,35 @@ class Account extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getCreatedBadgeAttribute()
+    {
+        $date = $this->created_at;
+        $class = '';
+        $daysDifference = '';
+
+        if ($date) {
+            // Calculate difference in days from now
+            $tempDate = Carbon::parse($date);
+            $now = Carbon::now();
+            $daysDifference = $now->diffInDays($tempDate);
+
+            // Determine badge class based on days difference
+            if ($daysDifference <= 0) {
+                $class = 'text-danger';
+            }elseif ($daysDifference <= 2) {
+                $class = 'text-warning'; 
+            } elseif ($daysDifference <= 4) {
+                $class = 'text-info'; 
+            }
+        }
+
+        return '<span 
+                    diff="'.$daysDifference.'"
+                    class="'.$class.'">'.
+                    Carbon::parse($date)->format(dateHumanReadable()).
+                '</span>'; // Return empty string if no condition matched
+    }
+
     public function getInstalledDateBadgeAttribute()
     {
         $dateInstalled = $this->installed_date;
@@ -168,7 +203,7 @@ class Account extends Model
         return '<span 
                     diff="'.$daysDifference.'"
                     class="'.$class.'">'.
-                    Carbon::parse($dateInstalled)->format('j M Y').
+                    Carbon::parse($dateInstalled)->format(dateHumanReadable()).
                 '</span>'; // Return empty string if no condition matched
     }
 

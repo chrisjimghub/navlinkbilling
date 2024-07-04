@@ -78,6 +78,15 @@ class Billing extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeCutOffAccountLists($query)
+    {
+        return $this->monthly()
+        ->whereBetween('date_cut_off', [
+            carbonToday()->subDays(5), 
+            carbonToday()->addDays(5)
+        ]);
+    }
+
     public function scopeMonthly($query)
     {
         return $query->whereHas('billingType', function ($q) {
@@ -129,7 +138,7 @@ class Billing extends Model
         return '<span 
                     diff="'.$daysDifference.'"
                     class="'.$class.'">'.
-                    Carbon::parse($this->date_cut_off)->format('j M Y').
+                    Carbon::parse($this->date_cut_off)->format(dateHumanReadable()).
                 '</span>'; // Return empty string if no condition matched
     }
 

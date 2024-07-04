@@ -46,10 +46,15 @@ trait CurrencyFormat {
         }
     }
 
-    public function currencyFormatAccessor($amount)
+    public function currencyFormatAccessor($amount, $prefix = true)
     {
         $amount = $this->currencyRound($amount);
         
+        if (!$prefix) {
+
+            return number_format($amount, config('app-settings.decimal_precision'), '.', ',');
+        }
+
         return config('app-settings.currency_prefix') . number_format($amount, config('app-settings.decimal_precision'), '.', ',');
     }
 
@@ -57,4 +62,5 @@ trait CurrencyFormat {
     {
         return round($amount, config('app-settings.decimal_precision'));
     }
+    
 }
