@@ -20,9 +20,12 @@ trait CurrencyFormat {
             'decimals'   => config('app-settings.decimal_precision'),
             'dec_point'     => '.',
             'thousands_sep' => ',',
-            'wrapper' => [
-                'class' => 'text-success'
-            ]
+            
+            // dont add wrapper here, or it will affect or override other fields using this, if you want to
+            // dont forget to include form control
+            // 'wrapper' => [
+            //     'class' => 'text-success'
+            // ]
         ]);
     }
 
