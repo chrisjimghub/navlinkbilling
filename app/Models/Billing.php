@@ -16,6 +16,34 @@ class Billing extends Model
     use CurrencyFormat;
     use AccountCrud;
 
+    /* 
+        NOTE:: Before proceeding and read the methods below and attributes,
+        if you notice many methods are almost similar in accounts or other relationships,
+        the reason for that is although it has FK account_id relationship, when the bill
+        is created i save a snapshot of accounts and other records as json datatype in billings
+        table column name accounts_snapshot and upgrade_account_snapshot. So that it could capture
+        the data the moment the bill was created and no matter if they change the account records
+        and related data it will not be change because this is an invoice or receipt that value not need
+        to change and to be preserved.
+
+        Here is the behavior if the upgrade_account_snapshot is empty, then some attributes will pull from the
+        relationship which is the account, but if the json column named account_snapshot is not empty, then it will
+        pull that instead of the relationship account, but if the upgrade_account_snapshot is not empty then it will
+        get that instead.
+
+        This is the precedents:
+            upgrade_account_snapshots,
+            account_snapshots,
+            account model relationship.
+
+        The reason y sometimes i need to pull the account mdoel relationship values is because if you notice i use creating event, and 
+        when the model is still creatd, of course the 2 json datatype column are still empty, but once they are already
+        have data then the system will prioritize to pick up that data as you can see in the above precedents.
+
+        The convention i use is whatever the real relationship in account is i used it but camelCase, example for account->lacation->name,
+        i use locationName/getLocationNameAttribute, to make it similar.
+    */
+
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
@@ -141,9 +169,8 @@ class Billing extends Model
     /* 
         NOTE::
             use $this->realAccount if you want to get account datas
-            if upgrade acc snapshot is not empty it will take from there
-            else if from acc snapshot
-            otherwise from acc relationship
+            if upgrade_account_snapshot is not empty then use it.
+            else if use account_snapshot
 
     */
     public function getRealAccountAttribute() 
@@ -209,6 +236,28 @@ class Billing extends Model
         }
 
         return $this->account->plannedApplication->mbps;
+    }
+
+
+    public function getAccountPlannedApplicationDetailsAttribute()
+    {
+        if ($this->realAccount) {
+
+            $type = $this->plannedApplicationTypeName;
+
+            $type = explode("/", $type);
+
+            if (is_array($type)) {
+                $type = $type[0];
+            }
+
+            return $this->locationname . ' - '. 
+                    $type . ' :'. 
+                    $this->mbps . 'Mbps ----- '.
+                    $this->currencyFormatAccessor($this->realAccount['plannedApplication']['price']);
+        }
+
+        return $this->account->plannedApplication->details;
     }
 
     // Data Taken from snapshot
