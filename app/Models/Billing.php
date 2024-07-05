@@ -96,6 +96,14 @@ class Billing extends Model
         return false;
     }
 
+    public function isUnpaid() : bool
+    {
+        if ($this->billing_status_id == 2) {
+            return true;
+        }        
+
+        return false;
+    }
     // return service interruptions list of dates that is covered or in between billing date start and end
     public function accountServiceInterruptions()
     {

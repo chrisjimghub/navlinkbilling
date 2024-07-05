@@ -1,17 +1,57 @@
 @if ($crud->hasAccess('pay'))
     
-    @if($entry->unpaid())
-        <a 
-            href="javascript:void(0)" 
-            onclick="payEntry(this)" 
-            data-route="{{ url($crud->route.'/'.$entry->getKey().'/pay') }}" 
-            class="btn btn-sm btn-link text-success" 
-            data-button-type="pay"
-            title="Marked as paid?"
-            >
-                <i class="las la-thumbs-up"></i>
-                {{ __('Pay') }}
-        </a>
+    @if($entry->isUnpaid())
+        <div class="btn-group">
+            <button type="button" class="btn text-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Operations <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a 
+                        href="javascript:void(0)" 
+                        onclick="payEntry(this)" 
+                        data-route="{{ url($crud->route.'/'.$entry->getKey().'/pay') }}" 
+                        class="btn btn-sm btn-link text-success" 
+                        data-button-type="pay"
+                        title="Marked as paid?"
+                        >
+                            <i class="las la-thumbs-up"></i>
+                            {{ __('Pay') }}
+                    </a>
+                </li>
+
+                {{-- TODO:: --}}
+                <li>
+                    <a 
+                        href="javascript:void(0)" 
+                        {{-- onclick="payEntry(this)"  --}}
+                        {{-- data-route="{{ url($crud->route.'/'.$entry->getKey().'/pay') }}"  --}}
+                        class="btn btn-sm btn-link text-warning" 
+                        {{-- data-button-type="pay" --}}
+                        {{-- title="Marked as paid?" --}}
+                        >
+                            <i class="las la-credit-card"></i>
+                            {{ __('Use Credit') }}
+                    </a>
+
+                </li>
+                <li>
+                    <a 
+                        href="javascript:void(0)" 
+                        {{-- onclick="payEntry(this)"  --}}
+                        {{-- data-route="{{ url($crud->route.'/'.$entry->getKey().'/pay') }}"  --}}
+                        class="btn btn-sm btn-link text-info" 
+                        {{-- data-button-type="pay" --}}
+                        {{-- title="Marked as paid?" --}}
+                        >
+                            <i class="las la-level-up-alt"></i>
+                            {{ __('Upgrade Plan') }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        
     @endif
 
 @endif
