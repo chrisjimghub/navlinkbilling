@@ -58,16 +58,10 @@ class BillingCrudController extends CrudController
         // NOTE:: if unpaid show relationship values, but if paid show the json snapshot instead
         $this->crud->modifyColumn('account_id', [
             'function' => function($entry)  {
-                if ($entry->account) {
-
-                    if ($entry->isPaid()) {
-                        // return 'snapshot';
-                        return $entry->account_snapshot_details;
-                    }
-
-                    return $entry->account->details_all;
+                if ($entry->account_snapshot) {
+                    return $entry->account_snapshot_details;
                 }
-                
+
                 return;
             },
             'escaped' => false,

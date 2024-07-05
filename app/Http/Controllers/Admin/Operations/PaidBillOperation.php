@@ -56,8 +56,10 @@ trait PaidBillOperation
 
             // Update billing status
             $billing->billing_status_id = 1;
-            $billing->save();
             
+            // $billing->save(); // TODO:: uncomment after
+            
+            // capture from snapshots
 
             // Find the label for one month advancem ID = 1 = 1 Month advance
             $oneMonthAdvanceLabel = $billing->account->contractPeriods()->where('contract_periods.id', 1)->first();

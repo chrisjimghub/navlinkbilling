@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('billings', function (Blueprint $table) {
             //
             $table->json('account_snapshot')->nullable()->after('particulars'); 
+            $table->json('upgrade_account_snapshot')->nullable()->after('particulars'); 
         });
     }
 
@@ -25,6 +26,7 @@ return new class extends Migration
         Schema::table('billings', function (Blueprint $table) {
             //
             $table->dropColumn('account_snapshot');
+            $table->dropColumn('upgrade_account_snapshot');
         });
     }
 };

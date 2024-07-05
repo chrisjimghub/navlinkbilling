@@ -112,7 +112,7 @@
 
 <div class="card bg-white">
     <div class="card-body">
-
+        
         @include(backpack_view('my_widgets.near_cut_off_accounts'))
         
         <br>
