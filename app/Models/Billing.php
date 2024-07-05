@@ -299,6 +299,30 @@ class Billing extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public function setBillingStatusIdAttribute($value)
+    {
+        $snapshot = [];
+
+        if ($this->account) {
+            $snapshot['account'] = $this->account->toArray();
+            $snapshot['plannedApplication'] = $this->account->plannedApplication->toArray();
+            $snapshot['plannedApplicationType'] = $this->account->plannedApplication->plannedApplicationType->toArray();
+            $snapshot['location'] = $this->account->plannedApplication->location->toArray();
+            $snapshot['subscription'] = $this->account->subscription->toArray();
+            $snapshot['otcs'] = $this->account->otcs->toArray();
+            $snapshot['contractPeriods'] = $this->account->contractPeriods->toArray();
+            $snapshot['accountStatus'] = $this->account->accountStatus->toArray();
+            $snapshot['accountCredits'] = $this->account->accountCredits->toArray();
+            // save Service interruptons anyway, for documentation purposes but use Particulars instead
+            $snapshot['accountServiceInterruptions'] = $this->account->accountServiceInterruptions->toArray();
+
+        }
+
+        $this->attributes['account_snapshot'] = $snapshot;
+
+        $this->attributes['billing_status_id'] = $value;
+    }
+
     public function createParticulars()
     {
         $particulars = [];
