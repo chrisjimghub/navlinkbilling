@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Operations\PayOperation;
 use App\Models\Billing;
 use App\Models\BillingType;
 use App\Models\ContractPeriod;
@@ -9,7 +10,6 @@ use App\Http\Requests\BillingRequest;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
-use App\Http\Controllers\Admin\Operations\PaidBillOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -26,7 +26,7 @@ class BillingCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
-    use PaidBillOperation;
+    use PayOperation;
     
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -54,13 +54,13 @@ class BillingCrudController extends CrudController
     {
         $this->accountColumn(label: __('app.account'));
         // $this->relationshipColumn(column: 'billing_type_id', label: __('app.billing_type')); // NOTE:: uncomment this if you want to show column for billing type
-
+        
         $this->crud->modifyColumn('account_id', [
             'function' => function($entry)  {
-                if ($entry->account) {
-                    return $entry->account->detailsAll;
+                if ($entry->accountDetails) {
+                    return $entry->accountDetails;
                 }
-                
+
                 return;
             },
             'escaped' => false,

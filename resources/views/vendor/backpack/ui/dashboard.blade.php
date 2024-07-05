@@ -43,6 +43,7 @@
         $totalAccountsConnected = modelInstance('Account')::connected()->count();
         $totalAccountsInstalling = modelInstance('Account')::installing()->count();
         $totalAccountsDisconnected = modelInstance('Account')::disconnected()->count();
+        $totalAccountsNoBilling = modelInstance('Account')::connectedNoBilling()->count();
 
         $contents[] = 
             Widget::make()
@@ -57,7 +58,8 @@
             ->description('Accounts Connected.')
             ->hint(
                 $totalAccountsInstalling.' installing, '.
-                $totalAccountsDisconnected.' disconnected.'
+                $totalAccountsDisconnected.' disconnected, '.
+                $totalAccountsNoBilling.' no billing.'
             );
     }
     
@@ -110,7 +112,7 @@
 
 <div class="card bg-white">
     <div class="card-body">
-
+        
         @include(backpack_view('my_widgets.near_cut_off_accounts'))
         
         <br>

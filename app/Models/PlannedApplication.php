@@ -40,7 +40,6 @@ class PlannedApplication extends Model
             $builder->orderBy('mbps', $orderBy);
         });
     }
-    
 
     /*
     |--------------------------------------------------------------------------

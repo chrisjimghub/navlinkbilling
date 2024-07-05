@@ -84,4 +84,26 @@ trait AccountCrud
             }), // you can use this to filter the results shown in the select
         ]);
     }
+
+    // use in model accesor for account details and billing account snapshot
+    public function accountDetails(
+        $from,
+        $id, 
+        $name,
+        $location,
+        $type,
+        $subscription,
+        $mbps,
+        $installedDate
+    )
+    {
+        return 
+            '<strong from="'.$from.'">Name: </strong><a href='.backpack_url('account/'.$id.'/show').'>'.$name.'</a><br/>'.
+            '<strong from="'.$from.'">Location: </strong>' . $location . '<br/>'.
+            '<strong from="'.$from.'">Type: </strong>' . $type . '<br/>'.
+            '<strong from="'.$from.'">Installed: </strong>' . $installedDate . '<br/>'.
+            '<strong from="'.$from.'">Sub: </strong>' . $subscription . '<br/>'.
+            '<strong from="'.$from.'">Mbps: </strong>' . $mbps . '<br/>'.
+            '';
+    }
 }

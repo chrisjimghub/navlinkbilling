@@ -8,6 +8,7 @@
         <a class="ml-1" href="{{ route('widget.cutOffAccounts') }}">
             {{ __('Download Excel') }} 
         </a>
+            - REDO FROM SCRATCH INCLUDING EXPORT
 
         @php
             $cutOffItems = 

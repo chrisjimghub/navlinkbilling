@@ -7,12 +7,14 @@ use App\Models\Account;
 use App\Models\BillingType;
 use App\Models\BillingStatus;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Admin\Traits\AccountCrud;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Models\Scopes\ExcludeSoftDeletedAccountsScope;
 
 class Billing extends Model
 {
     use CurrencyFormat;
+    use AccountCrud;
 
     /*
     |--------------------------------------------------------------------------
@@ -29,6 +31,8 @@ class Billing extends Model
 
     protected $casts = [
         'particulars' => 'array',
+        'account_snapshot' => 'array',
+        'upgrade_account_snapshot' => 'array',
     ];
 
     protected $attributes = [
@@ -49,10 +53,30 @@ class Billing extends Model
         static::creating(function ($billing) {
 
             $billing->createParticulars();
+            
+            $billing->saveAccountSnapshot();
 
         });
     }
-    
+
+    public function isPaid() : bool
+    {
+        if ($this->billing_status_id == 1) {
+            return true;
+        }        
+
+        return false;
+    }
+
+    // return service interruptions list of dates that is covered or in between billing date start and end
+    public function accountServiceInterruptions()
+    {
+        return $this->account
+            ->accountServiceInterruptions()
+            ->whereBetween('date_start', [$this->date_start, $this->date_end])
+            ->whereBetween('date_end', [$this->date_start, $this->date_end])
+            ->get();
+    }
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
@@ -113,6 +137,111 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+
+    /* 
+        NOTE::
+            use $this->realAccount if you want to get account datas
+            if upgrade acc snapshot is not empty it will take from there
+            else if from acc snapshot
+            otherwise from acc relationship
+
+    */
+    public function getRealAccountAttribute() 
+    {
+        if ($this->upgrade_account_snapshot) {
+            
+            return $this->upgrade_account_snapshot;
+        
+        }elseif ($this->account_snapshot) {
+
+            return $this->account_snapshot;
+
+        }
+
+        return;
+    }
+
+    public function getAccountInstalledDateAttribute()
+    {
+        if ($this->realAccount) {
+            return $this->realAccount['account']['installed_date'];
+        }
+
+        return $this->account->installed_date;
+    }   
+    
+    public function getAccountnameAttribute()
+    {
+        return $this->account->customer->full_name;
+    }
+
+    public function getSubscriptionNameAttribute()
+    {
+        if ($this->realAccount) {
+            return $this->realAccount['subscription']['name'];
+        }
+
+        return $this->account->subscription->name;
+    }
+
+    public function getLocationNameAttribute()
+    {
+        if ($this->realAccount) {
+            return $this->realAccount['location']['name'];
+        }
+
+        return $this->account->plannedApplication->location->name;
+    }
+
+    public function getPlannedApplicationTypeNameAttribute()
+    {
+        if ($this->realAccount) {
+            return $this->realAccount['plannedApplicationType']['name'];
+        }
+
+        return $this->account->plannedApplication->plannedApplicationType->name;
+    }
+
+    public function getMbpsAttribute()
+    {
+        if ($this->realAccount) {
+            return $this->realAccount['plannedApplication']['mbps'];
+        }
+
+        return $this->account->plannedApplication->mbps;
+    }
+
+    // Data Taken from snapshot
+    public function getAccountDetailsAttribute()
+    {
+        $type = $this->plannedApplicationTypeName;
+
+        $type = explode("/", $type);
+
+        if (is_array($type)) {
+            $type = $type[0];
+        }
+
+        $from = 'account_relationship';
+
+        if ($this->upgrade_account_snapshot) {
+            $from = 'upgrade_account_snapshot';
+        }else if ($this->account_snapshot) {
+            $from = 'account_snapshot';
+        }
+
+        return $this->accountDetails(
+            from: $from,
+            id: $this->id,
+            name: $this->accountName,
+            location: $this->locationName,
+            type: $type,
+            subscription: $this->subscriptionName, 
+            mbps: $this->mbps,
+            installedDate: $this->accountInstalledDate
+        );
+    }
+
     public function getDateCutOffBadgeAttribute()
     {
         $dateCutOff = $this->date_cut_off;
@@ -194,12 +323,16 @@ class Billing extends Model
         return;
     }
 
-
+    // NOTE:: check realAccount function above
     public function getMonthlyRateAttribute()
-    {
-        return $this->account->monthlyRate;
-    }
+    {   
+        if ($this->realAccount) {
+            return $this->realAccount['plannedApplication']['price'];
+        }
 
+        return $this->account->plannedApplication->price;
+    }
+    
     public function getDailyRateAttribute()
     {
         if ($this->monthlyRate && $this->totalNumberOfDays) {
@@ -233,35 +366,35 @@ class Billing extends Model
         return;
     }
 
+    // NOTE:: check realAccount func
     public function getIsProRatedMonthlyAttribute()
     {
-        if ($this->account->installed_date > $this->date_start) {
+        
+        if ($this->accountInstalledDate > $this->date_start) {
             return true;
         }   
 
         return false;
     }
-
+    
     // pro rated total
     public function getProRatedServiceTotalAmountAttribute()
     {
-        if ($this->isProratedMonthly) {
-            $total = 0;
-
-            $total += $this->dailyRate * $this->proRatedDaysAndHoursService['days'];
-            $total += $this->hourlyRate * $this->proRatedDaysAndHoursService['hours'];
-            
+        if ($this->isProRatedMonthly) {
+            $total = $this->dailyRate * $this->proRatedDaysAndHoursService['days'];
             return $this->currencyRound($total);
         }
 
         return;
     }
 
+    // check realAccount func and the content of js in db
     public function getProRatedDaysAndHoursServiceAttribute()
     {
         if ($this->isProRatedMonthly) {
-            if ($this->account->installed_date && $this->date_end) {
-                return $this->proRatedDaysAndHoursService($this->account->installed_date, $this->date_end);
+            $installedDate = $this->accountInstalledDate;
+            if ($installedDate && $this->date_end) {
+                return $this->proRatedDaysAndHoursService($installedDate, $this->date_end);
             }
         }
         
@@ -294,11 +427,81 @@ class Billing extends Model
 
         return;
     }
+
+    public function getProRatedDescAttribute()
+    {
+        if ($this->isProRatedMonthly) {
+            $num = $this->totalNumberOfDays - $this->proRatedDaysAndHoursService['days'];
+                    $days = $num > 1 ? 'days' : 'day';
+    
+            return "Pro-rated Service Adjustment ($num $days)";
+        }
+
+        return;
+    }
+
+    public function getServiceInterruptDescAttribute()
+    {
+        // we can use account model relatipnship to get service interruptions because we will check if the service date_start and date_end is 
+        // in between the billing start and end.
+        $interruptions = $this->accountServiceInterruptions();
+        
+        $totalDaysInterrupt = 0;
+
+        if ($interruptions) {
+            foreach ($interruptions as $interrupt) {
+                $dateStart = Carbon::parse($interrupt->date_start);
+                $dateEnd = Carbon::parse($interrupt->date_end);
+
+                $totalDaysInterrupt += $dateStart->diffInDays($dateEnd);
+
+            }
+
+            $days = $totalDaysInterrupt > 1 ? 'days' : 'day';
+
+            return "Service Interruptions ($totalDaysInterrupt $days)";
+        }
+
+        return;
+
+    }
     /*
     |--------------------------------------------------------------------------
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    
+    public function saveAccountSnapshot($column = 'account_snapshot') 
+    {
+        $snapshot = [];
+
+        if ($this->account) {
+            $snapshot['account'] = $this->account->toArray();
+            $snapshot['plannedApplication'] = $this->account->plannedApplication->toArray();
+            $snapshot['plannedApplicationType'] = $this->account->plannedApplication->plannedApplicationType->toArray();
+            $snapshot['location'] = $this->account->plannedApplication->location->toArray();
+            $snapshot['subscription'] = $this->account->subscription->toArray();
+            $snapshot['otcs'] = $this->account->otcs->toArray();
+            $snapshot['contractPeriods'] = $this->account->contractPeriods->toArray();
+            $snapshot['accountStatus'] = $this->account->accountStatus->toArray();
+
+            // TODO:: make sure when we have a button pay using credits, it will add a -amount row in account credits first, before updating the accountCredits here in snapshot
+            $snapshot['accountCredits'] = $this->account->accountCredits->toArray();
+            
+            // save Service interruptons anyway, for documentation purposes but use Particulars instead
+            // $snapshot['accountServiceInterruptions'] = $this->account->accountServiceInterruptions->toArray();
+            $snapshot['accountServiceInterruptions'] = $this->accountServiceInterruptions(); // use this function becaues it has where clause
+
+        }
+
+        $this->{$column} = $snapshot;
+    }
+
+    public function saveUpgradeAccountSnapshot()
+    {
+        $this->saveAccountSnapshot(column: 'upgrade_account_snapshot');
+    }
+
     public function createParticulars()
     {
         $particulars = [];
@@ -340,12 +543,8 @@ class Billing extends Model
 
             // Pro-rated Service Adjustment
             if ($this->isProRatedMonthly) {
-
-                $num = $this->totalNumberOfDays - $this->proRatedDaysAndHoursService['days'];
-                $days = $num > 1 ? 'days' : 'day';
-
                 $particulars[] = [
-                    'description' => "Pro-rated Service Adjustment ($num $days)",
+                    'description' => $this->proRatedDesc,
                     'amount' => -($this->account->monthlyRate - $this->proRatedServiceTotalAmount),
                 ];
             }
@@ -353,10 +552,8 @@ class Billing extends Model
             // Service Interrptions
             $totalInterruptionDays = $this->account->total_service_interruption_days;
             if ($totalInterruptionDays) {
-                $days = $totalInterruptionDays > 1 ? 'days' : 'day';
-
                 $particulars[] = [
-                    'description' => "Service Interruptions ($totalInterruptionDays $days)",
+                    'description' => $this->serviceInterruptDesc,
                     'amount' => -($this->currencyRound($totalInterruptionDays * $this->dailyRate)),
                 ];
             }            

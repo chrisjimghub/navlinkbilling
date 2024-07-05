@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Admin\Traits\AccountCrud;
 use App\Models\Otc;
 use App\Models\Model;
 use App\Models\Billing;
@@ -15,6 +16,8 @@ use App\Models\AccountServiceInterruption;
 
 class Account extends Model
 {
+    use AccountCrud;
+
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
@@ -125,6 +128,13 @@ class Account extends Model
         });
     }
 
+    public function scopeConnectedNoBilling($query) 
+    {
+        return $query->whereHas('accountStatus', function ($q) {
+            $q->where('id', 4); // Connected - No Billing 
+        });
+    }
+
     public function scopeConnected($query) 
     {
         return $query->whereHas('accountStatus', function ($q) {
@@ -217,30 +227,6 @@ class Account extends Model
                 '</span>'; // Return empty string if no condition matched
     }
 
-    // Return number of days interrupted
-    // Method to get the total days of service interruptions
-    public function getTotalServiceInterruptionDaysAttribute()
-    {
-        // Ensure relationship is loaded to prevent null error
-        $interruptions = $this->accountServiceInterruptions;
-
-        if ($interruptions->isEmpty()) {
-            return 0;
-        }
-
-        $totalDaysInterrupt = 0;
-        foreach ($interruptions as $interrupt) {
-            $dateStart = Carbon::parse($interrupt->date_start);
-            $dateEnd = Carbon::parse($interrupt->date_end);
-
-            $totalDaysInterrupt += $dateStart->diffInDays($dateEnd);
-
-        }
-
-        return $totalDaysInterrupt;
-    }
-
-
     // For DailyRate and Hourly Rate, i cant compute it without the date_start and date_end if Billing, so i put it in billing model instad
     public function getMonthlyRateAttribute()
     {
@@ -305,15 +291,15 @@ class Account extends Model
             $type = $type[0];
         }
 
-        return 
-            '<strong>Name: </strong><a href='.backpack_url('account/'.$this->id.'/show').'>'.$name.'</a><br/>'.
-            '<strong>Location: </strong>' . $location . '<br/>'.
-            '<strong>Type: </strong>' . $type . '<br/>'.
-            '<strong>Sub: </strong>' . $subscription . '<br/>'.
-            '<strong>Mbps: </strong>' . $plannedApp->mbps . '<br/>'.
-            // '<strong>Price: </strong>' . $plannedApp->price . '<br/>'.
-        
-            '';
+        return $this->accountDetails(
+            from: 'account',
+            id: $this->id,
+            name: $name,
+            location: $location,
+            type: $type,
+            subscription: $subscription, 
+            mbps: $plannedApp->mbps
+        );
 
         // return $name .': ' . $subscription .' - ' . $location;
     }
