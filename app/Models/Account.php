@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Admin\Traits\AccountCrud;
 use App\Models\Otc;
 use App\Models\Model;
 use App\Models\Billing;
@@ -15,6 +16,8 @@ use App\Models\AccountServiceInterruption;
 
 class Account extends Model
 {
+    use AccountCrud;
+
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
@@ -312,15 +315,15 @@ class Account extends Model
             $type = $type[0];
         }
 
-        return 
-            '<strong>Name: </strong><a href='.backpack_url('account/'.$this->id.'/show').'>'.$name.'</a><br/>'.
-            '<strong>Location: </strong>' . $location . '<br/>'.
-            '<strong>Type: </strong>' . $type . '<br/>'.
-            '<strong>Sub: </strong>' . $subscription . '<br/>'.
-            '<strong>Mbps: </strong>' . $plannedApp->mbps . '<br/>'.
-            // '<strong>Price: </strong>' . $plannedApp->price . '<br/>'.
-        
-            '';
+        return $this->accountDetails(
+            from: 'account',
+            id: $this->id,
+            name: $name,
+            location: $location,
+            type: $type,
+            subscription: $subscription, 
+            mbps: $plannedApp->mbps
+        );
 
         // return $name .': ' . $subscription .' - ' . $location;
     }

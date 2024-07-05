@@ -7,12 +7,14 @@ use App\Models\Account;
 use App\Models\BillingType;
 use App\Models\BillingStatus;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Admin\Traits\AccountCrud;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Models\Scopes\ExcludeSoftDeletedAccountsScope;
 
 class Billing extends Model
 {
     use CurrencyFormat;
+    use AccountCrud;
 
     /*
     |--------------------------------------------------------------------------
@@ -29,6 +31,7 @@ class Billing extends Model
 
     protected $casts = [
         'particulars' => 'array',
+        'account_snapshot' => 'array',
     ];
 
     protected $attributes = [
@@ -52,7 +55,15 @@ class Billing extends Model
 
         });
     }
-    
+
+    public function isPaid() : bool
+    {
+        if ($this->billing_status_id == 1) {
+            return true;
+        }        
+
+        return false;
+    }
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
@@ -113,6 +124,31 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getAccountSnapshotDetailsAttribute()
+    {
+        $name = $this->account->customer->full_name; // use relationship name here instead of snapshot so if customer change name it will reflect
+        $subscription = $this->account_snapshot['subscription']['name'];
+        $location = $this->account_snapshot['location']['name'];
+        $type = $this->account_snapshot['plannedApplicationType']['name'];
+        $mbps = $this->account_snapshot['plannedApplication']['mbps'];
+
+        $type = explode("/", $type);
+
+        if (is_array($type)) {
+            $type = $type[0];
+        }
+
+        return $this->accountDetails(
+            from: 'snapshot',
+            id: $this->id,
+            name: $name,
+            location: $location,
+            type: $type,
+            subscription: $subscription, 
+            mbps: $mbps
+        );
+    }
+
     public function getDateCutOffBadgeAttribute()
     {
         $dateCutOff = $this->date_cut_off;

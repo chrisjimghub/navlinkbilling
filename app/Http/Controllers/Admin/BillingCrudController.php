@@ -54,11 +54,18 @@ class BillingCrudController extends CrudController
     {
         $this->accountColumn(label: __('app.account'));
         // $this->relationshipColumn(column: 'billing_type_id', label: __('app.billing_type')); // NOTE:: uncomment this if you want to show column for billing type
-
+        
+        // NOTE:: if unpaid show relationship values, but if paid show the json snapshot instead
         $this->crud->modifyColumn('account_id', [
             'function' => function($entry)  {
                 if ($entry->account) {
-                    return $entry->account->detailsAll;
+
+                    if ($entry->isPaid()) {
+                        // return 'snapshot';
+                        return $entry->account_snapshot_details;
+                    }
+
+                    return $entry->account->details_all;
                 }
                 
                 return;
