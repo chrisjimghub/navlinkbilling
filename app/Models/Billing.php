@@ -197,7 +197,7 @@ class Billing extends Model
         return $this->account->installed_date;
     }   
     
-    public function getAccountnameAttribute()
+    public function getAccountNameAttribute()
     {
         return $this->account->customer->full_name;
     }
@@ -229,7 +229,20 @@ class Billing extends Model
         return $this->account->plannedApplication->plannedApplicationType->name;
     }
 
-    public function getMbpsAttribute()
+    public function getPlannedApplicationTypeNameShortenAttribute()
+    {
+        $type = $this->plannedApplicationTypeName;
+
+        $type = explode("/", $type);
+
+        if (is_array($type)) {
+            $type = $type[0];
+        }
+
+        return $type;
+    }
+
+    public function getAccountPlannedApplicationMbpsAttribute()
     {
         if ($this->realAccount) {
             return $this->realAccount['plannedApplication']['mbps'];
@@ -243,34 +256,19 @@ class Billing extends Model
     {
         if ($this->realAccount) {
 
-            $type = $this->plannedApplicationTypeName;
-
-            $type = explode("/", $type);
-
-            if (is_array($type)) {
-                $type = $type[0];
-            }
-
             return $this->locationname . ' - '. 
-                    $type . ' :'. 
-                    $this->mbps . 'Mbps ----- '.
+                    $this->plannedAplicationTypeNameShorten . ' :'. 
+                    $this->accountPlannedApplicationMbps . 'Mbps ----- '.
                     $this->currencyFormatAccessor($this->realAccount['plannedApplication']['price']);
         }
 
         return $this->account->plannedApplication->details;
     }
+    
 
     // Data Taken from snapshot
     public function getAccountDetailsAttribute()
     {
-        $type = $this->plannedApplicationTypeName;
-
-        $type = explode("/", $type);
-
-        if (is_array($type)) {
-            $type = $type[0];
-        }
-
         $from = 'account_relationship';
 
         if ($this->upgrade_account_snapshot) {
@@ -284,9 +282,9 @@ class Billing extends Model
             id: $this->id,
             name: $this->accountName,
             location: $this->locationName,
-            type: $type,
+            type: $this->plannedApplicationTypeNameShorten,
             subscription: $this->subscriptionName, 
-            mbps: $this->mbps,
+            mbps: $this->accountPlannedApplicationMbps,
             installedDate: $this->accountInstalledDate
         );
     }
@@ -372,7 +370,6 @@ class Billing extends Model
         return;
     }
 
-    // NOTE:: check realAccount function above
     public function getMonthlyRateAttribute()
     {   
         if ($this->realAccount) {
@@ -415,7 +412,6 @@ class Billing extends Model
         return;
     }
 
-    // NOTE:: check realAccount func
     public function getIsProRatedMonthlyAttribute()
     {
         
@@ -437,7 +433,6 @@ class Billing extends Model
         return;
     }
 
-    // check realAccount func and the content of js in db
     public function getProRatedDaysAndHoursServiceAttribute()
     {
         if ($this->isProRatedMonthly) {
