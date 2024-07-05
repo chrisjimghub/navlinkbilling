@@ -1,6 +1,6 @@
 @if ($crud->hasAccess('pay'))
     
-    @if($entry->billing_status_id == 2)
+    @if($entry->unpaid())
         <a 
             href="javascript:void(0)" 
             onclick="payEntry(this)" 

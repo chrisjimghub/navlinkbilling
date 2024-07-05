@@ -236,7 +236,7 @@ class BillingCrudController extends CrudController
     {
         $bill = Billing::findOrFail($id);
         // if already paid, then dont allow
-        if ($bill->billing_status_id == 1) { 
+        if ($bill->paid()) { 
             $this->crud->denyAccess('update');
 
             \Alert::warning('Whooops, you\'re not allowed to do that.');
