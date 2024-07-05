@@ -67,6 +67,16 @@ class Billing extends Model
 
         return false;
     }
+
+    // return service interruptions list of dates that is covered or in between billing date start and end
+    public function accountServiceInterruptions()
+    {
+        return $this->account
+            ->accountServiceInterruptions()
+            ->whereBetween('date_start', [$this->date_start, $this->date_end])
+            ->whereBetween('date_end', [$this->date_start, $this->date_end])
+            ->get();
+    }
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
@@ -151,15 +161,60 @@ class Billing extends Model
         return;
     }
 
+    public function getAccountInstalledDateAttribute()
+    {
+        if ($this->realAccount) {
+            return $this->realAccount['account']['installed_date'];
+        }
+
+        return $this->account->installed_date;
+    }   
+    
+    public function getAccountnameAttribute()
+    {
+        return $this->account->customer->full_name;
+    }
+
+    public function getSubscriptionNameAttribute()
+    {
+        if ($this->realAccount) {
+            return $this->realAccount['subscription']['name'];
+        }
+
+        return $this->account->subscription->name;
+    }
+
+    public function getLocationNameAttribute()
+    {
+        if ($this->realAccount) {
+            return $this->realAccount['location']['name'];
+        }
+
+        return $this->account->plannedApplication->location->name;
+    }
+
+    public function getPlannedApplicationTypeNameAttribute()
+    {
+        if ($this->realAccount) {
+            return $this->realAccount['plannedApplicationType']['name'];
+        }
+
+        return $this->account->plannedApplication->plannedApplicationType->name;
+    }
+
+    public function getMbpsAttribute()
+    {
+        if ($this->realAccount) {
+            return $this->realAccount['plannedApplication']['mbps'];
+        }
+
+        return $this->account->plannedApplication->mbps;
+    }
 
     // Data Taken from snapshot
     public function getAccountSnapshotDetailsAttribute()
     {
-        $name = $this->account->customer->full_name; // use relationship name here instead of snapshot so if customer change name it will reflect
-        $subscription = $this->realAccount['subscription']['name'];
-        $location = $this->realAccount['location']['name'];
-        $type = $this->realAccount['plannedApplicationType']['name'];
-        $mbps = $this->realAccount['plannedApplication']['mbps'];
+        $type = $this->plannedApplicationTypeName;
 
         $type = explode("/", $type);
 
@@ -167,14 +222,23 @@ class Billing extends Model
             $type = $type[0];
         }
 
+        $from = 'account_relationship';
+
+        if ($this->upgrade_account_snapshot) {
+            $from = 'upgrade_account_snapshot';
+        }else if ($this->account_snapshot) {
+            $from = 'account_snapshot';
+        }
+
         return $this->accountDetails(
-            from: ($this->upgrade_account_snapshot ? 'upgrade_account_snapshot' : 'account_snapshot'),
+            from: $from,
             id: $this->id,
-            name: $name,
-            location: $location,
+            name: $this->accountName,
+            location: $this->locationName,
             type: $type,
-            subscription: $subscription, 
-            mbps: $mbps
+            subscription: $this->subscriptionName, 
+            mbps: $this->mbps,
+            installedDate: $this->accountInstalledDate
         );
     }
 
@@ -262,7 +326,11 @@ class Billing extends Model
     // NOTE:: check realAccount function above
     public function getMonthlyRateAttribute()
     {   
-        return $this->realAccount['plannedApplication']['price'];
+        if ($this->realAccount) {
+            return $this->realAccount['plannedApplication']['price'];
+        }
+
+        return $this->account->plannedApplication->price;
     }
     
     public function getDailyRateAttribute()
@@ -301,7 +369,8 @@ class Billing extends Model
     // NOTE:: check realAccount func
     public function getIsProRatedMonthlyAttribute()
     {
-        if ($this->realAccount['account']['installed_date'] > $this->date_start) {
+        
+        if ($this->accountInstalledDate > $this->date_start) {
             return true;
         }   
 
@@ -323,7 +392,7 @@ class Billing extends Model
     public function getProRatedDaysAndHoursServiceAttribute()
     {
         if ($this->isProRatedMonthly) {
-            $installedDate = $this->realAccount['account']['installed_date'];
+            $installedDate = $this->accountInstalledDate;
             if ($installedDate && $this->date_end) {
                 return $this->proRatedDaysAndHoursService($installedDate, $this->date_end);
             }
@@ -371,22 +440,30 @@ class Billing extends Model
         return;
     }
 
-    // TODO:: transfer total interrupt from accounts -> account interrupted to billings -> interrupted table
-    // HERE: naku
     public function getServiceInterruptDescAttribute()
     {
-        return '123';
+        // we can use account model relatipnship to get service interruptions because we will check if the service date_start and date_end is 
+        // in between the billing start and end.
+        $interruptions = $this->accountServiceInterruptions();
+        
+        $totalDaysInterrupt = 0;
 
-        // $totalInterruptionDays = $this->account->total_service_interruption_days;
+        if ($interruptions) {
+            foreach ($interruptions as $interrupt) {
+                $dateStart = Carbon::parse($interrupt->date_start);
+                $dateEnd = Carbon::parse($interrupt->date_end);
 
-        // if ($totalInterruptionDays) {
-        //     $days = $totalInterruptionDays > 1 ? 'days' : 'day';
+                $totalDaysInterrupt += $dateStart->diffInDays($dateEnd);
 
-        //     return "Service Interruptions ($totalInterruptionDays $days)";
+            }
 
-        // }
+            $days = $totalDaysInterrupt > 1 ? 'days' : 'day';
 
-        // return;
+            return "Service Interruptions ($totalDaysInterrupt $days)";
+        }
+
+        return;
+
     }
     /*
     |--------------------------------------------------------------------------
@@ -407,9 +484,13 @@ class Billing extends Model
             $snapshot['otcs'] = $this->account->otcs->toArray();
             $snapshot['contractPeriods'] = $this->account->contractPeriods->toArray();
             $snapshot['accountStatus'] = $this->account->accountStatus->toArray();
+
+            // TODO:: make sure when we have a button pay using credits, it will add a -amount row in account credits first, before updating the accountCredits here in snapshot
             $snapshot['accountCredits'] = $this->account->accountCredits->toArray();
+            
             // save Service interruptons anyway, for documentation purposes but use Particulars instead
-            $snapshot['accountServiceInterruptions'] = $this->account->accountServiceInterruptions->toArray();
+            // $snapshot['accountServiceInterruptions'] = $this->account->accountServiceInterruptions->toArray();
+            $snapshot['accountServiceInterruptions'] = $this->accountServiceInterruptions(); // use this function becaues it has where clause
 
         }
 

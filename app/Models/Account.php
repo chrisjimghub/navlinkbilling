@@ -227,30 +227,6 @@ class Account extends Model
                 '</span>'; // Return empty string if no condition matched
     }
 
-    // Return number of days interrupted
-    // Method to get the total days of service interruptions
-    public function getTotalServiceInterruptionDaysAttribute()
-    {
-        // Ensure relationship is loaded to prevent null error
-        $interruptions = $this->accountServiceInterruptions;
-
-        if ($interruptions->isEmpty()) {
-            return 0;
-        }
-
-        $totalDaysInterrupt = 0;
-        foreach ($interruptions as $interrupt) {
-            $dateStart = Carbon::parse($interrupt->date_start);
-            $dateEnd = Carbon::parse($interrupt->date_end);
-
-            $totalDaysInterrupt += $dateStart->diffInDays($dateEnd);
-
-        }
-
-        return $totalDaysInterrupt;
-    }
-
-
     // For DailyRate and Hourly Rate, i cant compute it without the date_start and date_end if Billing, so i put it in billing model instad
     public function getMonthlyRateAttribute()
     {
