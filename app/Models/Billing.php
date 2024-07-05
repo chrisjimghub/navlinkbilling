@@ -212,7 +212,7 @@ class Billing extends Model
     }
 
     // Data Taken from snapshot
-    public function getAccountSnapshotDetailsAttribute()
+    public function getAccountDetailsAttribute()
     {
         $type = $this->plannedApplicationTypeName;
 

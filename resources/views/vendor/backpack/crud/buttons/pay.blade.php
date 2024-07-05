@@ -1,12 +1,12 @@
-@if ($crud->hasAccess('paidBill'))
+@if ($crud->hasAccess('pay'))
     
     @if($entry->billing_status_id == 2)
         <a 
             href="javascript:void(0)" 
-            onclick="paidBillEntry(this)" 
-            data-route="{{ url($crud->route.'/'.$entry->getKey().'/paidBill') }}" 
+            onclick="payEntry(this)" 
+            data-route="{{ url($crud->route.'/'.$entry->getKey().'/pay') }}" 
             class="btn btn-sm btn-link text-success" 
-            data-button-type="paidBill"
+            data-button-type="pay"
             title="Marked as paid?"
             >
                 <i class="las la-thumbs-up"></i>
@@ -21,10 +21,10 @@
 {{-- - pushed to the end of the page, after jQuery is loaded, for non-AJAX operations (ex: Show) --}}
 @push('after_scripts') @if (request()->ajax()) @endpush @endif
 <script>
-    if (typeof paidBillEntry != 'function') {
-        $("[data-button-type=paidBill]").unbind('click');
+    if (typeof payEntry != 'function') {
+        $("[data-button-type=pay]").unbind('click');
 
-        function paidBillEntry(button) {
+        function payEntry(button) {
             // ask for confirmation before deleting an item
             // e.preventDefault();
             var button = $(button);
@@ -112,6 +112,6 @@
     }
 
     // make it so that the function above is run after each DataTable draw event
-    // crud.addFunctionToDataTablesDrawEventQueue('paidBillEntry');
+    // crud.addFunctionToDataTablesDrawEventQueue('payEntry');
 </script>
 @if (!request()->ajax()) @endpush @endif
