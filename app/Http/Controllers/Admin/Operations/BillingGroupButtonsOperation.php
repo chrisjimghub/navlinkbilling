@@ -27,8 +27,12 @@ trait BillingGroupButtonsOperation
             'operation' => 'pay',
         ]);
 
-        // TODO:: use credit
-        // TODO:: upgrade plan
+        Route::post($segment.'/{id}/payUsingCredit', [
+            'as'        => $routeName.'.payUsingCredit',
+            'uses'      => $controller.'@payUsingCredit',
+            'operation' => 'payUsingCredit',
+        ]);
+
     }
 
     /**
@@ -36,7 +40,13 @@ trait BillingGroupButtonsOperation
      */
     protected function setupBillingGroupButtonsDefaults()
     {
-        CRUD::allowAccess('billingGroupButtons');
+        CRUD::allowAccess([
+            'pay', 
+            'payUsingCredit', 
+            'upgradePlan',
+            'serviceInterrupt',
+        ]);
+
 
         CRUD::operation('billingGroupButtons', function () {
             CRUD::loadDefaultOperationSettingsFromConfig();
@@ -47,6 +57,7 @@ trait BillingGroupButtonsOperation
         });
     }
 
+    // pay
     public function pay($id)
     {
         $this->crud->hasAccessOrFail('buttonPay');

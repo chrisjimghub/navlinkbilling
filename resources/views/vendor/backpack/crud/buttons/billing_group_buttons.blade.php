@@ -1,4 +1,9 @@
-@if ($crud->hasAccessToAny(['buttonPay', 'buttonUseCredit', 'buttonUpgradePlan']))
+@if ($crud->hasAccessToAny([
+        'pay', 
+        'payUsingCredit', 
+        'upgradePlan',
+        'serviceInterrupt',
+    ]))
     
     @if($entry->isUnpaid())
         <div class="btn-group">
@@ -7,7 +12,7 @@
             </button>
             <ul class="dropdown-menu">
                 
-                @if($crud->hasAccess('buttonPay'))
+                @if($crud->hasAccess('pay'))
                     <li>
                         <a 
                             href="javascript:void(0)" 
@@ -24,15 +29,15 @@
                 @endif
                 
                 {{-- TODO:: --}}
-                @if($crud->hasAccess('buttonUseCredit'))
+                @if($crud->hasAccess('payUsingCredit'))
                     <li>
                         <a 
                             href="javascript:void(0)" 
-                            {{-- onclick="payEntry(this)"  --}}
-                            {{-- data-route="{{ url($crud->route.'/'.$entry->getKey().'/pay') }}"  --}}
+                            onclick="payUsingCredit(this)" 
+                            data-route="{{ url($crud->route.'/'.$entry->getKey().'/payUsingCredit') }}" 
                             class="btn btn-sm btn-link text-warning" 
-                            {{-- data-button-type="pay" --}}
-                            {{-- title="Marked as paid?" --}}
+                            data-button-type="payUsingCredit"
+                            title="Marked as paid using credit?"
                             >
                                 <i class="las la-credit-card"></i>
                                 {{ __('Pay Using Credit') }}
