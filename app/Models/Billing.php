@@ -87,6 +87,12 @@ class Billing extends Model
         });
     }
 
+    public function isCutOff() : bool
+    {
+        $dateCutOff = Carbon::parse($this->date_cut_off);
+        return $dateCutOff->isPast() || $dateCutOff->isToday();
+    }
+
     public function isPaid() : bool
     {
         if ($this->billing_status_id == 1) {
@@ -180,6 +186,11 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+
+    public function getYearAttribute()
+    {
+        return getYearFromDate($this->date_start);
+    }
 
     public function getMonthAttribute()
     {
