@@ -553,6 +553,7 @@ class Billing extends Model
 
             // TODO:: capture the account credits exact amount, for documentation and audit trails and review. each bill  
             // TODO:: make sure when we have a button pay using credits, it will add a -amount row in account credits first, before updating the accountCredits here in snapshot
+            // TODO:: instead of saving account credits object, TBD how about saving the reaming ammount or credit after the pay.
             $snapshot['accountCredits'] = $this->account->accountCredits->toArray();
             
             // save Service interruptons anyway, for documentation purposes but use Particulars instead

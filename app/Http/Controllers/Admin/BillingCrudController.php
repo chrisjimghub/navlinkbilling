@@ -190,7 +190,11 @@ class BillingCrudController extends CrudController
                 ],
                 
             ],
-            'hint' => '<span class="text-success">Use "'.ContractPeriod::find(1)->name.'" description if you want to automatically add account credit.</span>',
+            'hint' =>   '<span class="text-success">Use these description to add account credit or advance payment: 
+                            <br>"<strong>'.ContractPeriod::find(1)->name.'</strong>" to advance 1 month.
+                            <br>"<strong>Deposit Account Credit</strong>" to add credit to account.
+                        </span>
+                      ',
             'init_rows' => 0, // number of empty rows to be initialized, by default 1
             // 'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
         ]);

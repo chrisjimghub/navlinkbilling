@@ -119,6 +119,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'billings_button_pay', 
             'billings_button_use_credit', 
             'billings_button_upgrade_plan', 
+            'billings_button_service_interruption', 
         ],
         
         'users' => [
