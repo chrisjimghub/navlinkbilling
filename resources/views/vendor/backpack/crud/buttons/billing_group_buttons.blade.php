@@ -219,6 +219,7 @@
                     url: route,
                     type: 'POST',
                     success: function(result) {
+                        console.log(result);
                         if (result == 1) {
                             // Reload the CRUD table
                             if (typeof crud !== 'undefined') {
@@ -233,15 +234,30 @@
 
                             // Hide any modal
                             $('.modal').modal('hide');
-                        } else {
-                            // Handle errors or notifications
+                        } else if (result.msg) {
+                            // Show an error notification with the received message
+                            new Noty({
+                                type: "warning",
+                                text: "{!! '<strong>'.__('Notification Not Sent').'</strong><br>' !!}" +result.msg
+                            }).show();
+
                             swal({
-                                title: "{!! __('Error') !!}",
-                                text: "{!! __('There\'s been an error. Your item might not have been process.') !!}",
+                                title: "{!! __('Warning') !!}",
+                                text: result.msg,
                                 icon: "error",
                                 timer: 4000,
                                 buttons: false,
                             });
+                        } else {
+                            console.log('else here!')
+                            // Handle other errors or notifications
+                            // swal({
+                            //     title: "{!! __('Error') !!}",
+                            //     text: "{!! __('There\'s been an error. Your item might not have been processed.') !!}",
+                            //     icon: "error",
+                            //     timer: 4000,
+                            //     buttons: false,
+                            // });
                         }
                     },
                     error: function(result) {

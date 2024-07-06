@@ -124,8 +124,12 @@ trait BillingGroupButtonsOperation
             $billing->notified_at = now();
     
             return $billing->save();
+        }else {
+            // send alert that customer has no email   
+            return response()->json([
+                'msg' => 'Customer has no email / facebook.'
+            ]);
+                    
         }
-
-        return false;
     }
 }
