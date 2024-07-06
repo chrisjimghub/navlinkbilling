@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
+use App\Http\Controllers\Admin\Traits\TestRoute;
 use App\Models\Billing;
 use App\Models\BillingType;
 use App\Models\ContractPeriod;
@@ -11,6 +11,7 @@ use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
 
 /**
  * Class BillingCrudController
@@ -253,4 +254,16 @@ class BillingCrudController extends CrudController
         }
     }
     
+    
+    use TestRoute;
+
+    public function test()
+    {
+        // dd('work');
+
+        
+
+    }
+
+
 }
