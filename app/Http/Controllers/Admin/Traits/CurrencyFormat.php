@@ -21,11 +21,7 @@ trait CurrencyFormat {
             'dec_point'     => '.',
             'thousands_sep' => ',',
             
-            // dont add wrapper here, or it will affect or override other fields using this, if you want to
-            // dont forget to include form control
-            // 'wrapper' => [
-            //     'class' => 'text-success'
-            // ]
+            // NOTE:: dont add wrapper here, if you want to add, go to specific method, currencyFormatColumn or currencyFormatField
         ]);
     }
 
@@ -41,6 +37,12 @@ trait CurrencyFormat {
         }
 
         $this->currencyFormat('column', $fieldName);
+
+        $this->crud->modifyColumn($fieldName, [
+            'wrapper' => [
+                'class' => 'text-success'
+            ]
+        ]);
     
         if ($label != null) {
             $this->crud->modifyColumn($fieldName, [
