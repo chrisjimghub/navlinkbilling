@@ -127,7 +127,7 @@ trait BillingGroupButtonsOperation
         }else {
             // send alert that customer has no email   
             return response()->json([
-                'msg' => 'Customer has no email / facebook.'
+                'msg' => 'Customer has no email.'
             ]);
                     
         }
