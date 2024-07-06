@@ -3,6 +3,7 @@
         'payUsingCredit', 
         'upgradePlan',
         'serviceInterrupt',
+        'sendNotification',
     ]))
     
     @if($entry->isUnpaid())
@@ -47,7 +48,7 @@
                 @endif
 
                 {{-- TODO:: --}}
-                @if($crud->hasAccess('buttonUpgradePlan'))
+                @if($crud->hasAccess('upgradePlan'))
                     <li>
                         <a 
                             href="javascript:void(0)" 
@@ -63,8 +64,8 @@
                     </li>
                 @endif
 
-
-                @if($crud->hasAccess('buttonServiceInterruption'))
+                {{-- TODO:: --}}
+                @if($crud->hasAccess('serviceInterrupt'))
                     <li>
                         <a 
                             href="javascript:void(0)" 
@@ -80,6 +81,25 @@
                     </li>
                 @endif
 
+            
+                @if($crud->hasAccess('sendNotification'))
+                    <li>
+                        <a 
+                            href="javascript:void(0)" 
+                            onclick="sendNotificationEntry(this)" 
+                            data-route="{{ url($crud->route.'/'.$entry->getKey().'/sendNotification') }}" 
+                            data-resend="{{ $entry->notified_at }}"
+                            class="btn btn-sm btn-link text-dark" 
+                            data-button-type="sendNotification"
+                            title="Dispatch Notification."
+                            disabled="disabled"
+                            >
+                                <i class="las la-sms"></i>
+                                {{ __('Send Notification') }}
+                        </a>
+                    </li>
+                @endif
+            
 
             </ul>
         </div>
@@ -183,6 +203,98 @@
                 });
         }
     }
+
+
+    if (typeof sendNotificationEntry != 'function') {
+        $("[data-button-type=sendNotification]").unbind('click');
+
+        function sendNotificationEntry(button) {
+            // ask for confirmation before resending a notification
+            var button = $(button);
+            var route = button.attr('data-route');
+            var resend = button.attr('data-resend');
+            // Function to handle the AJAX request
+            function sendNotificationRequest() {
+                $.ajax({
+                    url: route,
+                    type: 'POST',
+                    success: function(result) {
+                        if (result == 1) {
+                            // Reload the CRUD table
+                            if (typeof crud !== 'undefined') {
+                                crud.table.ajax.reload();
+                            }
+
+                            // Show a success notification
+                            new Noty({
+                                type: "success",
+                                text: "{!! '<strong>'.__('Notification Sent').'</strong><br>'.__('The bill was sent successfully.') !!}"
+                            }).show();
+
+                            // Hide any modal
+                            $('.modal').modal('hide');
+                        } else {
+                            // Handle errors or notifications
+                            swal({
+                                title: "{!! __('Error') !!}",
+                                text: "{!! __('There\'s been an error. Your item might not have been process.') !!}",
+                                icon: "error",
+                                timer: 4000,
+                                buttons: false,
+                            });
+                        }
+                    },
+                    error: function(result) {
+                        // Show error alert
+                        swal({
+                            title: "{!! __('Error') !!}",
+                            text: "{!! __('There\'s been an error. Your item might not have been process.') !!}",
+                            icon: "error",
+                            timer: 4000,
+                            buttons: false,
+                        });
+                    }
+                });
+            }
+
+            // Check if 'resend' is not empty
+            if (!resend.trim()) {
+                // If 'resend' is empty, directly trigger the AJAX request without showing SweetAlert
+                sendNotificationRequest();
+            } else {
+                // If 'resend' is not empty, show SweetAlert confirmation
+                swal({
+                    title: "{!! trans('backpack::base.warning') !!}",
+                    text: "{!! __('Are you sure you want to resend the notification?') !!}",
+                    icon: "warning",
+                    buttons: {
+                        cancel: {
+                            text: "{!! trans('backpack::crud.cancel') !!}",
+                            value: null,
+                            visible: true,
+                            className: "bg-secondary",
+                            closeModal: true,
+                        },
+                        delete: {
+                            text: "{!! __('Resend') !!}",
+                            value: true,
+                            visible: true,
+                            className: "bg-success",
+                        },
+                    },
+                    dangerMode: true,
+                }).then((value) => {
+                    if (value) {
+                        // Perform AJAX request
+                        sendNotificationRequest();
+                    }
+                });
+            }
+        }
+    }
+
+
+
 
     // make it so that the function above is run after each DataTable draw event
     // crud.addFunctionToDataTablesDrawEventQueue('payEntry');

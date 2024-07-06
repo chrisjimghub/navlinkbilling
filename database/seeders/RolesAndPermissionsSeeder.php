@@ -121,6 +121,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'billings_pay_using_credit', 
             'billings_upgrade_plan', 
             'billings_service_interrupt', 
+            'billings_send_notification', 
         ],
         
         'users' => [

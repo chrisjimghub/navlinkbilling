@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\AccountCredit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Notifications\NewBillNotification;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait BillingGroupButtonsOperation
@@ -27,10 +28,10 @@ trait BillingGroupButtonsOperation
             'operation' => 'pay',
         ]);
 
-        Route::post($segment.'/{id}/payUsingCredit', [
-            'as'        => $routeName.'.payUsingCredit',
-            'uses'      => $controller.'@payUsingCredit',
-            'operation' => 'payUsingCredit',
+        Route::post($segment.'/{id}/sendNotification', [
+            'as'        => $routeName.'.sendNotification',
+            'uses'      => $controller.'@sendNotification',
+            'operation' => 'sendNotification',
         ]);
 
     }
@@ -45,6 +46,7 @@ trait BillingGroupButtonsOperation
             'payUsingCredit', 
             'upgradePlan',
             'serviceInterrupt',
+            'sendNotification',
         ]);
 
 
@@ -105,5 +107,25 @@ trait BillingGroupButtonsOperation
             DB::rollback();
             throw $e; // You may handle or log the exception as needed
         }
+    }
+
+    public function sendNotification($id)
+    {
+        $this->crud->hasAccessOrFail('sendNotification');
+
+        $billing = Billing::find($id);
+
+        $customer = $billing->account->customer;
+
+        if ($customer->email) {
+            // Notify the customer
+            $customer->notify(new NewBillNotification($billing));
+           
+            $billing->notified_at = now();
+    
+            return $billing->save();
+        }
+
+        return false;
     }
 }

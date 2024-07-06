@@ -181,6 +181,11 @@ class Billing extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function getMonthAttribute()
+    {
+        return getMonthFromDate($this->date_start);
+    }
+
     /* 
         NOTE::
             use $this->realAccount if you want to get account datas
