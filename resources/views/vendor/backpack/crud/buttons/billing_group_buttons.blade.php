@@ -82,7 +82,7 @@
                 @endif
 
             
-                @if($crud->hasAccess('sendNotification'))
+                @if($crud->hasAccess('sendNotification') && $entry->isMonthlyFee())
                     <li>
                         <a 
                             href="javascript:void(0)" 
