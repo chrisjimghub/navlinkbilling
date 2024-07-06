@@ -6,10 +6,8 @@ use App\Models\User;
 use App\Models\Billing;
 use App\Models\BillingType;
 use App\Models\ContractPeriod;
-use Illuminate\Support\Facades\Log;
 use App\Http\Requests\BillingRequest;
 use Backpack\CRUD\app\Library\Widget;
-use App\Notifications\NewBillNotification;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -255,25 +253,5 @@ class BillingCrudController extends CrudController
             \Alert::warning('Whooops, you\'re not allowed to do that.');
         }
     }
-    
-
-    public function test($id)
-    {
-       // Retrieve the billing instance
-       $billing = Billing::findOrFail($id);
-
-       // Get the customer's email from the billing instance
-       $customer = $billing->account->customer;
-
-
-       // Notify the customer
-       $customer->notify(new NewBillNotification($billing));
-
-        // TODO:: update notified_at column add timestamp
-
-
-       dd('test done. 123');
-    }
-
 
 }
