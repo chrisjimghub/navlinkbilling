@@ -56,10 +56,10 @@ class CutOffAccountExport implements
     {
         return [
             $this->rowCounter++,
-            $entry->account->customer->full_name,
-            $entry->account->plannedApplication->details,
-            $entry->account->subscription->name,
-            $entry->account->google_map_coordinates,
+            $entry->accountName,
+            $entry->accountPlannedApplicationDetails,
+            $entry->subscriptionName,
+            $entry->realAccount['account']['google_map_coordinates'],
             Carbon::parse($entry->date_cut_off)->format(dateHumanReadable()),
             $entry->total,
         ];

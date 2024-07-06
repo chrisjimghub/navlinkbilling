@@ -8,7 +8,6 @@
         <a class="ml-1" href="{{ route('widget.cutOffAccounts') }}">
             {{ __('Download Excel') }} 
         </a>
-            - REDO FROM SCRATCH INCLUDING EXPORT
 
         @php
             $cutOffItems = 
@@ -36,11 +35,12 @@
             <tbody>
                 @foreach ($cutOffItems as $item)
                     <tr>
+                        {{-- retrieved snapshots instead the relationship, snapshots are method in billing created --}}
                         <td>{{ $index++ }}</td>
-                        <td>{{ $item->account->customer->full_name }}</td>
-                        <td>{{ $item->account->plannedApplication->details }}</td>
-                        <td>{{ $item->account->subscription->name }}</td>
-                        <td>{!! coordinatesLink($item->account->google_map_coordinates) !!}</td>
+                        <td>{{ $item->accountName }}</td>
+                        <td>{{ $item->accountPlannedApplicationDetails }}</td>
+                        <td>{{ $item->subscriptionName }}</td>
+                        <td>{!! coordinatesLink($item->realAccount['account']['google_map_coordinates']) !!}</td>
                         <td>{!! $item->date_cut_off_badge !!}</td>
                         <td>{{ currencyFormat($item->total) }}</td>
                     </tr>

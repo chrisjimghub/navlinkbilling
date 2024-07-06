@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Operations\PayOperation;
+use App\Http\Controllers\Admin\Operations\BillingGroupOperation;
 use App\Models\Billing;
 use App\Models\BillingType;
 use App\Models\ContractPeriod;
@@ -26,8 +26,8 @@ class BillingCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
-    use PayOperation;
-    
+    use BillingGroupOperation;
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -236,9 +236,11 @@ class BillingCrudController extends CrudController
     {
         $bill = Billing::findOrFail($id);
         // if already paid, then dont allow
-        if ($bill->billing_status_id == 1) { 
+
+        if ($bill->isPaid()) { 
             $this->crud->denyAccess('update');
 
+            // add this in case they type it in address bar, show alert
             \Alert::warning('Whooops, you\'re not allowed to do that.');
         }
     }

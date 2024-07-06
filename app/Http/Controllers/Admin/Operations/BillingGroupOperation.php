@@ -6,11 +6,10 @@ use App\Models\Billing;
 use App\Models\AccountCredit;
 
 use Illuminate\Support\Facades\DB;
-use function Laravel\Prompts\alert;
 use Illuminate\Support\Facades\Route;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
-trait PayOperation
+trait BillingGroupOperation
 {
     /**
      * Define which routes are needed for this operation.
