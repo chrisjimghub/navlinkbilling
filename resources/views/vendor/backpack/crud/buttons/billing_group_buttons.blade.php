@@ -35,7 +35,7 @@
                             {{-- title="Marked as paid?" --}}
                             >
                                 <i class="las la-credit-card"></i>
-                                {{ __('Use Credit') }}
+                                {{ __('Pay Using Credit') }}
                         </a>
 
                     </li>
