@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Operations\BillingGroupOperation;
+use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
 use App\Models\Billing;
 use App\Models\BillingType;
 use App\Models\ContractPeriod;
@@ -26,7 +26,7 @@ class BillingCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
-    use BillingGroupOperation;
+    use BillingGroupButtonsOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
