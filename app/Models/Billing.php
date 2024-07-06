@@ -104,7 +104,14 @@ class Billing extends Model
 
         return false;
     }
-    // return service interruptions list of dates that is covered or in between billing date start and end
+    
+    /* 
+    NOTE::
+        we can use account model relatipnship to get service interruptions because we will check if the service date_start and date_end is 
+        in between the billing start and end.    
+
+        return service interruptions list of dates that is covered or in between billing date start and end
+    */
     public function accountServiceInterruptions()
     {
         return $this->account
@@ -494,13 +501,23 @@ class Billing extends Model
 
     public function getServiceInterruptDescAttribute()
     {
-        // we can use account model relatipnship to get service interruptions because we will check if the service date_start and date_end is 
-        // in between the billing start and end.
+        $totalDaysInterrupt = $this->totalDaysServiceInterruptions;
+        
+        if ($totalDaysInterrupt) {
+            $days = $totalDaysInterrupt > 1 ? 'days' : 'day';
+
+            return "Service Interruptions ($totalDaysInterrupt $days)";
+        }
+
+        return;
+    }
+
+    public function getTotalDaysServiceInterruptionsAttribute()
+    {
         $interruptions = $this->accountServiceInterruptions();
         
-        $totalDaysInterrupt = 0;
-
         if ($interruptions) {
+            $totalDaysInterrupt = 0;
             foreach ($interruptions as $interrupt) {
                 $dateStart = Carbon::parse($interrupt->date_start);
                 $dateEnd = Carbon::parse($interrupt->date_end);
@@ -509,13 +526,10 @@ class Billing extends Model
 
             }
 
-            $days = $totalDaysInterrupt > 1 ? 'days' : 'day';
-
-            return "Service Interruptions ($totalDaysInterrupt $days)";
+            return $totalDaysInterrupt;
         }
 
         return;
-
     }
     /*
     |--------------------------------------------------------------------------
@@ -537,7 +551,7 @@ class Billing extends Model
             $snapshot['contractPeriods'] = $this->account->contractPeriods->toArray();
             $snapshot['accountStatus'] = $this->account->accountStatus->toArray();
 
-            // TODO:: capture the account credits exact amount 
+            // TODO:: capture the account credits exact amount, for documentation and audit trails and review. each bill  
             // TODO:: make sure when we have a button pay using credits, it will add a -amount row in account credits first, before updating the accountCredits here in snapshot
             $snapshot['accountCredits'] = $this->account->accountCredits->toArray();
             
@@ -603,7 +617,7 @@ class Billing extends Model
             }
 
             // Service Interrptions
-            $totalInterruptionDays = $this->account->total_service_interruption_days;
+            $totalInterruptionDays = $this->totalDaysServiceInterruptions;
             if ($totalInterruptionDays) {
                 $particulars[] = [
                     'description' => $this->serviceInterruptDesc,
