@@ -298,7 +298,8 @@ class Account extends Model
             location: $location,
             type: $type,
             subscription: $subscription, 
-            mbps: $plannedApp->mbps
+            mbps: $plannedApp->mbps,
+            installedDate: $this->instaled_date
         );
 
         // return $name .': ' . $subscription .' - ' . $location;

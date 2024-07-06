@@ -23,6 +23,9 @@ return [
     'account_names' => 'Acount Names (Customers)',
     'account_google_map_coordinates' => 'Coordiantes',
     
+    // Account credits
+    'account_credit_latest_udpated' => 'Last Updated',
+
     // Account Status
     'account_status' => 'Account Status',
     'account_statuses' => 'Account Statuses',

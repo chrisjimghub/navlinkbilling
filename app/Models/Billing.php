@@ -537,6 +537,7 @@ class Billing extends Model
             $snapshot['contractPeriods'] = $this->account->contractPeriods->toArray();
             $snapshot['accountStatus'] = $this->account->accountStatus->toArray();
 
+            // TODO:: capture the account credits exact amount 
             // TODO:: make sure when we have a button pay using credits, it will add a -amount row in account credits first, before updating the accountCredits here in snapshot
             $snapshot['accountCredits'] = $this->account->accountCredits->toArray();
             
