@@ -59,6 +59,23 @@
                 @endif
 
 
+                @if($crud->hasAccess('buttonServiceInterruption'))
+                    <li>
+                        <a 
+                            href="javascript:void(0)" 
+                            {{-- onclick="payEntry(this)"  --}}
+                            {{-- data-route="{{ url($crud->route.'/'.$entry->getKey().'/pay') }}"  --}}
+                            class="btn btn-sm btn-link text-danger" 
+                            {{-- data-button-type="pay" --}}
+                            {{-- title="Marked as paid?" --}}
+                            >
+                                <i class="las la-exclamation-triangle"></i>
+                                {{ __('Service Interruption') }}
+                        </a>
+                    </li>
+                @endif
+
+
             </ul>
         </div>
 
