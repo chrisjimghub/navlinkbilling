@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\AccountCredit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Notifications\NewBillNotification;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait BillingGroupButtonsOperation
@@ -27,8 +28,12 @@ trait BillingGroupButtonsOperation
             'operation' => 'pay',
         ]);
 
-        // TODO:: use credit
-        // TODO:: upgrade plan
+        Route::post($segment.'/{id}/sendNotification', [
+            'as'        => $routeName.'.sendNotification',
+            'uses'      => $controller.'@sendNotification',
+            'operation' => 'sendNotification',
+        ]);
+
     }
 
     /**
@@ -36,7 +41,14 @@ trait BillingGroupButtonsOperation
      */
     protected function setupBillingGroupButtonsDefaults()
     {
-        CRUD::allowAccess('billingGroupButtons');
+        CRUD::allowAccess([
+            'pay', 
+            'payUsingCredit', 
+            'upgradePlan',
+            'serviceInterrupt',
+            'sendNotification',
+        ]);
+
 
         CRUD::operation('billingGroupButtons', function () {
             CRUD::loadDefaultOperationSettingsFromConfig();
@@ -47,6 +59,7 @@ trait BillingGroupButtonsOperation
         });
     }
 
+    // pay
     public function pay($id)
     {
         $this->crud->hasAccessOrFail('buttonPay');
@@ -93,6 +106,30 @@ trait BillingGroupButtonsOperation
             // If an error occurs, rollback the transaction
             DB::rollback();
             throw $e; // You may handle or log the exception as needed
+        }
+    }
+
+    public function sendNotification($id)
+    {
+        $this->crud->hasAccessOrFail('sendNotification');
+
+        $billing = Billing::find($id);
+
+        $customer = $billing->account->customer;
+
+        if ($customer->email) {
+            // Notify the customer
+            $customer->notify(new NewBillNotification($billing));
+           
+            $billing->notified_at = now();
+    
+            return $billing->save();
+        }else {
+            // send alert that customer has no email   
+            return response()->json([
+                'msg' => 'Customer has no email.'
+            ]);
+                    
         }
     }
 }

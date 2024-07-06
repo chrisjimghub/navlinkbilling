@@ -22,6 +22,19 @@ if (! function_exists('modelInstance')) {
 }
 
 // carbon
+if (! function_exists('getYearFromDate')) {
+	function getYearFromDate($date) {
+        return Carbon::parse($date)->year;
+	}
+}
+
+if (! function_exists('getMonthFromDate')) {
+	function getMonthFromDate($date) {
+        return Carbon::parse($date)->format('F');
+	}
+}
+
+
 if (! function_exists('carbonInstance')) {
 	function carbonInstance($date) {
         return Carbon::parse($date);

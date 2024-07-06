@@ -6,11 +6,13 @@ use App\Models\User;
 use App\Models\Model;
 use App\Models\Account;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Notifications\Notifiable;
 
 class Customer extends Model
 {
+    use Notifiable;
+
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES

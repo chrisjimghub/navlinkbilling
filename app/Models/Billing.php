@@ -87,6 +87,12 @@ class Billing extends Model
         });
     }
 
+    public function isCutOff() : bool
+    {
+        $dateCutOff = Carbon::parse($this->date_cut_off);
+        return $dateCutOff->isPast() || $dateCutOff->isToday();
+    }
+
     public function isPaid() : bool
     {
         if ($this->billing_status_id == 1) {
@@ -105,6 +111,23 @@ class Billing extends Model
         return false;
     }
     
+    public function isMonthlyFee() : bool
+    {
+        if ($this->billing_type_id == 2) {
+            return true;
+        }        
+
+        return false;
+    }
+
+    public function isInstallmentFee() : bool
+    {
+        if ($this->billing_type_id == 1) {
+            return true;
+        }        
+
+        return false;
+    }
     /* 
     NOTE::
         we can use account model relatipnship to get service interruptions because we will check if the service date_start and date_end is 
@@ -180,6 +203,16 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+
+    public function getYearAttribute()
+    {
+        return getYearFromDate($this->date_start);
+    }
+
+    public function getMonthAttribute()
+    {
+        return getMonthFromDate($this->date_start);
+    }
 
     /* 
         NOTE::
@@ -345,7 +378,7 @@ class Billing extends Model
     public function getBillingPeriodDetailsAttribute()
     {
 
-        if ($this->billing_type_id == 1) {
+        if ($this->isInstallmentFee()) {
             return "<strong>{$this->billingType->name}</strong>";
         }
 
@@ -574,8 +607,8 @@ class Billing extends Model
     {
         $particulars = [];
 
-        // Setting date fields to null based on billing_type_id
-        if ($this->billing_type_id == 1) { // installment
+        // Setting date fields to null based on type
+        if ($this->isInstallmentFee()) { // installment
             $this->date_start = null;
             $this->date_end = null;
             $this->date_cut_off = null;
@@ -603,7 +636,7 @@ class Billing extends Model
             }
 
 
-        } elseif ($this->billing_type_id == 2) { // monthly
+        } elseif ($this->isMonthlyFee()) { // monthly
             $particulars[] = [
                 'description' => $this->billingType->name,
                 'amount' => $this->account->monthlyRate,
