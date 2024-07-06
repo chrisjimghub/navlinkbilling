@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
-trait BillingGroupOperation
+trait BillingGroupButtonsOperation
 {
     /**
      * Define which routes are needed for this operation.
@@ -18,34 +18,37 @@ trait BillingGroupOperation
      * @param string $routeName  Prefix of the route name.
      * @param string $controller Name of the current CrudController.
      */
-    protected function setupPayRoutes($segment, $routeName, $controller)
+    protected function setupBillingGroupButtonsRoutes($segment, $routeName, $controller)
     {
         Route::post($segment.'/{id}/pay', [
             'as'        => $routeName.'.pay',
             'uses'      => $controller.'@pay',
             'operation' => 'pay',
         ]);
+
+        // TODO:: use credit
+        // TODO:: upgrade plan
     }
 
     /**
      * Add the default settings, buttons, etc that this operation needs.
      */
-    protected function setupPayDefaults()
+    protected function setupBillingGroupButtonsDefaults()
     {
-        CRUD::allowAccess('pay');
+        CRUD::allowAccess('billingGroupButtons');
 
-        CRUD::operation('pay', function () {
+        CRUD::operation('billingGroupButtons', function () {
             CRUD::loadDefaultOperationSettingsFromConfig();
         });
 
         CRUD::operation('list', function () {
-            CRUD::addButton('line', 'pay', 'view', 'crud::buttons.pay', 'beginning');
+            CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.billing_group_buttons', 'beginning');
         });
     }
 
     public function pay($id)
     {
-        $this->crud->hasAccessOrFail('pay');
+        $this->crud->hasAccessOrFail('buttonPay');
 
         try {
             DB::beginTransaction();

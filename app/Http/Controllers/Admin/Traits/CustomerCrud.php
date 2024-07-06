@@ -39,6 +39,9 @@ trait CustomerCrud
     // relationship
     public function customerNameColumn($label = null)
     {
+        // remove the global scope in boot order because it will conflict with the column order.
+        $this->crud->query->withoutGlobalScope('orderByCustomerFullName');
+
         $currentTable = $this->crud->model->getTable();
 
         if ($currentTable == 'customers') {

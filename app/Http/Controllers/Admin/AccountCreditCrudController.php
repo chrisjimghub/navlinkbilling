@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Account;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -15,9 +16,9 @@ class AccountCreditCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
     
@@ -43,12 +44,32 @@ class AccountCreditCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
+        // Set the model for the CRUD operation
+        $this->crud->setModel(Account::class);
 
-        // TODO:: check search logic later.
-        $this->accountColumn();
+        // Apply the scope to filter only the rows that has remaining credits > 0
+        $this->crud->addClause('hasRemainingCredits');
 
-        $this->currencyColumn('amount');
+        $this->customerNameColumn(label: __('app.account_name'));
+        $this->crud->modifyColumn('customer_id', [
+            'type' => 'closure',
+            'function' => function ($entry) {
+                return $entry->details;
+            },
+            'wrapper' => [
+                'href' => function ($crud, $column, $entry, $related_key) {
+                    return backpack_url('account/'.$entry->id.'/show');
+                },
+                // 'target' => '_blank'
+            ]
+        ]);
+
+        $this->currencyColumn(column: 'remaining_credits', label: __('app.remaining_credits'));
+
+        $this->crud->column([
+            'name' => 'credits_latest_updated',
+            'label' => __('app.account_credit_latest_udpated'),
+        ]);
     }
 
     protected function autoSetupShowOperation()
