@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin\Operations;
 
 use App\Models\Billing;
-use App\Models\AccountCredit;
+use Illuminate\Support\Str;
 
+use App\Models\AccountCredit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -67,7 +68,14 @@ trait BillingGroupButtonsOperation
             if ($oneMonthAdvanceLabel) {
                 // Create account credit for relevant particulars
                 foreach ($billing->particulars as $particular) {
-                    if ($particular['description'] == $oneMonthAdvanceLabel->name) {
+                    if (Str::contains(strtolower($particular['description']), strtolower($oneMonthAdvanceLabel->name))) {
+                        AccountCredit::create([
+                            'account_id' => $billing->account_id,
+                            'amount' => $particular['amount'],
+                        ]);
+                    }
+                
+                    if (Str::contains(strtolower($particular['description']), strtolower("Deposit Account Credit"))) {
                         AccountCredit::create([
                             'account_id' => $billing->account_id,
                             'amount' => $particular['amount'],
