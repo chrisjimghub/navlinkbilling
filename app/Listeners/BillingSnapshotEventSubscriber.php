@@ -3,10 +3,12 @@
 namespace App\Listeners;
 
 use App\Events\BillProcessed;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Events\BillReprocessed;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class BillingSnapshot
+class BillingSnapshotEventSubscriber
 {
     protected $billing;
 
@@ -21,10 +23,18 @@ class BillingSnapshot
     /**
      * Handle the event.
      */
-    public function handle(BillProcessed $event): void
+    public function handleBillProcessed(BillProcessed $event): void
     {
-        // info('BillingSnapshot: '.$event->billing->id);
+        $this->snapshot($event);
+    }
+    
+    public function handleBillReprocessed(BillReprocessed $event): void
+    {
+        $this->snapshot($event);
+    }
 
+    public function snapshot($event)
+    {
         $this->billing = $event->billing;
 
         $snapshot = [];
@@ -47,4 +57,18 @@ class BillingSnapshot
 
         $this->billing->save();
     }
+
+    // NOTE:: i think this is no longer needed because laravel read the method that start with handle
+    /**
+     * Register the listeners for the subscriber.
+     *
+     * @return array<string, string>
+     */
+    // public function subscribe(Dispatcher $events): array
+    // {
+    //     return [
+    //         BillProcessed::class => 'handleBillProcessed',
+    //         BillReprocessed::class => 'handleBillReprocessed',
+    //     ];
+    // }
 }
