@@ -90,7 +90,7 @@ class BillEventSubscriber
         }
 
         // Service Interrptions
-        $totalInterruptionDays = $this->billing->total_days_servce_interruptions;
+        $totalInterruptionDays = $this->billing->total_days_service_interruptions;
         if ($totalInterruptionDays) {
             $this->particulars[] = [
                 'description' => $this->billing->service_interrupt_desc,

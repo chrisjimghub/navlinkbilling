@@ -487,7 +487,7 @@ class Billing extends Model
         return;
     }
 
-    // total_days_servce_interruptions
+    // total_days_service_interruptions
     public function getTotalDaysServiceInterruptionsAttribute()
     {
         $interruptions = $this->accountServiceInterruptions();
