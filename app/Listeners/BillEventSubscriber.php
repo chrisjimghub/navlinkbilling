@@ -30,9 +30,9 @@ class BillEventSubscriber
      */
     public function handleBillProcessed(BillProcessed $event): void
     {
-        $this->snapshot();
-
         $this->billing = $event->billing;
+
+        $this->snapshot();
 
         if ($this->billing->isInstallmentFee()) {
             // installment 
