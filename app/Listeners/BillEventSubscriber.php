@@ -30,7 +30,7 @@ class BillEventSubscriber
      */
     public function handleBillProcessed(BillProcessed $event): void
     {
-        $this->snapshot($event);
+        $this->snapshot();
 
         $this->billing = $event->billing;
 
@@ -42,37 +42,7 @@ class BillEventSubscriber
             $this->processMonthly();
         }
 
-        $this->billing->particulars = array_values($this->particulars);
-        $this->billing->save();
-    }
-    
-    public function handleBillReprocessed(BillReprocessed $event): void
-    {
-        $this->snapshot($event);
-    }
-
-    public function snapshot($event)
-    {
-        $this->billing = $event->billing;
-
-        $snapshot = [];
-
-        $snapshot['account'] = $this->billing->account->toArray();
-        $snapshot['plannedApplication'] = $this->billing->account->plannedApplication->toArray();
-        $snapshot['plannedApplicationType'] = $this->billing->account->plannedApplication->plannedApplicationType->toArray();
-        $snapshot['location'] = $this->billing->account->plannedApplication->location->toArray();
-        $snapshot['subscription'] = $this->billing->account->subscription->toArray();
-        $snapshot['otcs'] = $this->billing->account->otcs->toArray();
-        $snapshot['contractPeriods'] = $this->billing->account->contractPeriods->toArray();
-        $snapshot['accountStatus'] = $this->billing->account->accountStatus->toArray();
-
-        // TODO:: capture the account credits exact amount, for documentation and audit trails and review. each bill  
-        // TODO:: make sure when we have a button pay using credits, it will add a -amount row in account credits first, before updating the accountCredits here in snapshot
-        // $snapshot['accountCredits'] = $this->account->accountCredits->toArray();
-        
-
-        $this->billing->account_snapshot = $snapshot;
-
+        $this->billing->particulars = $this->particulars;
         $this->billing->save();
     }
 
@@ -129,8 +99,26 @@ class BillEventSubscriber
         }
     }
 
+    public function snapshot()
+    {
+        $snapshot = [];
 
+        $snapshot['account'] = $this->billing->account->toArray();
+        $snapshot['plannedApplication'] = $this->billing->account->plannedApplication->toArray();
+        $snapshot['plannedApplicationType'] = $this->billing->account->plannedApplication->plannedApplicationType->toArray();
+        $snapshot['location'] = $this->billing->account->plannedApplication->location->toArray();
+        $snapshot['subscription'] = $this->billing->account->subscription->toArray();
+        $snapshot['otcs'] = $this->billing->account->otcs->toArray();
+        $snapshot['contractPeriods'] = $this->billing->account->contractPeriods->toArray();
+        $snapshot['accountStatus'] = $this->billing->account->accountStatus->toArray();
 
+        // TODO:: make sure when we have a button pay using credits, it will add a -amount row in account credits first, before updating the accountCredits here in snapshot
+        $snapshot['accountCredits'] = $this->billing->account->remaining_credits ?? 0;
+        
+        $this->billing->account_snapshot = $snapshot;
+
+        $this->billing->save();
+    }
 
 
 
