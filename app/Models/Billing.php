@@ -42,6 +42,7 @@ class Billing extends Model
 
     protected $dispatchesEvents = [
         'created' => BillProcessed::class,
+        // 'updated' => BillProcessed::class,
     ];
 
     /*
@@ -224,7 +225,12 @@ class Billing extends Model
     // account_installed_date
     public function getAccountInstalledDateAttribute()
     {
-        return $this->real_account['account']['installed_date'];
+        if ($this->real_account) {
+            return $this->real_account['account']['installed_date'];
+        }
+        
+        // we use this as backup, because this attribute are used even before the snapshot is saved. we need this.
+        return $this->accont->installed_date;
     }   
     
     // account_google_coordinates
@@ -481,7 +487,7 @@ class Billing extends Model
         return;
     }
 
-    // total_days_servce_interruptions
+    // total_days_service_interruptions
     public function getTotalDaysServiceInterruptionsAttribute()
     {
         $interruptions = $this->accountServiceInterruptions();
