@@ -178,25 +178,12 @@
                                     });
                                     });
                                 } else {// Show an error alert
-                                    swal({
-                                        title: "{!! __('NOT marked as paid') !!}",
-                                        text: "{!! __('There\'s been an error. Your item might not have been marked as paid.') !!}",
-                                        icon: "error",
-                                        timer: 4000,
-                                        buttons: false,
-                                    });
+                                    swalError("There\'s been an error. Your item might not have been marked as paid.")
                                 }			          	  
                             }
                         },
                         error: function(result) {
-                            // Show an alert with the result
-                            swal({
-                                title: "{!! __('NOT marked as paid') !!}",
-                                text: "{!! __('There\'s been an error. Your item might not have been marked as paid.') !!}",
-                                icon: "error",
-                                timer: 4000,
-                                buttons: false,
-                            });
+                            swalError("There\'s been an error. Your item might not have been marked as paid.")
                         }
                     });
                     }
@@ -241,34 +228,14 @@
                                 text: "{!! '<strong>'.__('Notification Not Sent').'</strong><br>' !!}" +result.msg
                             }).show();
 
-                            swal({
-                                title: "{!! __('Warning') !!}",
-                                text: result.msg,
-                                icon: "error",
-                                timer: 4000,
-                                buttons: false,
-                            });
+                            swalError(result.msg);
+
                         } else {
-                            console.log('else here!')
-                            // Handle other errors or notifications
-                            // swal({
-                            //     title: "{!! __('Error') !!}",
-                            //     text: "{!! __('There\'s been an error. Your item might not have been processed.') !!}",
-                            //     icon: "error",
-                            //     timer: 4000,
-                            //     buttons: false,
-                            // });
+                            swalError("There\'s been an error. Your item might not have been processed.");
                         }
                     },
                     error: function(result) {
-                        // Show error alert
-                        swal({
-                            title: "{!! __('Error') !!}",
-                            text: "{!! __('There\'s been an error. Your item might not have been process.') !!}",
-                            icon: "error",
-                            timer: 4000,
-                            buttons: false,
-                        });
+                        swalError("There\'s been an error. Your item might not have been processed.");
                     }
                 });
             }
