@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 
 use App\Models\AccountCredit;
 use Illuminate\Support\Facades\DB;
+use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
 use App\Notifications\NewBillNotification;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -49,12 +50,15 @@ trait BillingGroupButtonsOperation
             'sendNotification',
         ]);
 
+        Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
 
         CRUD::operation('billingGroupButtons', function () {
             CRUD::loadDefaultOperationSettingsFromConfig();
+            Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
         });
 
-        CRUD::operation('list', function () {
+        CRUD::operation(['list', 'show'], function () {
+            // $this->crud->enableBulkActions();
             CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.billing_group_buttons', 'beginning');
         });
     }
@@ -132,4 +136,5 @@ trait BillingGroupButtonsOperation
                     
         }
     }
+    
 }

@@ -35,7 +35,7 @@ class CutOffAccountExport implements
     public function query()
     {
         return Billing::
-                cutOffAccountLists()
+                cutOffAccounts()
                 ->orderBy('date_cut_off', 'asc');
     }
 
@@ -56,10 +56,10 @@ class CutOffAccountExport implements
     {
         return [
             $this->rowCounter++,
-            $entry->accountName,
-            $entry->accountPlannedApplicationDetails,
-            $entry->subscriptionName,
-            $entry->realAccount['account']['google_map_coordinates'],
+            $entry->account_name,
+            $entry->account_planned_application_details,
+            $entry->account_subscription_name,
+            $entry->real_account_google_coordiantes,
             Carbon::parse($entry->date_cut_off)->format(dateHumanReadable()),
             $entry->total,
         ];

@@ -12,7 +12,7 @@
         @php
             $cutOffItems = 
                 modelInstance('Billing')::unpaid()
-                ->cutOffAccountLists()
+                ->cutOffAccounts()
                 ->orderBy('date_cut_off', 'asc')
                 ->simplePaginate(10, ['*'], 'cutoff_page')
                 ->appends(request()->except('cutoff_page')); 
@@ -37,10 +37,10 @@
                     <tr>
                         {{-- retrieved snapshots instead the relationship, snapshots are method in billing created --}}
                         <td>{{ $index++ }}</td>
-                        <td>{{ $item->accountName }}</td>
-                        <td>{{ $item->accountPlannedApplicationDetails }}</td>
-                        <td>{{ $item->subscriptionName }}</td>
-                        <td>{!! coordinatesLink($item->realAccount['account']['google_map_coordinates']) !!}</td>
+                        <td>{{ $item->account_name }}</td>
+                        <td>{{ $item->account_planned_application_details }}</td>
+                        <td>{{ $item->account_subscription_name }}</td>
+                        <td>{!! coordinatesLink($item->account_google_coordinates) !!}</td>
                         <td>{!! $item->date_cut_off_badge !!}</td>
                         <td>{{ currencyFormat($item->total) }}</td>
                     </tr>
