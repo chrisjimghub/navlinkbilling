@@ -6,7 +6,7 @@ use App\Models\Billing;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 
-class BillProcessed
+class BillReprocessed
 {
     use Dispatchable, SerializesModels;
 
@@ -19,5 +19,5 @@ class BillProcessed
     {
         //
     }
-    
+   
 }
