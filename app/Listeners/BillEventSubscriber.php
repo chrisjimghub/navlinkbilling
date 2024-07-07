@@ -43,7 +43,7 @@ class BillEventSubscriber
         }
 
         $this->billing->particulars = $this->particulars;
-        $this->billing->save();
+        $this->billing->saveQuietly(); 
     }
 
     public function processInstallment()
@@ -117,7 +117,7 @@ class BillEventSubscriber
         
         $this->billing->account_snapshot = $snapshot;
 
-        $this->billing->save();
+        $this->billing->saveQuietly();
     }
 
 

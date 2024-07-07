@@ -42,7 +42,7 @@ class Billing extends Model
 
     protected $dispatchesEvents = [
         'created' => BillProcessed::class,
-        // 'updated' => BillProcessed::class,
+        'updated' => BillProcessed::class,
     ];
 
     /*

@@ -89,7 +89,7 @@
                             onclick="sendNotificationEntry(this)" 
                             data-route="{{ url($crud->route.'/'.$entry->getKey().'/sendNotification') }}" 
                             data-resend="{{ $entry->notified_at }}"
-                            class="btn btn-sm btn-link text-dark" 
+                            class="btn btn-sm btn-link text-primary" 
                             data-button-type="sendNotification"
                             title="Dispatch Notification."
                             disabled="disabled"
