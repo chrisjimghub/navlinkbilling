@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers\Admin\Operations;
 
+use App\Models\Account;
 use App\Models\Billing;
-use Illuminate\Support\Str;
 
+use Illuminate\Support\Str;
+use App\Events\BillProcessed;
 use App\Models\AccountCredit;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
+use App\Rules\UniqueServiceInterruption;
+use Illuminate\Support\Facades\Validator;
+use App\Models\AccountServiceInterruption;
 use App\Notifications\NewBillNotification;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -34,6 +40,13 @@ trait BillingGroupButtonsOperation
             'uses'      => $controller.'@sendNotification',
             'operation' => 'sendNotification',
         ]);
+
+        Route::put($segment.'/{id}/serviceInterrupt', [
+            'as'        => $routeName.'.serviceInterrupt',
+            'uses'      => $controller.'@serviceInterrupt',
+            'operation' => 'serviceInterrupt',
+        ]);
+
 
     }
 
@@ -137,4 +150,49 @@ trait BillingGroupButtonsOperation
         }
     }
     
+    public function serviceInterrupt($id)
+    {
+        $accountId = request()->account_id;
+        $dateStart = request()->date_start;
+        $dateEnd = request()->date_end;
+
+        // Validate request data
+        $validator = Validator::make(request()->all(), [
+            'date_start' => 'required|date',
+            'date_end' => 'required|date|after:date_start',
+            // Apply custom rule for uniqueness and non-overlapping intervals
+            'account_id' => [
+                'required',
+                'integer',
+                'min:1',
+                new UniqueServiceInterruption($accountId, $dateStart, $dateEnd)
+            ],
+        ], [
+            'date_start.required' => 'The date start field is required.',
+            'date_end.required' => 'The date end field is required.',
+            'date_end.after' => 'The date end field must be a date after date start.',
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // Return validation errors as JSON response
+            return response()->json([
+                'errors' => $validator->errors()->all()
+            ], 422); // HTTP status code for Unprocessable Entity
+        }
+
+        // Validation passed, proceed to save data
+        $serviceInterruption = new AccountServiceInterruption();
+        $serviceInterruption->account_id = $accountId;
+        $serviceInterruption->date_start = $dateStart;
+        $serviceInterruption->date_end = $dateEnd;
+        $serviceInterruption->save();
+
+        // NOTE:: no need to dispatch BillProcessed it will automatically dispatch, check AccountServiceInterruption model.
+
+        // Return success response
+        return response()->json([
+            'msg' => '<strong>'.__('Item Saved').'</strong><br>'.__('The service interruption was saved successfully.'),
+        ]);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Rules\UniqueServiceInterruption;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -61,21 +62,16 @@ class AccountServiceInterruptionCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        $rules = [
-            'account_id' => 'required|integer|min:1',
-            'date_start' => 'required|date',
-            'date_end' => 'required|date|after:date_start',
-        ];
-        
-        $messages = [
-            'account_id.required' => __('app.account_field_validation'),
-            'date_end.after_or_equal' => 'The end date must be after the start date.'
-        ];
-        $this->crud->setValidation($rules, $messages);
+        $rules = $this->getBaseValidationRules();
 
-        CRUD::setFromDb(); // set fields from db columns.
+    // Add specific rules for create operation
+        $rules['account_id'][] = new UniqueServiceInterruption(
+            request()->input('account_id'),
+            request()->input('date_start'),
+            request()->input('date_end')
+        );
 
-        $this->accountField(label: __('app.account'));
+        $this->updateCreate($rules);
     }
 
     /**
@@ -86,6 +82,47 @@ class AccountServiceInterruptionCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
-        $this->setupCreateOperation();
+        $rules = $this->getBaseValidationRules();
+
+        // Add specific rules for update operation
+        $rules['account_id'][] = new UniqueServiceInterruption(
+            request()->input('account_id'),
+            request()->input('date_start'),
+            request()->input('date_end'),
+            $this->crud->getCurrentEntry()->getKey()
+        );
+
+        $this->updateCreate($rules);
+    }
+    
+    public function updateCreate($rules)
+    {
+        // Define custom error messages
+        $messages = [
+            'account_id.required' => __('app.account_field_validation'),
+            'date_end.after_or_equal' => 'The end date must be after the start date.',
+        ];
+
+        // Set validation rules and messages
+        $this->crud->setValidation($rules, $messages);
+
+        // Set fields from database columns
+        CRUD::setFromDb();
+
+        // Add custom fields or configurations
+        $this->accountField(label: __('app.account'));
+    }
+
+    protected function getBaseValidationRules()
+    {
+        return [
+            'date_start' => 'required|date',
+            'date_end' => 'required|date|after:date_start',
+            'account_id' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
+        ];
     }
 }
