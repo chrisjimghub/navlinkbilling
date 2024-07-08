@@ -91,6 +91,20 @@ class BillEventSubscriber
 
     public function processMonthly()
     {
+        if ($this->billing->account->isFiber()) {
+            $this->billing->date_start = now()->startOfMonth()->toDateString();
+            $this->billing->date_end = now()->endOfMonth()->toDateString();
+            $this->billing->date_cut_off = now()->endOfMonth()->addDays(5)->toDateString();
+        } elseif ($this->billing->account->isP2P()) {
+            $this->billing->date_start = now()->subMonth()->startOfMonth()->addDays(19)->toDateString();
+            $this->billing->date_end = now()->startOfMonth()->addDays(19)->toDateString();
+            $this->billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
+        } else {
+            $this->billing->date_start = null;
+            $this->billing->date_end = null;
+            $this->billing->date_cut_off = null;
+        }
+
         $this->particulars[] = [
             'description' => $this->billing->billingType->name,
             'amount' => $this->billing->account->monthly_Rate,
@@ -98,9 +112,11 @@ class BillEventSubscriber
 
         // Pro-rated Service Adjustment
         if ($this->billing->isProRatedMonthly()) {
+            $amountAdjustment = $this->billing->daily_rate * $this->billing->pro_rated_non_service_days; 
+
             $this->particulars[] = [
                 'description' => $this->billing->pro_rated_desc,
-                'amount' => -($this->billing->daily_rate * $this->billing->pro_rated_non_service_days),
+                'amount' => -($this->currencyRound($amountAdjustment)),
             ];
 
         }

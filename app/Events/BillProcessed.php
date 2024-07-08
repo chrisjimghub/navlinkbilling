@@ -13,8 +13,6 @@ class BillProcessed
 
     public $billing;
 
-    public $account;
-
     /**
      * Create a new event instance.
      */

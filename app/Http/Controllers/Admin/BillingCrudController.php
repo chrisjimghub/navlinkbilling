@@ -120,8 +120,6 @@ class BillingCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        Widget::add()->type('script')->content('assets/js/admin/forms/billing.js');
-
         $this->crud->setValidation(BillingRequest::class);
 
         $this->accountField(label: __('app.account'));
@@ -135,37 +133,6 @@ class BillingCrudController extends CrudController
             'inline'      => false, // show the radios all on the same line?
             'hint'        => __('app.billing_type_id_hint')
         ]);
-
-        $this->crud->field([
-            'name'  => 'date_start',
-            'label' => __('app.billing_date_start'),
-            'type'  => 'date',
-            'wrapper' => [
-                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
-            ],
-            'default' => '2024-06-20', // TODO:: delete later, temp only
-
-        ]);
-
-        $this->crud->field([
-            'name'  => 'date_end',
-            'label' => __('app.billing_date_end'),
-            'type'  => 'date',
-            'wrapper' => [
-                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
-            ],
-            'default' => '2024-07-20', // TODO:: delete later, temp only
-        ]);
-
-        $this->crud->field([
-            'name'  => 'date_cut_off',
-            'label' => __('app.billing_date_cut_off'),
-            'type'  => 'date',
-            'wrapper' => [
-                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
-            ],
-            'default' => '2024-07-25', // TODO:: delete later, temp only
-        ]);
     }
 
 
@@ -177,7 +144,37 @@ class BillingCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
+        Widget::add()->type('script')->content('assets/js/admin/forms/billing.js');
+
         $this->setupCreateOperation();
+
+        $this->crud->field([
+            'name'  => 'date_start',
+            'label' => __('app.billing_date_start'),
+            'type'  => 'date',
+            'wrapper' => [
+                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
+            ],
+
+        ]);
+
+        $this->crud->field([
+            'name'  => 'date_end',
+            'label' => __('app.billing_date_end'),
+            'type'  => 'date',
+            'wrapper' => [
+                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
+            ],
+        ]);
+
+        $this->crud->field([
+            'name'  => 'date_cut_off',
+            'label' => __('app.billing_date_cut_off'),
+            'type'  => 'date',
+            'wrapper' => [
+                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
+            ],
+        ]);
 
         $this->crud->field([   // repeatable
             'name'  => 'particulars',

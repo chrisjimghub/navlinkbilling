@@ -54,6 +54,24 @@ class Account extends Model
         });
     }
 
+    public function isFiber() : bool
+    {
+        if ($this->subscription->id == 2) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isP2P() : bool
+    {
+        if ($this->subscription->id == 1) {
+            return true;
+        }
+
+        return false;
+    }
+
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
