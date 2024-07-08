@@ -24,10 +24,10 @@ class Account extends Model
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
-    protected $dispatchesEvents = [
-        'created' => BillProcessed::class,
-        'updated' => BillProcessed::class,
-    ];
+    
+    // protected $dispatchesEvents = [
+    //     'updated' => BillProcessed::class, NOTE:: I already dispatch the event in Update in AccountCrudController so pivot table changes will also fire this event
+    // ];
 
     protected $table = 'accounts';
     // protected $primaryKey = 'id';

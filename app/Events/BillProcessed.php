@@ -26,6 +26,8 @@ class BillProcessed
                                 ->unpaid()
                                 ->get();
         }
+
+        // debug('Bill Processed event is fired');
     }
     
 }
