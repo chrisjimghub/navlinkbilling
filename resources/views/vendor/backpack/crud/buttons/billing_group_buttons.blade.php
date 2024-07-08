@@ -102,14 +102,14 @@
                                             <strong>Date Start</strong>
                                             <span class="text-danger">*</span>
                                         </label>
-                                        <input type="date" class="form-control" id="date_start-{{ $entry->getKey() }}" name="date_start">
+                                        <input type="date" class="form-control" id="date_start-{{ $entry->getKey() }}" name="date_start" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="date_end">
                                             <strong>Date End</strong>
                                             <span class="text-danger">*</span>
                                         </label>
-                                        <input type="date" class="form-control" id="date_end-{{ $entry->getKey() }}" name="date_end">
+                                        <input type="date" class="form-control" id="date_end-{{ $entry->getKey() }}" name="date_end" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -175,8 +175,6 @@
 
 <script>
     if (typeof serviceInterruptModal != 'function') {
-        $("[data-button-type=serviceInterruptModal]").unbind('click');
-
         function serviceInterruptModal(button) {
             var billingId = button.getAttribute('data-billing-id');
             
@@ -186,8 +184,6 @@
 
 
     if (typeof serviceInterrupt != 'function') {
-        $("[data-button-type=serviceInterrupt]").unbind('click');
-
         function serviceInterrupt(button) {
             var billingId = button.getAttribute('data-billing-id');
             var route = button.getAttribute('data-route');
@@ -196,13 +192,13 @@
             var dateStart = $('#date_start-'+billingId).val();
             var dateEnd = $('#date_end-'+billingId).val();
 
-            // console.log({
-            //     billingId,
-            //     route,
-            //     dateStart,
-            //     dateEnd,
-            //     accountId
-            // });
+            console.log({
+                billingId,
+                route,
+                dateStart,
+                dateEnd,
+                accountId
+            });
 
             $.ajax({
                 url: route,
