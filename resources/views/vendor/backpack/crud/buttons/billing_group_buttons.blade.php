@@ -17,7 +17,7 @@
                     <li>
                         <a 
                             href="javascript:void(0)" 
-                            onclick="payEntry(this)" 
+                            onclick="pay(this)" 
                             data-route="{{ url($crud->route.'/'.$entry->getKey().'/pay') }}" 
                             class="btn btn-sm btn-link text-success" 
                             data-button-type="pay"
@@ -64,21 +64,74 @@
                     </li>
                 @endif
 
-                {{-- TODO:: --}}
-                @if($crud->hasAccess('serviceInterrupt'))
+                @if($crud->hasAccess('serviceInterrupt') && $entry->isMonthlyFee())
                     <li>
+                        <!-- Trigger Button -->
                         <a 
                             href="javascript:void(0)" 
-                            {{-- onclick="payEntry(this)"  --}}
-                            {{-- data-route="{{ url($crud->route.'/'.$entry->getKey().'/pay') }}"  --}}
                             class="btn btn-sm btn-link text-danger" 
-                            {{-- data-button-type="pay" --}}
-                            {{-- title="Marked as paid?" --}}
-                            >
-                                <i class="las la-exclamation-triangle"></i>
-                                {{ __('Service Interruption') }}
+                            id="openServiceInterruptModal"
+                            onclick="serviceInterruptModal(this)"
+                            data-button-type="serviceInterruptModal"
+                            data-billing-id={{ $entry->getKey() }}
+                        >
+                            <i class="las la-exclamation-triangle"></i> Service Interruption
                         </a>
                     </li>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="serviceInterruptModal-{{ $entry->getKey() }}" tabindex="-1" role="dialog" aria-labelledby="serviceInterruptModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="serviceInterruptModalLabel">Service Interruption</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="account_details">
+                                            <strong>Account</strong>
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="account_details" name="account_details" value="{{ $entry->account->details }}" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="date_start">
+                                            <strong>Date Start</strong>
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" class="form-control" id="date_start-{{ $entry->getKey() }}" name="date_start">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="date_end">
+                                            <strong>Date End</strong>
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" class="form-control" id="date_end-{{ $entry->getKey() }}" name="date_end">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <a 
+                                        href="javascript:void(0)" 
+                                        onclick="serviceInterrupt(this)" 
+                                        data-button-type="serviceInterrupt"
+                                        data-route="{{ url($crud->route.'/'.$entry->getKey().'/serviceInterrupt') }}" 
+                                        data-account-id="{{ $entry->account->id }}"
+                                        data-billing-id="{{ $entry->getKey() }}"
+                                        class="btn btn-success"
+                                    >
+                                        <i class="las la-exclamation-triangle"></i> {{ __('Save') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                 @endif
 
             
@@ -102,22 +155,113 @@
             
 
             </ul>
-        </div>
-
-        
+        </div>       
     @endif
 
 @endif
+
 
 {{-- Button Javascript --}}
 {{-- - used right away in AJAX operations (ex: List) --}}
 {{-- - pushed to the end of the page, after jQuery is loaded, for non-AJAX operations (ex: Show) --}}
 @push('after_scripts') @if (request()->ajax()) @endpush @endif
+
 <script>
-    if (typeof payEntry != 'function') {
+    // Fix modal backdrop
+    $(document).on('show.bs.modal', '.modal', function () {
+        $(this).appendTo('body');
+    });
+</script>
+
+<script>
+    if (typeof serviceInterruptModal != 'function') {
+        $("[data-button-type=serviceInterruptModal]").unbind('click');
+
+        function serviceInterruptModal(button) {
+            var billingId = button.getAttribute('data-billing-id');
+            
+            $('#serviceInterruptModal-'+billingId).modal('show');
+        }
+    }
+
+
+    if (typeof serviceInterrupt != 'function') {
+        $("[data-button-type=serviceInterrupt]").unbind('click');
+
+        function serviceInterrupt(button) {
+            var billingId = button.getAttribute('data-billing-id');
+            var route = button.getAttribute('data-route');
+            var accountId = button.getAttribute('data-account-id');
+            // unique field
+            var dateStart = $('#date_start-'+billingId).val();
+            var dateEnd = $('#date_end-'+billingId).val();
+
+            // console.log({
+            //     billingId,
+            //     route,
+            //     dateStart,
+            //     dateEnd,
+            //     accountId
+            // });
+
+            $.ajax({
+                url: route,
+                type: 'PUT',
+                data: {
+                    date_start: dateStart,
+                    date_end: dateEnd,
+                    account_id: accountId 
+                },
+                success: function(result) {
+                    // console.log('Success:', result);
+
+                    if (typeof crud !== 'undefined') {
+                        crud.table.ajax.reload();
+                    }
+
+                    if (result) {
+                        new Noty({
+                            type: "success",
+                            text: result.msg
+                        }).show();
+                    }
+
+                    // Close the modal
+                    $('#serviceInterruptModal-'+billingId).modal('hide');
+
+                },
+                error: function(xhr, status, error) {
+                    // console.log('Error:', xhr.responseJSON.errors);
+                    // Handle validation errors or other errors
+                    if (xhr.status === 422) {
+                        // Display validation errors to the user
+                        var errors = xhr.responseJSON.errors;
+                        errors.forEach(function(errorMsg) {
+                            // Example: Display error messages using a notification library
+                            new Noty({
+                                text: errorMsg,
+                                type: 'error'
+                            }).show();
+                        });
+                    } else {
+                        // Handle other types of errors
+                    }
+                }
+            });
+
+            
+        }
+        
+    }
+
+
+
+
+
+    if (typeof pay != 'function') {
         $("[data-button-type=pay]").unbind('click');
 
-        function payEntry(button) {
+        function pay(button) {
             // ask for confirmation before deleting an item
             // e.preventDefault();
             var button = $(button);
@@ -275,8 +419,6 @@
             }
         }
     }
-
-
 
 
     // make it so that the function above is run after each DataTable draw event
