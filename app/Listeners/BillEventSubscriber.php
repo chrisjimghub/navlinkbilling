@@ -2,12 +2,14 @@
 
 namespace App\Listeners;
 
+use App\Models\Billing;
 use App\Events\BillProcessed;
 use App\Events\BillReprocessed;
-use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 
 class BillEventSubscriber
 {
@@ -30,20 +32,34 @@ class BillEventSubscriber
      */
     public function handleBillProcessed(BillProcessed $event): void
     {
-        $this->billing = $event->billing;
+        if ($event->billing instanceof Collection) {
+            // If its a collection of records
+            foreach ($event->billing as $billing) {
+                $this->processed($billing);
+            }
+        } elseif ($event->billing instanceof Billing) {
+            // 
+            $this->processed($event->billing);
+        }
+        
+    }
+
+    public function processed($billing)
+    {
+        $this->billing = $billing;
 
         $this->snapshot();
-
+                
         if ($this->billing->isInstallmentFee()) {
             // installment 
             $this->processInstallment();
-        }elseif ($this->billing->isMonthlyFee()) {
+        } elseif ($this->billing->isMonthlyFee()) {
             // monthly
             $this->processMonthly();
         }
 
         $this->billing->particulars = $this->particulars;
-        $this->billing->saveQuietly(); 
+        $this->billing->saveQuietly();
     }
 
     public function processInstallment()
@@ -84,7 +100,7 @@ class BillEventSubscriber
         if ($this->billing->isProRatedMonthly()) {
             $this->particulars[] = [
                 'description' => $this->billing->pro_rated_desc,
-                'amount' => -($this->billing->account->monthly_rate - $this->billing->pro_rated_service_total_amount),
+                'amount' => -($this->billing->daily_rate * $this->billing->pro_rated_non_service_days),
             ];
 
         }
