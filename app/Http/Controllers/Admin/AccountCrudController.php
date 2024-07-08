@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Traits\CrudExtend;
+use App\Events\BillProcessed;
+use App\Models\Account;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -17,7 +19,7 @@ class AccountCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation { update as traitUpdate;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
@@ -218,6 +220,20 @@ class AccountCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    // NOTE:: override the backpack update operation to dispatch event
+    public function update()
+    {
+        $response = $this->traitUpdate();
+
+        if (request()->has('id')) {
+            $account = Account::findOrFail(request()->id);
+
+            event(new BillProcessed($account));
+        }
+
+        return $response;
     }
     
 }

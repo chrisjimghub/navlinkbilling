@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Model;
 use App\Models\Account;
+use App\Events\BillProcessed;
 use Illuminate\Support\Carbon;
 
 
@@ -14,6 +15,12 @@ class AccountServiceInterruption extends Model
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
+    protected $dispatchesEvents = [
+        'created' => BillProcessed::class,
+        'updated' => BillProcessed::class,
+        'deleted' => BillProcessed::class,
+    ];
+
 
     protected $table = 'account_service_interruptions';
     // protected $primaryKey = 'id';

@@ -24,10 +24,12 @@ class Account extends Model
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
-    protected $dispatchesEvents = [
-        'created' => BillProcessed::class,
-        'updated' => BillProcessed::class,
-    ];
+    
+    // protected $dispatchesEvents = [
+    //         NOTE:: I remove the event here, because i already dispatch the event 
+    //         in Update in AccountCrudController so pivot table changes will also fire this event
+    //     'updated' => BillProcessed::class, 
+    // ];
 
     protected $table = 'accounts';
     // protected $primaryKey = 'id';
@@ -52,6 +54,24 @@ class Account extends Model
                     ->orderBy('customers.first_name', $orderBy)
                     ->select('accounts.*'); // Ensure only Account fields are selected
         });
+    }
+
+    public function isFiber() : bool
+    {
+        if ($this->subscription->id == 2) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isP2P() : bool
+    {
+        if ($this->subscription->id == 1) {
+            return true;
+        }
+
+        return false;
     }
 
     /*

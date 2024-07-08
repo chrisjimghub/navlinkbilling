@@ -17,7 +17,7 @@ class BillEventSubscriber
 
     protected $billing;
 
-    protected $particulars = [];
+    protected $particulars;
 
     /**
      * Create the event listener.
@@ -32,6 +32,8 @@ class BillEventSubscriber
      */
     public function handleBillProcessed(BillProcessed $event): void
     {
+        // debug($event->billing);
+
         if ($event->billing instanceof Collection) {
             // If its a collection of records
             foreach ($event->billing as $billing) {
@@ -48,6 +50,8 @@ class BillEventSubscriber
     {
         $this->billing = $billing;
 
+        $this->particulars = [];
+
         $this->snapshot();
                 
         if ($this->billing->isInstallmentFee()) {
@@ -57,6 +61,8 @@ class BillEventSubscriber
             // monthly
             $this->processMonthly();
         }
+
+        debug($this->particulars);
 
         $this->billing->particulars = $this->particulars;
         $this->billing->saveQuietly();
@@ -71,7 +77,7 @@ class BillEventSubscriber
         // OTCS
         foreach ($this->billing->account->otcs as $otc) {
             $this->particulars[] = [
-                'description' => $otc->name,
+                'description' => ucwords($otc->name),
                 'amount' => $otc->amount,
             ];
         }
@@ -83,7 +89,7 @@ class BillEventSubscriber
         if ($contractPeriodExists) {
             $contractPeriod = $this->billing->account->contractPeriods()->where('contract_periods.id', $contractId)->first();
             $this->particulars[] = [
-                'description' => $contractPeriod->name,
+                'description' => ucwords($contractPeriod->name),
                 'amount' => $this->billing->account->plannedApplication->price,
             ];
         }
@@ -91,16 +97,28 @@ class BillEventSubscriber
 
     public function processMonthly()
     {
+        if ($this->billing->account->isFiber()) {
+            $this->billing->date_start = now()->startOfMonth()->toDateString();
+            $this->billing->date_end = now()->endOfMonth()->toDateString();
+            $this->billing->date_cut_off = now()->endOfMonth()->addDays(5)->toDateString();
+        } elseif ($this->billing->account->isP2P()) {
+            $this->billing->date_start = now()->subMonth()->startOfMonth()->addDays(19)->toDateString();
+            $this->billing->date_end = now()->startOfMonth()->addDays(19)->toDateString();
+            $this->billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
+        }
+
         $this->particulars[] = [
-            'description' => $this->billing->billingType->name,
+            'description' => ucwords($this->billing->billingType->name),
             'amount' => $this->billing->account->monthly_Rate,
         ];
 
         // Pro-rated Service Adjustment
         if ($this->billing->isProRatedMonthly()) {
+            $amountAdjustment = $this->billing->daily_rate * $this->billing->pro_rated_non_service_days; 
+
             $this->particulars[] = [
-                'description' => $this->billing->pro_rated_desc,
-                'amount' => -($this->billing->daily_rate * $this->billing->pro_rated_non_service_days),
+                'description' => ucwords($this->billing->pro_rated_desc),
+                'amount' => -($this->currencyRound($amountAdjustment)),
             ];
 
         }
@@ -109,7 +127,7 @@ class BillEventSubscriber
         $totalInterruptionDays = $this->billing->total_days_service_interruptions;
         if ($totalInterruptionDays) {
             $this->particulars[] = [
-                'description' => $this->billing->service_interrupt_desc,
+                'description' => ucwords($this->billing->service_interrupt_desc),
                 'amount' => -($this->currencyRound($totalInterruptionDays * $this->billing->daily_rate)),
             ];
         }

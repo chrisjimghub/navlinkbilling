@@ -21,6 +21,7 @@
         "backpack/permissionmanager": "^7.2",
         "backpack/theme-coreuiv2": "^1.2",
         "backpack/theme-coreuiv4": "^1.1",
+        "genealabs/laravel-pivot-events": "*",
         "imokhles/signature-field-for-backpack": "dev-master",
         "laravel/framework": "^11.9",
         "laravel/telescope": "^5.1",
