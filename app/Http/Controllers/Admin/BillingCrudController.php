@@ -143,6 +143,8 @@ class BillingCrudController extends CrudController
             'wrapper' => [
                 'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
             ],
+            'default' => '2024-06-20', // TODO:: delete later, temp only
+
         ]);
 
         $this->crud->field([
@@ -152,6 +154,7 @@ class BillingCrudController extends CrudController
             'wrapper' => [
                 'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
             ],
+            'default' => '2024-07-20', // TODO:: delete later, temp only
         ]);
 
         $this->crud->field([
@@ -161,6 +164,7 @@ class BillingCrudController extends CrudController
             'wrapper' => [
                 'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
             ],
+            'default' => '2024-07-25', // TODO:: delete later, temp only
         ]);
     }
 

@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\Admin\Traits\AccountCrud;
 use App\Models\Otc;
 use App\Models\Model;
 use App\Models\Billing;
 use App\Models\Subscription;
+use App\Events\BillProcessed;
 use App\Models\AccountCredit;
 use App\Models\AccountStatus;
 use App\Models\ContractPeriod;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\AccountServiceInterruption;
+use App\Http\Controllers\Admin\Traits\AccountCrud;
 
 class Account extends Model
 {
@@ -23,6 +24,10 @@ class Account extends Model
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
+    protected $dispatchesEvents = [
+        'created' => BillProcessed::class,
+        'updated' => BillProcessed::class,
+    ];
 
     protected $table = 'accounts';
     // protected $primaryKey = 'id';
@@ -30,8 +35,7 @@ class Account extends Model
     protected $guarded = ['id'];
     // protected $fillable = [];
     // protected $hidden = [];
-
-
+    
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS

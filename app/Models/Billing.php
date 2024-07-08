@@ -22,6 +22,10 @@ class Billing extends Model
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
+    protected $dispatchesEvents = [
+        'created' => BillProcessed::class,
+        'updated' => BillProcessed::class,
+    ];
 
     protected $table = 'billings';
     // protected $primaryKey = 'id';
@@ -38,11 +42,6 @@ class Billing extends Model
 
     protected $attributes = [
         'billing_status_id' => 2, // Newly created bill default value 2 or Unpaid
-    ];
-
-    protected $dispatchesEvents = [
-        'created' => BillProcessed::class,
-        'updated' => BillProcessed::class,
     ];
 
     /*
@@ -230,7 +229,7 @@ class Billing extends Model
         }
         
         // we use this as backup, because this attribute are used even before the snapshot is saved. we need this.
-        return $this->accont->installed_date;
+        return $this->account->installed_date;
     }   
     
     // account_google_coordinates
@@ -315,7 +314,8 @@ class Billing extends Model
             type: $this->account_planned_application_type_name_shorten,
             subscription: $this->account_subscription_name, 
             mbps: $this->account_planned_application_mbps,
-            installedDate: $this->account_installed_date
+            installedDate: $this->account_installed_date,
+            dailyRate: $this->daily_rate,
         );
     }
 
@@ -464,13 +464,19 @@ class Billing extends Model
     public function getProRatedDescAttribute()
     {
         if ($this->isProRatedMonthly()) {
-            $num = $this->total_number_of_days - $this->pro_rated_days_and_hours_service['days'];
-                    $days = $num > 1 ? 'days' : 'day';
+            $num = $this->pro_rated_non_service_days;
+            $daysOrDay = $num > 1 ? 'days' : 'day';
     
-            return "Pro-rated Service Adjustment ($num $days)";
+            return "Pro-rated Service Adjustment ($num $daysOrDay)";
         }
 
         return;
+    }
+
+    // pro_rated_non_service_days
+    public function getProRatedNonServiceDaysAttribute()
+    {
+        return $this->total_number_of_days - $this->pro_rated_days_and_hours_service['days'];
     }
 
     // service_interrupt_desc

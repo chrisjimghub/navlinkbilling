@@ -66,7 +66,7 @@ trait BillingGroupButtonsOperation
     // pay
     public function pay($id)
     {
-        $this->crud->hasAccessOrFail('buttonPay');
+        $this->crud->hasAccessOrFail('pay');
 
         try {
             DB::beginTransaction();
