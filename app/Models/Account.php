@@ -26,7 +26,9 @@ class Account extends Model
     */
     
     // protected $dispatchesEvents = [
-    //     'updated' => BillProcessed::class, NOTE:: I already dispatch the event in Update in AccountCrudController so pivot table changes will also fire this event
+    //         NOTE:: I remove the event here, because i already dispatch the event 
+    //         in Update in AccountCrudController so pivot table changes will also fire this event
+    //     'updated' => BillProcessed::class, 
     // ];
 
     protected $table = 'accounts';
