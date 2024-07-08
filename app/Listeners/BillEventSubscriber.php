@@ -99,10 +99,6 @@ class BillEventSubscriber
             $this->billing->date_start = now()->subMonth()->startOfMonth()->addDays(19)->toDateString();
             $this->billing->date_end = now()->startOfMonth()->addDays(19)->toDateString();
             $this->billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
-        } else {
-            $this->billing->date_start = null;
-            $this->billing->date_end = null;
-            $this->billing->date_cut_off = null;
         }
 
         $this->particulars[] = [
