@@ -131,8 +131,10 @@ class BillingCrudController extends CrudController
             'options'     =>  BillingType::all()->pluck('name', 'id')->toArray(),
             // optional
             'inline'      => false, // show the radios all on the same line?
-            'hint'        => __('app.billing_type_id_hint')
+            'hint'        => __('app.billing_type_id_hint'),
         ]);
+
+        $this->fieldDatePeriods();
     }
 
 
@@ -144,37 +146,9 @@ class BillingCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
-        Widget::add()->type('script')->content('assets/js/admin/forms/billing.js');
-
         $this->setupCreateOperation();
 
-        $this->crud->field([
-            'name'  => 'date_start',
-            'label' => __('app.billing_date_start'),
-            'type'  => 'date',
-            'wrapper' => [
-                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
-            ],
-
-        ]);
-
-        $this->crud->field([
-            'name'  => 'date_end',
-            'label' => __('app.billing_date_end'),
-            'type'  => 'date',
-            'wrapper' => [
-                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
-            ],
-        ]);
-
-        $this->crud->field([
-            'name'  => 'date_cut_off',
-            'label' => __('app.billing_date_cut_off'),
-            'type'  => 'date',
-            'wrapper' => [
-                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
-            ],
-        ]);
+        $this->fieldDatePeriods();
 
         $this->crud->field([   // repeatable
             'name'  => 'particulars',
@@ -203,6 +177,39 @@ class BillingCrudController extends CrudController
                       ',
             'init_rows' => 0, // number of empty rows to be initialized, by default 1
             // 'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
+        ]);
+    }
+
+    private function fieldDatePeriods()
+    {
+        Widget::add()->type('script')->content('assets/js/admin/forms/billing.js');
+
+        $this->crud->field([
+            'name'  => 'date_start',
+            'label' => __('app.billing_date_start'),
+            'type'  => 'date',
+            'wrapper' => [
+                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
+            ],
+
+        ]);
+
+        $this->crud->field([
+            'name'  => 'date_end',
+            'label' => __('app.billing_date_end'),
+            'type'  => 'date',
+            'wrapper' => [
+                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
+            ],
+        ]);
+
+        $this->crud->field([
+            'name'  => 'date_cut_off',
+            'label' => __('app.billing_date_cut_off'),
+            'type'  => 'date',
+            'wrapper' => [
+                'class' => 'form-group col-sm-4 mb-3 d-none' // d-none = hidden
+            ],
         ]);
     }
 

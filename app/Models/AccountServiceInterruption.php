@@ -5,11 +5,14 @@ namespace App\Models;
 use App\Models\Model;
 use App\Models\Account;
 use App\Events\BillProcessed;
+use App\Models\Traits\LocalScopes\ScopeDateOverlap;
 use Illuminate\Support\Carbon;
 
 
 class AccountServiceInterruption extends Model
 {
+    use ScopeDateOverlap;
+
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
@@ -50,13 +53,6 @@ class AccountServiceInterruption extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
-    public function scopeOverlap($query, $date_start ,$date_end) 
-    { 
-        return $query->whereBetween('date_start', [$date_start, $date_end]) 
-            ->orWhereBetween('date_end', [$date_start, $date_end]) 
-            ->orWhereRaw('? BETWEEN date_start and date_end', [$date_start]) 
-            ->orWhereRaw('? BETWEEN date_start and date_end', [$date_end]); 
-    }
 
     /*
     |--------------------------------------------------------------------------
