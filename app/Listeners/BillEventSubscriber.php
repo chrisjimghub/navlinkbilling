@@ -97,15 +97,16 @@ class BillEventSubscriber
 
     public function processMonthly()
     {
-        if ($this->billing->account->isFiber()) {
-            $this->billing->date_start = now()->startOfMonth()->toDateString();
-            $this->billing->date_end = now()->endOfMonth()->toDateString();
-            $this->billing->date_cut_off = now()->endOfMonth()->addDays(5)->toDateString();
-        } elseif ($this->billing->account->isP2P()) {
-            $this->billing->date_start = now()->subMonth()->startOfMonth()->addDays(19)->toDateString();
-            $this->billing->date_end = now()->startOfMonth()->addDays(19)->toDateString();
-            $this->billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
-        }
+        // NOTE:: comment for now, TBD
+        // if ($this->billing->account->isFiber()) {
+        //     $this->billing->date_start = now()->startOfMonth()->toDateString();
+        //     $this->billing->date_end = now()->endOfMonth()->toDateString();
+        //     $this->billing->date_cut_off = now()->endOfMonth()->addDays(5)->toDateString();
+        // } elseif ($this->billing->account->isP2P()) {
+        //     $this->billing->date_start = now()->subMonth()->startOfMonth()->addDays(19)->toDateString();
+        //     $this->billing->date_end = now()->startOfMonth()->addDays(19)->toDateString();
+        //     $this->billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
+        // }
 
         $this->particulars[] = [
             'description' => ucwords($this->billing->billingType->name),
