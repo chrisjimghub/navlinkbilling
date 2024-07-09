@@ -29,7 +29,6 @@
                     </li>    
                 @endif
                 
-                {{-- TODO:: --}}
                 @if($crud->hasAccess('payUsingCredit'))
                     <li>
                         <a 
@@ -119,7 +118,6 @@
 
 {{-- NOTE:: all script i transfered it to the Operation as Widgets --}}
 <script>
-
     // make it so that the function above is run after each DataTable draw event
     // crud.addFunctionToDataTablesDrawEventQueue('payEntry');
 </script>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\AccountCreditSnapshot;
 use App\Events\BillProcessed;
 use App\Models\Model;
 use App\Models\Account;
@@ -51,6 +52,16 @@ class Billing extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    
+    // Method to mark billing as paid
+    public function markAsPaid()
+    {
+        $this->billing_status_id = 1; // Set to 1 (paid)
+
+        // Optionally return $this for chaining methods
+        return $this;
+    }
+
     public function isProRatedMonthly() : bool
     {
         if ($this->account_installed_date > $this->date_start) {

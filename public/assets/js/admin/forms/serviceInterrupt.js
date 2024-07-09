@@ -139,6 +139,7 @@ if (typeof serviceInterrupt != 'function') {
                     });
                 } else {
                     // Handle other types of errors
+                    swalError('Please contact the administrator.')
                 }
             }
         });

@@ -129,7 +129,7 @@ class Account extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
-    public function scopeallowedBill($query)
+    public function scopeAllowedBill($query)
     {
         return $query->whereHas('accountStatus', function ($q) {
             $q->whereIn('id', [1,2]);
@@ -262,6 +262,7 @@ class Account extends Model
      *
      * @return float
      */
+    // remaining_credits
     public function getRemainingCreditsAttribute()
     {
         $result = $this->accountCredits()
