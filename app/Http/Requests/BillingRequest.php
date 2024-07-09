@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Rules\ParticularsRepeatField;
 use App\Rules\UniqueAccountBillingType;
+use App\Rules\UniqueBillingPeriodPerAccount;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BillingRequest extends FormRequest
@@ -25,6 +26,8 @@ class BillingRequest extends FormRequest
     {
         $accountId = $this->input('account_id');
         $billingTypeId = $this->input('billing_type_id');
+        $dateStart = $this->input('date_start');
+        $dateEnd = $this->input('date_end');
 
         return [
             'account_id' => 'required|integer|min:1',
@@ -32,6 +35,7 @@ class BillingRequest extends FormRequest
                 'required',
                 'exists:billing_types,id',
                 new UniqueAccountBillingType($accountId, $billingTypeId),
+                new UniqueBillingPeriodPerAccount($accountId, $dateStart, $dateEnd),
             ],
             'date_start' => function ($attribute, $value, $fail) use ($billingTypeId) {
                 if ($billingTypeId == 2) {

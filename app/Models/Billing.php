@@ -7,6 +7,7 @@ use App\Models\Model;
 use App\Models\Account;
 use App\Models\BillingType;
 use App\Models\BillingStatus;
+use App\Models\Traits\LocalScopes\ScopeDateOverlap;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Admin\Traits\AccountCrud;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
@@ -16,6 +17,7 @@ class Billing extends Model
 {
     use CurrencyFormat;
     use AccountCrud;
+    use ScopeDateOverlap;
 
     /*
     |--------------------------------------------------------------------------
