@@ -6,9 +6,7 @@ use App\Models\Account;
 use App\Models\Billing;
 
 use Illuminate\Support\Str;
-use App\Events\BillProcessed;
 use App\Models\AccountCredit;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +14,7 @@ use App\Rules\UniqueServiceInterruption;
 use Illuminate\Support\Facades\Validator;
 use App\Models\AccountServiceInterruption;
 use App\Notifications\NewBillNotification;
+use App\Rules\MustHaveEnoughAccountCredit;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait BillingGroupButtonsOperation
@@ -47,6 +46,11 @@ trait BillingGroupButtonsOperation
             'operation' => 'serviceInterrupt',
         ]);
 
+        Route::post($segment.'/{id}/payUsingCredit', [
+            'as'        => $routeName.'.payUsingCredit',
+            'uses'      => $controller.'@payUsingCredit',
+            'operation' => 'payUsingCredit',
+        ]);
 
     }
 
@@ -92,6 +96,57 @@ trait BillingGroupButtonsOperation
         if ( $this->crud->hasAccess('sendNotification') ) {
             Widget::add()->type('script')->content('assets/js/admin/forms/sendNotification.js');
         }
+
+        if ( $this->crud->hasAccess('payUsingCredit') ) {
+            Widget::add()->type('script')->content('assets/js/admin/forms/payUsingCredit.js');
+        }
+    }
+
+    public function payUsingCredit($id)
+    {
+        $this->crud->hasAccessOrFail('payUsingCredit');
+
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+        
+        $billing = Billing::findOrFail($id);
+
+        //Validate request data
+        $validator = Validator::make(['id' => $id], [
+            'id' => [
+                'required',
+                'integer',
+                'min:1',
+                'exists:billings,id', 
+                new MustHaveEnoughAccountCredit($billing->account, $billing->total),
+            ],
+        ], [
+            'id.required' => 'Invalid billing item.',
+            'id.exists' => 'The selected billing item does not exist.', 
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // Return validation errors as JSON response
+            return response()->json([
+                'errors' => $validator->errors()->all()
+            ], 422); // HTTP status code for Unprocessable Entity
+        }
+
+        // mark billing as paid
+        $billing->markAsPaid();
+        $paid = $billing->save();
+
+        if ($paid) {
+            AccountCredit::create([
+                'account_id' => $billing->account_id,
+                'amount'     => -$billing->total,
+            ]);
+        } 
+
+        // Return success response
+        return response()->json([
+            'msg' => '<strong>'.__('Item Paid').'</strong><br>'.__('The item is mark paid using credit successfully.'),
+        ]);
     }
 
     // pay
@@ -103,10 +158,7 @@ trait BillingGroupButtonsOperation
             DB::beginTransaction();
 
             $billing = Billing::findOrFail($id); 
-
-            // Update billing status
-            $billing->billing_status_id = 1;
-            
+            $billing->markAsPaid();
             $billing->save(); 
             
             // Find the label for one month advancem ID = 1 = 1 Month advance
@@ -135,7 +187,10 @@ trait BillingGroupButtonsOperation
             // Commit the transaction
             DB::commit();
 
-            return true;
+            // Return success response
+            return response()->json([
+                'msg' => '<strong>'.__('Item Paid').'</strong><br>'.__('The item has been marked as paid successfully.'),
+            ]);
 
         } catch (\Exception $e) {
             // If an error occurs, rollback the transaction
