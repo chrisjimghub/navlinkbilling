@@ -521,13 +521,4 @@ class Billing extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
-
-    public function setBillingStatusIdAttribute($value)
-    {
-        if ($value == 1) { // Pay
-            event(new AccountCreditSnapshot($this));
-        }
-
-        $this->attributes['billing_status_id'] = $value;
-    }
 }
