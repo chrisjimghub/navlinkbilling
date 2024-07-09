@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\AccountCreditSnapshot;
 use App\Events\BillProcessed;
 use App\Models\Model;
 use App\Models\Account;
@@ -520,4 +521,13 @@ class Billing extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+
+    public function setBillingStatusIdAttribute($value)
+    {
+        if ($value == 1) { // Pay
+            event(new AccountCreditSnapshot($this));
+        }
+
+        $this->attributes['billing_status_id'] = $value;
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Listeners;
 
+use App\Events\AccountCreditSnapshot;
+use App\Models\AccountCredit;
 use App\Models\Billing;
 use App\Events\BillProcessed;
 use App\Events\BillReprocessed;
@@ -25,6 +27,23 @@ class BillEventSubscriber
     public function __construct()
     {
         //
+    }
+
+    public function handleAccountCreditSnapshot(AccountCreditSnapshot $event): void
+    {
+        $billing = $event->billing;
+
+        // Fetch existing account_snapshot or initialize as empty array
+        $accountSnapshot = $billing->account_snapshot ?? [];
+
+        // Modify or add new data to the array
+        $accountSnapshot['accountCredits'] = $billing->account->remaining_credits ?? 0;
+
+        // Assign the modified array back to the model attribute
+        $billing->account_snapshot = $accountSnapshot;
+
+        // Save the model to persist changes
+        $billing->saveQuietly();
     }
 
     /**
