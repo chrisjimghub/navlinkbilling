@@ -88,7 +88,7 @@ trait AccountCrud
     // use in model accesor for account details and billing account snapshot
     public function accountDetails(
         $from,
-        $id, 
+        $accountId, 
         $name,
         $location,
         $type,
@@ -99,7 +99,7 @@ trait AccountCrud
     )
     {
         return 
-            '<strong from="'.$from.'" daily-rate="'.$dailyRate.'">Name: </strong><a href='.backpack_url('account/'.$id.'/show').'>'.$name.'</a><br/>'.
+            '<strong from="'.$from.'" daily-rate="'.$dailyRate.'">Name: </strong><a href='.backpack_url('account/'.$accountId.'/show').'>'.$name.'</a><br/>'.
             '<strong>Location: </strong>' . $location . '<br/>'.
             '<strong>Type: </strong>' . $type . '<br/>'.
             '<strong>Installed: </strong>' . $installedDate . '<br/>'.
