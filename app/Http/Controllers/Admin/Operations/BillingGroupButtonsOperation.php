@@ -63,7 +63,8 @@ trait BillingGroupButtonsOperation
             'sendNotification',
         ]);
 
-        Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
+        // load
+        $this->myWidgets();
 
         CRUD::operation('billingGroupButtons', function () {
             CRUD::loadDefaultOperationSettingsFromConfig();
@@ -74,6 +75,23 @@ trait BillingGroupButtonsOperation
             // $this->crud->enableBulkActions();
             CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.billing_group_buttons', 'beginning');
         });
+    }
+
+    public function myWidgets()
+    {
+        Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
+        
+        if ( $this->crud->hasAccess('pay') ) {
+            Widget::add()->type('script')->content('assets/js/admin/forms/pay.js');
+        }
+
+        if ( $this->crud->hasAccess('serviceInterrupt') ) {
+            Widget::add()->type('script')->content('assets/js/admin/forms/serviceInterrupt.js');
+        }
+
+        if ( $this->crud->hasAccess('sendNotification') ) {
+            Widget::add()->type('script')->content('assets/js/admin/forms/sendNotification.js');
+        }
     }
 
     // pay
@@ -152,6 +170,8 @@ trait BillingGroupButtonsOperation
     
     public function serviceInterrupt($id)
     {
+        $this->crud->hasAccessOrFail('serviceInterrupt');
+
         $accountId = request()->account_id;
         $dateStart = request()->date_start;
         $dateEnd = request()->date_end;

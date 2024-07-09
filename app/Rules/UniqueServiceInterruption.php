@@ -33,23 +33,17 @@ class UniqueServiceInterruption implements ValidationRule
         $isUpdating = request()->isMethod('put') || request()->isMethod('patch');
 
         if ($isCreating || $isUpdating) {
-            $query = AccountServiceInterruption::where('account_id', $this->accountId)
-                ->where(function ($query) {
-                    $query->where(function ($q) {
-                        $q->where('date_start', '<=', $this->dateStart)
-                            ->where('date_end', '>=', $this->dateStart);
-                    })
-                    ->orWhere(function ($q) {
-                        $q->where('date_start', '<=', $this->dateEnd)
-                            ->where('date_end', '>=', $this->dateEnd);
-                    });
-                });
+            $query = AccountServiceInterruption::where('account_id', $this->accountId)->overlap($this->dateStart, $this->dateEnd);
+
+            debug($query->get()->toArray());
 
             if ($isUpdating && $this->ignoreId) {
                 $query->where('id', '!=', $this->ignoreId);
             }
 
             $existingInterruptions = $query->exists();
+
+
 
             // Fail validation if overlapping record found
             if ($existingInterruptions) {
