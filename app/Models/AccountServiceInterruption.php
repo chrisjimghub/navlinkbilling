@@ -50,6 +50,13 @@ class AccountServiceInterruption extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeOverlap($query, $date_start ,$date_end) 
+    { 
+        return $query->whereBetween('date_start', [$date_start, $date_end]) 
+            ->orWhereBetween('date_end', [$date_start, $date_end]) 
+            ->orWhereRaw('? BETWEEN date_start and date_end', [$date_start]) 
+            ->orWhereRaw('? BETWEEN date_start and date_end', [$date_end]); 
+    }
 
     /*
     |--------------------------------------------------------------------------
