@@ -2,8 +2,9 @@
 
 namespace App\Rules;
 
-use App\Models\Billing;
 use Closure;
+use App\Models\Billing;
+use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class UniqueBillingPeriodPerAccount implements ValidationRule
@@ -33,8 +34,13 @@ class UniqueBillingPeriodPerAccount implements ValidationRule
         $isUpdating = request()->isMethod('put') || request()->isMethod('patch');
 
         if ($isCreating || $isUpdating) {
-            $query = Billing::where('account_id', $this->accountId)->dateOverlap($this->dateStart, $this->dateEnd);
-
+            $query = Billing::where('account_id', $this->accountId)
+                        ->where(function ($query) {
+                            $query->whereRaw('date_start <= ?', [$this->dateEnd])
+                                ->whereRaw('DATE_SUB(date_end, INTERVAL 1 DAY) >= ?', [$this->dateStart]);
+                        });
+            
+            
             // debug($query->get()->toArray());
 
             if ($isUpdating && $this->ignoreId) {

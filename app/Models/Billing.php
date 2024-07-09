@@ -310,7 +310,7 @@ class Billing extends Model
 
         return $this->accountDetails(
             from: $from,
-            id: $this->id,
+            accountId: $this->account_id,
             name: $this->account_name,
             location: $this->account_location_name,
             type: $this->account_planned_application_type_name_shorten,
