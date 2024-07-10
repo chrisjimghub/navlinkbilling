@@ -29,23 +29,6 @@ class BillEventSubscriber
         //
     }
 
-    public function handleAccountCreditSnapshot(AccountCreditSnapshot $event): void
-    {
-        $billing = $event->billing;
-
-        // Fetch existing account_snapshot or initialize as empty array
-        $accountSnapshot = $billing->account_snapshot ?? [];
-
-        // Modify or add new data to the array
-        $accountSnapshot['accountCredits'] = $billing->account->remaining_credits ?? 0;
-
-        // Assign the modified array back to the model attribute
-        $billing->account_snapshot = $accountSnapshot;
-
-        // Save the model to persist changes
-        $billing->saveQuietly();
-    }
-
     /**
      * Handle the event.
      */
@@ -65,6 +48,23 @@ class BillEventSubscriber
         
     }
 
+    public function handleAccountCreditSnapshot(AccountCreditSnapshot $event): void
+    {
+        $billing = $event->billing;
+
+        // Fetch existing account_snapshot or initialize as empty array
+        $accountSnapshot = $billing->account_snapshot ?? [];
+
+        // Modify or add new data to the array
+        $accountSnapshot['accountCredits'] = $billing->account->remaining_credits ?? 0;
+
+        // Assign the modified array back to the model attribute
+        $billing->account_snapshot = $accountSnapshot;
+
+        // Save the model to persist changes
+        $billing->saveQuietly();
+    }
+
     public function processed($billing)
     {
         $this->billing = $billing;
@@ -81,7 +81,7 @@ class BillEventSubscriber
             $this->processMonthly();
         }
 
-        debug($this->particulars);
+        // debug($this->particulars);
 
         $this->billing->particulars = $this->particulars;
         $this->billing->saveQuietly();

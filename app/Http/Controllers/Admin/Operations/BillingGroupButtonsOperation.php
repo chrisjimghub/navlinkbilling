@@ -155,6 +155,8 @@ trait BillingGroupButtonsOperation
 
         $billing = Billing::findOrFail($id);
 
+        // savbe to json column upgrade_account_snapshot
+
         // data i need
         // billing_id
 
