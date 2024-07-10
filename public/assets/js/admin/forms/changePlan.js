@@ -27,8 +27,11 @@ if (typeof changePlanModal != 'function') {
 
 if (typeof changePlanModal != 'function') {
     function changePlanModal(button) {
+        var billingId = button.getAttribute('data-billing-id');
+
         // Clear any existing modals with the same ID if they exist
         $('#changePlan-' + billingId).remove();
+
 
         var modalHTML = `
             <div class="modal fade" id="changePlan-${billingId}" tabindex="-1" role="dialog" aria-labelledby="changePlanLabel" aria-hidden="true">
@@ -53,7 +56,7 @@ if (typeof changePlanModal != 'function') {
                             </div>
 
 
-                            <div class="form-group required" element="div" bp-field-wrapper="true" bp-field-name="planned_application_id" bp-field-type="select_grouped_planned_application" bp-section="crud-field">
+                            <div class="form-group required">
                                 <label for="planned_application">
                                     <strong>Planned Application</strong>
                                     <span class="text-danger">*</span>
@@ -61,7 +64,7 @@ if (typeof changePlanModal != 'function') {
 
                                 <div class="input-group">
                                     
-                                    <select id="planned_application_id" name="planned_application_id" class="form-control form-select">
+                                    <select id="planned_application_id-${billingId}" name="planned_application_id-${billingId}" class="form-control form-select">
                                         <!-- Your select options here -->
                                         <option>Loading...</option>
                                     </select>
@@ -106,7 +109,7 @@ if (typeof changePlanModal != 'function') {
 
         var billingId = button.getAttribute('data-billing-id');
         var routeFetchOptions = button.getAttribute('data-route-fetch-options');
-        var planAppId = button.getAttribute('data-planned-apllication-id');
+        var selectedPlanAppId = button.getAttribute('data-planned-apllication-id');
 
         // ajax get planned App options
         $.ajax({
@@ -114,7 +117,7 @@ if (typeof changePlanModal != 'function') {
             url: routeFetchOptions,
             success: function (options) {
                 // console.log(options)
-                $('#planned_application_id').html(buildOptionGroupHtml(options, planAppId));
+                $('#planned_application_id-' +billingId).html(buildOptionGroupHtml(options, selectedPlanAppId));
             },
             error: function () {
                 swalError('Error fetching planned application options.')
@@ -134,17 +137,15 @@ if (typeof changePlan != 'function') {
     function changePlan(button) {
         var billingId = button.getAttribute('data-billing-id');
         var route = button.getAttribute('data-route');
-        var planAppId = button.getAttribute('data-planned-apllication-id');
         
         // Capture the current values from the modal input fields
-        var accountId = $('#account_id-' + billingId).val();
+        var planAppId = $('#planned_application_id-' + billingId).val();
         var dateChange = $('#date_change-' + billingId).val();
 
         $.ajax({
             url: route,
             type: 'POST',
             data: {
-                account_id: accountId,
                 date_change: dateChange,
                 planned_application_id: planAppId,
             },

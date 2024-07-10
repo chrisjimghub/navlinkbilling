@@ -7,6 +7,7 @@ use App\Models\AccountCredit;
 use App\Models\Billing;
 use App\Events\BillProcessed;
 use App\Events\BillReprocessed;
+use App\Events\UpgradeAccountBillProcessed;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -34,8 +35,6 @@ class BillEventSubscriber
      */
     public function handleBillProcessed(BillProcessed $event): void
     {
-        // debug($event->billing);
-
         if ($event->billing instanceof Collection) {
             // If its a collection of records
             foreach ($event->billing as $billing) {
@@ -48,23 +47,8 @@ class BillEventSubscriber
         
     }
 
-    public function handleAccountCreditSnapshot(AccountCreditSnapshot $event): void
-    {
-        $billing = $event->billing;
 
-        // Fetch existing account_snapshot or initialize as empty array
-        $accountSnapshot = $billing->account_snapshot ?? [];
-
-        // Modify or add new data to the array
-        $accountSnapshot['accountCredits'] = $billing->account->remaining_credits ?? 0;
-
-        // Assign the modified array back to the model attribute
-        $billing->account_snapshot = $accountSnapshot;
-
-        // Save the model to persist changes
-        $billing->saveQuietly();
-    }
-
+    // 1 run of this = 1 Billing process
     public function processed($billing)
     {
         $this->billing = $billing;
@@ -127,33 +111,46 @@ class BillEventSubscriber
         //     $this->billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
         // }
 
-        $this->particulars[] = [
-            'description' => ucwords($this->billing->billingType->name),
-            'amount' => $this->billing->account->monthly_Rate,
-        ];
-
-        // Pro-rated Service Adjustment
-        if ($this->billing->isProRatedMonthly()) {
-            $amountAdjustment = $this->billing->daily_rate * $this->billing->pro_rated_non_service_days; 
-
+        // if empty before_account_snapshot = No Upgrade Planned Application
+        if (!$this->billing->before_account_snapshot) {
             $this->particulars[] = [
-                'description' => ucwords($this->billing->pro_rated_desc),
-                'amount' => -($this->currencyRound($amountAdjustment)),
+                'description' => ucwords($this->billing->billingType->name),
+                'amount' => $this->billing->account->monthly_Rate,
             ];
+    
+            // Pro-rated Service Adjustment
+            if ($this->billing->isProRatedMonthly()) {
+                $amountAdjustment = $this->billing->daily_rate * $this->billing->pro_rated_non_service_days; 
+    
+                $this->particulars[] = [
+                    'description' => ucwords($this->billing->pro_rated_desc),
+                    'amount' => -($this->currencyRound($amountAdjustment)),
+                ];
+    
+            }
+    
+            // Service Interrptions
+            $totalInterruptionDays = $this->billing->total_days_service_interruptions;
+            if ($totalInterruptionDays) {
+                $this->particulars[] = [
+                    'description' => ucwords($this->billing->service_interrupt_desc),
+                    'amount' => -($this->currencyRound($totalInterruptionDays * $this->billing->daily_rate)),
+                ];
+            }
+        }else {
+            // Compute Upgrade Planned Application
+            
+            // TODO:: Compute previous plan
+            
+
+
+            // TODO:: compute upgraded plan
 
         }
-
-        // Service Interrptions
-        $totalInterruptionDays = $this->billing->total_days_service_interruptions;
-        if ($totalInterruptionDays) {
-            $this->particulars[] = [
-                'description' => ucwords($this->billing->service_interrupt_desc),
-                'amount' => -($this->currencyRound($totalInterruptionDays * $this->billing->daily_rate)),
-            ];
-        }
+        
     }
 
-    public function snapshot()
+    public function snapshot($column = 'account_snapshot')
     {
         $snapshot = [];
 
@@ -167,7 +164,7 @@ class BillEventSubscriber
         $snapshot['accountStatus'] = $this->billing->account->accountStatus->toArray();
         $snapshot['accountCredits'] = $this->billing->account->remaining_credits ?? 0;
         
-        $this->billing->account_snapshot = $snapshot;
+        $this->billing->{$column} = $snapshot;
 
         $this->billing->saveQuietly();
     }

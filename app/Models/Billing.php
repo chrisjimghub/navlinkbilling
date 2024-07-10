@@ -40,7 +40,7 @@ class Billing extends Model
     protected $casts = [
         'particulars' => 'array',
         'account_snapshot' => 'array',
-        'upgrade_account_snapshot' => 'array',
+        'before_account_snapshot' => 'array',
     ];
 
     protected $attributes = [
@@ -225,13 +225,11 @@ class Billing extends Model
     // real_account
     public function getRealAccountAttribute() 
     {
-        if ($this->upgrade_account_snapshot) {
-            
-            return $this->upgrade_account_snapshot;
-        
+        if ($this->account_snapshot) {
+            return $this->account_snapshot;
         }
 
-        return $this->account_snapshot;
+        return $this->account;
     }
 
     // account_installed_date
@@ -313,10 +311,10 @@ class Billing extends Model
     // account_details : Data Taken from snapshot
     public function getAccountDetailsAttribute()
     {
-        $from = 'account_snapshot';
+        $from = 'model_relationship';
 
-        if ($this->upgrade_account_snapshot) {
-            $from = 'upgrade_account_snapshot';
+        if ($this->account_snapshot) {
+            $from = 'account_snapshot';
         }
 
         return $this->accountDetails(
