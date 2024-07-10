@@ -1,23 +1,49 @@
-if (typeof serviceInterruptModal != 'function') {
-    function serviceInterruptModal(button) {
-        var billingId = button.getAttribute('data-billing-id');
-        
-        // Clear any existing modals with the same ID if they exist
-        $('#serviceInterruptModal-' + billingId).remove();
+if (typeof changePlanModal != 'function') {
+    function buildOptionGroupHtml(data, selectedId) {
+        var html;
 
-        // Create the modal HTML structure
+        // Iterating over the outer object
+        for (let location in data) {
+            html += '<optgroup label="'+location+'">';
+            
+            // Iterating over the inner object for each location
+            for (let id in data[location]) {
+                var label = data[location][id];
+                var selected = '';
+
+                if (id == selectedId) {
+                    selected = 'selected';
+                }
+
+                html += '<option '+selected+' value="'+id+'" data-location="'+location+'">'+label+'</option>';
+            }
+            
+            html += '</optgroup>';
+        }
+
+        return html;
+    }
+}
+
+if (typeof changePlanModal != 'function') {
+    function changePlanModal(button) {
+        // Clear any existing modals with the same ID if they exist
+        $('#changePlan-' + billingId).remove();
+
         var modalHTML = `
-            <div class="modal fade" id="serviceInterruptModal-${billingId}" tabindex="-1" role="dialog" aria-labelledby="serviceInterruptModalLabel" aria-hidden="true">
+            <div class="modal fade" id="changePlan-${billingId}" tabindex="-1" role="dialog" aria-labelledby="changePlanLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="serviceInterruptModalLabel">Service Interruption</h5>
+                            <h5 class="modal-title" id="changePlanLabel">Change Planned Application</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
+
                             <input type="hidden" id="account_id-${billingId}" value="${button.getAttribute('data-account-id')}">
+
                             <div class="form-group">
                                 <label for="account_details">
                                     <strong>Account</strong>
@@ -25,32 +51,46 @@ if (typeof serviceInterruptModal != 'function') {
                                 </label>
                                 <input type="text" class="form-control" id="account_details" name="account_details" value="${button.getAttribute('data-account-details')}" readonly>
                             </div>
-                            <div class="form-group">
-                                <label for="date_start-${billingId}">
-                                    <strong>Date Start</strong>
+
+
+                            <div class="form-group required" element="div" bp-field-wrapper="true" bp-field-name="planned_application_id" bp-field-type="select_grouped_planned_application" bp-section="crud-field">
+                                <label for="planned_application">
+                                    <strong>Planned Application</strong>
                                     <span class="text-danger">*</span>
                                 </label>
-                                <input type="date" class="form-control" id="date_start-${billingId}" required>
+
+                                <div class="input-group">
+                                    
+                                    <select id="planned_application_id" name="planned_application_id" class="form-control form-select">
+                                        <!-- Your select options here -->
+                                        <option>Loading...</option>
+                                    </select>
+                                </div>
                             </div>
+
+
                             <div class="form-group">
-                                <label for="date_end-${billingId}">
-                                    <strong>Date End</strong>
+                                <label for="date_change-${billingId}">
+                                    <strong>Date Change</strong>
                                     <span class="text-danger">*</span>
                                 </label>
-                                <input type="date" class="form-control" id="date_end-${billingId}" required>
+                                <input type="date" class="form-control" id="date_change-${billingId}" required>
                             </div>
+                            
+                            
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <a 
                                 href="javascript:void(0)" 
-                                onclick="serviceInterrupt(this)" 
-                                data-button-type="serviceInterrupt"
+                                onclick="changePlan(this)" 
+                                data-button-type="changePlan"
                                 data-route="${button.getAttribute('data-route')}" 
                                 data-billing-id="${billingId}"
+                                data-planned-apllication-id="${button.getAttribute('data-planned-apllication-id')}" 
                                 class="btn btn-success"
                             >
-                                <i class="las la-exclamation-triangle"></i> Save
+                                <i class="las la-save"></i> Save
                             </a>
                         </div>
                     </div>
@@ -60,38 +100,56 @@ if (typeof serviceInterruptModal != 'function') {
 
         // Append the modal HTML to the body
         $('body').append(modalHTML);
-
+        
         // Show the modal
-        $('#serviceInterruptModal-' + billingId).modal('show');
+        $('#changePlan-' + billingId).modal('show');
+
+        var billingId = button.getAttribute('data-billing-id');
+        var routeFetchOptions = button.getAttribute('data-route-fetch-options');
+        var planAppId = button.getAttribute('data-planned-apllication-id');
+
+        // ajax get planned App options
+        $.ajax({
+            type: "GET",
+            url: routeFetchOptions,
+            success: function (options) {
+                // console.log(options)
+                $('#planned_application_id').html(buildOptionGroupHtml(options, planAppId));
+            },
+            error: function () {
+                swalError('Error fetching planned application options.')
+            }
+        });
+
 
         // Remove the modal from the DOM when it's closed
-        $('#serviceInterruptModal-' + billingId).on('hidden.bs.modal', function () {
+        $('#changePlan-' + billingId).on('hidden.bs.modal', function () {
             $(this).remove();
         });
     }
 }
 
-if (typeof serviceInterrupt != 'function') {
-    function serviceInterrupt(button) {
+
+if (typeof changePlan != 'function') {
+    function changePlan(button) {
         var billingId = button.getAttribute('data-billing-id');
         var route = button.getAttribute('data-route');
+        var planAppId = button.getAttribute('data-planned-apllication-id');
         
-
         // Capture the current values from the modal input fields
-        var dateStart = $('#date_start-' + billingId).val();
-        var dateEnd = $('#date_end-' + billingId).val();
         var accountId = $('#account_id-' + billingId).val();
+        var dateChange = $('#date_change-' + billingId).val();
 
         $.ajax({
             url: route,
-            type: 'PUT',
+            type: 'POST',
             data: {
-                date_start: dateStart,
-                date_end: dateEnd,
                 account_id: accountId,
+                date_change: dateChange,
+                planned_application_id: planAppId,
             },
             success: function(result) {
-                // console.log('Success:', result);
+                console.log('Success:', result);
 
                 if (typeof crud !== 'undefined') {
                     crud.table.ajax.reload();
@@ -105,7 +163,7 @@ if (typeof serviceInterrupt != 'function') {
                 }
 
                 // Close the modal
-                $('#serviceInterruptModal-'+billingId).modal('hide');
+                $('#changePlan-'+billingId).modal('hide');
 
             },
             error: function(xhr, status, error) {

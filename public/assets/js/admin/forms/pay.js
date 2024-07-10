@@ -66,8 +66,23 @@ if (typeof pay != 'function') {
                             }			          	  
                         }
                     },
-                    error: function(result) {
-                        swalError("There\'s been an error. Your item might not have been marked as paid.")
+                    error: function(xhr, status, error) {
+                        // console.log('Error:', xhr.responseJSON.errors);
+                        // Handle validation errors or other errors
+                        if (xhr.status === 422) {
+                            // Display validation errors to the user
+                            var errors = xhr.responseJSON.errors;
+                            errors.forEach(function(errorMsg) {
+                                // Example: Display error messages using a notification library
+                                new Noty({
+                                    text: errorMsg,
+                                    type: 'error'
+                                }).show();
+                            });
+                        } else {
+                            // Handle other types of errors
+                            swalError('Please contact the administrator.')
+                        }
                     }
                 });
                 }
