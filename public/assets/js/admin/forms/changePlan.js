@@ -59,11 +59,6 @@ if (typeof changePlanModal != 'function') {
                                     <span class="text-danger">*</span>
                                 </label>
 
-
-                                <div class="spinner-border spinner-border-sm d-none" role="status" id="spinner">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                                
                                 <div class="input-group">
                                     
                                     <select id="planned_application_id" name="planned_application_id" class="form-control form-select">
@@ -75,11 +70,11 @@ if (typeof changePlanModal != 'function') {
 
 
                             <div class="form-group">
-                                <label for="change_date_start-${billingId}">
-                                    <strong>Change Date Start</strong>
+                                <label for="date_change-${billingId}">
+                                    <strong>Date Change</strong>
                                     <span class="text-danger">*</span>
                                 </label>
-                                <input type="date" class="form-control" id="change_date_start-${billingId}" required>
+                                <input type="date" class="form-control" id="date_change-${billingId}" required>
                             </div>
                             
                             
@@ -88,10 +83,11 @@ if (typeof changePlanModal != 'function') {
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <a 
                                 href="javascript:void(0)" 
-                                onclick="changePlannedApplication(this)" 
-                                data-button-type="serviceInterrupt"
+                                onclick="changePlan(this)" 
+                                data-button-type="changePlan"
                                 data-route="${button.getAttribute('data-route')}" 
                                 data-billing-id="${billingId}"
+                                data-planned-apllication-id="${button.getAttribute('data-planned-apllication-id')}" 
                                 class="btn btn-success"
                             >
                                 <i class="las la-save"></i> Save
@@ -116,15 +112,9 @@ if (typeof changePlanModal != 'function') {
         $.ajax({
             type: "GET",
             url: routeFetchOptions,
-            beforeSend: function() {
-                showSpinner();
-            },
             success: function (options) {
                 // console.log(options)
-
                 $('#planned_application_id').html(buildOptionGroupHtml(options, planAppId));
-
-                hideSpinner();
             },
             error: function () {
                 swalError('Error fetching planned application options.')
@@ -137,4 +127,66 @@ if (typeof changePlanModal != 'function') {
             $(this).remove();
         });
     }
+}
+
+
+if (typeof changePlan != 'function') {
+    function changePlan(button) {
+        var billingId = button.getAttribute('data-billing-id');
+        var route = button.getAttribute('data-route');
+        var planAppId = button.getAttribute('data-planned-apllication-id');
+        
+        // Capture the current values from the modal input fields
+        var accountId = $('#account_id-' + billingId).val();
+        var dateChange = $('#date_change-' + billingId).val();
+
+        $.ajax({
+            url: route,
+            type: 'POST',
+            data: {
+                account_id: accountId,
+                date_change: dateChange,
+                planned_application_id: planAppId,
+            },
+            success: function(result) {
+                console.log('Success:', result);
+
+                if (typeof crud !== 'undefined') {
+                    crud.table.ajax.reload();
+                }
+
+                if (result) {
+                    new Noty({
+                        type: "success",
+                        text: result.msg
+                    }).show();
+                }
+
+                // Close the modal
+                $('#changePlan-'+billingId).modal('hide');
+
+            },
+            error: function(xhr, status, error) {
+                // console.log('Error:', xhr.responseJSON.errors);
+                // Handle validation errors or other errors
+                if (xhr.status === 422) {
+                    // Display validation errors to the user
+                    var errors = xhr.responseJSON.errors;
+                    errors.forEach(function(errorMsg) {
+                        // Example: Display error messages using a notification library
+                        new Noty({
+                            text: errorMsg,
+                            type: 'error'
+                        }).show();
+                    });
+                } else {
+                    // Handle other types of errors
+                    swalError('Please contact the administrator.')
+                }
+            }
+        });
+
+        
+    }
+    
 }

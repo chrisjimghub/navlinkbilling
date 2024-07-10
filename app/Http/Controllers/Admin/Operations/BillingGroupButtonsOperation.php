@@ -7,6 +7,7 @@ use App\Models\Billing;
 
 use Illuminate\Support\Str;
 use App\Models\AccountCredit;
+use App\Rules\BillingMustBeUnpaid;
 use Illuminate\Support\Facades\DB;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
@@ -52,7 +53,11 @@ trait BillingGroupButtonsOperation
             'operation' => 'payUsingCredit',
         ]);
 
-        // TODO:: change plan
+        Route::post($segment.'/{id}/changePlan', [
+            'as'        => $routeName.'.changePlan',
+            'uses'      => $controller.'@changePlan',
+            'operation' => 'changePlan',
+        ]);
     }
 
     /**
@@ -85,7 +90,6 @@ trait BillingGroupButtonsOperation
     public function myWidgets()
     {
         Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
-        Widget::add()->type('script')->content('assets/js/admin/spinner.js');
         
         if ( $this->crud->hasAccess('pay') ) {
             Widget::add()->type('script')->content('assets/js/admin/forms/pay.js');
@@ -108,6 +112,56 @@ trait BillingGroupButtonsOperation
         }
     }
 
+    public function changePlan($id)
+    {
+        $this->crud->hasAccessOrFail('changePlan');
+
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+
+        //Validate request data
+        $validator = Validator::make(array_merge(request()->all(), ['id' => $id]), [
+            'id' => [
+                'required',
+                'integer',
+                'min:1',
+                'exists:billings,id', 
+                new BillingMustBeUnpaid($id)
+            ],
+            'planned_application_id' => [
+                'required',
+                'integer',
+                'min:1',
+                'exists:planned_applications,id',
+            ],
+            'date_change' => [
+                'required',
+                'date',
+                // must be between the billing_start and end
+            ] 
+        ], [
+            'id.required' => 'Invalid billing item.',
+            'id.exists' => 'The selected billing item does not exist.', 
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // Return validation errors as JSON response
+            return response()->json([
+                'errors' => $validator->errors()->all()
+            ], 422); // HTTP status code for Unprocessable Entity
+        }
+
+        $billing = Billing::findOrFail($id);
+
+        // data i need
+        // billing_id
+
+        // Return success response
+        return response()->json([
+            'msg' => '<strong>'.__('Planned Change').'</strong><br>'.__('The planned application has been successfully updated.'),
+        ]);
+    }
+
     public function payUsingCredit($id)
     {
         $this->crud->hasAccessOrFail('payUsingCredit');
@@ -122,7 +176,8 @@ trait BillingGroupButtonsOperation
                 'required',
                 'integer',
                 'min:1',
-                'exists:billings,id', 
+                'exists:billings,id',
+                new BillingMustBeUnpaid($id),
                 new MustHaveEnoughAccountCredit($billing->account, $billing->total),
             ],
         ], [
@@ -160,9 +215,11 @@ trait BillingGroupButtonsOperation
     {
         $this->crud->hasAccessOrFail('pay');
 
+        // TODO:: validation
+
         try {
             DB::beginTransaction();
-
+            
             $billing = Billing::findOrFail($id); 
             $billing->markAsPaid();
             $billing->save(); 
@@ -209,6 +266,31 @@ trait BillingGroupButtonsOperation
     {
         $this->crud->hasAccessOrFail('sendNotification');
 
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+        
+        //Validate request data
+        $validator = Validator::make(['id' => $id], [
+            'id' => [
+                'required',
+                'integer',
+                'min:1',
+                'exists:billings,id',
+                new BillingMustBeUnpaid($id),
+            ],
+        ], [
+            'id.required' => 'Invalid billing item.',
+            'id.exists' => 'The selected billing item does not exist.', 
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // Return validation errors as JSON response
+            return response()->json([
+                'errors' => $validator->errors()->all()
+            ], 422); // HTTP status code for Unprocessable Entity
+        }
+
+
         $billing = Billing::find($id);
 
         $customer = $billing->account->customer;
@@ -238,7 +320,7 @@ trait BillingGroupButtonsOperation
         $dateEnd = request()->date_end;
 
         // Validate request data
-        $validator = Validator::make(request()->all(), [
+        $validator = Validator::make(array_merge(request()->all(), ['id' => $id]), [
             'date_start' => 'required|date',
             'date_end' => 'required|date|after:date_start',
             // Apply custom rule for uniqueness and non-overlapping intervals
@@ -248,6 +330,15 @@ trait BillingGroupButtonsOperation
                 'min:1',
                 new UniqueServiceInterruption($accountId, $dateStart, $dateEnd)
             ],
+
+            'id' => [
+                'required',
+                'integer',
+                'min:1',
+                'exists:billings,id', 
+                new BillingMustBeUnpaid($id)
+            ],
+
         ], [
             'date_start.required' => 'The date start field is required.',
             'date_end.required' => 'The date end field is required.',

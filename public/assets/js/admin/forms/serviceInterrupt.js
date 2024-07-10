@@ -76,27 +76,11 @@ if (typeof serviceInterrupt != 'function') {
         var billingId = button.getAttribute('data-billing-id');
         var route = button.getAttribute('data-route');
         
-        // Debug: Print current modal field values before capturing
-        // console.log('Before capturing values:');
-        // console.log({
-        //     'date_start': $('#date_start-' + billingId).val(),
-        //     'date_end': $('#date_end-' + billingId).val(),
-        //     'account_id': $('#account_id-' + billingId).val()
-        // });
 
         // Capture the current values from the modal input fields
         var dateStart = $('#date_start-' + billingId).val();
         var dateEnd = $('#date_end-' + billingId).val();
         var accountId = $('#account_id-' + billingId).val();
-
-        // console.log('After capturing values:');
-        // console.log({
-        //     billingId,
-        //     route,
-        //     dateStart,
-        //     dateEnd,
-        //     accountId
-        // });
 
         $.ajax({
             url: route,
