@@ -52,6 +52,7 @@ trait BillingGroupButtonsOperation
             'operation' => 'payUsingCredit',
         ]);
 
+        // TODO:: change plan
     }
 
     /**
@@ -62,7 +63,7 @@ trait BillingGroupButtonsOperation
         CRUD::allowAccess([
             'pay', 
             'payUsingCredit', 
-            'upgradePlan',
+            'changePlan',
             'serviceInterrupt',
             'sendNotification',
         ]);
@@ -84,6 +85,7 @@ trait BillingGroupButtonsOperation
     public function myWidgets()
     {
         Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
+        Widget::add()->type('script')->content('assets/js/admin/spinner.js');
         
         if ( $this->crud->hasAccess('pay') ) {
             Widget::add()->type('script')->content('assets/js/admin/forms/pay.js');
@@ -99,6 +101,10 @@ trait BillingGroupButtonsOperation
 
         if ( $this->crud->hasAccess('payUsingCredit') ) {
             Widget::add()->type('script')->content('assets/js/admin/forms/payUsingCredit.js');
+        }
+
+        if ( $this->crud->hasAccess('changePlan') ) {
+            Widget::add()->type('script')->content('assets/js/admin/forms/changePlan.js');
         }
     }
 

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Location;
+use App\Models\PlannedApplication;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -97,5 +100,32 @@ class PlannedApplicationCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    protected function setupFetchOptGroupOptionRoutes($segment, $routeName, $controller)
+    {
+        Route::get($segment.'/fetchOptGroupOption', [
+            'as'        => $routeName.'.fetchOptGroupOption',
+            'uses'      => $controller.'@fetchOptGroupOption',
+            'operation' => 'fetchOptGroupOption',
+        ]);
+    }
+
+    public function fetchOptGroupOption()
+    {
+        $locations = Location::orderBy('name')->get();
+
+        $data = [];
+
+        foreach ($locations as $location) {
+
+            $plannedApps = PlannedApplication::where('location_id', $location->id)->get();
+
+            foreach ($plannedApps as $plan) {
+                $data[$location->name][$plan->id] = $plan->option_label;
+            }
+        }
+
+        return $data;
     }
 }

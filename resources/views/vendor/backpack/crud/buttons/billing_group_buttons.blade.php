@@ -1,7 +1,7 @@
 @if ($crud->hasAccessToAny([
         'pay', 
         'payUsingCredit', 
-        'upgradePlan',
+        'changePlan',
         'serviceInterrupt',
         'sendNotification',
     ]))
@@ -46,19 +46,20 @@
                     </li>
                 @endif
 
-                {{-- TODO:: --}}
-                @if($crud->hasAccess('upgradePlan'))
+                @if($crud->hasAccess('sendNotification') && $entry->isMonthlyFee())
                     <li>
                         <a 
                             href="javascript:void(0)" 
-                            {{-- onclick="payEntry(this)"  --}}
-                            {{-- data-route="{{ url($crud->route.'/'.$entry->getKey().'/pay') }}"  --}}
-                            class="btn btn-sm btn-link text-info" 
-                            {{-- data-button-type="pay" --}}
-                            {{-- title="Marked as paid?" --}}
+                            onclick="sendNotificationEntry(this)" 
+                            data-route="{{ url($crud->route.'/'.$entry->getKey().'/sendNotification') }}" 
+                            data-resend="{{ $entry->notified_at }}"
+                            class="btn btn-sm btn-link text-primary" 
+                            data-button-type="sendNotification"
+                            title="Dispatch Notification."
+                            disabled="disabled"
                             >
-                                <i class="las la-level-up-alt"></i>
-                                {{ __('Upgrade Plan') }}
+                                <i class="las la-sms"></i>
+                                {{ __('Send Notification') }}
                         </a>
                     </li>
                 @endif
@@ -84,25 +85,24 @@
                     </li>
                 @endif
 
-            
-                @if($crud->hasAccess('sendNotification') && $entry->isMonthlyFee())
+                @if($crud->hasAccess('changePlan'))
                     <li>
                         <a 
                             href="javascript:void(0)" 
-                            onclick="sendNotificationEntry(this)" 
-                            data-route="{{ url($crud->route.'/'.$entry->getKey().'/sendNotification') }}" 
-                            data-resend="{{ $entry->notified_at }}"
-                            class="btn btn-sm btn-link text-primary" 
-                            data-button-type="sendNotification"
-                            title="Dispatch Notification."
-                            disabled="disabled"
+                            onclick="changePlanModal(this)" 
+                            data-route="{{ url($crud->route.'/'.$entry->getKey().'/changePlan') }}" 
+                            class="btn btn-sm btn-link text-info" 
+                            data-button-type="changePlanModal"
+                            title="Change Planned Application"
+                            data-billing-id="{{ $entry->getKey() }}"
+                            data-account-details="{{ $entry->account->details }}"
+                            data-route-fetch-options="{{ route('planned-application.fetchOptGroupOption') }}"
                             >
-                                <i class="las la-sms"></i>
-                                {{ __('Send Notification') }}
+                                <i class="las la-level-up-alt"></i>
+                                {{ __('Upgrade / Downgrade Plan') }}
                         </a>
                     </li>
                 @endif
-            
 
             </ul>
         </div>       
@@ -110,13 +110,12 @@
 
 @endif
 
-
 {{-- Button Javascript --}}
 {{-- - used right away in AJAX operations (ex: List) --}}
 {{-- - pushed to the end of the page, after jQuery is loaded, for non-AJAX operations (ex: Show) --}}
 @push('after_scripts') @if (request()->ajax()) @endpush @endif
 
-{{-- NOTE:: all script i transfered it to the Operation as Widgets --}}
+{{-- NOTE:: I transfered the script to the Operation as Widgets --}}
 <script>
     // make it so that the function above is run after each DataTable draw event
     // crud.addFunctionToDataTablesDrawEventQueue('payEntry');
