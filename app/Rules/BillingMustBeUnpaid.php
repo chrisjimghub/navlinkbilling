@@ -35,6 +35,6 @@ class BillingMustBeUnpaid implements ValidationRule
 
     public function message()
     {
-        return 'Cannot change the planned application. This bill has already been paid.';
+        return 'Invalid action. This bill has already been paid.';
     }
 }

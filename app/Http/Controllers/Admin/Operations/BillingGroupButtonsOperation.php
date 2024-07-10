@@ -215,7 +215,30 @@ trait BillingGroupButtonsOperation
     {
         $this->crud->hasAccessOrFail('pay');
 
-        // TODO:: validation
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+        
+        //Validate request data
+        $validator = Validator::make(['id' => $id], [
+            'id' => [
+                'required',
+                'integer',
+                'min:1',
+                'exists:billings,id',
+                new BillingMustBeUnpaid($id),
+            ],
+        ], [
+            'id.required' => 'Invalid billing item.',
+            'id.exists' => 'The selected billing item does not exist.', 
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // Return validation errors as JSON response
+            return response()->json([
+                'errors' => $validator->errors()->all()
+            ], 422); // HTTP status code for Unprocessable Entity
+        }
+        
 
         try {
             DB::beginTransaction();
