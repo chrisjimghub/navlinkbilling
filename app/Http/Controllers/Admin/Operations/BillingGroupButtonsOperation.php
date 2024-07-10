@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\AccountCredit;
 use App\Rules\BillingMustBeUnpaid;
 use Illuminate\Support\Facades\DB;
+use App\Rules\UpgradePlanValidDate;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
 use App\Rules\UniqueServiceInterruption;
@@ -136,7 +137,8 @@ trait BillingGroupButtonsOperation
             'date_change' => [
                 'required',
                 'date',
-                // must be between the billing_start and end
+                new UpgradePlanValidDate($id) 
+                // must be between the billing_start and end or equal
             ] 
         ], [
             'id.required' => 'Invalid billing item.',

@@ -4,9 +4,10 @@ namespace App\Rules;
 
 use Closure;
 use App\Models\Billing;
+use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class BillingMustBeUnpaid implements ValidationRule
+class UpgradePlanValidDate implements ValidationRule
 {
     protected $billing;
 
@@ -23,14 +24,14 @@ class BillingMustBeUnpaid implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if ($this->billing) {
-            if ($this->billing->isPaid()) {
-                $fail($this->message());
-            }
-        }
-    }
+            $dateStart = Carbon::parse($this->billing->date_start);
+            $dateEnd = Carbon::parse($this->billing->date_end);
+            $dateChange = Carbon::parse($value);
 
-    public function message()
-    {
-        return 'Invalid action. This bill has already been paid.';
+            // fail validation if dateChange is not equal or in between the billing period
+            if (!$dateChange->between($dateStart, $dateEnd, true)) {
+                $fail(__('The date must be equal to or within the billing period.'));
+            } 
+        }
     }
 }
