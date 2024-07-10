@@ -97,6 +97,7 @@
                             data-billing-id="{{ $entry->getKey() }}"
                             data-account-details="{{ $entry->account->details }}"
                             data-route-fetch-options="{{ route('planned-application.fetchOptGroupOption') }}"
+                            data-planned-apllication-id={{ $entry->account->planned_application_id }}
                             >
                                 <i class="las la-level-up-alt"></i>
                                 {{ __('Upgrade / Downgrade Plan') }}

@@ -1,5 +1,5 @@
 if (typeof changePlanModal != 'function') {
-    function buildOptionGroupHtml(data) {
+    function buildOptionGroupHtml(data, selectedId) {
         var html;
 
         // Iterating over the outer object
@@ -9,8 +9,13 @@ if (typeof changePlanModal != 'function') {
             // Iterating over the inner object for each location
             for (let id in data[location]) {
                 var label = data[location][id];
+                var selected = '';
 
-                html += '<option value="'+id+'" data-location="'+location+'">'+label+'</option>';
+                if (id == selectedId) {
+                    selected = 'selected';
+                }
+
+                html += '<option '+selected+' value="'+id+'" data-location="'+location+'">'+label+'</option>';
             }
             
             html += '</optgroup>';
@@ -22,9 +27,6 @@ if (typeof changePlanModal != 'function') {
 
 if (typeof changePlanModal != 'function') {
     function changePlanModal(button) {
-        var billingId = button.getAttribute('data-billing-id');
-        var routeFetchOptions = button.getAttribute('data-route-fetch-options');
-        
         // Clear any existing modals with the same ID if they exist
         $('#changePlan-' + billingId).remove();
 
@@ -106,6 +108,10 @@ if (typeof changePlanModal != 'function') {
         // Show the modal
         $('#changePlan-' + billingId).modal('show');
 
+        var billingId = button.getAttribute('data-billing-id');
+        var routeFetchOptions = button.getAttribute('data-route-fetch-options');
+        var planAppId = button.getAttribute('data-planned-apllication-id');
+
         // ajax get planned App options
         $.ajax({
             type: "GET",
@@ -116,11 +122,7 @@ if (typeof changePlanModal != 'function') {
             success: function (options) {
                 // console.log(options)
 
-                // Create the modal HTML structure
-
-                // TODO:: must make his current plan app as default or selected
-
-                $('#planned_application_id').html(buildOptionGroupHtml(options));
+                $('#planned_application_id').html(buildOptionGroupHtml(options, planAppId));
 
                 hideSpinner();
             },
