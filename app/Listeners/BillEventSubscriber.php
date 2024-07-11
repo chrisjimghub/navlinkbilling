@@ -2,13 +2,15 @@
 
 namespace App\Listeners;
 
-use App\Events\AccountCreditSnapshot;
-use App\Models\AccountCredit;
 use App\Models\Billing;
 use App\Events\BillProcessed;
+use App\Models\AccountCredit;
+use Illuminate\Support\Carbon;
 use App\Events\BillReprocessed;
 use Illuminate\Events\Dispatcher;
+use App\Events\AccountCreditSnapshot;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Events\UpgradeAccountBillProcessed;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
@@ -29,30 +31,11 @@ class BillEventSubscriber
         //
     }
 
-    public function handleAccountCreditSnapshot(AccountCreditSnapshot $event): void
-    {
-        $billing = $event->billing;
-
-        // Fetch existing account_snapshot or initialize as empty array
-        $accountSnapshot = $billing->account_snapshot ?? [];
-
-        // Modify or add new data to the array
-        $accountSnapshot['accountCredits'] = $billing->account->remaining_credits ?? 0;
-
-        // Assign the modified array back to the model attribute
-        $billing->account_snapshot = $accountSnapshot;
-
-        // Save the model to persist changes
-        $billing->saveQuietly();
-    }
-
     /**
      * Handle the event.
      */
     public function handleBillProcessed(BillProcessed $event): void
     {
-        // debug($event->billing);
-
         if ($event->billing instanceof Collection) {
             // If its a collection of records
             foreach ($event->billing as $billing) {
@@ -65,6 +48,8 @@ class BillEventSubscriber
         
     }
 
+
+    // 1 run of this = 1 Billing process
     public function processed($billing)
     {
         $this->billing = $billing;
@@ -81,7 +66,7 @@ class BillEventSubscriber
             $this->processMonthly();
         }
 
-        debug($this->particulars);
+        // debug($this->particulars);
 
         $this->billing->particulars = $this->particulars;
         $this->billing->saveQuietly();
@@ -127,33 +112,76 @@ class BillEventSubscriber
         //     $this->billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
         // }
 
-        $this->particulars[] = [
-            'description' => ucwords($this->billing->billingType->name),
-            'amount' => $this->billing->account->monthly_Rate,
-        ];
-
-        // Pro-rated Service Adjustment
-        if ($this->billing->isProRatedMonthly()) {
-            $amountAdjustment = $this->billing->daily_rate * $this->billing->pro_rated_non_service_days; 
-
+        // if empty before_account_snapshot = No Upgrade Planned Application
+        if (!$this->billing->before_account_snapshot) {
             $this->particulars[] = [
-                'description' => ucwords($this->billing->pro_rated_desc),
-                'amount' => -($this->currencyRound($amountAdjustment)),
+                'description' => ucwords($this->billing->billingType->name),
+                'amount' => $this->billing->monthly_rate,
+            ];
+    
+            // Pro-rated Service Adjustment
+            if ($this->billing->isProRatedMonthly()) {
+                $amountAdjustment = $this->billing->daily_rate * $this->billing->pro_rated_non_service_days; 
+    
+                $this->particulars[] = [
+                    'description' => ucwords($this->billing->pro_rated_desc),
+                    'amount' => -($this->currencyRound($amountAdjustment)),
+                ];
+    
+            }
+    
+            // Service Interrptions
+            $totalInterruptionDays = $this->billing->total_days_service_interruptions;
+            if ($totalInterruptionDays) {
+                $this->particulars[] = [
+                    'description' => ucwords($this->billing->service_interrupt_desc),
+                    'amount' => -($this->currencyRound($totalInterruptionDays * $this->billing->daily_rate)),
+                ];
+            }
+        }else {
+            // Compute Upgrade Planned Application
+            
+            // no need to negate the value we wont do it as deductions, bec. since we have 2 monthly fee: the prev and new, we wont do
+            // the same as the normal Pro-rated, the normal is we put the monthly fee and then add the prorated deductions. but since
+            // this have 2 monthly fee the new and prev. we just add it as positive and dont display or add monthly fee in particulars.
+            
+            // before
+            $this->particulars[] = [
+                'description' => ucwords($this->billing->before_upgrade_desc),
+                'amount' => $this->currencyRound($this->billing->before_upgrade_daily_rate * $this->billing->before_upgrade_service_days),
+            ];
+            
+            // new
+            $this->particulars[] = [
+                'description' => ucwords($this->billing->new_upgrade_desc),
+                'amount' => $this->currencyRound($this->billing->daily_rate * $this->billing->new_upgrade_service_days),
             ];
 
-        }
 
-        // Service Interrptions
-        $totalInterruptionDays = $this->billing->total_days_service_interruptions;
-        if ($totalInterruptionDays) {
-            $this->particulars[] = [
-                'description' => ucwords($this->billing->service_interrupt_desc),
-                'amount' => -($this->currencyRound($totalInterruptionDays * $this->billing->daily_rate)),
-            ];
-        }
+            // service interruptions
+            $totalInterruptionDays = $this->billing->upgrade_total_days_service_interruptions;
+
+            // before
+            if ($totalInterruptionDays['total_before'] > 0) {
+                $this->particulars[] = [
+                    'description' => ucwords($this->billing->before_service_interrupt_desc),
+                    'amount' => -($this->currencyRound($totalInterruptionDays['total_before'] * $this->billing->before_upgrade_daily_rate)),
+                ];
+            }
+            
+            // new
+            if ($totalInterruptionDays['total_new'] > 0) {
+                $this->particulars[] = [
+                    'description' => ucwords($this->billing->new_service_interrupt_desc),
+                    'amount' => -($this->currencyRound($totalInterruptionDays['total_new'] * $this->billing->daily_rate)),
+                ];
+            }
+
+        } // end - Compute Upgrade Planned Application
+        
     }
 
-    public function snapshot()
+    public function snapshot($column = 'account_snapshot')
     {
         $snapshot = [];
 
@@ -167,7 +195,7 @@ class BillEventSubscriber
         $snapshot['accountStatus'] = $this->billing->account->accountStatus->toArray();
         $snapshot['accountCredits'] = $this->billing->account->remaining_credits ?? 0;
         
-        $this->billing->account_snapshot = $snapshot;
+        $this->billing->{$column} = $snapshot;
 
         $this->billing->saveQuietly();
     }

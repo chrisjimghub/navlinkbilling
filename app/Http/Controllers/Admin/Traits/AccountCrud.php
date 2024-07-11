@@ -95,11 +95,11 @@ trait AccountCrud
         $subscription,
         $mbps,
         $installedDate,
-        $dailyRate,
+        $data,
     )
     {
         return 
-            '<strong from="'.$from.'" daily-rate="'.$dailyRate.'">Name: </strong><a href='.backpack_url('account/'.$accountId.'/show').'>'.$name.'</a><br/>'.
+            '<strong from="'.$from.'" data="'.$data.'">Name: </strong><a href='.backpack_url('account/'.$accountId.'/show').'>'.$name.'</a><br/>'.
             '<strong>Location: </strong>' . $location . '<br/>'.
             '<strong>Type: </strong>' . $type . '<br/>'.
             '<strong>Installed: </strong>' . $installedDate . '<br/>'.

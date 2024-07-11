@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Operations;
 
-use App\Models\Account;
 use App\Models\Billing;
-
 use Illuminate\Support\Str;
 use App\Models\AccountCredit;
 use App\Rules\BillingMustBeUnpaid;
@@ -18,6 +16,7 @@ use App\Models\AccountServiceInterruption;
 use App\Notifications\NewBillNotification;
 use App\Rules\MustHaveEnoughAccountCredit;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use App\Events\BillProcessed;
 
 trait BillingGroupButtonsOperation
 {
@@ -82,8 +81,8 @@ trait BillingGroupButtonsOperation
             Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
         });
 
-        CRUD::operation(['list', 'show'], function () {
-            // $this->crud->enableBulkActions();
+        CRUD::operation(['list'], function () {
+            $this->crud->enableBulkActions();
             CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.billing_group_buttons', 'beginning');
         });
     }
@@ -154,9 +153,27 @@ trait BillingGroupButtonsOperation
         }
 
         $billing = Billing::findOrFail($id);
+        
+        // Get the current value of before_account_snapshots and modify it, use temporary variable so laravel wont cause an error
+        // by using variable first we allow laravel to let him cast the value of json column to array and now we can assign
+        // the date_change before saving it. This variable: $beforeAccountSnapshot = [];
 
-        // data i need
-        // billing_id
+        // if he keep upgrading the plan or the before_account_snapshot is not empty then update only the date_change,
+        // because upgrading the plan the latest/new plan is save in account_snapshot. we need to retain the old account 
+        // that's why we only updated the date_change. Because before_account_snapshot is account before upgraded.
+        $beforeAccountSnapshot = [];
+        $beforeAccountSnapshot = $billing->before_account_snapshot ?? $billing->account_snapshot;
+
+        $beforeAccountSnapshot['date_change'] = request()->date_change;
+        $billing->before_account_snapshot = $beforeAccountSnapshot;
+        $billing->saveQuietly(); 
+        
+        // Update account planned application, since the Account model doesnt trigger the BillProcessed event automatically 
+        // because i dispatch the event in Account Controller to include the pivot table changes. So let's update the account 
+        // planned application here and then dispatch the BillProcessed event manually, that's why we save it Quietly above to
+        // save resources and also copy the account_snapshots value to before_account_snapshots column.
+        $billing->account()->update(['planned_application_id' => request()->planned_application_id]);
+        event(new BillProcessed($billing));
 
         // Return success response
         return response()->json([

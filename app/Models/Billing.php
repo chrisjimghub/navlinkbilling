@@ -40,7 +40,7 @@ class Billing extends Model
     protected $casts = [
         'particulars' => 'array',
         'account_snapshot' => 'array',
-        'upgrade_account_snapshot' => 'array',
+        'before_account_snapshot' => 'array',
     ];
 
     protected $attributes = [
@@ -52,16 +52,6 @@ class Billing extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-    
-    // Method to mark billing as paid
-    public function markAsPaid()
-    {
-        $this->billing_status_id = 1; // Set to 1 (paid)
-
-        // Optionally return $this for chaining methods
-        return $this;
-    }
-
     public function isProRatedMonthly() : bool
     {
         if ($this->account_installed_date > $this->date_start) {
@@ -122,31 +112,60 @@ class Billing extends Model
             ->get();
     }
 
-    // Method to calculate days and hours difference
-    public function proRatedDaysAndHoursService($dateStart = null, $dateEnd = null)
+    // before_service_interruptions
+    public function beforeServiceInterruptions()
     {
-        $dateStart = Carbon::parse($dateStart);
-        $dateEnd = Carbon::parse($dateEnd);
-
-        if ($dateStart && $dateEnd) {
-            // Calculate the difference and format it
-            $difference = $dateEnd->diff($dateStart)->format('%a|%H|%I');
-            $diff = $dateEnd->diff($dateStart)->format('%a days, %H:%I');
-
-            // Explode the formatted difference into an array
-            list($days, $hours, $minutes) = explode('|', $difference);
-
-            // Create the array with named keys
-            return [
-                'days' => (int) $days,
-                'hours' => (int) $hours,
-                'minutes' => (int) $minutes,
-                'diff' => $diff,
-            ];
-
+        if ($this->before_account_snapshot) {
+            return $this->account
+                ->accountServiceInterruptions()
+                ->whereBetween('date_start', [$this->date_start, $this->date_change])
+                ->whereBetween('date_end', [$this->date_start, $this->date_change])
+                ->get();
         }
 
         return;
+    }
+
+    // new_service_interruptions
+    public function newServiceInterruptions()
+    {
+        if ($this->before_account_snapshot) {
+            return $this->account
+                ->accountServiceInterruptions()
+                ->whereBetween('date_start', [$this->date_change, $this->date_end])
+                ->whereBetween('date_end', [$this->date_change, $this->date_end])
+                ->get();
+        }
+
+        return;
+    }
+
+    // NOTE:: This is only use in upgrade plan computations, where interruptions date range overlap the previous and new plan
+    // overlap_service_interruptions
+    public function overlapServiceInterruptions()
+    {
+        if ($this->before_account_snapshot) {
+            return $this->account
+                ->accountServiceInterruptions()
+                // make sure the date interrupt is within the billing period.
+                ->whereBetween('date_start', [$this->date_start, $this->date_end])
+                ->whereBetween('date_end', [$this->date_start, $this->date_end])
+                
+                // below is where clause overlap    
+                ->whereBetween('date_start', [$this->date_start, $this->date_change])
+                ->whereBetween('date_end', [$this->date_change, $this->date_end])
+                
+                ->get();
+        }
+
+        return;
+
+    }
+
+    // Method to calculate days and hours difference
+    public function proRatedDaysAndHoursService($dateStart = null, $dateEnd = null)
+    {
+        return dateDaysAndHoursDifference($dateStart, $dateEnd);
     }
 
     /*
@@ -222,23 +241,12 @@ class Billing extends Model
         return getMonthFromDate($this->date_start);
     }
 
-    // real_account
-    public function getRealAccountAttribute() 
-    {
-        if ($this->upgrade_account_snapshot) {
-            
-            return $this->upgrade_account_snapshot;
-        
-        }
-
-        return $this->account_snapshot;
-    }
 
     // account_installed_date
     public function getAccountInstalledDateAttribute()
     {
-        if ($this->real_account) {
-            return $this->real_account['account']['installed_date'];
+        if ($this->account_snapshot) {
+            return Carbon::parse($this->account_snapshot['account']['installed_date']);
         }
         
         // we use this as backup, because this attribute are used even before the snapshot is saved. we need this.
@@ -248,7 +256,7 @@ class Billing extends Model
     // account_google_coordinates
     public function getAccountGoogleCoordiantesAttribute()
     {
-        return $this->real_account['account']['google_map_coordinates'];
+        return $this->account_snapshot['account']['google_map_coordinates'];
     }
 
     // account_name
@@ -260,19 +268,19 @@ class Billing extends Model
     // account_subscription_name
     public function getAccountSubscriptionNameAttribute()
     {
-        return $this->real_account['subscription']['name'];
+        return $this->account_snapshot['subscription']['name'];
     }
 
     // account_location_name
     public function getAccountLocationNameAttribute()
     {
-        return $this->real_account['location']['name'];
+        return $this->account_snapshot['location']['name'];
     }
 
     // account_planned_application_type_name
     public function getAccountPlannedApplicationTypeNameAttribute()
     {
-        return $this->real_account['plannedApplicationType']['name'];
+        return $this->account_snapshot['plannedApplicationType']['name'];
     }
 
     // account_planned_application_type_name_shorten ex: Residential etc..
@@ -292,13 +300,13 @@ class Billing extends Model
     // account_planned_application_mbps
     public function getAccountPlannedApplicationMbpsAttribute()
     {
-        return $this->real_account['plannedApplication']['mbps'];
+        return $this->account_snapshot['plannedApplication']['mbps'];
     }
 
     // account_planned_application_price
     public function getAccountPlannedApplicationPriceAttribute()
     {
-        return $this->currencyFormatAccessor($this->real_account['plannedApplication']['price']);
+        return $this->currencyFormatAccessor($this->account_snapshot['plannedApplication']['price']);
     }
 
     // account_planned_application_details
@@ -313,10 +321,19 @@ class Billing extends Model
     // account_details : Data Taken from snapshot
     public function getAccountDetailsAttribute()
     {
-        $from = 'account_snapshot';
+        $from = 'model_relationship';
 
-        if ($this->upgrade_account_snapshot) {
-            $from = 'upgrade_account_snapshot';
+        if ($this->account_snapshot) {
+            $from = 'account_snapshot';
+        }
+
+        $data = 'total_number_of_days:'. $this->total_number_of_days;
+
+        if ($this->before_account_snapshot) {
+            $data .= ' | ';
+            $data .= 'daily_rate:'. $this->daily_rate;
+            $data .= ' | ';
+            $data .= 'before_daily_rate:'. $this->before_upgrade_daily_rate;
         }
 
         return $this->accountDetails(
@@ -327,8 +344,8 @@ class Billing extends Model
             type: $this->account_planned_application_type_name_shorten,
             subscription: $this->account_subscription_name, 
             mbps: $this->account_planned_application_mbps,
-            installedDate: $this->account_installed_date,
-            dailyRate: $this->daily_rate,
+            installedDate: $this->account_installed_date->toDateString(),
+            data: $data,
         );
     }
 
@@ -372,7 +389,7 @@ class Billing extends Model
         return $this->currencyRound($totalAmount);
     }
 
-    // billing_period_detals
+    // billing_period_details
     public function getBillingPeriodDetailsAttribute()
     {
 
@@ -380,10 +397,14 @@ class Billing extends Model
             return "<strong>{$this->billingType->name}</strong>";
         }
 
-        // return $this->date_start . ' - '. $this->date_end;
+        $appendDateChange = "";
+        if ($this->before_account_snapshot) {
+            $appendDateChange = "<strong>Date Change</strong> : {$this->date_change->toDateString()} <br>";
+        }
 
         return "
             <strong>Date Start</strong> : {$this->date_start} <br>
+            {$appendDateChange}
             <strong>Date End</strong> : {$this->date_end} <br>
             <strong>Cut Off</strong> : {$this->date_cut_off} <br>
         ";
@@ -420,7 +441,7 @@ class Billing extends Model
     // monthly_rate
     public function getMonthlyRateAttribute()
     {   
-        return $this->real_account['plannedApplication']['price'];
+        return $this->account_snapshot['plannedApplication']['price'];
     }
     
     // daily_rate
@@ -428,6 +449,26 @@ class Billing extends Model
     {
         if ($this->monthly_rate && $this->total_number_of_days) {
             return $this->monthly_rate / $this->total_number_of_days;
+        }
+
+        return;
+    }
+
+    // before_upgrade_monthly_rate
+    public function getBeforeUpgradeMonthlyRateAttribute()
+    {
+        if ($this->before_account_snapshot) {
+            return $this->before_account_snapshot['plannedApplication']['price'];
+        }
+
+        return;
+    }
+
+    // before_upgrade_daily_rate
+    public function getBeforeUpgradeDailyRateAttribute()
+    {
+        if ($this->before_account_snapshot) {
+            return $this->before_upgrade_monthly_rate / $this->total_number_of_days;
         }
 
         return;
@@ -464,7 +505,7 @@ class Billing extends Model
     public function getProRatedDaysAndHoursServiceAttribute()
     {
         if ($this->isProRatedMonthly()) {
-            $installedDate = $this->accountInstalledDate;
+            $installedDate = $this->account_installed_date;
             if ($installedDate && $this->date_end) {
                 return $this->proRatedDaysAndHoursService($installedDate, $this->date_end);
             }
@@ -492,6 +533,86 @@ class Billing extends Model
         return $this->total_number_of_days - $this->pro_rated_days_and_hours_service['days'];
     }
 
+    // before_upgrade_service_days
+    // NOTE:: This is the total number of service days 
+    public function getBeforeUpgradeServiceDaysAttribute()
+    {
+        if ($this->before_account_snapshot) {
+            $dateStart = $this->date_start;
+            $dateEnd = $this->date_change;
+
+            // if this true, then the account start later than the billing period start_date
+            if ($this->account_installed_date > $this->date_start) {
+                $dateStart = $this->account_installed_date;
+            }
+
+            return dateDaysAndHoursDifference($dateStart, $dateEnd)['days'];
+        }
+
+        return;
+    }
+
+    // new_upgrade_service_days
+    // NOTE:: This is the total number of service days 
+    public function getNewUpgradeServiceDaysAttribute()
+    {
+        if ($this->before_account_snapshot) {
+            $dateStart = $this->date_change;
+            $dateEnd = $this->date_end;
+
+            // if this true, then the account start later than the billing period start_date
+            if ($this->account_installed_date > $this->date_start) {
+                $dateStart = $this->account_installed_date;
+            }
+
+            return dateDaysAndHoursDifference($dateStart, $dateEnd)['days'];
+        }
+
+        return;
+    }
+
+    // before_upgrade_desc
+    public function getBeforeUpgradeDescAttribute()
+    {
+        if ($this->before_account_snapshot) {
+            $num = $this->before_upgrade_service_days;
+            $daysOrDay = $num > 1 ? 'days' : 'day';
+    
+            $mbps = $this->before_account_snapshot['plannedApplication']['mbps'];
+            $price = $this->before_account_snapshot['plannedApplication']['price'];
+
+            $append = 'Prev: ';
+            $append .= $mbps.'Mbps';
+            $append .= '---';
+            $append .= $this->currencyFormatAccessor($price);
+
+            return $append." Pro-rated ($num $daysOrDay)";
+        }
+
+        return;
+    }
+
+    // new_upgrade_desc
+    public function getNewUpgradeDescAttribute()
+    {
+        if ($this->before_account_snapshot) {
+            $num = $this->new_upgrade_service_days;
+            $daysOrDay = $num > 1 ? 'days' : 'day';
+    
+            $mbps = $this->account_snapshot['plannedApplication']['mbps'];
+            $price = $this->account_snapshot['plannedApplication']['price'];
+
+            $append = 'New: ';
+            $append .= $mbps.'Mbps';
+            $append .= '---';
+            $append .= $this->currencyFormatAccessor($price);
+
+            return $append." Pro-rated ($num $daysOrDay)";
+        }
+
+        return;
+    }
+
     // service_interrupt_desc
     public function getServiceInterruptDescAttribute()
     {
@@ -501,6 +622,34 @@ class Billing extends Model
             $days = $totalDaysInterrupt > 1 ? 'days' : 'day';
 
             return "Service Interruptions ($totalDaysInterrupt $days)";
+        }
+
+        return;
+    }
+
+    // before_service_interrupt_desc
+    public function getBeforeServiceInterruptDescAttribute()
+    {
+        $totalBefore = $this->upgrade_total_days_service_interruptions['total_before'];
+
+        if ($totalBefore) {
+            $days = $totalBefore > 1 ? 'days' : 'day';
+
+            return "Prev: Service Interruptions ($totalBefore $days)";
+        }
+
+        return;
+    }
+
+    // new_service_interrupt_desc
+    public function getNewServiceInterruptDescAttribute()
+    {
+        $totalNew = $this->upgrade_total_days_service_interruptions['total_new'];
+
+        if ($totalNew) {
+            $days = $totalNew > 1 ? 'days' : 'day';
+
+            return "New: Service Interruptions ($totalNew $days)";
         }
 
         return;
@@ -526,9 +675,73 @@ class Billing extends Model
 
         return;
     }
+    
+    // upgrade_total_days_service_interruptions
+    public function getUpgradeTotalDaysServiceInterruptionsAttribute()
+    {   
+        $totalBefore = 0;
+        $totalNew = 0;
+
+        $before = $this->beforeServiceInterruptions();
+        $new = $this->newServiceInterruptions();
+        $overlap = $this->overlapServiceInterruptions();
+        
+        if ($before) {
+            foreach ($before as $interrupt) {
+                $dateStart = Carbon::parse($interrupt->date_start);
+                $dateEnd = Carbon::parse($interrupt->date_end);
+
+                $totalBefore += $dateStart->diffInDays($dateEnd);
+            }
+        }
+
+        if ($new) {
+            foreach ($new as $interrupt) {
+                $dateStart = Carbon::parse($interrupt->date_start);
+                $dateEnd = Carbon::parse($interrupt->date_end);
+
+                $totalNew += $dateStart->diffInDays($dateEnd);
+            }
+        }
+
+        if ($overlap) {
+            foreach ($overlap as $interrupt) {
+                $dateStart = Carbon::parse($interrupt->date_start);
+                $dateChange = Carbon::parse($this->date_change);
+                $dateEnd = Carbon::parse($interrupt->date_end);
+
+                $totalBefore += $dateStart->diffInDays($dateChange);
+                $totalNew += $dateChange->diffInDays($dateEnd);
+
+            }
+        }
+
+        return [
+            'total_before' => $totalBefore,
+            'total_new' => $totalNew,
+        ];
+    }
+
+    public function getDateChangeAttribute()
+    {
+        if ($this->before_account_snapshot) {
+            return Carbon::parse($this->before_account_snapshot['date_change']);
+        }
+
+        return;
+    }
     /*
     |--------------------------------------------------------------------------
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+
+    // Method to mark billing as paid
+    public function markAsPaid()
+    {
+        $this->billing_status_id = 1; // Set to 1 (paid)
+
+        // Optionally return $this for chaining methods
+        return $this;
+    }
 }
