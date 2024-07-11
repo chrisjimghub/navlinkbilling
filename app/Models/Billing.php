@@ -246,7 +246,6 @@ class Billing extends Model
     public function getAccountInstalledDateAttribute()
     {
         if ($this->account_snapshot) {
-            // return $this->account_snapshot['account']['installed_date'];
             return Carbon::parse($this->account_snapshot['account']['installed_date']);
         }
         
@@ -345,7 +344,7 @@ class Billing extends Model
             type: $this->account_planned_application_type_name_shorten,
             subscription: $this->account_subscription_name, 
             mbps: $this->account_planned_application_mbps,
-            installedDate: $this->account_installed_date,
+            installedDate: $this->account_installed_date->toDateString(),
             data: $data,
         );
     }
@@ -400,7 +399,7 @@ class Billing extends Model
 
         $appendDateChange = "";
         if ($this->before_account_snapshot) {
-            $appendDateChange = "<strong>Date Change</strong> : {$this->date_change} <br>";
+            $appendDateChange = "<strong>Date Change</strong> : {$this->date_change->toDateString()} <br>";
         }
 
         return "
