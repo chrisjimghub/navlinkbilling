@@ -156,8 +156,14 @@ trait BillingGroupButtonsOperation
         
         // Get the current value of before_account_snapshots and modify it, use temporary variable so laravel wont cause an error
         // by using variable first we allow laravel to let him cast the value of json column to array and now we can assign
-        // the date_change before saving it.
-        $beforeAccountSnapshot = $billing->account_snapshot;
+        // the date_change before saving it. This variable: $beforeAccountSnapshot = [];
+
+        // if he keep upgrading the plan or the before_account_snapshot is not empty then update only the date_change,
+        // because upgrading the plan the latest/new plan is save in account_snapshot. we need to retain the old account 
+        // that's why we only updated the date_change. Because before_account_snapshot is account before upgraded.
+        $beforeAccountSnapshot = [];
+        $beforeAccountSnapshot = $billing->before_account_snapshot ?? $billing->account_snapshot;
+
         $beforeAccountSnapshot['date_change'] = request()->date_change;
         $billing->before_account_snapshot = $beforeAccountSnapshot;
         $billing->saveQuietly(); 

@@ -2,14 +2,15 @@
 
 namespace App\Listeners;
 
-use App\Events\AccountCreditSnapshot;
-use App\Models\AccountCredit;
 use App\Models\Billing;
 use App\Events\BillProcessed;
+use App\Models\AccountCredit;
+use Illuminate\Support\Carbon;
 use App\Events\BillReprocessed;
-use App\Events\UpgradeAccountBillProcessed;
 use Illuminate\Events\Dispatcher;
+use App\Events\AccountCreditSnapshot;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Events\UpgradeAccountBillProcessed;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
@@ -115,7 +116,7 @@ class BillEventSubscriber
         if (!$this->billing->before_account_snapshot) {
             $this->particulars[] = [
                 'description' => ucwords($this->billing->billingType->name),
-                'amount' => $this->billing->account->monthly_Rate,
+                'amount' => $this->billing->monthly_rate,
             ];
     
             // Pro-rated Service Adjustment
@@ -140,13 +141,25 @@ class BillEventSubscriber
         }else {
             // Compute Upgrade Planned Application
             
-            // TODO:: Compute previous plan
+            // no need to negate the value we wont do it as deductions, bec. since we have 2 monthly fee: the prev and new, we wont do
+            // the same as the normal Pro-rated, the normal is we put the monthly fee and then add the prorated deductions. but since
+            // this have 2 monthly fee the new and prev. we just add it as positive and dont display or add monthly fee in particulars.
+            $this->particulars[] = [
+                'description' => ucwords($this->billing->before_upgrade_desc),
+                'amount' => $this->currencyRound($this->billing->before_upgrade_daily_rate * $this->billing->before_upgrade_service_days),
+            ];
             
+            $this->particulars[] = [
+                'description' => ucwords($this->billing->new_upgrade_desc),
+                'amount' => $this->currencyRound($this->billing->daily_rate * $this->billing->new_upgrade_service_days),
+            ];
 
 
-            // TODO:: compute upgraded plan
+            // TODO:: service interruptions
 
-        }
+
+
+        } // end - Compute Upgrade Planned Application
         
     }
 

@@ -22,6 +22,28 @@ if (! function_exists('modelInstance')) {
 }
 
 // carbon
+if (! function_exists('dateDaysAndHoursDifference')) {
+	function dateDaysAndHoursDifference($dateStart, $dateEnd) {
+		$dateStart = Carbon::parse($dateStart);
+        $dateEnd = Carbon::parse($dateEnd);
+
+		// Calculate the difference and format it
+		$difference = $dateEnd->diff($dateStart)->format('%a|%H|%I');
+		$diff = $dateEnd->diff($dateStart)->format('%a days, %H:%I');
+
+		// Explode the formatted difference into an array
+		list($days, $hours, $minutes) = explode('|', $difference);
+
+		// Create the array with named keys
+		return [
+			'days' => (int) $days,
+			'hours' => (int) $hours,
+			'minutes' => (int) $minutes,
+			'diff' => $diff,
+		];
+	}
+}
+
 if (! function_exists('getYearFromDate')) {
 	function getYearFromDate($date) {
         return Carbon::parse($date)->year;
