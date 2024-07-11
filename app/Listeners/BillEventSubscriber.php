@@ -144,20 +144,38 @@ class BillEventSubscriber
             // no need to negate the value we wont do it as deductions, bec. since we have 2 monthly fee: the prev and new, we wont do
             // the same as the normal Pro-rated, the normal is we put the monthly fee and then add the prorated deductions. but since
             // this have 2 monthly fee the new and prev. we just add it as positive and dont display or add monthly fee in particulars.
+            
+            // before
             $this->particulars[] = [
                 'description' => ucwords($this->billing->before_upgrade_desc),
                 'amount' => $this->currencyRound($this->billing->before_upgrade_daily_rate * $this->billing->before_upgrade_service_days),
             ];
             
+            // new
             $this->particulars[] = [
                 'description' => ucwords($this->billing->new_upgrade_desc),
                 'amount' => $this->currencyRound($this->billing->daily_rate * $this->billing->new_upgrade_service_days),
             ];
 
 
-            // TODO:: service interruptions
+            // service interruptions
+            $totalInterruptionDays = $this->billing->upgrade_total_days_service_interruptions;
 
-
+            // before
+            if ($totalInterruptionDays['total_before'] > 0) {
+                $this->particulars[] = [
+                    'description' => ucwords($this->billing->before_service_interrupt_desc),
+                    'amount' => -($this->currencyRound($totalInterruptionDays['total_before'] * $this->billing->before_upgrade_daily_rate)),
+                ];
+            }
+            
+            // new
+            if ($totalInterruptionDays['total_new'] > 0) {
+                $this->particulars[] = [
+                    'description' => ucwords($this->billing->new_service_interrupt_desc),
+                    'amount' => -($this->currencyRound($totalInterruptionDays['total_new'] * $this->billing->daily_rate)),
+                ];
+            }
 
         } // end - Compute Upgrade Planned Application
         

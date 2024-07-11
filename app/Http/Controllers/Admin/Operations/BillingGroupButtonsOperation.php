@@ -81,8 +81,8 @@ trait BillingGroupButtonsOperation
             Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
         });
 
-        CRUD::operation(['list', 'show'], function () {
-            // $this->crud->enableBulkActions();
+        CRUD::operation(['list'], function () {
+            $this->crud->enableBulkActions();
             CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.billing_group_buttons', 'beginning');
         });
     }

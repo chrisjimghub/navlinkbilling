@@ -112,6 +112,56 @@ class Billing extends Model
             ->get();
     }
 
+    // before_service_interruptions
+    public function beforeServiceInterruptions()
+    {
+        if ($this->before_account_snapshot) {
+            return $this->account
+                ->accountServiceInterruptions()
+                ->whereBetween('date_start', [$this->date_start, $this->date_change])
+                ->whereBetween('date_end', [$this->date_start, $this->date_change])
+                ->get();
+        }
+
+        return;
+    }
+
+    // new_service_interruptions
+    public function newServiceInterruptions()
+    {
+        if ($this->before_account_snapshot) {
+            return $this->account
+                ->accountServiceInterruptions()
+                ->whereBetween('date_start', [$this->date_change, $this->date_end])
+                ->whereBetween('date_end', [$this->date_change, $this->date_end])
+                ->get();
+        }
+
+        return;
+    }
+
+    // NOTE:: This is only use in upgrade plan computations, where interruptions date range overlap the previous and new plan
+    // overlap_service_interruptions
+    public function overlapServiceInterruptions()
+    {
+        if ($this->before_account_snapshot) {
+            return $this->account
+                ->accountServiceInterruptions()
+                // make sure the date interrupt is within the billing period.
+                ->whereBetween('date_start', [$this->date_start, $this->date_end])
+                ->whereBetween('date_end', [$this->date_start, $this->date_end])
+                
+                // below is where clause overlap    
+                ->whereBetween('date_start', [$this->date_start, $this->date_change])
+                ->whereBetween('date_end', [$this->date_change, $this->date_end])
+                
+                ->get();
+        }
+
+        return;
+
+    }
+
     // Method to calculate days and hours difference
     public function proRatedDaysAndHoursService($dateStart = null, $dateEnd = null)
     {
@@ -196,7 +246,8 @@ class Billing extends Model
     public function getAccountInstalledDateAttribute()
     {
         if ($this->account_snapshot) {
-            return $this->account_snapshot['account']['installed_date'];
+            // return $this->account_snapshot['account']['installed_date'];
+            return Carbon::parse($this->account_snapshot['account']['installed_date']);
         }
         
         // we use this as backup, because this attribute are used even before the snapshot is saved. we need this.
@@ -354,8 +405,8 @@ class Billing extends Model
 
         return "
             <strong>Date Start</strong> : {$this->date_start} <br>
-            <strong>Date End</strong> : {$this->date_end} <br>
             {$appendDateChange}
+            <strong>Date End</strong> : {$this->date_end} <br>
             <strong>Cut Off</strong> : {$this->date_cut_off} <br>
         ";
     }
@@ -531,7 +582,7 @@ class Billing extends Model
             $mbps = $this->before_account_snapshot['plannedApplication']['mbps'];
             $price = $this->before_account_snapshot['plannedApplication']['price'];
 
-            $append = 'PREV: ';
+            $append = 'Prev: ';
             $append .= $mbps.'Mbps';
             $append .= '---';
             $append .= $this->currencyFormatAccessor($price);
@@ -552,7 +603,7 @@ class Billing extends Model
             $mbps = $this->account_snapshot['plannedApplication']['mbps'];
             $price = $this->account_snapshot['plannedApplication']['price'];
 
-            $append = 'NEW: ';
+            $append = 'New: ';
             $append .= $mbps.'Mbps';
             $append .= '---';
             $append .= $this->currencyFormatAccessor($price);
@@ -572,6 +623,34 @@ class Billing extends Model
             $days = $totalDaysInterrupt > 1 ? 'days' : 'day';
 
             return "Service Interruptions ($totalDaysInterrupt $days)";
+        }
+
+        return;
+    }
+
+    // before_service_interrupt_desc
+    public function getBeforeServiceInterruptDescAttribute()
+    {
+        $totalBefore = $this->upgrade_total_days_service_interruptions['total_before'];
+
+        if ($totalBefore) {
+            $days = $totalBefore > 1 ? 'days' : 'day';
+
+            return "Prev: Service Interruptions ($totalBefore $days)";
+        }
+
+        return;
+    }
+
+    // new_service_interrupt_desc
+    public function getNewServiceInterruptDescAttribute()
+    {
+        $totalNew = $this->upgrade_total_days_service_interruptions['total_new'];
+
+        if ($totalNew) {
+            $days = $totalNew > 1 ? 'days' : 'day';
+
+            return "New: Service Interruptions ($totalNew $days)";
         }
 
         return;
@@ -598,11 +677,56 @@ class Billing extends Model
         return;
     }
     
-    // date_change
+    // upgrade_total_days_service_interruptions
+    public function getUpgradeTotalDaysServiceInterruptionsAttribute()
+    {   
+        $totalBefore = 0;
+        $totalNew = 0;
+
+        $before = $this->beforeServiceInterruptions();
+        $new = $this->newServiceInterruptions();
+        $overlap = $this->overlapServiceInterruptions();
+        
+        if ($before) {
+            foreach ($before as $interrupt) {
+                $dateStart = Carbon::parse($interrupt->date_start);
+                $dateEnd = Carbon::parse($interrupt->date_end);
+
+                $totalBefore += $dateStart->diffInDays($dateEnd);
+            }
+        }
+
+        if ($new) {
+            foreach ($new as $interrupt) {
+                $dateStart = Carbon::parse($interrupt->date_start);
+                $dateEnd = Carbon::parse($interrupt->date_end);
+
+                $totalNew += $dateStart->diffInDays($dateEnd);
+            }
+        }
+
+        if ($overlap) {
+            foreach ($overlap as $interrupt) {
+                $dateStart = Carbon::parse($interrupt->date_start);
+                $dateChange = Carbon::parse($this->date_change);
+                $dateEnd = Carbon::parse($interrupt->date_end);
+
+                $totalBefore += $dateStart->diffInDays($dateChange);
+                $totalNew += $dateChange->diffInDays($dateEnd);
+
+            }
+        }
+
+        return [
+            'total_before' => $totalBefore,
+            'total_new' => $totalNew,
+        ];
+    }
+
     public function getDateChangeAttribute()
     {
         if ($this->before_account_snapshot) {
-            return $this->before_account_snapshot['date_change'];
+            return Carbon::parse($this->before_account_snapshot['date_change']);
         }
 
         return;
