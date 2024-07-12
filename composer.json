@@ -26,6 +26,7 @@
         "laravel/framework": "^11.9",
         "laravel/telescope": "^5.1",
         "laravel/tinker": "^2.9",
+        "laraveldaily/laravel-invoices": "^4.0",
         "livewire/livewire": "^3.4",
         "livewire/volt": "^1.0",
         "maatwebsite/excel": "^3.1",

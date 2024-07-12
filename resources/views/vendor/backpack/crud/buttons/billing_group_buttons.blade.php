@@ -4,6 +4,7 @@
         'changePlan',
         'serviceInterrupt',
         'sendNotification',
+        'downloadInvoice',
     ]))
     
     @if($entry->isUnpaid())
@@ -103,6 +104,23 @@
                                 {{ __('Upgrade / Downgrade Plan') }}
                         </a>
                     </li>
+                @endif
+
+
+                @if($crud->hasAccess('downloadInvoice'))
+                    <li>
+                        <a 
+                            href="javascript:void(0)" 
+                            onclick="downloadInvoice(this)" 
+                            data-route="{{ url($crud->route.'/'.$entry->getKey().'/downloadInvoice') }}" 
+                            class="btn btn-sm btn-link text-dark" 
+                            data-button-type="downloadInvoice"
+                            >
+                                {{-- <i class="las la-file-download"></i> --}}
+                                <i class="las la-download"></i>
+                                {{ __('Download Invoice') }}
+                        </a>
+                    </li>    
                 @endif
 
             </ul>

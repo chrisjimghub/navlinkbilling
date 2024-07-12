@@ -58,6 +58,12 @@ trait BillingGroupButtonsOperation
             'uses'      => $controller.'@changePlan',
             'operation' => 'changePlan',
         ]);
+
+        Route::post($segment.'/{id}/downloadInvoice', [
+            'as'        => $routeName.'.downloadInvoice',
+            'uses'      => $controller.'@downloadInvoice',
+            'operation' => 'downloadInvoice',
+        ]);
     }
 
     /**
@@ -71,6 +77,7 @@ trait BillingGroupButtonsOperation
             'changePlan',
             'serviceInterrupt',
             'sendNotification',
+            'downloadInvoice',
         ]);
 
         // load
@@ -92,24 +99,41 @@ trait BillingGroupButtonsOperation
         Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
         
         if ( $this->crud->hasAccess('pay') ) {
-            Widget::add()->type('script')->content('assets/js/admin/forms/pay.js');
+            Widget::add()->type('script')->content('assets/js/admin/billing_operations/pay.js');
         }
 
         if ( $this->crud->hasAccess('serviceInterrupt') ) {
-            Widget::add()->type('script')->content('assets/js/admin/forms/serviceInterrupt.js');
+            Widget::add()->type('script')->content('assets/js/admin/billing_operations/serviceInterrupt.js');
         }
 
         if ( $this->crud->hasAccess('sendNotification') ) {
-            Widget::add()->type('script')->content('assets/js/admin/forms/sendNotification.js');
+            Widget::add()->type('script')->content('assets/js/admin/billing_operations/sendNotification.js');
         }
 
         if ( $this->crud->hasAccess('payUsingCredit') ) {
-            Widget::add()->type('script')->content('assets/js/admin/forms/payUsingCredit.js');
+            Widget::add()->type('script')->content('assets/js/admin/billing_operations/payUsingCredit.js');
         }
 
         if ( $this->crud->hasAccess('changePlan') ) {
-            Widget::add()->type('script')->content('assets/js/admin/forms/changePlan.js');
+            Widget::add()->type('script')->content('assets/js/admin/billing_operations/changePlan.js');
         }
+
+        if ( $this->crud->hasAccess('downloadInvoice') ) {
+            Widget::add()->type('script')->content('assets/js/admin/billing_operations/downloadInvoice.js');
+        }
+    }
+
+    public function downloadInvoice($id)
+    {
+        $this->crud->hasAccessOrFail('downloadInvoice');
+
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+
+        // TEST only
+        // Return success response
+        return response()->json([
+            'msg' => 'Test 123',
+        ]);
     }
 
     public function changePlan($id)
