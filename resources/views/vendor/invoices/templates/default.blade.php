@@ -141,8 +141,15 @@
                     @endif
                 </td>
                 <td style="padding: 0; width: 60%;">
+
                     @foreach($invoice->seller->custom_fields as $key => $value)
-                        <div>{{ $value }}</div>
+                        @if($key == 'company')
+                            <h3>
+                                <div>{{ $value }}</div>
+                            </h3>
+                        @else
+                            <div>{{ $value }}</div>
+                        @endif
                     @endforeach
                 </td>
                 <td style="padding: 0; text-align: left; width: 80%;">
