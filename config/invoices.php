@@ -21,7 +21,7 @@ return [
         /*
          * Sequence will be padded accordingly, for ex. 00001
          */
-        'sequence_padding' => 5,
+        'sequence_padding' => 7,
         'delimiter'        => '.',
 
         /*

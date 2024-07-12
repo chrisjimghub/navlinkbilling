@@ -164,7 +164,7 @@
                     <td class="border-0"></td>
                     <td class="px-0">
                         <p>{{ __('invoices::invoice.date') }}: <strong>{{ $invoice->getDate() }}</strong></p>
-                        <p>{{ __('invoices::invoice.serial') }} <strong>{{ $invoice->getSerialNumber() }}</strong></p>
+                        <p>{{ __('Billing ID') }}: <strong>{{ $invoice->getSerialNumber() }}</strong></p>
                         <p>{{ __('Billing Period') }}: <strong>{{ $invoice->getCustomData()['billing_period'] }}</strong></p>
                         <p>{{ __('Cut Off Date') }}: <strong>{{ $invoice->getCustomData()['date_cut_off'] }}</strong></p>
                     </td>
