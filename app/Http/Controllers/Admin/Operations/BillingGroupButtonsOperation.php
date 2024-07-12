@@ -136,7 +136,7 @@ trait BillingGroupButtonsOperation
 
         $client = new Party([
             'custom_fields' => [
-                'name'          => 'NavLink Technology FBR-X',
+                'Company'          => 'NavLink Technology FBR-X',
                 'address' => 'Brgy. San Isidro Palompon Leyte',
                 'phone' => '09958476256 / 09093639756',
             ],

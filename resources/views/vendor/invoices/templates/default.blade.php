@@ -133,15 +133,31 @@
     </head>
 
     <body>
-        @if($invoice->logo)
-            {{-- <img src="{{ $invoice->getLogo() }}" alt="logo" height="100"> --}}
-        @endif
-
+        <table class="table" style="border-collapse: collapse; width: 100%;">
+            <tr style="line-height: 1; text-align: center;">
+                <td style="padding: 0; text-align: right; width: 80%;">
+                    @if($invoice->logo)
+                        <img src="{{ $invoice->getLogo() }}" alt="Company Logo" height="70">
+                    @endif
+                </td>
+                <td style="padding: 0; width: 60%;">
+                    @foreach($invoice->seller->custom_fields as $key => $value)
+                        <div>{{ $value }}</div>
+                    @endforeach
+                </td>
+                <td style="padding: 0; text-align: left; width: 80%;">
+                    @if($invoice->logo)
+                        <img src="{{ asset('images/yellow-wifi.png') }}" alt="Company Logo" height="70">
+                    @endif
+                </td>
+            </tr>
+        </table>
+        
         {{-- Seller - Buyer --}}
         <table class="table">
             <thead>
                 <tr>
-                    <th class="border-0 pl-0 party-header" width="60%">
+                    <th class="border-0 pl-0 party-header" width="63%">
                         {{ __('invoices::invoice.buyer') }}
                     </th>
                     <th class="border-0" width="3%"></th>
@@ -157,7 +173,10 @@
                     <td class="px-0">
                         @foreach($invoice->buyer->custom_fields as $key => $value)
                             <p class="seller-custom-field">
-                                {{ ucfirst($key) }}: {{ $value }}
+                                <strong>
+                                    {{ ucfirst($key) }}
+                                </strong>
+                                : {{ $value }}
                             </p>
                         @endforeach
                     </td>
