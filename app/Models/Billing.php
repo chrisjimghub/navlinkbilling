@@ -229,6 +229,12 @@ class Billing extends Model
     |--------------------------------------------------------------------------
     */
 
+    // period
+    public function getPeriodAttribute()
+    {
+        return Carbon::parse($this->date_start)->format(dateHumanReadable()) .' - '. Carbon::parse($this->date_end)->format(dateHumanReadable());
+    }
+
     // year
     public function getYearAttribute()
     {

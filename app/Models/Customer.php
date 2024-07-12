@@ -68,6 +68,11 @@ class Customer extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getAddressAttribute()
+    {
+        return "{$this->city_or_municipality}, {$this->barangay}, {$this->block_street}";
+    }
+
     public function getFullNameAttribute()
     {
         return "{$this->last_name}, {$this->first_name}";

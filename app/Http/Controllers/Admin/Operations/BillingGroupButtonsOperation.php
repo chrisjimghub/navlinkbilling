@@ -4,19 +4,24 @@ namespace App\Http\Controllers\Admin\Operations;
 
 use App\Models\Billing;
 use Illuminate\Support\Str;
+use App\Events\BillProcessed;
 use App\Models\AccountCredit;
+use Illuminate\Support\Carbon;
 use App\Rules\BillingMustBeUnpaid;
 use Illuminate\Support\Facades\DB;
 use App\Rules\UpgradePlanValidDate;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
 use App\Rules\UniqueServiceInterruption;
+use LaravelDaily\Invoices\Classes\Buyer;
+use LaravelDaily\Invoices\Classes\Party;
 use Illuminate\Support\Facades\Validator;
 use App\Models\AccountServiceInterruption;
 use App\Notifications\NewBillNotification;
 use App\Rules\MustHaveEnoughAccountCredit;
+use LaravelDaily\Invoices\Facades\Invoice;
+use LaravelDaily\Invoices\Classes\InvoiceItem;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use App\Events\BillProcessed;
 
 trait BillingGroupButtonsOperation
 {
@@ -59,7 +64,7 @@ trait BillingGroupButtonsOperation
             'operation' => 'changePlan',
         ]);
 
-        Route::post($segment.'/{id}/downloadInvoice', [
+        Route::get($segment.'/{id}/downloadInvoice', [
             'as'        => $routeName.'.downloadInvoice',
             'uses'      => $controller.'@downloadInvoice',
             'operation' => 'downloadInvoice',
@@ -117,10 +122,6 @@ trait BillingGroupButtonsOperation
         if ( $this->crud->hasAccess('changePlan') ) {
             Widget::add()->type('script')->content('assets/js/admin/billing_operations/changePlan.js');
         }
-
-        if ( $this->crud->hasAccess('downloadInvoice') ) {
-            Widget::add()->type('script')->content('assets/js/admin/billing_operations/downloadInvoice.js');
-        }
     }
 
     public function downloadInvoice($id)
@@ -129,11 +130,98 @@ trait BillingGroupButtonsOperation
 
         $id = $this->crud->getCurrentEntryId() ?? $id;
 
-        // TEST only
-        // Return success response
-        return response()->json([
-            'msg' => 'Test 123',
+        // TODO:: validator here
+
+        $billing = Billing::findOrFail($id);
+
+        $client = new Party([
+            'custom_fields' => [
+                'name'          => 'NavLink Technology FBR-X',
+                'address' => 'Brgy. San Isidro Palompon Leyte',
+                'phone' => '09958476256 / 09093639756',
+            ],
         ]);
+        
+        $customer = new Party([
+            'custom_fields' => [
+                'name'          => $billing->account->customer->full_name,
+                'Subscription' => $billing->account->plannedApplication->details,
+                'address' => $billing->account->customer->address,
+                'Email' => $billing->account->customer->email,
+                'Contact' => $billing->account->customer->contact_number,
+            ],
+        ]);
+
+        
+
+        $items = [];
+
+        foreach ($billing->particulars as $item) {
+            $amount = 0;
+            $deduction = 0;
+
+            if ($item['amount'] > 0) {
+                $amount = $item['amount'];
+            }else {
+                $deduction = abs($item['amount']);
+            }
+
+            // $deduction = 1;
+            $items[] = InvoiceItem::make($item['description'])
+                        // ->description('Your product or service description')
+                        ->pricePerUnit($amount)
+                        ->discount($deduction); // since laravel daily package dont have less or deduction method we can use, so i use this discount instead
+        
+        }
+
+        $notes = [
+            'your multiline',
+            'additional notes',
+            'in regards of delivery or something else',
+        ];
+        $notes = implode("<br>", $notes);
+        
+        $invoice = Invoice::make('receipt')
+            // ability to include translated invoice status
+            // in case it was paid
+            ->status($billing->billingStatus->name)
+            ->sequence($billing->id)
+            ->serialNumberFormat('{SEQUENCE}')
+            ->seller($client)
+            ->buyer($customer)
+            ->addItems($items)
+
+            ->date(now()->subWeeks(3))
+            ->dateFormat(dateHumanReadable())
+            
+            ->setCustomData([
+                'billing_period' => $billing->period,
+                'date_cut_off' => Carbon::parse($billing->date_cut_off)->format(dateHumanReadable()),
+            ])
+
+            // currency
+            ->currencySymbol(config('app-settings.currency_prefix'))
+            ->currencyCode('PHP')
+            ->currencyFormat('{SYMBOL}{VALUE}')
+            ->currencyThousandsSeparator(',')
+            ->currencyDecimalPoint('.')
+
+            
+            
+            ->notes($notes)
+            ->payUntilDays(14)
+            
+            
+            ->filename($client->name . ' ' . $customer->name)
+            ->logo(public_path('/images/NAVLINK_LOGO.png'))
+            // You can additionally save generated invoice to configured disk
+            ->save('public');
+        
+        $link = $invoice->url();
+        // Then send email to party with link
+        
+        // And return invoice itself to browser or have a different view
+        return $invoice->stream();
     }
 
     public function changePlan($id)

@@ -7,13 +7,13 @@
         'downloadInvoice',
     ]))
     
-    @if($entry->isUnpaid())
-        <div class="btn-group">
-            <button type="button" class="btn text-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Operations <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                
+    <div class="btn-group">
+        <button type="button" class="btn text-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Operations <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+
+            @if($entry->isUnpaid())
                 @if($crud->hasAccess('pay'))
                     <li>
                         <a 
@@ -106,26 +106,18 @@
                     </li>
                 @endif
 
+            @endif
 
-                @if($crud->hasAccess('downloadInvoice'))
-                    <li>
-                        <a 
-                            href="javascript:void(0)" 
-                            onclick="downloadInvoice(this)" 
-                            data-route="{{ url($crud->route.'/'.$entry->getKey().'/downloadInvoice') }}" 
-                            class="btn btn-sm btn-link text-dark" 
-                            data-button-type="downloadInvoice"
-                            >
-                                {{-- <i class="las la-file-download"></i> --}}
-                                <i class="las la-download"></i>
-                                {{ __('Download Invoice') }}
-                        </a>
-                    </li>    
-                @endif
-
-            </ul>
-        </div>       
-    @endif
+            @if($crud->hasAccess('downloadInvoice'))
+                <li>
+                    <a class="btn btn-sm btn-link text-dark"  href="{{ url($crud->route.'/'.$entry->getKey().'/downloadInvoice') }}">
+                        <i class="las la-download"></i>
+                        {{ __('Download Invoice') }}
+                    </a>
+                </li>    
+            @endif
+        </ul>
+    </div>       
 
 @endif
 

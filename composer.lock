@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "46a0769d309c14ad6354f46053a6e139",
+    "content-hash": "4e850942cac44e91f1e390a015538235",
     "packages": [
         {
             "name": "backpack/activity-log",
