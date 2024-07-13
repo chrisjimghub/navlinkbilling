@@ -22,3 +22,4 @@ yarn-error.log
 .tinkerun/
 .vs/
 todo.php
+/public/vendor/telescope/*
