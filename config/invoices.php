@@ -1,39 +1,21 @@
 <?php
 
 return [
-    'date' => [
-
-        /*
-         * Carbon date format
-         */
-        'format' => 'Y-m-d',
-
-        /*
-         * Due date for payment since invoice's date.
-         */
-        'pay_until_days' => 5,
-    ],
-
     'serial_number' => [
-        'series'   => 'AA',
         'sequence' => 1,
 
         /*
          * Sequence will be padded accordingly, for ex. 00001
          */
         'sequence_padding' => 7,
-        'delimiter'        => '.',
 
-        /*
-         * Supported tags {SERIES}, {DELIMITER}, {SEQUENCE}
-         * Example: AA.00001
-         */
+
         // 'format' => '{SERIES}{DELIMITER}{SEQUENCE}',
         'format' => '{SEQUENCE}',
     ],
 
     'currency' => [
-        'code' => 'php',
+        'code' => env('CURRENCY_CODE', 'php'),
 
         /*
          * Usually cents
@@ -47,7 +29,7 @@ return [
         /*
          * Example: 19.00
          */
-        'decimals' => env('CURRENCY_DECIMAL_precision', '2'),
+        'decimals' => env('CURRENCY_DECIMAL_PRECISION', '2'),
 
         /*
          * Example: 1.99
@@ -58,7 +40,7 @@ return [
          * By default empty.
          * Example: 1,999.00
          */
-        'thousands_separator' => env('THOUSAND_SEPARATOR', ','),
+        'thousands_separator' => env('CURRENCY_THOUSAND_SEPARATOR', ','),
 
         /*
          * Supported tags {VALUE}, {SYMBOL}, {CODE}
@@ -88,11 +70,6 @@ return [
          * Default attributes for Seller::class
          */
         'attributes' => [
-            'name'          => '',
-            'address'       => '',
-            'code'          => '',
-            'vat'           => '',
-            'phone'         => '',
             'custom_fields' => [
                 /*
                  * Custom attributes for Seller::class

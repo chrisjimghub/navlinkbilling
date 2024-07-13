@@ -184,8 +184,6 @@ trait BillingGroupButtonsOperation
 
         
         $invoice = Invoice::make('receipt')
-            // ability to include translated invoice status
-            // in case it was paid
             ->status($billing->billingStatus->name)
             ->sequence($billing->id)
             ->serialNumberFormat('{SEQUENCE}')
@@ -205,7 +203,7 @@ trait BillingGroupButtonsOperation
             
             ->notes(__('invoices::invoice.notes_content'))
             
-            ->filename($customer->custom_fields['name'])
+            ->filename($customer->custom_fields['name'] .' - '. $billing->period)
             ->logo(public_path(config('invoices.project_logo')));
         
         // And return invoice itself to browser or have a different view

@@ -38,7 +38,7 @@ return [
     'page'                   => 'Page',
     
     'billing_type'            => 'Type',
-    'billing_id'              => 'Reference #',
+    'billing_id'              => 'Bill Id',
     'billing_period'          => 'Period',
     'billing_cut_off'         => 'Cut Off Date',
     'billing_deduction'       => 'Deduction',
