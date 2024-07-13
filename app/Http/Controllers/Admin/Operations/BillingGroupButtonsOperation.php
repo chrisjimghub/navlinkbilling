@@ -440,8 +440,8 @@ trait BillingGroupButtonsOperation
 
         if ($customer->email) {
             // Notify the customer
-            $customer->notify(new NewBillNotification($billing));
-           
+            $customer->notify((new NewBillNotification($billing))->onQueue('high'));
+
             $billing->notified_at = now();
     
             return $billing->save();
