@@ -130,29 +130,39 @@ trait BillingGroupButtonsOperation
 
         $id = $this->crud->getCurrentEntryId() ?? $id;
 
-        // TODO:: validator here
+        $validator = Validator::make(['id' => $id], [
+            'id' => [
+                'required',
+                'integer',
+                'min:1',
+                'exists:billings,id',
+            ],
+        ], [
+            'id.required' => 'Invalid billing item.',
+            'id.exists' => 'The selected billing item does not exist.', 
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // Return validation errors as JSON response
+            \Alert::error($validator->errors()->all())->flash();
+
+            return redirect()->back();
+        }
+
 
         $billing = Billing::findOrFail($id);
 
-        $client = new Party([
-            'custom_fields' => [
-                'company' => 'NavLink Technology FBR-X',
-                'address' => 'Brgy. San Isidro Palompon Leyte',
-                'phone' => '09958476256 / 09093639756',
-            ],
-        ]);
-        
         $customer = new Party([
             'custom_fields' => [
                 'name'          => $billing->account->customer->full_name,
-                'Subscription' => $billing->account->plannedApplication->details,
+                'plan' => $billing->account_planned_application_details,
                 'address' => $billing->account->customer->address,
-                'Email' => $billing->account->customer->email,
+                // 'Email' => $billing->account->customer->email,
                 'Contact' => $billing->account->customer->contact_number,
+                'subscription' => $billing->account_subscription_name,
             ],
         ]);
-
-        
 
         $items = [];
 
@@ -165,21 +175,13 @@ trait BillingGroupButtonsOperation
             }else {
                 $deduction = abs($item['amount']);
             }
-
-            // $deduction = 1;
+            
             $items[] = InvoiceItem::make($item['description'])
-                        // ->description('Your product or service description')
                         ->pricePerUnit($amount)
-                        ->discount($deduction); // since laravel daily package dont have less or deduction method we can use, so i use this discount instead
-        
+                        // since laravel daily package dont have less or deduction method, so i use this discount instead
+                        ->discount($deduction); 
         }
 
-        $notes = [
-            'your multiline',
-            'additional notes',
-            'in regards of delivery or something else',
-        ];
-        $notes = implode("<br>", $notes);
         
         $invoice = Invoice::make('receipt')
             // ability to include translated invoice status
@@ -187,41 +189,28 @@ trait BillingGroupButtonsOperation
             ->status($billing->billingStatus->name)
             ->sequence($billing->id)
             ->serialNumberFormat('{SEQUENCE}')
-            ->seller($client)
             ->buyer($customer)
             ->addItems($items)
 
-            ->date(now()->subWeeks(3))
+            ->date($billing->created_at)
             ->dateFormat(dateHumanReadable())
             
             ->setCustomData([
+                'is_monthly_fee' => $billing->isMonthlyFee(),
+                'billing_type' => $billing->billingType->name,
                 'billing_period' => $billing->period,
                 'date_cut_off' => Carbon::parse($billing->date_cut_off)->format(dateHumanReadable()),
             ])
 
-            // currency
-            ->currencySymbol(config('app-settings.currency_prefix'))
-            ->currencyCode('PHP')
-            ->currencyFormat('{SYMBOL}{VALUE}')
-            ->currencyThousandsSeparator(',')
-            ->currencyDecimalPoint('.')
-
             
+            ->notes(__('invoices::invoice.notes_content'))
             
-            ->notes($notes)
-            ->payUntilDays(14)
-            
-            
-            ->filename($client->name . ' ' . $customer->name)
-            ->logo(public_path('/images/NAVLINK_LOGO.png'))
-            // You can additionally save generated invoice to configured disk
-            ->save('public');
-        
-        $link = $invoice->url();
-        // Then send email to party with link
+            ->filename($customer->custom_fields['name'])
+            ->logo(public_path(config('invoices.project_logo')));
         
         // And return invoice itself to browser or have a different view
-        return $invoice->stream();
+        // return $invoice->stream();
+        return $invoice->download();
     }
 
     public function changePlan($id)

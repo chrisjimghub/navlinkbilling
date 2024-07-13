@@ -9,7 +9,7 @@ return [
 
     'invoice'                => 'Invoice',
     'serial'                 => 'Serial No.',
-    'date'                   => 'Invoice Date',
+    'date'                   => 'Date',
     'seller'                 => 'NavLink',
     'buyer'                  => 'Account Details',
     'address'                => 'Address',
@@ -36,4 +36,15 @@ return [
     'paid'                   => 'Paid',
     'due'                    => 'Due',
     'page'                   => 'Page',
+    
+    'billing_type'            => 'Type',
+    'billing_id'              => 'Reference #',
+    'billing_period'          => 'Period',
+    'billing_cut_off'         => 'Cut Off Date',
+    'billing_deduction'       => 'Deduction',
+    'billing_amount'          => 'Amount',
+    'billing_total_deduction' => 'Total Deduction',
+    'billing_total_amount'    => 'Total Amount',
+
+    'notes_content'          => 'Services maybe DISCONTINUED without prior notice if payment of the bill is not made to the collector after DUE DATE. Activation fee is 250 pesos. So, PAY YOUR BILLS ON TIME!',
 ];

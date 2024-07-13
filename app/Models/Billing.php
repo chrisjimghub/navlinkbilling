@@ -228,7 +228,6 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
-
     // period
     public function getPeriodAttribute()
     {

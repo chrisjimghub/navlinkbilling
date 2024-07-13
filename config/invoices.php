@@ -28,11 +28,12 @@ return [
          * Supported tags {SERIES}, {DELIMITER}, {SEQUENCE}
          * Example: AA.00001
          */
-        'format' => '{SERIES}{DELIMITER}{SEQUENCE}',
+        // 'format' => '{SERIES}{DELIMITER}{SEQUENCE}',
+        'format' => '{SEQUENCE}',
     ],
 
     'currency' => [
-        'code' => 'eur',
+        'code' => 'php',
 
         /*
          * Usually cents
@@ -40,30 +41,30 @@ return [
          *
          * Example: Amount in words: Eight hundred fifty thousand sixty-eight EUR and fifteen ct.
          */
-        'fraction' => 'ct.',
-        'symbol'   => '€',
+        'fraction' => env('CURRENCY_FRACTION', 'ct.'),
+        'symbol'   => env('CURRENCY_PREFIX', '₱'),
 
         /*
          * Example: 19.00
          */
-        'decimals' => 2,
+        'decimals' => env('CURRENCY_DECIMAL_precision', '2'),
 
         /*
          * Example: 1.99
          */
-        'decimal_point' => '.',
+        'decimal_point' => env('CURRENCY_DECIMAL_POINT', '.'),
 
         /*
          * By default empty.
          * Example: 1,999.00
          */
-        'thousands_separator' => '',
+        'thousands_separator' => env('THOUSAND_SEPARATOR', ','),
 
         /*
          * Supported tags {VALUE}, {SYMBOL}, {CODE}
          * Example: 1.99 €
          */
-        'format' => '{VALUE} {SYMBOL}',
+        'format' => '{SYMBOL} {VALUE}',
     ],
 
     'paper' => [
@@ -87,11 +88,11 @@ return [
          * Default attributes for Seller::class
          */
         'attributes' => [
-            'name'          => 'Towne, Smith and Ebert',
-            'address'       => '89982 Pfeffer Falls Damianstad, CO 66972-8160',
-            'code'          => '41-1985581',
-            'vat'           => '123456789',
-            'phone'         => '760-355-3930',
+            'name'          => '',
+            'address'       => '',
+            'code'          => '',
+            'vat'           => '',
+            'phone'         => '',
             'custom_fields' => [
                 /*
                  * Custom attributes for Seller::class
@@ -99,7 +100,9 @@ return [
                  * Used to display additional info on Seller section in invoice
                  * attribute => value
                  */
-                'SWIFT' => 'BANK101',
+                'company' => 'NavLink Technology FBR-X',
+                'address' => 'Brgy. San Isidro Palompon Leyte',
+                'phone' => '09958476256 / 09093639756',
             ],
         ],
     ],
@@ -112,4 +115,6 @@ return [
          */
         'logOutputFile' => '/dev/null',
     ],
+
+    'project_logo' => env('PROJECT_LOGO', '/images/NAVLINK_LOGO.png'),
 ];
