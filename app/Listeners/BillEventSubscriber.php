@@ -2,7 +2,9 @@
 
 namespace App\Listeners;
 
+use App\Models\Account;
 use App\Models\Billing;
+use App\Events\BillGenerated;
 use App\Events\BillProcessed;
 use App\Models\AccountCredit;
 use Illuminate\Support\Carbon;
@@ -46,6 +48,41 @@ class BillEventSubscriber
             $this->processed($event->billing);
         }
         
+    }
+
+    // Generate monthly fee only
+    public function handleBillGenerated(BillGenerated $event): void
+    {
+        if ($event->account == null) {
+            $accounts = Account::allowedBill()->installed()->get();
+            
+            foreach ($accounts as $account) {
+                $this->generateBill($account);
+            }
+
+        }elseif ($event->account instanceof Account) {
+            $this->generateBill($event->account);
+        }
+    }
+
+    public function generateBill(Account $account)
+    {
+        $billing = new Billing();
+        $billing->account_id = $account->id;
+        $billing->billing_type_id = 2;
+
+        // NOTE:: remove this if processMonthly have used this line of code.
+        if ($account->isFiber()) {
+            $billing->date_start = now()->startOfMonth()->toDateString();
+            $billing->date_end = now()->endOfMonth()->toDateString();
+            $billing->date_cut_off = now()->endOfMonth()->addDays(5)->toDateString();
+        } elseif ($account->isP2P()) {
+            $billing->date_start = now()->subMonth()->startOfMonth()->addDays(19)->toDateString();
+            $billing->date_end = now()->startOfMonth()->addDays(19)->toDateString();
+            $billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
+        }
+
+        $billing->save(); // this save will trigger the dispatch property in billing and run the processed.
     }
 
 

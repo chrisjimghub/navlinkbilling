@@ -139,6 +139,11 @@ class Account extends Model
                 
     }
 
+    public function scopeInstalled($query)
+    {
+        return $query->whereNotNull('installed_date');
+    }
+
     public function scopeNotInstalled($query)
     {
         return $query->whereNull('installed_date')
