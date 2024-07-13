@@ -82,7 +82,7 @@ class BillEventSubscriber
         foreach ($this->billing->account->otcs as $otc) {
             $this->particulars[] = [
                 'description' => ucwords($otc->name),
-                'amount' => $otc->amount,
+                'amount' => (float) $otc->amount,
             ];
         }
         
@@ -94,7 +94,7 @@ class BillEventSubscriber
             $contractPeriod = $this->billing->account->contractPeriods()->where('contract_periods.id', $contractId)->first();
             $this->particulars[] = [
                 'description' => ucwords($contractPeriod->name),
-                'amount' => $this->billing->account->plannedApplication->price,
+                'amount' => (float) $this->billing->account->plannedApplication->price,
             ];
         }
     }

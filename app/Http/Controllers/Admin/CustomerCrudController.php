@@ -60,6 +60,8 @@ class CustomerCrudController extends CrudController
             'height' => '150px',
             'width'  => '150px',
         ]);
+
+        $this->crud->removeColumn('facebook_messenger_id');
     }
 
 
@@ -99,7 +101,9 @@ class CustomerCrudController extends CrudController
             'view_namespace' => 'signature-field-for-backpack::fields',
         ]);
 
-        $this->crud->modifyField('date_of_birth', ['type' => 'date']);        
+        $this->crud->modifyField('date_of_birth', ['type' => 'date']);      
+        
+        $this->crud->removeField('facebook_messenger_id');
     }
 
     /**

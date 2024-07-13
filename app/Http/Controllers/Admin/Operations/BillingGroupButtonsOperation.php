@@ -4,19 +4,24 @@ namespace App\Http\Controllers\Admin\Operations;
 
 use App\Models\Billing;
 use Illuminate\Support\Str;
+use App\Events\BillProcessed;
 use App\Models\AccountCredit;
+use Illuminate\Support\Carbon;
 use App\Rules\BillingMustBeUnpaid;
 use Illuminate\Support\Facades\DB;
 use App\Rules\UpgradePlanValidDate;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
 use App\Rules\UniqueServiceInterruption;
+use LaravelDaily\Invoices\Classes\Buyer;
+use LaravelDaily\Invoices\Classes\Party;
 use Illuminate\Support\Facades\Validator;
 use App\Models\AccountServiceInterruption;
 use App\Notifications\NewBillNotification;
 use App\Rules\MustHaveEnoughAccountCredit;
+use LaravelDaily\Invoices\Facades\Invoice;
+use LaravelDaily\Invoices\Classes\InvoiceItem;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use App\Events\BillProcessed;
 
 trait BillingGroupButtonsOperation
 {
@@ -58,6 +63,12 @@ trait BillingGroupButtonsOperation
             'uses'      => $controller.'@changePlan',
             'operation' => 'changePlan',
         ]);
+
+        Route::get($segment.'/{id}/downloadInvoice', [
+            'as'        => $routeName.'.downloadInvoice',
+            'uses'      => $controller.'@downloadInvoice',
+            'operation' => 'downloadInvoice',
+        ]);
     }
 
     /**
@@ -71,6 +82,7 @@ trait BillingGroupButtonsOperation
             'changePlan',
             'serviceInterrupt',
             'sendNotification',
+            'downloadInvoice',
         ]);
 
         // load
@@ -92,24 +104,113 @@ trait BillingGroupButtonsOperation
         Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
         
         if ( $this->crud->hasAccess('pay') ) {
-            Widget::add()->type('script')->content('assets/js/admin/forms/pay.js');
+            Widget::add()->type('script')->content('assets/js/admin/billing_operations/pay.js');
         }
 
         if ( $this->crud->hasAccess('serviceInterrupt') ) {
-            Widget::add()->type('script')->content('assets/js/admin/forms/serviceInterrupt.js');
+            Widget::add()->type('script')->content('assets/js/admin/billing_operations/serviceInterrupt.js');
         }
 
         if ( $this->crud->hasAccess('sendNotification') ) {
-            Widget::add()->type('script')->content('assets/js/admin/forms/sendNotification.js');
+            Widget::add()->type('script')->content('assets/js/admin/billing_operations/sendNotification.js');
         }
 
         if ( $this->crud->hasAccess('payUsingCredit') ) {
-            Widget::add()->type('script')->content('assets/js/admin/forms/payUsingCredit.js');
+            Widget::add()->type('script')->content('assets/js/admin/billing_operations/payUsingCredit.js');
         }
 
         if ( $this->crud->hasAccess('changePlan') ) {
-            Widget::add()->type('script')->content('assets/js/admin/forms/changePlan.js');
+            Widget::add()->type('script')->content('assets/js/admin/billing_operations/changePlan.js');
         }
+    }
+
+    public function downloadInvoice($id)
+    {
+        $this->crud->hasAccessOrFail('downloadInvoice');
+
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+
+        $validator = Validator::make(['id' => $id], [
+            'id' => [
+                'required',
+                'integer',
+                'min:1',
+                'exists:billings,id',
+            ],
+        ], [
+            'id.required' => 'Invalid billing item.',
+            'id.exists' => 'The selected billing item does not exist.', 
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // Return validation errors as JSON response
+            \Alert::error($validator->errors()->all())->flash();
+
+            return redirect()->back();
+        }
+
+
+        $billing = Billing::findOrFail($id);
+
+        $customer = new Party([
+            'custom_fields' => [
+                'name'          => $billing->account->customer->full_name,
+                'plan' => $billing->account_planned_application_details,
+                'address' => $billing->account->customer->address,
+                // 'Email' => $billing->account->customer->email,
+                'Contact' => $billing->account->customer->contact_number,
+                'subscription' => $billing->account_subscription_name,
+            ],
+        ]);
+
+        $items = [];
+
+        foreach ($billing->particulars as $item) {
+            $amount = 0;
+            $deduction = 0;
+
+            if ($item['amount'] > 0) {
+                $amount = $item['amount'];
+            }else {
+                $deduction = abs($item['amount']);
+            }
+            
+            $items[] = InvoiceItem::make($item['description'])
+                        ->pricePerUnit($amount)
+                        // since laravel daily package dont have less or deduction method, so i use this discount instead
+                        ->discount($deduction); 
+        }
+
+        
+        $invoice = Invoice::make('receipt')
+            // ability to include translated invoice status
+            // in case it was paid
+            ->status($billing->billingStatus->name)
+            ->sequence($billing->id)
+            ->serialNumberFormat('{SEQUENCE}')
+            ->buyer($customer)
+            ->addItems($items)
+
+            ->date($billing->created_at)
+            ->dateFormat(dateHumanReadable())
+            
+            ->setCustomData([
+                'is_monthly_fee' => $billing->isMonthlyFee(),
+                'billing_type' => $billing->billingType->name,
+                'billing_period' => $billing->period,
+                'date_cut_off' => Carbon::parse($billing->date_cut_off)->format(dateHumanReadable()),
+            ])
+
+            
+            ->notes(__('invoices::invoice.notes_content'))
+            
+            ->filename($customer->custom_fields['name'])
+            ->logo(public_path(config('invoices.project_logo')));
+        
+        // And return invoice itself to browser or have a different view
+        // return $invoice->stream();
+        return $invoice->download();
     }
 
     public function changePlan($id)

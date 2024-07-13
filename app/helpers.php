@@ -77,7 +77,7 @@ if (! function_exists('carbonNow')) {
 
 if (! function_exists('dateHumanReadable')) {
 	function dateHumanReadable() {
-        return 'j M Y';
+        return 'M j, Y';
 	}
 }
 // end carbon
