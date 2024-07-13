@@ -67,22 +67,28 @@ class BillEventSubscriber
 
     public function generateBill(Account $account)
     {
-        $billing = new Billing();
-        $billing->account_id = $account->id;
-        $billing->billing_type_id = 2;
+        // make sure generate or create only bill if the account has no current unpaid bill with a type of monthly
+        if (!$account->billings()->where(function ($query) {
+            $query->monthly()->unpaid();
+        })->exists()) {
+            // No unpaid monthly billings found, proceed to create a new billing
+            $billing = new Billing();
+            $billing->account_id = $account->id;
+            $billing->billing_type_id = 2;
 
-        // NOTE:: remove this if processMonthly have used this line of code.
-        if ($account->isFiber()) {
-            $billing->date_start = now()->startOfMonth()->toDateString();
-            $billing->date_end = now()->endOfMonth()->toDateString();
-            $billing->date_cut_off = now()->endOfMonth()->addDays(5)->toDateString();
-        } elseif ($account->isP2P()) {
-            $billing->date_start = now()->subMonth()->startOfMonth()->addDays(19)->toDateString();
-            $billing->date_end = now()->startOfMonth()->addDays(19)->toDateString();
-            $billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
+            // NOTE:: remove this if processMonthly have used this line of code.
+            if ($account->isFiber()) {
+                $billing->date_start = now()->startOfMonth()->toDateString();
+                $billing->date_end = now()->endOfMonth()->toDateString();
+                $billing->date_cut_off = now()->endOfMonth()->addDays(5)->toDateString();
+            } elseif ($account->isP2P()) {
+                $billing->date_start = now()->subMonth()->startOfMonth()->addDays(19)->toDateString();
+                $billing->date_end = now()->startOfMonth()->addDays(19)->toDateString();
+                $billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
+            }
+
+            $billing->save(); // this save will trigger the dispatch property in billing and run the processed.
         }
-
-        $billing->save(); // this save will trigger the dispatch property in billing and run the processed.
     }
 
 
