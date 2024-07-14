@@ -9,6 +9,6 @@ use Illuminate\Support\Facades\Schedule;
 // })->purpose('Display an inspiring quote')->hourly();
 
 
-Schedule::command('bill:auto-generate')->everyMinute();
+Schedule::command('bill:auto-generate')->everyMinute()->withoutOverlapping();
 
 // TODO:: add notification dispatch here

@@ -151,16 +151,16 @@ class BillEventSubscriber
             } elseif ($this->billing->account->isP2P()) { 
                 // p2p date start
                 if (Setting::get('p2p_date_start')) {
-                    $this->billing->date_start = dateOfPrevMonth(Setting::get('p2p_date_start'));
+                    $this->billing->date_start = dateOfMonth(Setting::get('p2p_date_start'));
                 }else {
-                    $this->billing->date_start = dateOfPrevMonth(20);
+                    $this->billing->date_start = dateOfMonth(20);
                 }
                 
                 // p2p date end
                 if (Setting::get('p2p_date_end')) {
-                    $this->billing->date_end = dateOfMonth(Setting::get('p2p_date_end'));
+                    $this->billing->date_end = dateOfNextMonth(Setting::get('p2p_date_end'));
                 }else {
-                    $this->billing->date_end = dateOfMonth(20);
+                    $this->billing->date_end = dateOfNextMonth(20);
                 }
 
                 // p2p date cut off

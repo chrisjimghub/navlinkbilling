@@ -82,7 +82,7 @@ class SettingsTableSeeder extends Seeder
                 'id' => 6,
                 'key' => 'p2p_date_start',
                 'name' => 'P2P monthly date start.',
-                'description' => 'Day of the prev month.',
+                'description' => 'Day of the current month.',
                 'value' => '20',
                 'field' => '{
 "name": "value",
@@ -105,7 +105,7 @@ class SettingsTableSeeder extends Seeder
                 'id' => 7,
                 'key' => 'p2p_date_end',
                 'name' => 'P2P monthly date end.',
-                'description' => 'Day of the month.',
+                'description' => 'Day of the next month.',
                 'value' => '20',
                 'field' => '{
 "name": "value",
