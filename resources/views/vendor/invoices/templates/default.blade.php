@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        @php
-            // dd($invoice);
-        @endphp
         <title>{{ $invoice->filename }}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 

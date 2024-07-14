@@ -21,7 +21,56 @@ if (! function_exists('modelInstance')) {
 	}
 }
 
-// carbon
+// get date of month using the day
+if (! function_exists('dateOfMonth')) {
+	function dateOfMonth($day, $returnAsCarbonInstance = false) {
+		// Get the current month's starting date
+		$startDate = Carbon::now()->startOfMonth();
+	
+		// Calculate the last day of the current month
+		$lastDayOfMonth = $startDate->copy()->endOfMonth()->day;
+	
+		// Validate $day to ensure it's within valid range (1 - last day of the month)
+		if ($day < 1 || $day > $lastDayOfMonth) {
+			throw new InvalidArgumentException("Day must be between 1 and {$lastDayOfMonth}.");
+		}
+	
+		// Calculate the target date
+		$targetDate = $startDate->addDays($day - 1); // Subtract 1 because $day is 1-indexed
+		
+		if ($returnAsCarbonInstance) {
+			return $targetDate;
+		}
+
+		return $targetDate->toDateString();
+	}
+}
+
+// get date of prev month
+if (! function_exists('dateOfPrevMonth')) {
+	function dateOfPrevMonth($day, $returnAsCarbonInstance = false) {
+		// Get the current month's starting date
+		$startDate = Carbon::now()->subMonth()->startOfMonth();
+	
+		// Calculate the last day of the current month
+		$lastDayOfMonth = $startDate->copy()->endOfMonth()->day;
+	
+		// Validate $day to ensure it's within valid range (1 - last day of the month)
+		if ($day < 1 || $day > $lastDayOfMonth) {
+			throw new InvalidArgumentException("Day must be between 1 and {$lastDayOfMonth}.");
+		}
+	
+		// Calculate the target date
+		$targetDate = $startDate->addDays($day - 1); // Subtract 1 because $day is 1-indexed
+	
+		if ($returnAsCarbonInstance) {
+			return $targetDate;
+		}
+
+		return $targetDate->toDateString();
+	}
+}
+
 if (! function_exists('dateDaysAndHoursDifference')) {
 	function dateDaysAndHoursDifference($dateStart, $dateEnd) {
 		$dateStart = Carbon::parse($dateStart);

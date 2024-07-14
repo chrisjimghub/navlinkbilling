@@ -129,6 +129,20 @@ class Account extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeP2p($query)
+    {
+        return $query->whereHas('subscription', function ($q) {
+            $q->where('id', 1); 
+        });
+    }
+
+    public function scopeFiber($query)
+    {
+        return $query->whereHas('subscription', function ($q) {
+            $q->where('id', 2); 
+        });
+    }
+
     public function scopeAllowedBill($query)
     {
         return $query->whereHas('accountStatus', function ($q) {
@@ -137,6 +151,11 @@ class Account extends Model
             // installing 
         });
                 
+    }
+
+    public function scopeInstalled($query)
+    {
+        return $query->whereNotNull('installed_date');
     }
 
     public function scopeNotInstalled($query)
