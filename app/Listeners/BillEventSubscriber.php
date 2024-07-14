@@ -6,14 +6,8 @@ use App\Models\Account;
 use App\Models\Billing;
 use App\Events\BillGenerated;
 use App\Events\BillProcessed;
-use App\Models\AccountCredit;
 use Illuminate\Support\Carbon;
-use App\Events\BillReprocessed;
-use Illuminate\Events\Dispatcher;
-use App\Events\AccountCreditSnapshot;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Events\UpgradeAccountBillProcessed;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Backpack\Settings\app\Models\Setting;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 
@@ -76,18 +70,7 @@ class BillEventSubscriber
             $billing->account_id = $account->id;
             $billing->billing_type_id = 2;
 
-            // NOTE:: remove this if processMonthly have used this line of code.
-            if ($account->isFiber()) {
-                $billing->date_start = now()->startOfMonth()->toDateString();
-                $billing->date_end = now()->endOfMonth()->toDateString();
-                $billing->date_cut_off = now()->endOfMonth()->addDays(5)->toDateString();
-            } elseif ($account->isP2P()) {
-                $billing->date_start = now()->subMonth()->startOfMonth()->addDays(19)->toDateString();
-                $billing->date_end = now()->startOfMonth()->addDays(19)->toDateString();
-                $billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
-            }
-
-            $billing->save(); // this save will trigger the dispatch property in billing and run the processed.
+            $billing->save(); // this "save" will trigger the dispatch property in billing and run the BillProcessed event.
         }
     }
 
@@ -108,8 +91,6 @@ class BillEventSubscriber
             // monthly
             $this->processMonthly();
         }
-
-        // debug($this->particulars);
 
         $this->billing->particulars = $this->particulars;
         $this->billing->saveQuietly();
@@ -144,16 +125,52 @@ class BillEventSubscriber
 
     public function processMonthly()
     {
-        // NOTE:: comment for now, TBD
-        // if ($this->billing->account->isFiber()) {
-        //     $this->billing->date_start = now()->startOfMonth()->toDateString();
-        //     $this->billing->date_end = now()->endOfMonth()->toDateString();
-        //     $this->billing->date_cut_off = now()->endOfMonth()->addDays(5)->toDateString();
-        // } elseif ($this->billing->account->isP2P()) {
-        //     $this->billing->date_start = now()->subMonth()->startOfMonth()->addDays(19)->toDateString();
-        //     $this->billing->date_end = now()->startOfMonth()->addDays(19)->toDateString();
-        //     $this->billing->date_cut_off = now()->startOfMonth()->addDays(24)->toDateString();
-        // }
+        if (empty($this->billing->date_start) || empty($this->billing->date_end) || empty($this->billing->date_cut_off)) {
+            if ($this->billing->account->isFiber()) {
+                // fiber date start
+                if (Setting::get('fiber_date_start')) {
+                    $this->billing->date_start = dateOfMonth(Setting::get('fiber_date_start'));
+                }else {
+                    $this->billing->date_start = now()->startOfMonth()->toDateString();
+                }
+
+                // fiber date end
+                if (Setting::get('fiber_date_end')) {
+                    $this->billing->date_end = dateOfMonth(Setting::get('fiber_date_end'));
+                }else {
+                    $this->billing->date_end = now()->endOfMonth()->toDateString();
+                }
+
+                // fiber date cut off
+                if (Setting::get('days_cut_off')) {
+                    $this->billing->date_cut_off = Carbon::parse($this->billing->date_end)->addDays((int) Setting::get('days_cut_off'))->toDateString();
+                }else {
+                    $this->billing->date_cut_off = now()->endOfMonth()->addDays(5)->toDateString();
+                }
+            
+            } elseif ($this->billing->account->isP2P()) { 
+                // p2p date start
+                if (Setting::get('p2p_date_start')) {
+                    $this->billing->date_start = dateOfPrevMonth(Setting::get('p2p_date_start'));
+                }else {
+                    $this->billing->date_start = dateOfPrevMonth(20);
+                }
+                
+                // p2p date end
+                if (Setting::get('p2p_date_end')) {
+                    $this->billing->date_end = dateOfMonth(Setting::get('p2p_date_end'));
+                }else {
+                    $this->billing->date_end = dateOfMonth(20);
+                }
+
+                // p2p date cut off
+                if (Setting::get('days_cut_off')) {
+                    $this->billing->date_cut_off = Carbon::parse($this->billing->date_end)->addDays((int) Setting::get('days_cut_off'))->toDateString();
+                }else {
+                    $this->billing->date_cut_off = dateOfMonth(25);
+                }
+            }
+        }
 
         // if empty before_account_snapshot = No Upgrade Planned Application
         if (!$this->billing->before_account_snapshot) {
