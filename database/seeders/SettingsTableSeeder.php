@@ -159,7 +159,7 @@ class SettingsTableSeeder extends Seeder
 "attributes": {
 "step": "1",
 "required": "required",
-"min": "1"
+"min": "0"
 }
 }
 ',

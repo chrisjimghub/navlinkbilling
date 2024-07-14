@@ -23,7 +23,7 @@ if (! function_exists('modelInstance')) {
 
 // get date of month using the day
 if (! function_exists('dateOfMonth')) {
-	function dateOfMonth($day) {
+	function dateOfMonth($day, $returnAsCarbonInstance = false) {
 		// Get the current month's starting date
 		$startDate = Carbon::now()->startOfMonth();
 	
@@ -37,14 +37,18 @@ if (! function_exists('dateOfMonth')) {
 	
 		// Calculate the target date
 		$targetDate = $startDate->addDays($day - 1); // Subtract 1 because $day is 1-indexed
-	
+		
+		if ($returnAsCarbonInstance) {
+			return $targetDate;
+		}
+
 		return $targetDate->toDateString();
 	}
 }
 
 // get date of prev month
 if (! function_exists('dateOfPrevMonth')) {
-	function dateOfPrevMonth($day) {
+	function dateOfPrevMonth($day, $returnAsCarbonInstance = false) {
 		// Get the current month's starting date
 		$startDate = Carbon::now()->subMonth()->startOfMonth();
 	
@@ -59,6 +63,10 @@ if (! function_exists('dateOfPrevMonth')) {
 		// Calculate the target date
 		$targetDate = $startDate->addDays($day - 1); // Subtract 1 because $day is 1-indexed
 	
+		if ($returnAsCarbonInstance) {
+			return $targetDate;
+		}
+
 		return $targetDate->toDateString();
 	}
 }
