@@ -19,6 +19,7 @@
         "backpack/filemanager": "^3.0",
         "backpack/logmanager": "^5.0",
         "backpack/permissionmanager": "^7.2",
+        "backpack/settings": "^3.1",
         "backpack/theme-coreuiv2": "^1.2",
         "backpack/theme-coreuiv4": "^1.1",
         "genealabs/laravel-pivot-events": "*",
