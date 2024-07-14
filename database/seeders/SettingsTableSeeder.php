@@ -149,8 +149,8 @@ class SettingsTableSeeder extends Seeder
             array (
                 'id' => 10,
                 'key' => 'days_generate_bill',
-                'name' => 'Generate bill days before the start date.',
-                'description' => 'Number of days before bill is auto generated before date start.',
+                'name' => 'Generate bill days before the date end.',
+                'description' => 'Number of days before bill is auto generated before date end.',
                 'value' => '5',
                 'field' => '{
 "name": "value",
