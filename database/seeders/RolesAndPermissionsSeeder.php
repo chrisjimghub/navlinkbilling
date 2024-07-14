@@ -160,6 +160,12 @@ class RolesAndPermissionsSeeder extends Seeder
             // 'account_credits_update', 
             // 'account_credits_delete', 
         ],
+        
+
+        'settings' => [
+            'settings_list',
+            'settings_update', 
+        ],
 
     ];
 
