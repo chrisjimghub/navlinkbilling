@@ -38,25 +38,25 @@ class AutoGenerateBill extends Command
             }
 
             if (Carbon::now()->isSameDay($fiberRunOnDate)) {
-                Artisan::call('bill:generate', ['--fiber' => true]);
+                // Artisan::call('bill:generate', ['--fiber' => true]);
             }
 
 
             // P2P
-            $p2pRunOnDate = Setting::get('p2p_date_end') ? dateOfMonth(Setting::get('p2p_date_end'), true) : dateOfMonth(20, true);
+            $p2pRunOnDate = Setting::get('p2p_date_end') ? dateOfNextMonth(Setting::get('p2p_date_end'), true) : dateOfNextMonth(20, true);
             if (Setting::get('days_generate_bill')) {
                 $p2pRunOnDate = $p2pRunOnDate->subDays((int) Setting::get('days_generate_bill'));
             }
 
             if (Carbon::now()->isSameDay($p2pRunOnDate)) {
-                Artisan::call('bill:generate', ['--p2p' => true]);
+                // Artisan::call('bill:generate', ['--p2p' => true]);
             }
 
 
-            // dd([
-            //     $fiberRunOnDate->toDateString(),
-            //     $p2pRunOnDate->toDateString()
-            // ]);
+            dd([
+                $fiberRunOnDate->toDateString(),
+                $p2pRunOnDate->toDateString()
+            ]);
             
         }
 
