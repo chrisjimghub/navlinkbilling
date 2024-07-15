@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Backpack\Settings\app\Models\Setting;
 
 if (! function_exists('modelInstance')) {
 	function modelInstance($class, $useFullPath = false) {
@@ -21,6 +22,7 @@ if (! function_exists('modelInstance')) {
 	}
 }
 
+// DATES
 // get date of month using the day
 if (! function_exists('dateOfMonth')) {
 	function dateOfMonth($day, $returnAsCarbonInstance = false) {
@@ -153,7 +155,84 @@ if (! function_exists('dateHumanReadable')) {
         return 'M j, Y';
 	}
 }
-// end carbon
+
+// this function make sure that the provided day is within month, if it exceed then it returns the last day of the month
+if (! function_exists('adjustDayWithinMonth')) {
+	function adjustDayWithinMonth($day, $month = null) {
+		$currentDate = Carbon::now();
+		
+		if ($month !== null) {
+			if ($month < 1 || $month > 12) {
+				throw new InvalidArgumentException("Month must be between 1 and 12.");
+			}
+			$currentDate->month($month);
+		}
+		
+		$lastDayOfMonth = $currentDate->endOfMonth()->day;
+		
+		if ($day > $lastDayOfMonth) {
+			return $lastDayOfMonth;
+		}
+		
+		return $day;
+	}
+}
+// end DATES
+
+// billing
+// billingDateStart
+if (! function_exists('billingDateStart')) {
+	function billingDateStart($type) { // fiber or p2p
+		$billingStart = Setting::get($type.'_billing_start');
+		$day = (int) Setting::get($type.'_day_start'); // Get the day as an integer
+	
+		// Set the current date with the specified day
+		$currentDate = Carbon::now()->day($day);
+
+		if ($billingStart == 'previous_month') {
+			// subMonthNoOverFlow = subtract a month and then retain the day, if day out of bounce then it will get the last day of month.
+			// if you want subMonth and adjust it so that if it out of bounce it will add the day to the next month then ust subMonthOverflow
+			$currentDate->subMonthNoOverflow(); 
+		} elseif ($billingStart == 'current_month') {
+			// No need to adjust, already in the current month
+		} else {
+			throw new InvalidArgumentException("Setting::get('".$type."_billing_start') is empty or invalid!");
+		}
+	
+		return $currentDate->toDateString();
+	}
+}
+
+// TODO:: BRB
+if (! function_exists('billingDateEnd')) {
+	function billingDateEnd($type) { // fiber or p2p
+		$billingStart = Setting::get($type.'_billing_start'); // fiber_billing_start/p2p_billing_start = previous_month/current_month
+		$day = (int) Setting::get($type.'_day_end'); 
+	
+		// Set the current date with the specified day
+		$currentDate = Carbon::now()->day($day);
+
+		if ($billingStart == 'previous_month') {
+			// if billing start is previous then this should be current
+			// No need to adjust, already in the current month
+		} elseif ($billingStart == 'current_month') {
+			// billing start is current then this should be next month
+			$currentDate->addMonthNoOverflow(); 
+		} else {
+			throw new InvalidArgumentException("Setting::get('".$type."_billing_end') is empty or invalid!");
+		}
+	
+		return $currentDate->toDateString();
+	}
+}
+
+
+// fiberDateCutOff
+// p2pDateCutOff
+
+
+
+// end billing
 
 
 if (! function_exists('currencyFormat')) {

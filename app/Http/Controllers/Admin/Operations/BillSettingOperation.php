@@ -58,7 +58,7 @@ trait BillSettingOperation
             'days_before_generate_bill' => [
                 'required',
                 'integer',   
-                'between:0,20',
+                'between:0,10',
             ],
             
             // fiber
@@ -72,10 +72,10 @@ trait BillSettingOperation
                 'integer',   
                 'between:0,31',
             ],
-            'fiber_billing_start' => [
+            'fiber_billing_period' => [
                 'required',
                 'string', 
-                'in:previous_month,current_month',
+                'in:previous_month_current_month,current_month_current_month,current_month_next_month',
             ],
             // end fiber
             
@@ -90,17 +90,17 @@ trait BillSettingOperation
                 'integer',   
                 'between:0,31',
             ],
-            'p2p_billing_start' => [
+            'p2p_billing_period' => [
                 'required',
                 'string', 
-                'in:previous_month,current_month',
+                'in:previous_month_current_month,current_month_current_month,current_month_next_month',
             ],
             // end p2p
 
             'days_before_send_bill_notification' => [
                 'required',
                 'integer',   
-                'between:0,20',
+                'between:0,10',
             ],
 
             'days_before_send_cut_off_notification' => [
@@ -124,17 +124,17 @@ trait BillSettingOperation
         // fiber
         Setting::set('fiber_day_start', request()->fiber_day_start);
         Setting::set('fiber_day_end', request()->fiber_day_end);
-        Setting::set('fiber_billing_start', request()->fiber_billing_start);
+        Setting::set('fiber_billing_period', request()->fiber_billing_period);
         // p2p
         Setting::set('p2p_day_start', request()->p2p_day_start);
         Setting::set('p2p_day_end', request()->p2p_day_end);
-        Setting::set('p2p_billing_start', request()->p2p_billing_start);
+        Setting::set('p2p_billing_period', request()->p2p_billing_period);
         
         Setting::set('days_before_send_bill_notification', request()->days_before_send_bill_notification);
         Setting::set('days_before_send_cut_off_notification', request()->days_before_send_cut_off_notification);
 
         return response()->json([
-            'msg' => '<strong>'.__('Billing Settings').'</strong><br>'.__('The billing settings have been successfully updated.'),
+            'msg' => '<strong>'.__('Billing Settings Updated').'</strong><br>'.__('The billing settings have been successfully updated.'),
         ]);
     }
 }

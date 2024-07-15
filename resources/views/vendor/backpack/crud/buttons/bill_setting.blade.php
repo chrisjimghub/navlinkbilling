@@ -41,7 +41,7 @@
                     <select class="form-control" id="days_before_generate_bill" name="days_before_generate_bill">
                         <option value="">-</option>
                         <option {{ Setting::get('days_before_generate_bill') == 0 ? "selected" : ""  }} value="0">Immediately at the end of the billing period.</option>
-                        @for($day = 1; $day <= 20; $day++)
+                        @for($day = 1; $day <= 10; $day++)
                             <option 
                                 {{ Setting::get('days_before_generate_bill') == $day ? "selected" : ""  }}
                                 value="{{ $day }}">{{ $day }} {{ $day == 1 ? 'day' : 'days' }} before the end of the billing period.
@@ -57,7 +57,7 @@
                 <div class="form-group">
                     <label for="fiberGroup"><strong>Fiber Settings</strong></label>
                     <div class="row">
-                        <div class="col">
+                        <div class="col-3">
                             <label for="fiber_day_start">Day Start</label>
                             <span class="text-danger">*</span>
                             <select class="form-control" id="fiber_day_start" name="fiber_day_start">
@@ -73,7 +73,7 @@
                             </select>
                         </div>
 
-                        <div class="col">
+                        <div class="col-3">
                             <label for="fiber_day_end">Day End</label>
                             <span class="text-danger">*</span>
                             <select class="form-control" id="fiber_day_end" name="fiber_day_end">
@@ -89,13 +89,27 @@
                             </select>
                         </div>
 
-                        <div class="col">
-                            <label for="fiber_billing_start">Billing Start</label>
+                        <div class="col-6">
+                            <label for="fiber_billing_period">Billing Period</label>
                             <span class="text-danger">*</span>
-                            <select class="form-control" id="fiber_billing_start" name="fiber_billing_start">
+                            <select class="form-control" id="fiber_billing_period" name="fiber_billing_period">
                                 <option value="">-</option>
-                                <option {{ Setting::get('fiber_billing_start') == "previous_month" ? "selected" : ""  }} value="previous_month">Previous Month</option>
-                                <option {{ Setting::get('fiber_billing_start') == "current_month" ? "selected" : ""  }} value="current_month">Current Month</option>
+
+                                @foreach ([
+                                    'previous_month_current_month' => 'Previous Month - Current Month',
+                                    'current_month_current_month' => 'Current Month - Current Month',
+                                    'current_month_next_month' => 'Current Month - Next Month',
+                                ] as $value => $label)
+                                    
+                                    <option 
+                                        {{ ($value == Setting::get('fiber_billing_period')) ? "selected" : "" }}
+                                        value="{{ $value }}"
+                                    >
+                                        {{ $label }}
+                                    </option>
+
+                                @endforeach
+
                             </select>
                         </div>
 
@@ -107,7 +121,7 @@
                 <div class="form-group">
                     <label for="p2pGroup"><strong>P2P Settings</strong></label>
                     <div class="row">
-                        <div class="col">
+                        <div class="col-3">
                             <label for="p2p_day_start">Day Start</label>
                             <span class="text-danger">*</span>
                             <select class="form-control" id="p2p_day_start" name="p2p_day_start">
@@ -123,7 +137,7 @@
                             </select>
                         </div>
 
-                        <div class="col">
+                        <div class="col-3">
                             <label for="p2p_day_end">Day End</label>
                             <span class="text-danger">*</span>
                             <select class="form-control" id="p2p_day_end" name="p2p_day_end">
@@ -139,13 +153,27 @@
                             </select>
                         </div>
 
-                        <div class="col">
-                            <label for="p2p_billing_start">Billing Start</label>
+                        <div class="col-6">
+                            <label for="p2p_billing_period">Billing Period</label>
                             <span class="text-danger">*</span>
-                            <select class="form-control" id="p2p_billing_start" name="p2p_billing_start">
+                            <select class="form-control" id="p2p_billing_period" name="p2p_billing_period">
                                 <option value="">-</option>
-                                <option {{ Setting::get('p2p_billing_start') == "previous_month" ? "selected" : ""  }} value="previous_month">Previous Month</option>
-                                <option {{ Setting::get('p2p_billing_start') == "current_month" ? "selected" : ""  }} value="current_month">Current Month</option>
+                            
+                                @foreach ([
+                                    'previous_month_current_month' => 'Previous Month - Current Month',
+                                    'current_month_current_month' => 'Current Month - Current Month',
+                                    'current_month_next_month' => 'Current Month - Next Month',
+                                ] as $value => $label)
+                                    
+                                    <option 
+                                        {{ ($value == Setting::get('p2p_billing_period')) ? "selected" : "" }}
+                                        value="{{ $value }}"
+                                    >
+                                        {{ $label }}
+                                    </option>
+
+                                @endforeach
+
                             </select>
                         </div>
 
@@ -162,7 +190,7 @@
                     <select class="form-control" id="days_before_send_bill_notification" name="days_before_send_bill_notification">
                         <option value="">-</option>
                         <option {{ Setting::get('days_before_send_bill_notification') == "0" ? "selected" : ""  }} value="0">Immediately after the bill is created.</option>
-                        @for($day = 1; $day <= 20; $day++)
+                        @for($day = 1; $day <= 10; $day++)
                             <option 
                                 {{ Setting::get('days_before_send_bill_notification') == $day ? "selected" : ""  }}
                                 value="{{ $day }}">{{ $day }} {{ $day == 1 ? 'day' : 'days' }} after the bill is created.
@@ -220,10 +248,10 @@ if (typeof billSettings != 'function') {
             days_before_generate_bill: $('#days_before_generate_bill').val(),
             fiber_day_start: $('#fiber_day_start').val(),
             fiber_day_end: $('#fiber_day_end').val(),
-            fiber_billing_start: $('#fiber_billing_start').val(),
+            fiber_billing_period: $('#fiber_billing_period').val(),
             p2p_day_start: $('#p2p_day_start').val(),
             p2p_day_end: $('#p2p_day_end').val(),
-            p2p_billing_start: $('#p2p_billing_start').val(),
+            p2p_billing_period: $('#p2p_billing_period').val(),
             days_before_send_bill_notification: $('#days_before_send_bill_notification').val(),
             days_before_send_cut_off_notification: $('#days_before_send_cut_off_notification').val()
         };
