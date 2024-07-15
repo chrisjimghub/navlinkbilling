@@ -26,12 +26,19 @@ class Test extends Command
      */
     public function handle()
     {
-        
-        if (Setting::get('auto_generate_bill') && Setting::get('auto_generate_bill') == "1") {
-            dd('enbled_bill');
-        }else {
-            dd('disabled_bill');
+        $year = '2024';        
+
+        for ($i = 1; $i <= 12; $i++) {
+            $formatted = str_pad($i, 2, '0', STR_PAD_LEFT);
+            $date = $year.'-'.$formatted.'-01';
+
+            dump(
+                // fiberBillingPeriod($date)
+                p2pBillingPeriod($date)
+            );
         }
 
+
+        dd();
     }
 }
