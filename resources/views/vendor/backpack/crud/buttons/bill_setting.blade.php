@@ -35,7 +35,7 @@
 
                 <div class="form-group">
                     <label for="days_before_generate_bill">
-                        <strong>How many days before the end of the billing period should the bill be generated?</strong>
+                        <strong>When should the bill be auto-generated?</strong>
                         <span class="text-danger">*</span>
                     </label>
                     <select class="form-control" id="days_before_generate_bill" name="days_before_generate_bill">
@@ -184,7 +184,7 @@
 
                 <div class="form-group">
                     <label for="days_before_send_bill_notification">
-                        <strong>How many days after the bill is created should we send notifications to customers?</strong>
+                        <strong>When should we send customer notifications?</strong>
                         <span class="text-danger">*</span>
                     </label>
                     <select class="form-control" id="days_before_send_bill_notification" name="days_before_send_bill_notification">
@@ -202,7 +202,7 @@
 
                 <div class="form-group">
                     <label for="days_before_send_cut_off_notification">
-                        <strong>How many days before the cut-off date should we send cut-off notifications to customers?</strong>
+                        <strong>When should we send cut-off notifications?</strong>
                         <span class="text-danger">*</span>
                     </label>
                     <select class="form-control" id="days_before_send_cut_off_notification" name="days_before_send_cut_off_notification">
