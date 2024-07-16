@@ -193,6 +193,18 @@ class Billing extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    // accountFiber
+    public function scopeAccountFiber($query)
+    {
+        return $query->where('account_snapshot->subscription->id', 2); // 2 = FIBER
+    }
+
+    // accountP2p
+    public function scopeAccountP2p($query)
+    {
+        return $query->where('account_snapshot->subscription->id', 1); // 1 = P2P
+    }
+
     public function scopeCutOffAccounts($query)
     {
         return $this->monthly()

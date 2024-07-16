@@ -38,15 +38,19 @@ class NewBillNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        // return (new MailMessage)
+        //     ->subject(
+        //         $this->billing->isCutOff() ? 
+        //             'Cut Off Notification For '.$this->billing->month.'.' : 
+        //             'Bill For The Month Of '.$this->billing->month.'.') 
+        //     ->markdown(
+        //         $this->billing->isCutOff() ? 'emails.cut_off' : 'emails.new-bill', 
+        //         ['billing' => $this->billing]
+        //     );
+
         return (new MailMessage)
-            ->subject(
-                $this->billing->isCutOff() ? 
-                    'Cut Off Notification For '.$this->billing->month.'.' : 
-                    'Bill For The Month Of '.$this->billing->month.'.') 
-            ->markdown(
-                $this->billing->isCutOff() ? 'emails.cut-off' : 'emails.new-bill', 
-                ['billing' => $this->billing]
-            );
+            ->subject('Bill For The Month Of '.$this->billing->month) 
+            ->markdown('emails.new-bill', ['billing' => $this->billing]);
     }
 
 }
