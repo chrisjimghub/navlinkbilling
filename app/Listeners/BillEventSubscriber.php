@@ -127,48 +127,18 @@ class BillEventSubscriber
     {
         if (empty($this->billing->date_start) || empty($this->billing->date_end) || empty($this->billing->date_cut_off)) {
             if ($this->billing->account->isFiber()) {
-                // fiber date start
-                if (Setting::get('fiber_date_start')) {
-                    $this->billing->date_start = dateOfMonth(Setting::get('fiber_date_start'));
-                }else {
-                    $this->billing->date_start = now()->startOfMonth()->toDateString();
-                }
+                // fiber dates
+                $period = fiberBillingPeriod();
+                $this->billing->date_start = $period['date_start'];
+                $this->billing->date_end = $period['date_end'];
+                $this->billing->date_cut_off = $period['date_cut_off'];
 
-                // fiber date end
-                if (Setting::get('fiber_date_end')) {
-                    $this->billing->date_end = dateOfMonth(Setting::get('fiber_date_end'));
-                }else {
-                    $this->billing->date_end = now()->endOfMonth()->toDateString();
-                }
-
-                // fiber date cut off
-                if (Setting::get('days_cut_off')) {
-                    $this->billing->date_cut_off = Carbon::parse($this->billing->date_end)->addDays((int) Setting::get('days_cut_off'))->toDateString();
-                }else {
-                    $this->billing->date_cut_off = now()->endOfMonth()->addDays(5)->toDateString();
-                }
-            
             } elseif ($this->billing->account->isP2P()) { 
-                // p2p date start
-                if (Setting::get('p2p_date_start')) {
-                    $this->billing->date_start = dateOfMonth(Setting::get('p2p_date_start'));
-                }else {
-                    $this->billing->date_start = dateOfMonth(20);
-                }
-                
-                // p2p date end
-                if (Setting::get('p2p_date_end')) {
-                    $this->billing->date_end = dateOfNextMonth(Setting::get('p2p_date_end'));
-                }else {
-                    $this->billing->date_end = dateOfNextMonth(20);
-                }
-
-                // p2p date cut off
-                if (Setting::get('days_cut_off')) {
-                    $this->billing->date_cut_off = Carbon::parse($this->billing->date_end)->addDays((int) Setting::get('days_cut_off'))->toDateString();
-                }else {
-                    $this->billing->date_cut_off = dateOfMonth(25);
-                }
+                // p2p dates
+                $period = p2pBillingPeriod();
+                $this->billing->date_start = $period['date_start'];
+                $this->billing->date_end = $period['date_end'];
+                $this->billing->date_cut_off = $period['date_cut_off'];
             }
         }
 
