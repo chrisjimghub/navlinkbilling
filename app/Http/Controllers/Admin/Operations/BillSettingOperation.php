@@ -55,11 +55,11 @@ trait BillSettingOperation
                 'integer',  
                 'in:0,1',  
             ],
-            'days_before_generate_bill' => [
-                'required',
-                'integer',   
-                'between:0,10',
+            'enable_auto_notification' => [
+                'integer',  
+                'in:0,1',  
             ],
+            
             
             // fiber
             'fiber_day_start' => [
@@ -84,6 +84,7 @@ trait BillSettingOperation
             ],
             // end fiber
             
+
             // p2p
             'p2p_day_start' => [
                 'required',
@@ -107,28 +108,36 @@ trait BillSettingOperation
             ],
             // end p2p
 
+
+            'days_before_generate_bill' => [
+                'integer',
+                'between:0,10',
+                // Use required_if rule to make this field required if enable_auto_bill is 1
+                'required_if:enable_auto_bill,1',
+            ],
+
             'days_before_send_bill_notification' => [
-                'required',
                 'integer',   
                 'between:0,10',
+                'required_if:enable_auto_notification,1',
             ],
 
             'days_before_send_cut_off_notification' => [
-                'required',
                 'integer',   
                 'between:0,3',
+                'required_if:enable_auto_notification,1',
             ],
 
         ], [
-            'days_before_generate_bill.required' => "The 'when should the bill be auto-generated' field is required.",
+            'days_before_generate_bill.required_if' => "The 'when should the bill be auto-generated' field is required when auto generate bill is enabled.",
             'days_before_generate_bill.between' => "The 'when should the bill be auto-generated' field is invalid.",
             'days_before_generate_bill.integer' => "The 'when should the bill be auto-generated' field is invalid.",
 
-            'days_before_send_bill_notification.required' => "The 'when should we send customer notifications' field is required.",
+            'days_before_send_bill_notification.required_if' => "The 'when should we send customer notifications' field is required when auto send notification is enabled.",
             'days_before_send_bill_notification.between' => "The 'when should we send customer notifications' field is invalid.",
             'days_before_send_bill_notification.integer' => "The 'when should we send customer notifications' field is invalid.",
 
-            'days_before_send_cut_off_notification.required' => "The 'when should we send cut-off notifications' field is required.",
+            'days_before_send_cut_off_notification.required_if' => "The 'when should we send cut-off notifications' field is required when auto send notification is enabled.",
             'days_before_send_cut_off_notification.between' => "The 'when should we send cut-off notifications' field is invalid.",
             'days_before_send_cut_off_notification.integer' => "The 'when should we send cut-off notifications' field is invalid.",
         ]);
@@ -142,6 +151,7 @@ trait BillSettingOperation
         }
         
         Setting::set('enable_auto_bill', request()->enable_auto_bill);
+        Setting::set('enable_auto_notification', request()->enable_auto_notification);
         Setting::set('days_before_generate_bill', request()->days_before_generate_bill);
         // fiber
         Setting::set('fiber_day_start', request()->fiber_day_start);

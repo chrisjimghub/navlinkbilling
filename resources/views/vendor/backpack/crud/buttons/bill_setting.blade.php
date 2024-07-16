@@ -197,19 +197,39 @@
 
 
 
+                <div class="form-group">
+                    <label>
+                        <strong>{{ __('Automate Process') }}</strong>
+                    </label>
+                    <br>
+                    
+                    <div class="form-check">
+                        <input 
+                            {{ Setting::get('enable_auto_bill') == 1 ? "checked" : ""  }}
+                            class="form-check-input" type="checkbox" id="enable_auto_bill" name="enable_auto_bill">
+                        <label class="form-check-label" for="enable_auto_bill">{{ __('Enable Auto Generate Bills') }}</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input 
+                            {{ Setting::get('enable_auto_notification') == 1 ? "checked" : ""  }}
+                            class="form-check-input" type="checkbox" id="enable_auto_notification" name="enable_auto_notification">
+                        <label class="form-check-label" for="enable_auto_notification">{{ __('Enable Auto Send Notifications') }}</label>
+                    </div>
+                </div>
+
 
 
 
 
                 
 
-                <div class="form-group">
+                <div class="form-group group_enable_auto_bill">
                     <label for="days_before_generate_bill">
                         <strong>When should the bill be auto-generated?</strong>
                         <span class="text-danger">*</span>
                     </label>
                     <select class="form-control" id="days_before_generate_bill" name="days_before_generate_bill">
-                        <option value="">-</option>
                         <option {{ Setting::get('days_before_generate_bill') == 0 ? "selected" : ""  }} value="0">Immediately at the end of the billing period.</option>
                         @for($day = 1; $day <= 10; $day++)
                             <option 
@@ -225,13 +245,12 @@
 
                 
 
-                <div class="form-group">
+                <div class="form-group group_enable_auto_notification">
                     <label for="days_before_send_bill_notification">
                         <strong>When should we send customer notifications?</strong>
                         <span class="text-danger">*</span>
                     </label>
                     <select class="form-control" id="days_before_send_bill_notification" name="days_before_send_bill_notification">
-                        <option value="">-</option>
                         <option {{ Setting::get('days_before_send_bill_notification') == "0" ? "selected" : ""  }} value="0">Immediately after the bill is created.</option>
                         @for($day = 1; $day <= 10; $day++)
                             <option 
@@ -243,13 +262,12 @@
                 </div>
                 
 
-                <div class="form-group">
+                <div class="form-group group_enable_auto_notification">
                     <label for="days_before_send_cut_off_notification">
                         <strong>When should we send cut-off notifications?</strong>
                         <span class="text-danger">*</span>
                     </label>
                     <select class="form-control" id="days_before_send_cut_off_notification" name="days_before_send_cut_off_notification">
-                        <option value="">-</option>
                         <option {{ Setting::get('days_before_send_cut_off_notification') == "0" ? "selected" : ""  }} value="0">Immediately on the cut-off date.</option>
                         @for($day = 1; $day <= 3; $day++)
                             <option 
@@ -260,23 +278,9 @@
                     </select>
                 </div>
 
+               
 
-
-
-
-                <div class="form-group">
-                    <label>
-                        <strong>{{ __('Auto Generate Bill') }}</strong>
-                    </label>
-                    <br>
-                    
-                    <div class="form-check">
-                        <input 
-                            {{ Setting::get('enable_auto_bill') == 1 ? "checked" : ""  }}
-                            class="form-check-input" type="checkbox" id="enable_auto_bill" name="enable_auto_bill">
-                        <label class="form-check-label" for="enable_auto_bill">{{ __('Enable Auto Bill') }}</label>
-                    </div>
-                </div>
+                
 
 
             </div>
@@ -298,6 +302,41 @@
 
 @push('after_scripts')
 <script>
+    $(document).ready(function() {
+        if ($('#enable_auto_bill').prop('checked')) {
+            $('.group_enable_auto_bill').show();
+        } else {
+            $('.group_enable_auto_bill').hide();
+        }
+
+        $('#enable_auto_bill').change(function() {
+            if (this.checked) {
+                $('.group_enable_auto_bill').show();
+            } else {
+                $('.group_enable_auto_bill').hide();
+            }
+        });
+
+
+        // enable_auto_notification
+        if ($('#enable_auto_notification').prop('checked')) {
+            $('.group_enable_auto_notification').show();
+        } else {
+            $('.group_enable_auto_notification').hide();
+        }
+
+        $('#enable_auto_notification').change(function() {
+            if (this.checked) {
+                $('.group_enable_auto_notification').show();
+            } else {
+                $('.group_enable_auto_notification').hide();
+            }
+        });
+    });
+</script>
+
+
+<script>
 if (typeof billSettings != 'function') {
 
     function billSettings(button) {
@@ -306,6 +345,7 @@ if (typeof billSettings != 'function') {
         // Collect data from modal inputs
         var formData = {
             enable_auto_bill: $('#enable_auto_bill').prop('checked') ? 1 : 0,
+            enable_auto_notification: $('#enable_auto_notification').prop('checked') ? 1 : 0,
             days_before_generate_bill: $('#days_before_generate_bill').val(),
             fiber_day_start: $('#fiber_day_start').val(),
             fiber_day_end: $('#fiber_day_end').val(),
