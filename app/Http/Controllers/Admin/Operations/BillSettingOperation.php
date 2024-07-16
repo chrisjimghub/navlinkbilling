@@ -72,6 +72,11 @@ trait BillSettingOperation
                 'integer',   
                 'between:0,31',
             ],
+            'fiber_day_cut_off' => [
+                'required',
+                'integer',   
+                'between:0,10',
+            ],
             'fiber_billing_period' => [
                 'required',
                 'string', 
@@ -89,6 +94,11 @@ trait BillSettingOperation
                 'required',
                 'integer',   
                 'between:0,31',
+            ],
+            'p2p_day_cut_off' => [
+                'required',
+                'integer',   
+                'between:0,10',
             ],
             'p2p_billing_period' => [
                 'required',
@@ -136,10 +146,12 @@ trait BillSettingOperation
         // fiber
         Setting::set('fiber_day_start', request()->fiber_day_start);
         Setting::set('fiber_day_end', request()->fiber_day_end);
+        Setting::set('fiber_day_cut_off', request()->fiber_day_cut_off);
         Setting::set('fiber_billing_period', request()->fiber_billing_period);
         // p2p
         Setting::set('p2p_day_start', request()->p2p_day_start);
         Setting::set('p2p_day_end', request()->p2p_day_end);
+        Setting::set('p2p_day_cut_off', request()->p2p_day_cut_off);
         Setting::set('p2p_billing_period', request()->p2p_billing_period);
         
         Setting::set('days_before_send_bill_notification', request()->days_before_send_bill_notification);

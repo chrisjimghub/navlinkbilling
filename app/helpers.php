@@ -105,7 +105,7 @@ if (! function_exists('adjustDayWithinMonth')) {
 
 // billing
 if (! function_exists('billingPeriod')) {
-	function billingPeriod($billingPeriod, $dayStart, $dayEnd, $billingType, $currentDate = null) {
+	function billingPeriod($billingPeriod, $dayStart, $dayEnd, $dayCutOff, $billingType, $currentDate = null) {
 		if (!$currentDate) {
 			$currentDate = Carbon::now();
 		}else {
@@ -114,6 +114,7 @@ if (! function_exists('billingPeriod')) {
 
 		$dateStart = '';
 		$dateEnd = '';
+		$dateCutOff = '';
 
 		if ($billingPeriod == 'previous_month_current_month') {
 			
@@ -123,6 +124,8 @@ if (! function_exists('billingPeriod')) {
 			$dateEnd = $currentDate->copy();
 			$dateEnd->day( adjustDayWithinMonth(day: $dayEnd, currentDate: $dateEnd) );
 
+			$dateCutOff = $dateEnd->copy()->addDays($dayCutOff);
+
 		}elseif ($billingPeriod == 'current_month_current_month') {
 		
 			$dateStart = $currentDate->copy();
@@ -130,6 +133,8 @@ if (! function_exists('billingPeriod')) {
 			
 			$dateEnd = $currentDate->copy();
 			$dateEnd->day( adjustDayWithinMonth(day: $dayEnd, currentDate: $dateEnd) );
+
+			$dateCutOff = $dateEnd->copy()->addDays($dayCutOff);
 
 		}elseif ($billingPeriod == 'current_month_next_month') {
 
@@ -139,6 +144,7 @@ if (! function_exists('billingPeriod')) {
 			$dateEnd = $currentDate->copy();
 			$dateEnd->addMonthNoOverflow()->day( adjustDayWithinMonth(day: $dayEnd, currentDate: $dateEnd) );
 
+			$dateCutOff = $dateEnd->copy()->addDays($dayCutOff);
 
 		}else {
 			throw new InvalidArgumentException("Setting::get('".$billingType."_billing_period') is invalid or not exist!");
@@ -151,8 +157,10 @@ if (! function_exists('billingPeriod')) {
 			'period_in_text' => $billingPeriod,	
 			'day_start' => $dayStart,
 			'day_end' => $dayEnd,
+			'day_cut_off' => $dayCutOff,
 			'date_start' => $dateStart->toDateString(),
 			'date_end' => $dateEnd->toDateString(),
+			'date_cut_off' => $dateCutOff->toDateString(),
 		];
 		
 	}
@@ -165,11 +173,13 @@ if (! function_exists('fiberBillingPeriod')) {
 		$periodInText = Setting::get('fiber_billing_period');
 		$dayStart = (int) Setting::get('fiber_day_start'); 
 		$dayEnd = (int) Setting::get('fiber_day_end'); 
+		$dayCutOff = (int) Setting::get('fiber_day_cut_off'); 
 
 		return billingPeriod(
 			billingPeriod: $periodInText, 
 			dayStart: $dayStart, 
 			dayEnd: $dayEnd, 
+			dayCutOff: $dayCutOff,
 			billingType: 'fiber',
 			currentDate: $currentDate,
 		);
@@ -182,11 +192,13 @@ if (! function_exists('p2pBillingPeriod')) {
 		$periodInText = Setting::get('p2p_billing_period');
 		$dayStart = (int) Setting::get('p2p_day_start'); 
 		$dayEnd = (int) Setting::get('p2p_day_end'); 
+		$dayCutOff = (int) Setting::get('p2p_day_cut_off'); 
 
 		return billingPeriod(
 			billingPeriod: $periodInText, 
 			dayStart: $dayStart, 
 			dayEnd: $dayEnd, 
+			dayCutOff: $dayCutOff,
 			billingType: 'p2p',
 			currentDate: $currentDate,
 		);
