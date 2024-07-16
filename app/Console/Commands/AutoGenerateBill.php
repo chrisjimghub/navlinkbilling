@@ -29,36 +29,34 @@ class AutoGenerateBill extends Command
     public function handle()
     {
         //
-        if (Setting::get('auto_generate_bill') && Setting::get('auto_generate_bill') == "1") {
+        if (Setting::get('enable_auto_bill') && Setting::get('enable_auto_bill') == "1") {
 
-            // NOTE:: get the fiber and p2p date_end date(day), ex: 20 and subtract by days_generate_bill, if equal to today then run the command
-
-            // Fiber
-            $fiberRunOnDate = Setting::get('fiber_date_end') ? dateOfMonth(Setting::get('fiber_date_end'), true) : now()->endOfMonth();
-            if (Setting::get('days_generate_bill')) {
-                $fiberRunOnDate = $fiberRunOnDate->subDays((int) Setting::get('days_generate_bill'));
-            }
-
-            if (Carbon::now()->isSameDay($fiberRunOnDate)) {
+            // fiber
+            $period = fiberBillingPeriod();
+            if ($this->dateRunIsToday($period)) {
                 Artisan::call('bill:generate', ['--fiber' => true]);
             }
 
-            // P2P 
-            $p2pRunOnDate = Setting::get('p2p_date_end') ? dateOfMonth(Setting::get('p2p_date_end'), true) : dateOfMonth(20, true);
-            if (Setting::get('days_generate_bill')) {
-                $p2pRunOnDate = $p2pRunOnDate->subDays((int) Setting::get('days_generate_bill'));
-            }
 
-            if (Carbon::now()->isSameDay($p2pRunOnDate)) {
+            // p2p
+            $period = p2pBillingPeriod();
+            if ($this->dateRunIsToday($period)) {
                 Artisan::call('bill:generate', ['--p2p' => true]);
             }
-
-            // dd([
-            //     $fiberRunOnDate->toDateString(),
-            //     $p2pRunOnDate->toDateString()
-            // ]);
             
         }
 
+    }
+
+    private function dateRunIsToday($period)
+    {
+        $subDays = (int) Setting::get('days_before_generate_bill');
+        $dateRun = Carbon::parse($period['date_end'])->subDays($subDays);
+
+        if ($dateRun->isToday()) {
+            return true;
+        }
+
+        return false;
     }
 }

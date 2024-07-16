@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Operations\BillSettingOperation;
 use App\Models\User;
 use App\Models\Billing;
 use App\Models\BillingType;
@@ -28,6 +29,7 @@ class BillingCrudController extends CrudController
 
     use CrudExtend;
     use BillingGroupButtonsOperation;
+    use BillSettingOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.

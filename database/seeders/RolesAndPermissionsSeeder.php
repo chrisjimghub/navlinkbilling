@@ -123,6 +123,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'billings_service_interrupt', 
             'billings_send_notification', 
             'billings_download_invoice', 
+            'billings_bill_setting', 
         ],
         
         'users' => [

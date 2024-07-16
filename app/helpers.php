@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Backpack\Settings\app\Models\Setting;
 
 if (! function_exists('modelInstance')) {
 	function modelInstance($class, $useFullPath = false) {
@@ -21,80 +22,7 @@ if (! function_exists('modelInstance')) {
 	}
 }
 
-// get date of month using the day
-if (! function_exists('dateOfMonth')) {
-	function dateOfMonth($day, $returnAsCarbonInstance = false) {
-		// Get the current month's starting date
-		$startDate = Carbon::now()->startOfMonth();
-	
-		// Calculate the last day of the current month
-		$lastDayOfMonth = $startDate->copy()->endOfMonth()->day;
-	
-		// Validate $day to ensure it's within valid range (1 - last day of the month)
-		if ($day < 1 || $day > $lastDayOfMonth) {
-			throw new InvalidArgumentException("Day must be between 1 and {$lastDayOfMonth}.");
-		}
-	
-		// Calculate the target date
-		$targetDate = $startDate->addDays($day - 1); // Subtract 1 because $day is 1-indexed
-		
-		if ($returnAsCarbonInstance) {
-			return $targetDate;
-		}
-
-		return $targetDate->toDateString();
-	}
-}
-
-if (! function_exists('dateOfNextMonth')) {
-	function dateOfNextMonth($day, $returnAsCarbonInstance = false) {
-		// Get the current month's starting date
-		$startDate = Carbon::now()->addMonth()->startOfMonth();
-	
-		// Calculate the last day of the current month
-		$lastDayOfMonth = $startDate->copy()->endOfMonth()->day;
-	
-		// Validate $day to ensure it's within valid range (1 - last day of the month)
-		if ($day < 1 || $day > $lastDayOfMonth) {
-			throw new InvalidArgumentException("Day must be between 1 and {$lastDayOfMonth}.");
-		}
-	
-		// Calculate the target date
-		$targetDate = $startDate->addDays($day - 1); // Subtract 1 because $day is 1-indexed
-	
-		if ($returnAsCarbonInstance) {
-			return $targetDate;
-		}
-
-		return $targetDate->toDateString();
-	}
-}
-
-// get date of prev month
-if (! function_exists('dateOfPrevMonth')) {
-	function dateOfPrevMonth($day, $returnAsCarbonInstance = false) {
-		// Get the current month's starting date
-		$startDate = Carbon::now()->subMonth()->startOfMonth();
-	
-		// Calculate the last day of the current month
-		$lastDayOfMonth = $startDate->copy()->endOfMonth()->day;
-	
-		// Validate $day to ensure it's within valid range (1 - last day of the month)
-		if ($day < 1 || $day > $lastDayOfMonth) {
-			throw new InvalidArgumentException("Day must be between 1 and {$lastDayOfMonth}.");
-		}
-	
-		// Calculate the target date
-		$targetDate = $startDate->addDays($day - 1); // Subtract 1 because $day is 1-indexed
-	
-		if ($returnAsCarbonInstance) {
-			return $targetDate;
-		}
-
-		return $targetDate->toDateString();
-	}
-}
-
+// DATES / related to dates
 if (! function_exists('dateDaysAndHoursDifference')) {
 	function dateDaysAndHoursDifference($dateStart, $dateEnd) {
 		$dateStart = Carbon::parse($dateStart);
@@ -153,7 +81,138 @@ if (! function_exists('dateHumanReadable')) {
         return 'M j, Y';
 	}
 }
-// end carbon
+
+// this function make sure that the provided day is within month, if it exceed then it returns the last day of the month
+if (! function_exists('adjustDayWithinMonth')) {
+	function adjustDayWithinMonth($day, $currentDate = null) {
+		
+		if ($currentDate) {
+			$currentDate = Carbon::parse($currentDate);
+		}else {
+			$currentDate = Carbon::now();
+		}
+		
+		$lastDayOfMonth = $currentDate->endOfMonth()->day;
+		
+		if ($day > $lastDayOfMonth) {
+			return $lastDayOfMonth;
+		}
+		
+		return $day;
+	}
+}
+// end DATES
+
+// billing
+if (! function_exists('billingPeriod')) {
+	function billingPeriod($billingPeriod, $dayStart, $dayEnd, $dayCutOff, $billingType, $currentDate = null) {
+		if (!$currentDate) {
+			$currentDate = Carbon::now();
+		}else {
+			$currentDate = Carbon::parse($currentDate);
+		}
+
+		$dateStart = '';
+		$dateEnd = '';
+		$dateCutOff = '';
+
+		if ($billingPeriod == 'previous_month_current_month') {
+			
+			$dateStart = $currentDate->copy();
+			$dateStart->subMonthNoOverflow()->day( adjustDayWithinMonth(day: $dayStart, currentDate: $dateStart) );
+
+			$dateEnd = $currentDate->copy();
+			$dateEnd->day( adjustDayWithinMonth(day: $dayEnd, currentDate: $dateEnd) );
+
+			$dateCutOff = $dateEnd->copy()->addDays($dayCutOff);
+
+		}elseif ($billingPeriod == 'current_month_current_month') {
+		
+			$dateStart = $currentDate->copy();
+			$dateStart->day( adjustDayWithinMonth(day: $dayStart, currentDate: $dateStart) );
+			
+			$dateEnd = $currentDate->copy();
+			$dateEnd->day( adjustDayWithinMonth(day: $dayEnd, currentDate: $dateEnd) );
+
+			$dateCutOff = $dateEnd->copy()->addDays($dayCutOff);
+
+		}elseif ($billingPeriod == 'current_month_next_month') {
+
+			$dateStart = $currentDate->copy();
+			$dateStart->day( adjustDayWithinMonth(day: $dayStart, currentDate: $dateStart) );
+
+			$dateEnd = $currentDate->copy();
+			$dateEnd->addMonthNoOverflow()->day( adjustDayWithinMonth(day: $dayEnd, currentDate: $dateEnd) );
+
+			$dateCutOff = $dateEnd->copy()->addDays($dayCutOff);
+
+		}else {
+			throw new InvalidArgumentException("Setting::get('".$billingType."_billing_period') is invalid or not exist!");
+		}
+
+		return [
+			'billing_type' => $billingType,
+			'current_month' => $currentDate->copy()->format('F'),
+			'current_date' => $currentDate->copy()->toDateString(),
+			'period_in_text' => $billingPeriod,	
+			'day_start' => $dayStart,
+			'day_end' => $dayEnd,
+			'day_cut_off' => $dayCutOff,
+			'date_start' => $dateStart->toDateString(),
+			'date_end' => $dateEnd->toDateString(),
+			'date_cut_off' => $dateCutOff->toDateString(),
+		];
+		
+	}
+
+}
+
+
+if (! function_exists('fiberBillingPeriod')) {
+	function fiberBillingPeriod($currentDate = null) {
+		$periodInText = Setting::get('fiber_billing_period');
+		$dayStart = (int) Setting::get('fiber_day_start'); 
+		$dayEnd = (int) Setting::get('fiber_day_end'); 
+		$dayCutOff = (int) Setting::get('fiber_day_cut_off'); 
+
+		return billingPeriod(
+			billingPeriod: $periodInText, 
+			dayStart: $dayStart, 
+			dayEnd: $dayEnd, 
+			dayCutOff: $dayCutOff,
+			billingType: 'fiber',
+			currentDate: $currentDate,
+		);
+	}
+
+}
+
+if (! function_exists('p2pBillingPeriod')) {
+	function p2pBillingPeriod($currentDate = null) {
+		$periodInText = Setting::get('p2p_billing_period');
+		$dayStart = (int) Setting::get('p2p_day_start'); 
+		$dayEnd = (int) Setting::get('p2p_day_end'); 
+		$dayCutOff = (int) Setting::get('p2p_day_cut_off'); 
+
+		return billingPeriod(
+			billingPeriod: $periodInText, 
+			dayStart: $dayStart, 
+			dayEnd: $dayEnd, 
+			dayCutOff: $dayCutOff,
+			billingType: 'p2p',
+			currentDate: $currentDate,
+		);
+		
+	}
+
+}
+
+// TODO:: fiberDateCutOff
+// TODO:: p2pDateCutOff
+
+
+
+// end billing
 
 
 if (! function_exists('currencyFormat')) {
