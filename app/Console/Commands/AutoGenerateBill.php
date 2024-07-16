@@ -31,22 +31,32 @@ class AutoGenerateBill extends Command
         //
         if (Setting::get('enable_auto_bill') && Setting::get('enable_auto_bill') == "1") {
 
-            $subDays = (int) Setting::get('days_before_generate_bill');
+            // fiber
+            $period = fiberBillingPeriod();
+            if ($this->dateRunIsToday($period)) {
+                Artisan::call('bill:generate', ['--fiber' => true]);
+            }
 
-            
 
-            dd([
-                'sub_days' => $subDays,
-            ]);
-
-            // Artisan::call('bill:generate', ['--fiber' => true]);
-            // Artisan::call('bill:generate', ['--p2p' => true]);
-            // dd([
-            //     $fiberRunOnDate->toDateString(),
-            //     $p2pRunOnDate->toDateString()
-            // ]);
+            // p2p
+            $period = p2pBillingPeriod();
+            if ($this->dateRunIsToday($period)) {
+                Artisan::call('bill:generate', ['--p2p' => true]);
+            }
             
         }
 
+    }
+
+    private function dateRunIsToday($period)
+    {
+        $subDays = (int) Setting::get('days_before_generate_bill');
+        $dateRun = Carbon::parse($period['date_end'])->subDays($subDays);
+
+        if ($dateRun->isToday()) {
+            return true;
+        }
+
+        return false;
     }
 }
