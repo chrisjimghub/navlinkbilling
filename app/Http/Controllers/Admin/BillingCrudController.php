@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Operations\BillSettingOperation;
 use App\Models\User;
 use App\Models\Billing;
 use App\Models\BillingType;
@@ -11,7 +10,9 @@ use App\Http\Requests\BillingRequest;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use App\Http\Controllers\Admin\Operations\BillSettingOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use App\Http\Controllers\Admin\Operations\BillManualProcessOperation;
 use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
 
 /**
@@ -29,6 +30,7 @@ class BillingCrudController extends CrudController
 
     use CrudExtend;
     use BillingGroupButtonsOperation;
+    use BillManualProcessOperation;
     use BillSettingOperation;
 
     /**
@@ -40,7 +42,7 @@ class BillingCrudController extends CrudController
     {
         CRUD::setModel(\App\Models\Billing::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/billing');
-        CRUD::setEntityNameStrings('billing', 'billings');
+        CRUD::setEntityNameStrings('Billing', 'Billings');
         
         $this->userPermissions();
 

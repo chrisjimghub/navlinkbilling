@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Operations;
 
+use App\Http\Controllers\Admin\Traits\SendNotifications;
 use App\Models\Billing;
 use Illuminate\Support\Str;
 use App\Events\BillProcessed;
@@ -25,6 +26,8 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait BillingGroupButtonsOperation
 {
+    use SendNotifications;
+
     /**
      * Define which routes are needed for this operation.
      *
@@ -438,11 +441,8 @@ trait BillingGroupButtonsOperation
 
         if ($customer->email) {
             // Notify the customer
-            $customer->notify((new NewBillNotification($billing))->onQueue('high'));
-
-            $billing->notified_at = now();
-    
-            return $billing->saveQuietly();
+            $this->billNotification($customer, $billing, 'high');
+            return true;
         }else {
             // send alert that customer has no email   
             return response()->json([
