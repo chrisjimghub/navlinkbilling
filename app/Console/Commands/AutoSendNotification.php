@@ -2,16 +2,18 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Admin\Traits\SendNotifications;
 use App\Models\Billing;
 use App\Notifications\CutOffNotification;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Backpack\Settings\app\Models\Setting;
-use App\Notifications\NewBillNotification;
 
 class AutoSendNotification extends Command
 {
+    use SendNotifications;
+
     /**
      * The name and signature of the console command.
      *
@@ -67,13 +69,7 @@ class AutoSendNotification extends Command
 
             // dump('TODAY id:' . $bill->id. ' - '.$dateRun->toDateString());
 
-            // Send the notification (assuming you have a notification system set up)
-            $customer->notify(
-                new CutOffNotification($bill)
-            );
-
-            $bill->cut_off_notified_at = now();
-            $bill->saveQuietly();
+            $this->cutOffNotification($customer, $bill);
 
             sleep(1);
 
@@ -111,13 +107,7 @@ class AutoSendNotification extends Command
 
             // dump('TODAY id:' . $bill->id. ' - '.$dateRun->toDateString());
 
-            // Send the notification (assuming you have a notification system set up)
-            $customer->notify(
-                new NewBillNotification($bill)
-            );
-
-            $bill->notified_at = now();
-            $bill->saveQuietly();
+            $this->billNotification($customer, $bill);
 
             sleep(1);
 
