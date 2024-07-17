@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Billing;
+use App\Notifications\CutOffNotification;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -33,17 +34,49 @@ class AutoSendNotification extends Command
         if (Setting::get('enable_auto_bill') && Setting::get('enable_auto_bill') == "1") {
 
             $this->sendBillNotifications();
-            
-            // TODO:: cut off notification
-
-            // dd([
-            //     'add_days' => $addDays,
-            //     'billings' => $billings->toArray(),
-            // ]);
+            $this->sendCutOffNOtifications();
         }
 
     }
     
+    private function sendCutOffNOtifications()
+    {
+        $subDays = (int) Setting::get('days_before_send_cut_off_notification');
+
+        $billings = Billing::unpaid()->get();
+
+        foreach ($billings as $bill) {
+            $customer = $bill->account->customer;
+
+            // Check if customer email is not empty
+            if (empty($customer->email)) {
+                // Log the issue
+                Log::warning('Customer email is empty for billing ID: ' . $bill->id);
+                continue;
+            }
+
+            $dateRun = Carbon::parse($bill->date_cut_off)->subDays($subDays);
+
+            if (!$dateRun->isToday()) {
+                // dump('NOT TODAY id:' . $bill->id. ' - '.$dateRun->toDateString());
+                continue;
+
+            }
+
+            // dump('TODAY id:' . $bill->id. ' - '.$dateRun->toDateString());
+
+            // Send the notification (assuming you have a notification system set up)
+            $customer->notify(
+                new CutOffNotification($bill)
+            );
+
+
+            sleep(1);
+
+        }// end foreach
+
+        // dd();
+    }
 
     private function sendBillNotifications()
     {

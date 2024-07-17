@@ -4,23 +4,20 @@ namespace App\Notifications;
 
 use App\Models\Billing;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class NewBillNotification extends Notification implements ShouldQueue
+class CutOffNotification extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    protected $billing;
 
     /**
      * Create a new notification instance.
      */
-
-    public function __construct(Billing $billing)
+    public function __construct(public Billing $billing)
     {
-        $this->billing = $billing;
+        //
     }
 
     /**
@@ -39,8 +36,9 @@ class NewBillNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Bill For The Month Of '.$this->billing->month) 
-            ->markdown('emails.new-bill', ['billing' => $this->billing]);
+            ->subject('Cut Off Notification For '.$this->billing->month) 
+            ->markdown('emails.cut-off', ['billing' => $this->billing]);
     }
 
+    
 }
