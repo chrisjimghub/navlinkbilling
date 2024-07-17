@@ -43,7 +43,9 @@ class AutoSendNotification extends Command
     {
         $subDays = (int) Setting::get('days_before_send_cut_off_notification');
 
-        $billings = Billing::unpaid()->get();
+        $billings = Billing::whereNull('cut_off_notified_at')
+                        ->unpaid()
+                        ->get();
 
         foreach ($billings as $bill) {
             $customer = $bill->account->customer;
@@ -70,6 +72,8 @@ class AutoSendNotification extends Command
                 new CutOffNotification($bill)
             );
 
+            $bill->cut_off_notified_at = now();
+            $bill->saveQuietly();
 
             sleep(1);
 
