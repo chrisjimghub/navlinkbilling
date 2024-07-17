@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\Admin\Traits\SendNotifications;
 use App\Models\Billing;
-use App\Notifications\CutOffNotification;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
