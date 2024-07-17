@@ -24,6 +24,23 @@ class RolesAndPermissionsSeeder extends Seeder
             // 'admin_settings',
         ],
 
+        'billings' => [
+            'billings_list',
+            'billings_create', 
+            'billings_show', 
+            'billings_update', 
+            'billings_delete', 
+            'billings_button_pay', 
+            'billings_pay', 
+            'billings_pay_using_credit', 
+            'billings_change_plan', 
+            'billings_service_interrupt', 
+            'billings_send_notification', 
+            'billings_download_invoice', 
+            'billings_bill_setting', 
+            'billings_manual_generate_bill', 
+        ],
+
         'menu_separator' => [
             'menu_separator_app_settings'
         ],
@@ -108,22 +125,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'planned_application_types_show', 
             'planned_application_types_update', 
             'planned_application_types_delete', 
-        ],
-
-        'billings' => [
-            'billings_list',
-            'billings_create', 
-            'billings_show', 
-            'billings_update', 
-            'billings_delete', 
-            'billings_button_pay', 
-            'billings_pay', 
-            'billings_pay_using_credit', 
-            'billings_change_plan', 
-            'billings_service_interrupt', 
-            'billings_send_notification', 
-            'billings_download_invoice', 
-            'billings_bill_setting', 
         ],
         
         'users' => [
