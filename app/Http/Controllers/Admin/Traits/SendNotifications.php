@@ -21,7 +21,7 @@ trait SendNotifications
     public function cutOffNotification(Customer $customer, Billing $billing, $queue = 'default')
     {
         $customer->notify((new CutOffNotification($billing))->onQueue($queue));
-        $billing->notified_at = now();
+        $billing->cut_off_notified_at = now();
         $billing->saveQuietly();
     }
 }
