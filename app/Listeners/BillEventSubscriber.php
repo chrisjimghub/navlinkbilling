@@ -66,11 +66,30 @@ class BillEventSubscriber
             $query->monthly()->unpaid();
         })->exists()) {
             // No unpaid monthly billings found, proceed to create a new billing
-            $billing = new Billing();
-            $billing->account_id = $account->id;
-            $billing->billing_type_id = 2;
-
-            $billing->save(); // this "save" will trigger the dispatch property in billing and run the BillProcessed event.
+            $attributes = [
+                'account_id' => $account->id,
+                'billing_type_id' => 2,
+            ];
+            
+            $values = [];
+            
+            if ($account->isFiber()) {
+                // fiber dates
+                $period = fiberBillingPeriod();
+                $values['date_start'] = $period['date_start'];
+                $values['date_end'] = $period['date_end'];
+                $values['date_cut_off'] = $period['date_cut_off'];
+            } elseif ($account->isP2P()) {
+                // p2p dates
+                $period = p2pBillingPeriod();
+                $values['date_start'] = $period['date_start'];
+                $values['date_end'] = $period['date_end'];
+                $values['date_cut_off'] = $period['date_cut_off'];
+            }
+            
+            // this will trigger the dispatch property in billing and run the BillProcessed event.
+            // we use firstOrCreate to avoid duplicate if ever it has same billing period.
+            Billing::firstOrCreate($attributes, $values); 
         }
     }
 
