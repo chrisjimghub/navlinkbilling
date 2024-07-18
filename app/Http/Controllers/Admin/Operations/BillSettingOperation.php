@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Operations;
 
+use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use Backpack\Settings\app\Models\Setting;
 use Illuminate\Support\Facades\Validator;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -23,6 +25,12 @@ trait BillSettingOperation
             'uses'      => $controller.'@billSetting',
             'operation' => 'billSetting',
         ]);
+
+        Route::post($segment.'/manualGenerateBill', [
+            'as'        => $routeName.'.manualGenerateBill',
+            'uses'      => $controller.'@manualGenerateBill',
+            'operation' => 'manualGenerateBill',
+        ]);
     }
 
     /**
@@ -30,7 +38,12 @@ trait BillSettingOperation
      */
     protected function setupBillSettingDefaults()
     {
-        CRUD::allowAccess('billSetting');
+        CRUD::allowAccess([
+            'billSetting',
+            'manualGenerateBill',
+        ]);
+
+        $this->billSettingsWidgets();
 
         CRUD::operation('billSetting', function () {
             CRUD::loadDefaultOperationSettingsFromConfig();
@@ -39,6 +52,53 @@ trait BillSettingOperation
         CRUD::operation('list', function () {
             CRUD::addButton('top', 'bill_setting', 'view', 'crud::buttons.bill_setting');
         });
+    }
+
+    public function billSettingsWidgets()
+    {
+        if ( $this->crud->hasAccess('billSetting') ) {
+            Widget::add()->type('script')->content('assets/js/admin/billing_settings/bill_settings.js');
+        }
+
+        if ( $this->crud->hasAccess('manualGenerateBill') ) {
+            Widget::add()->type('script')->content('assets/js/admin/billing_settings/manual_generate_bill.js');
+        }
+    }
+
+    public function manualGenerateBill()
+    {
+        CRUD::hasAccessOrFail('manualGenerateBill');
+
+        //Validate request data
+        $validator = Validator::make(request()->all(), [
+            'generate_bill' => [
+                'required',
+                'array',
+            ],
+            'generate_bill.*' => [
+                'in:fiber,p2p',
+            ],
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // Return validation errors as JSON response
+            return response()->json([
+                'errors' => $validator->errors()->all()
+            ], 422); // HTTP status code for Unprocessable Entity
+        }
+
+        foreach (request()->generate_bill as $type) {
+            if ($type == 'fiber') {
+                Artisan::call('bill:generate', ['--fiber' => true]);
+            }else if ($type == 'p2p') {
+                Artisan::call('bill:generate', ['--p2p' => true]);
+            }
+        }
+
+        return response()->json([
+            'msg' => '<strong>'.__('Generating Bill').'</strong><br>'.__('Bill generated successfully.'),
+        ]);
     }
 
     /**

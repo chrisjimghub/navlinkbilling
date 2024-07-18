@@ -12,7 +12,6 @@ use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Controllers\Admin\Operations\BillSettingOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use App\Http\Controllers\Admin\Operations\BillManualProcessOperation;
 use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
 
 /**
@@ -30,7 +29,6 @@ class BillingCrudController extends CrudController
 
     use CrudExtend;
     use BillingGroupButtonsOperation;
-    use BillManualProcessOperation;
     use BillSettingOperation;
 
     /**
