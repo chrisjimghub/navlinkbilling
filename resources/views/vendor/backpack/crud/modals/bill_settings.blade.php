@@ -345,3 +345,6 @@
         </div>
     </div>
 </div>
+
+
+@include('crud::inc.loader')

@@ -13,9 +13,12 @@ if (typeof manualGenerateBill != 'function') {
             data: {
                 generate_bill : generateBillList
             },
+            beforeSend: function() {
+                // Show the loader before sending the request
+                $("#loading-screen").show();
+            },
             success: function(response) {
                 // console.log(response)
-
                 if (response.msg) {
                     new Noty({
                         text: response.msg,
@@ -30,8 +33,12 @@ if (typeof manualGenerateBill != 'function') {
                 if (typeof crud !== 'undefined') {
                     crud.table.ajax.reload();
                 }
+
+                $("#loading-screen").hide();
             },
             error: function(xhr, status, error) {
+                $("#loading-screen").hide();
+
                 // console.log('Error:', xhr.responseJSON.errors);
                 // Handle validation errors or other errors
                 if (xhr.status === 422) {
@@ -51,6 +58,7 @@ if (typeof manualGenerateBill != 'function') {
                         type: 'error'
                     }).show();
                 }
+                
             }
         });
 
