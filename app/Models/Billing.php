@@ -221,6 +221,13 @@ class Billing extends Model
         });
     }
 
+    public function scopeInstallment($query)
+    {
+        return $query->whereHas('billingType', function ($q) {
+            $q->where('id', 1); // installment 
+        });
+    }
+
     public function scopeUnpaid($query)
     {
         return $query->whereHas('billingStatus', function ($q) {

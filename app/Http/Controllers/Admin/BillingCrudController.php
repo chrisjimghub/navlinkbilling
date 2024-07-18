@@ -55,6 +55,8 @@ class BillingCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->filters();
+
         if (! $this->crud->getRequest()->has('order')){
             $this->crud->orderBy('billing_status_id', 'desc'); //default order unpaid
         }
@@ -262,5 +264,35 @@ class BillingCrudController extends CrudController
             \Alert::warning('Whooops, you\'re not allowed to do that.');
         }
     }
+
+    private function filters()
+    {   
+        // billing status
+        if ($this->crud->getRequest()->has('status')){
+            $status = $this->crud->getRequest()->status;
+
+            if ($status == 1) {
+                $this->crud->addClause('paid');
+            }elseif ($status == 2) {
+                $this->crud->addClause('unpaid');
+            }
+        }
+
+
+        // billing type
+        if ($this->crud->getRequest()->has('type')){
+            $type = $this->crud->getRequest()->type;
+
+            if ($type == 1) {
+                $this->crud->addClause('installment');
+            }elseif ($type == 2) {
+                $this->crud->addClause('monthly');
+            }
+        }
+
+
+
+    }
+
 
 }
