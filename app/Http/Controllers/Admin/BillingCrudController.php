@@ -214,7 +214,7 @@ class BillingCrudController extends CrudController
         ]);
     }
 
-    private function overrideBUttonDeleteUpdate()
+    private function overrideButtonDeleteUpdate()
     {
         // override buttons and hide if status is paid
         $this->crud->operation(['list', 'show'], function () {
