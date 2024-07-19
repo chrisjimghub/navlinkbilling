@@ -109,6 +109,11 @@ class BillingCrudController extends CrudController
             'escaped' => false
         ]);
 
+        $this->crud->column([
+            'name' => 'paymentMethod',
+            'label' => __('app.billing_payment_method')
+        ]);
+
         $this->crud->column('created_at');
     }
 
