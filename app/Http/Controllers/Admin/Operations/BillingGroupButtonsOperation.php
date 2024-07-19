@@ -441,7 +441,8 @@ trait BillingGroupButtonsOperation
 
         if ($customer->email) {
             // Notify the customer
-            $this->billNotification($customer, $billing, 'high');
+            // $this->billNotification($customer, $billing, 'high');
+            $this->billNotification($customer, $billing);
             return true;
         }else {
             // send alert that customer has no email   
