@@ -32,5 +32,6 @@ class DatabaseSeeder extends Seeder
         $this->call(MenusTableSeeder::class); 
         $this->call(BillingStatusesTableSeeder::class); 
         $this->call(SettingsTableSeeder::class);
+        $this->call(PaymentMethodsTableSeeder::class);
     }
 }

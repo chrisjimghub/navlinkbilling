@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-use App\Events\AccountCreditSnapshot;
-use App\Events\BillProcessed;
 use App\Models\Model;
 use App\Models\Account;
 use App\Models\BillingType;
+use App\Events\BillProcessed;
 use App\Models\BillingStatus;
-use App\Models\Traits\LocalScopes\ScopeDateOverlap;
+use App\Models\PaymentMethod;
 use Illuminate\Support\Carbon;
+use App\Events\AccountCreditSnapshot;
 use App\Http\Controllers\Admin\Traits\AccountCrud;
+use App\Models\Traits\LocalScopes\ScopeDateOverlap;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Models\Scopes\ExcludeSoftDeletedAccountsScope;
 
@@ -173,6 +174,11 @@ class Billing extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class);
+    }
+
     public function billingStatus()
     {
         return $this->belongsTo(BillingStatus::class);
