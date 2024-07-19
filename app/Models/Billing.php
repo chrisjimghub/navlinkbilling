@@ -193,6 +193,12 @@ class Billing extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeWithinBillingPeriod($query, $startDate, $endDate)
+    {
+        return $query->whereBetween('date_start', [$startDate, $endDate])
+                     ->whereBetween('date_end', [$startDate, $endDate]);
+    }
+
     // accountFiber
     public function scopeAccountFiber($query)
     {
@@ -218,6 +224,13 @@ class Billing extends Model
     {
         return $query->whereHas('billingType', function ($q) {
             $q->where('id', 2); // monthly 
+        });
+    }
+
+    public function scopeInstallment($query)
+    {
+        return $query->whereHas('billingType', function ($q) {
+            $q->where('id', 1); // installment 
         });
     }
 
