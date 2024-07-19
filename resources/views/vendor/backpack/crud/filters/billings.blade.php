@@ -69,6 +69,32 @@
   });
 </script>
 
+{{-- dont collapse filter if it has get request --}}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Function to check if URL has query parameters
+    function hasQueryParameters() {
+        return window.location.search.length > 0;
+    }
+
+    // Function to open the collapsible filter form
+    function openFilterForm() {
+        var filterFormContainer = document.getElementById('filterForm');
+        if (filterFormContainer) {
+            new bootstrap.Collapse(filterFormContainer, {
+                toggle: true
+            });
+        }
+    }
+
+    // Check if there are query parameters and open the filter form
+    if (hasQueryParameters()) {
+        openFilterForm();
+    }
+});
+
+</script>
+
 
 {{-- date range picker --}}
 <script>
