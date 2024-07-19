@@ -45,6 +45,7 @@ return [
     'billing_amount'          => 'Amount',
     'billing_total_deduction' => 'Total Deduction',
     'billing_total_amount'    => 'Total Amount',
+    'billing_payment_method'  => 'Mode of Payment',
 
     'notes_content'          => 'Services maybe DISCONTINUED without prior notice if payment of the bill is not made to the collector after DUE DATE. Activation fee is 250 pesos. So, PAY YOUR BILLS ON TIME!',
 ];

@@ -145,7 +145,10 @@
                     @foreach($invoice->seller->custom_fields as $key => $value)
                         @if($key == 'company')
                             <h3>
-                                <div>{{ $value }}</div>
+                                <div>
+                                    {{ $value }} 
+                                    {{ strtolower($invoice->buyer->custom_fields['subscription']) == 'p2p' ? 'P2P' : 'FBR-X' }}
+                                </div>
                             </h3>
                         @else
                             <div>{{ $value }}</div>
@@ -192,6 +195,10 @@
                         <p>{{ __('invoices::invoice.date') }}: <strong>{{ $invoice->getDate() }}</strong></p>
                         <p>{{ __('invoices::invoice.billing_type') }}: <strong>{{ $invoice->getCustomData()['billing_type'] }}</strong></p>
                         <p>{{ __('invoices::invoice.billing_id') }}: <strong>{{ $invoice->getSerialNumber() }}</strong></p>
+
+                        @if($invoice->getCustomData()['billing_payment_method'])
+                            <p>{{ __('invoices::invoice.billing_payment_method') }}: <strong>{{ $invoice->getCustomData()['billing_payment_method'] }}</strong></p>
+                        @endif
 
                         @if($invoice->getCustomData()['is_monthly_fee'])
                             <p>{{ __('invoices::invoice.billing_period') }}: <strong>{{ $invoice->getCustomData()['billing_period'] }}</strong></p>

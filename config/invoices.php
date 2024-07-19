@@ -77,7 +77,7 @@ return [
                  * Used to display additional info on Seller section in invoice
                  * attribute => value
                  */
-                'company' => 'NavLink Technology FBR-X',
+                'company' => 'NavLink Technology',
                 'address' => 'Brgy. San Isidro Palompon Leyte',
                 'phone' => '09958476256 / 09093639756',
             ],
