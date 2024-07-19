@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
 use App\Models\Billing;
 use App\Models\BillingType;
 use App\Models\ContractPeriod;
+use App\Rules\DateRangePicker;
+use Illuminate\Support\Carbon;
 use App\Http\Requests\BillingRequest;
 use Backpack\CRUD\app\Library\Widget;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Controllers\Admin\Operations\BillSettingOperation;
@@ -267,31 +269,55 @@ class BillingCrudController extends CrudController
 
     private function filters()
     {   
-        // billing status
-        if ($this->crud->getRequest()->has('status')){
-            $status = $this->crud->getRequest()->status;
+        // validate data, so no idiot will inject in the URL
+        $validator = Validator::make(request()->all(), [
+            'status' => [
+                'nullable',
+                'integer',
+                'in:1,2',  
+            ],
 
-            if ($status == 1) {
-                $this->crud->addClause('paid');
-            }elseif ($status == 2) {
-                $this->crud->addClause('unpaid');
-            }
+            'type' => [
+                'nullable',
+                'integer',
+                'in:1,2',  
+            ],
+
+            'period' => [
+                'nullable',
+                new DateRangePicker(),
+            ],
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // Return validation errors as JSON response
+            \Alert::error($validator->errors()->all());
+
+            return true;
         }
 
 
-        // billing type
-        if ($this->crud->getRequest()->has('type')){
-            $type = $this->crud->getRequest()->type;
+        // Fetch request parameters
+        $status = request()->input('status');
+        $type = request()->input('type');
+        $period = request()->input('period');
 
-            if ($type == 1) {
-                $this->crud->addClause('installment');
-            }elseif ($type == 2) {
-                $this->crud->addClause('monthly');
-            }
+        if ($status) {
+            $this->crud->addClause($status == 1 ? 'paid' : 'unpaid');
         }
 
+        if ($type) {
+            $this->crud->addClause($type == 1 ? 'installment' : 'monthly');
+        }
 
-
+        if ($period) {
+            $dates = explode('-', $period);
+            $dateStart = Carbon::parse($dates[0]);
+            $dateEnd = Carbon::parse($dates[1]);
+            $this->crud->query->withinBillingPeriod($dateStart, $dateEnd);
+        }
+        
     }
 
 

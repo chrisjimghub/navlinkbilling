@@ -193,6 +193,12 @@ class Billing extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeWithinBillingPeriod($query, $startDate, $endDate)
+    {
+        return $query->whereBetween('date_start', [$startDate, $endDate])
+                     ->whereBetween('date_end', [$startDate, $endDate]);
+    }
+
     // accountFiber
     public function scopeAccountFiber($query)
     {
