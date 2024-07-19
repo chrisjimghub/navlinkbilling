@@ -38,6 +38,7 @@ return [
     'billing_description' => 'Description',
     'billing_period' => 'Billing Period',
     'billing_total' => 'Total Balance',
+    'billing_payment_method' => 'Payment Method',
 
     'billing_unique_account_billing_type_installation' => 'The selected account already has a billing Installation Fee.',
     'billing_unique_account_billing_type_monthly' => 'The selected account already has unpaid billing Monthly Fee.',
