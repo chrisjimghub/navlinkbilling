@@ -8,9 +8,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait MyFiltersOperation
 {
-    protected $myFilters = [
-        
-    ];
+    protected $myFilters = [];
 
     /**
      * Add the default settings, buttons, etc that this operation needs.
