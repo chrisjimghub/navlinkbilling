@@ -141,6 +141,7 @@ class BillingExport implements
 
                         $col = 'A'; // Reset column for each row
                         
+
                         if ($firstLoop) {
                             $sheet->setCellValue($col++ . $row, $num++); // Adjust this field based on your model
                             $sheet->setCellValue($col++ . $row, $entry->account_name);
@@ -149,7 +150,7 @@ class BillingExport implements
                             $sheet->setCellValue($col++ . $row, $entry->date_start);
                             $sheet->setCellValue($col++ . $row, $entry->date_end);
                             $sheet->setCellValue($col++ . $row, $entry->date_cut_off);
-                            $sheet->setCellValue($col++ . $row, $entry->date_change);
+                            $sheet->setCellValue($col++ . $row, $entry->date_change ? $entry->date_change->toDateString() : null);
                             $sheet->setCellValue($col++ . $row, $entry->billingStatus->name);
                             $sheet->setCellValue($col++ . $row, $entry->mode_of_payment);
                             $sheet->setCellValue($col++ . $row, $entry->created_at->toDateString());
