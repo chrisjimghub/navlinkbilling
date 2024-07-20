@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Billing;
+use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Concerns\Exportable;
@@ -23,8 +24,37 @@ class BillingExport implements
 
     protected function entries()
     {
-        // TODO:: add scope here from request
-        return Billing::all();
+        // this request inputs are already validated in Export operation
+        $status = request()->input('status');
+        $type = request()->input('type');
+        $period = request()->input('period');
+
+        $entries = Billing::query();
+
+        if ($status) {
+            if ($status == 1) {
+                $entries = $entries->paid();
+            } elseif ($status == 2) {
+                $entries = $entries->unpaid();
+            }
+        }
+
+        if ($type) {
+            if ($type == 1) {
+                $entries = $entries->installment();
+            } elseif ($type == 2) {
+                $entries = $entries->monthly();
+            }
+        }
+
+        if ($period) {
+            $dates = explode('-', $period);
+            $dateStart = Carbon::parse($dates[0]);
+            $dateEnd = Carbon::parse($dates[1]);
+            $entries->withinBillingPeriod($dateStart, $dateEnd);
+        }
+
+        return $entries->get();
     }
 
     public function startCell(): string

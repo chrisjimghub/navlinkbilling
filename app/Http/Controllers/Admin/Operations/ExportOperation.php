@@ -51,7 +51,13 @@ trait ExportOperation
             }
         }
 
-        return (new BillingExport)->download('billings.xlsx');
+        return $this->exportClass();
+    }
 
+    // override this in controller to reuse
+    protected function exportClass()
+    {
+        // default
+        return (new BillingExport)->download('billings.xlsx');
     }
 }
