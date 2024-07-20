@@ -47,27 +47,10 @@
           </div>
         </div>
 
-        @php
-            $filtersEnabled = false;
-            $exportEnabled = false;
 
-            try {
-                $filtersEnabled = $crud->myFilters();
-            } catch (Exception $e) {
-                $filtersEnabled = false;
-            }
-
-            try {
-                $exportEnabled = $crud->exports();
-            } catch (Exception $e) {
-                $exportEnabled = false;
-            }
-        @endphp
-
-        @if ($filtersEnabled || $exportEnabled)
+        @if ($crud->hasAccessToAny(['filters', 'export']))
             @include('crud::buttons.list_collapse_button')
         @endif
-
 
 
         {{-- Backpack List Filters --}}

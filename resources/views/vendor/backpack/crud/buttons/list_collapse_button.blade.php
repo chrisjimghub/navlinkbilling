@@ -1,7 +1,6 @@
-
 @if ($crud->hasAccessToAny([
     'filters',
-    'exports',
+    'export',
 ]))
 <div class="card">
   <div class="card-header" id="filterHeading">
@@ -12,9 +11,9 @@
             </button>
         @endif
 
-        @if($crud->hasAccess('exports'))
-            <button class="btn btn-link ml-n2" type="button">
-                <span class="la la-download"></span> {{ __('Exports') }}  
+        @if($crud->hasAccess('export'))
+            <button id="export-button" class="btn btn-link ml-n2" type="button">
+                <span class="la la-download"></span> {{ __('Export') }}  
             </button>
         @endif
 
@@ -24,7 +23,7 @@
   @if ($crud->hasAccess('filters'))
     <div id="filterForm" class="collapse" aria-labelledby="filterHeading">
         <div class="card-body">
-            <form id="filterForm" action="{{ route('billing.index') }}" method="GET">
+            <form action="{{ route(strtolower($crud->entity_name).'.index') }}" method="GET">
 
                 @php
                     $chunkedFilters = collect($crud->myFilters())->chunk(3);
@@ -43,7 +42,7 @@
                 @endforeach
 
                 <div class="form-group">
-                    <a href="{{ route('billing.index') }}" id="remove_filters_button" class="btn btn-secondary">Clear Filters</a>
+                    <a href="{{ route(strtolower($crud->entity_name).'.index') }}" id="remove_filters_button" class="btn btn-secondary">Clear Filters</a>
                     <button type="submit" class="btn btn-primary">Apply Filters</button>
                 </div>
 
@@ -55,7 +54,7 @@
 
 </div>
 
-@endif
+
 
 
 
@@ -97,5 +96,29 @@
 
 </script>
 
+
+<script>
+    document.getElementById('export-button').addEventListener('click', function() {
+        // Get the current URL
+        const currentUrl = new URL(window.location.href);
+        
+        // Get the query parameters from the current URL
+        const queryParams = currentUrl.searchParams;
+        
+        // Create the export URL
+        const exportUrl = new URL('{{ route(strtolower($crud->entity_name).'.export') }}', window.location.origin);
+        
+        // Append all current query parameters to the export URL
+        queryParams.forEach((value, key) => {
+            exportUrl.searchParams.append(key, value);
+        });
+        
+        // Redirect to the export URL
+        window.location.href = exportUrl.toString();
+    });
+</script>
+    
 @endpush
 
+@endif
+{{-- endIf from hasAnyAccess --}}

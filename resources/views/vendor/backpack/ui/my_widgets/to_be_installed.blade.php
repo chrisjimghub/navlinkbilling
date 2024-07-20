@@ -28,7 +28,7 @@
                     <th>{{ __('app.widgets.planned_app') }}</th>
                     <th>{{ __('app.widgets.sub') }}</th>
                     <th>{{ __('app.widgets.address') }}</th>
-                    <th>{{ __('app.widgets.coordiantes') }}</th>
+                    <th>{{ __('app.widgets.coordinates') }}</th>
                     <th>{{ __('app.widgets.date_created') }}</th>
                 </tr>
             </thead>

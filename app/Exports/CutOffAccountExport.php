@@ -46,7 +46,7 @@ class CutOffAccountExport implements
             __('app.widgets.account_name'),
             __('app.widgets.planned_app'),
             __('app.widgets.sub'),
-            __('app.widgets.coordiantes'),
+            __('app.widgets.coordinates'),
             __('app.widgets.date_cut_off'),
             __('app.billing_total'),
         ];

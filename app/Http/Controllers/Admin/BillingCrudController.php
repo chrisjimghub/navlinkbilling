@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use App\Models\Billing;
 use App\Models\BillingType;
 use App\Models\ContractPeriod;
-use App\Rules\DateRangePicker;
 use Illuminate\Support\Carbon;
 use App\Http\Requests\BillingRequest;
 use Backpack\CRUD\app\Library\Widget;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use App\Http\Controllers\Admin\Operations\ExportOperation;
+use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use App\Http\Controllers\Admin\Operations\BillSettingOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
@@ -34,6 +33,7 @@ class BillingCrudController extends CrudController
     use BillingGroupButtonsOperation;
     use BillSettingOperation;
     use MyFiltersOperation;
+    use ExportOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -42,7 +42,7 @@ class BillingCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Billing::class);
+        CRUD::setModel(Billing::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/billing');
         CRUD::setEntityNameStrings('Billing', 'Billings');
         
@@ -311,9 +311,15 @@ class BillingCrudController extends CrudController
 
     private function myFiltersAddClause()
     {   
-        // if validation fail then dont proceed
-        if (!$this->myFiltersValidation()) {
+        if (!$this->crud->hasAccess('filters')) {
             return;
+        }
+
+        // if validation fail then dont proceed
+        if (method_exists($this, 'myFiltersValidation')) {
+            if (!$this->myFiltersValidation()) {
+                return;
+            }
         }
 
         $status = request()->input('status');
