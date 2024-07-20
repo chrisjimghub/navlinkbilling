@@ -58,6 +58,6 @@ trait ExportOperation
     protected function exportClass()
     {
         // default
-        return (new BillingExport)->download('billings.xlsx');
+        return (new BillingExport)->download('billings-'.carbonNow().'.xlsx');
     }
 }
