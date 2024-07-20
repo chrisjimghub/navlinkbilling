@@ -259,6 +259,12 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    // mode_of_payment
+    public function getModeOfPaymentAttribute()
+    {
+        return $this->paymentMethod->name ?? '';
+    }
+
     // period
     public function getPeriodAttribute()
     {
@@ -443,6 +449,26 @@ class Billing extends Model
             {$appendDateChange}
             <strong>Date End</strong> : {$this->date_end} <br>
             <strong>Cut Off</strong> : {$this->date_cut_off} <br>
+        ";
+    }
+
+    public function getBillingPeriodDetailsExportAttribute()
+    {
+
+        if ($this->isInstallmentFee()) {
+            return $this->billingType->name;
+        }
+
+        $appendDateChange = "";
+        if ($this->before_account_snapshot) {
+            $appendDateChange = "Date Change: {$this->date_change->toDateString()} \n";
+        }
+
+        return "
+            Date Start: {$this->date_start} \n
+            {$appendDateChange}
+            Date End: {$this->date_end} \n
+            Cut Off: {$this->date_cut_off} \n
         ";
     }
 
@@ -758,6 +784,7 @@ class Billing extends Model
         ];
     }
 
+    // date_change
     public function getDateChangeAttribute()
     {
         if ($this->before_account_snapshot) {
