@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use App\Models\Billing;
 use App\Models\BillingType;
 use App\Models\ContractPeriod;
@@ -32,6 +33,7 @@ class BillingCrudController extends CrudController
     use CrudExtend;
     use BillingGroupButtonsOperation;
     use BillSettingOperation;
+    use MyFiltersOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -47,6 +49,41 @@ class BillingCrudController extends CrudController
         $this->userPermissions();
 
         $this->overrideButtonDeleteUpdate();
+        
+    }
+
+    /**
+     * Define filters here
+     * 
+     * @return void
+     */
+    protected function myFilters()
+    {
+        $this->myFilter([
+            'name' => 'period',
+            'label' => __('Billing Period'),
+            'type' => 'date_range',
+        ]);
+
+        $this->myFilter([
+            'name' => 'status',
+            'label' => __('Status'),
+            'type' => 'select',
+            'options' => [
+                1 => __('Paid'),
+                2 => __('Unpaid'),
+            ]
+        ]);
+
+        $this->myFilter([
+            'name' => 'type',
+            'label' => __('Type'),
+            'type' => 'select',
+            'options' => [
+                1 => __('Installment Fee'),
+                2 => __('Monthly Fee'),
+            ]
+        ]);
     }
 
     /**
@@ -57,7 +94,7 @@ class BillingCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        $this->filters();
+        $this->myFiltersAddClause();
 
         if (! $this->crud->getRequest()->has('order')){
             $this->crud->orderBy('billing_status_id', 'desc'); //default order unpaid
@@ -272,38 +309,13 @@ class BillingCrudController extends CrudController
         }
     }
 
-    private function filters()
+    private function myFiltersAddClause()
     {   
-        // validate data, so no idiot will inject in the URL
-        $validator = Validator::make(request()->all(), [
-            'status' => [
-                'nullable',
-                'integer',
-                'in:1,2',  
-            ],
-
-            'type' => [
-                'nullable',
-                'integer',
-                'in:1,2',  
-            ],
-
-            'period' => [
-                'nullable',
-                new DateRangePicker(),
-            ],
-        ]);
-
-        // Check if validation fails
-        if ($validator->fails()) {
-            // Return validation errors as JSON response
-            \Alert::error($validator->errors()->all());
-
-            return true;
+        // if validation fail then dont proceed
+        if (!$this->myFiltersValidation()) {
+            return;
         }
 
-
-        // Fetch request parameters
         $status = request()->input('status');
         $type = request()->input('type');
         $period = request()->input('period');
@@ -322,8 +334,6 @@ class BillingCrudController extends CrudController
             $dateEnd = Carbon::parse($dates[1]);
             $this->crud->query->withinBillingPeriod($dateStart, $dateEnd);
         }
-        
     }
-
 
 }

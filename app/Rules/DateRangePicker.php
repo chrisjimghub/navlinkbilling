@@ -16,7 +16,7 @@ class DateRangePicker implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!Str::contains($value, ' - ')) {
+        if (!Str::contains($value, '-')) {
             $fail(__("Invalid date range format for {$attribute}."));
             return;
         }
@@ -43,8 +43,8 @@ class DateRangePicker implements ValidationRule
         }
 
         // Ensure the start date is less than the end date
-        if ($startDate->gte($endDate)) {
-            $fail(__("The end date must be greater than the start date for {$attribute}."));
+        if ($startDate->gt($endDate)) {
+            $fail(__("The end date must be greater than or equal to the start date for {$attribute}."));
         }
 
 
