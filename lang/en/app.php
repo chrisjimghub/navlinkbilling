@@ -90,7 +90,7 @@ return [
         'account_name'   => 'Account Name',
         'planned_app'    => 'Planned Application',
         'sub'            => 'Subscription',
-        'coordiantes'    => 'Coordiantes',
+        'coordinates'    => 'Coordinates',
         'date_cut_off'   => 'Cut Off Date',
         'date_installed' => 'Installed Date',
         'date_created'   => 'Created Date',

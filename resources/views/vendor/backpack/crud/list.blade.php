@@ -47,9 +47,9 @@
           </div>
         </div>
 
-        {{-- custom filters because filters are not available in backpack free version --}}
-        @if($crud->route == 'admin/billing')
-          @include('crud::filters.billings')
+
+        @if ($crud->hasAccessToAny(['filters', 'export']))
+            @include('crud::buttons.list_collapse_button')
         @endif
 
 

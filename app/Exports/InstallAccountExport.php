@@ -25,7 +25,7 @@ class InstallAccountExport extends CutOffAccountExport
             __('app.widgets.planned_app'),
             __('app.widgets.sub'),
             __('app.widgets.address'),
-            __('app.widgets.coordiantes'),
+            __('app.widgets.coordinates'),
             __('app.widgets.date_created')
         ];
     }

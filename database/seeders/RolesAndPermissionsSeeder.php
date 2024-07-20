@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Permission;
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -39,6 +37,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'billings_download_invoice', 
             'billings_bill_setting', 
             'billings_manual_generate_bill', 
+            'billings_filters', 
+            'billings_export', 
         ],
 
         'menu_separator' => [

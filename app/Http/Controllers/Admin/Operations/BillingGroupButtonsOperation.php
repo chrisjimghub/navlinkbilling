@@ -197,10 +197,11 @@ trait BillingGroupButtonsOperation
             ->dateFormat(dateHumanReadable())
             
             ->setCustomData([
-                'is_monthly_fee' => $billing->isMonthlyFee(),
-                'billing_type' => $billing->billingType->name,
-                'billing_period' => $billing->period,
-                'date_cut_off' => Carbon::parse($billing->date_cut_off)->format(dateHumanReadable()),
+                'is_monthly_fee'         => $billing->isMonthlyFee(),
+                'billing_type'           => $billing->billingType->name,
+                'billing_payment_method' => $billing->paymentMethod->name ?? '',
+                'billing_period'         => $billing->period,
+                'date_cut_off'           => Carbon::parse($billing->date_cut_off)->format(dateHumanReadable()),
             ])
 
             
@@ -210,8 +211,8 @@ trait BillingGroupButtonsOperation
             ->logo(public_path(config('invoices.project_logo')));
         
         // And return invoice itself to browser or have a different view
-        // return $invoice->stream();
-        return $invoice->download();
+        return $invoice->stream();
+        // return $invoice->download();
     }
 
     public function changePlan($id)
