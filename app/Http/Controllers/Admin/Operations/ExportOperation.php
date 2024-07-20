@@ -44,9 +44,10 @@ trait ExportOperation
     {
         CRUD::hasAccessOrFail('export');
 
+        // validate first
         if ($this->crud->hasAccess('filters')) {
             if (!$this->myFiltersValidation()) {
-                return;
+                return redirect()->back();
             }
         }
 

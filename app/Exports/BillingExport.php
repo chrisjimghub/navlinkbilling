@@ -20,7 +20,12 @@ class BillingExport implements
     use Exportable;
 
     protected $title = 'Billings';
-    protected $rowCounter = 5; // Start from row 5 for data
+
+    protected function entries()
+    {
+        // TODO:: add scope here from request
+        return Billing::all();
+    }
 
     public function startCell(): string
     {
@@ -36,12 +41,7 @@ class BillingExport implements
                 $sheet->setCellValue('B1', $this->title);
                 $sheet->setCellValue('B2', 'Generated: '. carbonNow());
                 
-                $sheet->getStyle('5')->applyFromArray([
-                    'font' => [
-                        'bold' => true,
-                    ],
-                ]);
-                
+                $this->setTextBold($sheet, 5);
 
                 // Add "Billing Period" and "Particulars" headers in merged cells
                 $sheet->setCellValue('E4', 'Billing Period');
@@ -92,10 +92,8 @@ class BillingExport implements
                 $row = 6; // Start from row 6 for data
                 $col = 'A'; // Starting column
 
-                // Fetch data manually
-                $billings = Billing::all(); // Modify this query based on your needs
-
-                foreach ($billings as $entry) {
+                $num = 1;
+                foreach ($this->entries() as $entry) {
                     $firstLoop = true;
 
                     $particularsColRowStart = ''; // =SUM(M44:N46)
@@ -114,7 +112,7 @@ class BillingExport implements
                         $col = 'A'; // Reset column for each row
                         
                         if ($firstLoop) {
-                            $sheet->setCellValue($col++ . $row, $entry->id); // Adjust this field based on your model
+                            $sheet->setCellValue($col++ . $row, $num++); // Adjust this field based on your model
                             $sheet->setCellValue($col++ . $row, $entry->account_name);
                             $sheet->setCellValue($col++ . $row, $entry->account_planned_application_details);
                             $sheet->setCellValue($col++ . $row, $entry->billingType->name);
