@@ -4,23 +4,15 @@ namespace App\Exports;
 
 use App\Models\Billing;
 use Maatwebsite\Excel\Events\AfterSheet;
-use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 
 class BillingExport implements 
-    FromQuery, 
-    WithHeadings, 
-    WithMapping, 
-    WithStyles, 
     WithCustomStartCell,
     ShouldAutoSize,
     WithEvents
@@ -28,122 +20,7 @@ class BillingExport implements
     use Exportable;
 
     protected $title = 'Billings';
-    protected $rowCounter = 1;
-
-    public function query()
-    {
-        return Billing::query();
-    }
-
-    public function headings(): array
-    {
-        // This array is used only to ensure headers are properly aligned
-        return [
-            ['#', 'Customer Name', 'Planned Application', 'Type', 'Date Start', 'Date End', 'Cut Off', 'Date Change', 'Status', 'Payment Method', 'Created At', 'Description', 'Deduction', 'Amount']
-        ];
-    }
-
-    public function map($entry): array
-    {
-        $rows = [];
-
-        $firstLoop = true;
-        foreach ($entry->particulars as $particular) {
-
-            $deduction = null;
-            $amount = null;
-
-            if ($particular['amount'] > 0) {
-                $amount = $particular['amount'];
-            } elseif ($particular['amount'] < 0) {
-                $deduction = $particular['amount'];
-            }
-
-            if ($firstLoop) {
-                $rows[] = [
-                    $this->rowCounter++,
-                    $entry->account_name,
-                    $entry->account_planned_application_details,
-                    $entry->billingType->name,
-                    $entry->date_start,
-                    $entry->date_end,
-                    $entry->date_cut_off,
-                    $entry->date_change,
-                    $entry->billingStatus->name,
-                    $entry->mode_of_payment,
-                    $entry->created_at->toDateString(),
-                    $particular['description'],
-                    $deduction,
-                    $amount,
-                ];
-            } else {
-                $rows[] = [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    $particular['description'],
-                    $deduction,
-                    $amount,
-                ];
-            }
-
-            $firstLoop = false;
-        }
-
-        $rows[] = [
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            'Total Balance',
-            $entry->total,
-        ];
-
-        $rows[] = [
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-        ];
-
-        return $rows;
-    }
-
-    public function styles(Worksheet $sheet)
-    {
-        // You can adjust the styles as needed
-        $sheet->getStyle('5')->applyFromArray([
-            'font' => [
-                'bold' => true,
-            ],
-        ]);
-    }
+    protected $rowCounter = 5; // Start from row 5 for data
 
     public function startCell(): string
     {
@@ -153,10 +30,18 @@ class BillingExport implements
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
-                $sheet = $event->sheet->getDelegate();
+            BeforeSheet::class => function(BeforeSheet $event) {
+                $sheet = $event->sheet->getDelegate(); // Get PhpSpreadsheet object
+
                 $sheet->setCellValue('B1', $this->title);
-                $sheet->setCellValue('B2', 'Generated: ' . now());
+                $sheet->setCellValue('B2', 'Generated: '. carbonNow());
+                
+                $sheet->getStyle('5')->applyFromArray([
+                    'font' => [
+                        'bold' => true,
+                    ],
+                ]);
+                
 
                 // Add "Billing Period" and "Particulars" headers in merged cells
                 $sheet->setCellValue('E4', 'Billing Period');
@@ -186,8 +71,158 @@ class BillingExport implements
                         'bold' => true,
                     ],
                 ]);
+
+                // Define headers in row 5
+                $headers = [
+                    '#', 'Customer Name', 'Planned Application', 'Type', 'Date Start', 'Date End',
+                    'Cut Off', 'Date Change', 'Status', 'Payment Method', 'Created At', 'Description',
+                    'Deduction', 'Amount'
+                ];
+
+                // Write headers to the sheet
+                $col = 'A';
+                foreach ($headers as $header) {
+                    $sheet->setCellValue($col . '5', $header);
+                    $col++;
+                }
             },
-           
+
+            AfterSheet::class => function(AfterSheet $event) {
+                $sheet = $event->sheet->getDelegate(); // Get PhpSpreadsheet object
+                $row = 6; // Start from row 6 for data
+                $col = 'A'; // Starting column
+
+                // Fetch data manually
+                $billings = Billing::all(); // Modify this query based on your needs
+
+                foreach ($billings as $entry) {
+                    $firstLoop = true;
+
+                    $particularsColRowStart = ''; // =SUM(M44:N46)
+                    $particularsColRowEnd = '';
+
+                    foreach ($entry->particulars as $particular) {
+                        $deduction = null;
+                        $amount = null;
+
+                        if ($particular['amount'] > 0) {
+                            $amount = $particular['amount'];
+                        } elseif ($particular['amount'] < 0) {
+                            $deduction = $particular['amount'];
+                        }
+
+                        $col = 'A'; // Reset column for each row
+                        
+                        if ($firstLoop) {
+                            $sheet->setCellValue($col++ . $row, $entry->id); // Adjust this field based on your model
+                            $sheet->setCellValue($col++ . $row, $entry->account_name);
+                            $sheet->setCellValue($col++ . $row, $entry->account_planned_application_details);
+                            $sheet->setCellValue($col++ . $row, $entry->billingType->name);
+                            $sheet->setCellValue($col++ . $row, $entry->date_start);
+                            $sheet->setCellValue($col++ . $row, $entry->date_end);
+                            $sheet->setCellValue($col++ . $row, $entry->date_cut_off);
+                            $sheet->setCellValue($col++ . $row, $entry->date_change);
+                            $sheet->setCellValue($col++ . $row, $entry->billingStatus->name);
+                            $sheet->setCellValue($col++ . $row, $entry->mode_of_payment);
+                            $sheet->setCellValue($col++ . $row, $entry->created_at->toDateString());
+                            $sheet->setCellValue($col++ . $row, $particular['description']);
+
+                            $particularsColRowStart = $col . $row;
+                            $this->setTextColor($sheet, $col . $row, 'FFFF0000');
+                            $this->setCellNumberFormat($sheet, $col . $row);
+                            $sheet->setCellValue($col++ . $row, $deduction);
+
+                            $particularsColRowEnd = $col . $row;
+                            $this->setTextColor($sheet, $col . $row, 'FF009900');
+                            $this->setCellNumberFormat($sheet, $col . $row);
+                            $sheet->setCellValue($col++ . $row, $amount);
+
+                        } else {
+                            $sheet->setCellValue($col++ . $row, null);
+                            $sheet->setCellValue($col++ . $row, null);
+                            $sheet->setCellValue($col++ . $row, null);
+                            $sheet->setCellValue($col++ . $row, null);
+                            $sheet->setCellValue($col++ . $row, null);
+                            $sheet->setCellValue($col++ . $row, null);
+                            $sheet->setCellValue($col++ . $row, null);
+                            $sheet->setCellValue($col++ . $row, null);
+                            $sheet->setCellValue($col++ . $row, null);
+                            $sheet->setCellValue($col++ . $row, null);
+                            $sheet->setCellValue($col++ . $row, null);
+                            $sheet->setCellValue($col++ . $row, $particular['description']);
+                            
+                            $this->setTextColor($sheet, $col . $row, 'FFFF0000');
+                            $this->setCellNumberFormat($sheet, $col . $row);
+                            $sheet->setCellValue($col++ . $row, $deduction);
+
+                            $particularsColRowEnd = $col . $row;
+                            $this->setTextColor($sheet, $col . $row, 'FF009900');
+                            $this->setCellNumberFormat($sheet, $col . $row);
+                            $sheet->setCellValue($col++ . $row, $amount);
+                        }
+
+                        $firstLoop = false;
+                        $row++;
+                    }
+
+                    // Add a total row
+                    $col = 'A'; // Reset column for total row
+                    $sheet->setCellValue($col++ . $row, null);
+                    $sheet->setCellValue($col++ . $row, null);
+                    $sheet->setCellValue($col++ . $row, null);
+                    $sheet->setCellValue($col++ . $row, null);
+                    $sheet->setCellValue($col++ . $row, null);
+                    $sheet->setCellValue($col++ . $row, null);
+                    $sheet->setCellValue($col++ . $row, null);
+                    $sheet->setCellValue($col++ . $row, null);
+                    $sheet->setCellValue($col++ . $row, null);
+                    $sheet->setCellValue($col++ . $row, null);
+                    $sheet->setCellValue($col++ . $row, null);
+                    $sheet->setCellValue($col++ . $row, null);
+
+                    // Apply bold font to the "Total Balance" cell
+                    $this->setTextBold($sheet, $col . $row);
+                    $sheet->setCellValue($col++ . $row, 'Total Balance');
+                    
+                    $tempCoordinate = $particularsColRowStart.':'.$particularsColRowEnd;
+
+                    $this->setTextBold($sheet, $col . $row);
+                    $this->setCellNumberFormat($sheet, $col . $row);
+                    // $sheet->setCellValue($col++ . $row, $entry->total);
+                    $sheet->setCellValue($col++ . $row, "=SUM(".$tempCoordinate.")");
+
+                    $row++;
+                    $row++;
+                }
+            },
         ];
+    }
+
+    protected function setCellNumberFormat($sheet, $cellCoordinate)
+    {
+        $sheet->getStyle($cellCoordinate)->applyFromArray([
+            'numberFormat' => [
+                'formatCode' => '#,##0.00', // Number format with thousand separator and two decimal places
+            ],
+        ]);
+    }
+
+    protected function setTextBold(Worksheet $sheet, $cellCoordinate): void
+    {
+        $sheet->getStyle($cellCoordinate)->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+        ]);
+    }
+
+    // Method to set text color
+    protected function setTextColor(Worksheet $sheet, $cellCoordinate, $color): void
+    {
+        $sheet->getStyle($cellCoordinate)->applyFromArray([
+            'font' => [
+                'color' => ['argb' => $color],
+            ],
+        ]);
     }
 }
