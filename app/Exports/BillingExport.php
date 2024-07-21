@@ -115,6 +115,9 @@ class BillingExport implements
                     $sheet->setCellValue($col . '5', $header);
                     $col++;
                 }
+
+                 // Freeze the first two columns (A and B)
+                 $sheet->freezePane('C6');
             },
 
             AfterSheet::class => function(AfterSheet $event) {
