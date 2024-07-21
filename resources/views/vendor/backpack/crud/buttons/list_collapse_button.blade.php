@@ -96,7 +96,7 @@
 
 </script>
 
-
+@if($crud->hasAccess('export'))
 <script>
     document.getElementById('export-button').addEventListener('click', function() {
         // Get the current URL
@@ -117,7 +117,9 @@
         window.location.href = exportUrl.toString();
     });
 </script>
-    
+@endif
+
+
 @endpush
 
 @endif

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\BillProcessed;
 use App\Models\Account;
+use App\Events\BillProcessed;
+use App\Models\AccountStatus;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
+use App\Http\Controllers\Admin\Traits\FetchOptions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -24,6 +27,8 @@ class AccountCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
+    use MyFiltersOperation;
+    use FetchOptions;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -32,11 +37,54 @@ class AccountCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Account::class);
+        CRUD::setModel(Account::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/account');
         CRUD::setEntityNameStrings('account', 'accounts');
 
         $this->userPermissions();
+    }
+
+    protected function myFilters()
+    {
+        $this->myFilter([
+            'name' => 'status',
+            'label' => __('Status'),
+            'type' => 'select',
+            'options' => $this->accountStatusLists(),
+        ]);
+
+        $this->myFilter([
+            'name' => 'subscription',
+            'label' => __('Subscription'),
+            'type' => 'select',
+            'options' => $this->subscriptionLists(),
+        ]);
+    }
+
+    private function myFiltersAddClause()
+    {   
+        if (!$this->crud->hasAccess('filters')) {
+            return;
+        }
+
+        // if validation fail then dont proceed
+        if (method_exists($this, 'myFiltersValidation')) {
+            if (!$this->myFiltersValidation()) {
+                return;
+            }
+        }
+
+        $status = request()->input('status');
+        $sub = request()->input('subscription');
+
+        if ($status) {
+            $this->crud->query->withStatus($status);
+        }
+
+        if ($sub) {
+            $this->crud->query->withSubscription($sub);
+        }
+
     }
 
     /**
@@ -47,6 +95,8 @@ class AccountCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->myFiltersAddClause();
+
         // eager loading improves performance
         $this->crud->with('customer');
         $this->crud->with('plannedApplication');
@@ -90,7 +140,6 @@ class AccountCrudController extends CrudController
         $this->crud->column('installed_date');
         $this->crud->column('installed_address');       
 
-        // TODO:: search and order logic
         $this->crud->column([
             'name' => 'otcs',
             'label' => __('app.otc'),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\FetchOptions;
 use App\Models\Billing;
 use App\Models\BillingType;
 use App\Models\ContractPeriod;
@@ -34,6 +35,7 @@ class BillingCrudController extends CrudController
     use BillSettingOperation;
     use MyFiltersOperation;
     use ExportOperation;
+    use FetchOptions;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -69,20 +71,14 @@ class BillingCrudController extends CrudController
             'name' => 'status',
             'label' => __('Status'),
             'type' => 'select',
-            'options' => [
-                1 => __('Paid'),
-                2 => __('Unpaid'),
-            ]
+            'options' => $this->billingStatusLists(),
         ]);
 
         $this->myFilter([
             'name' => 'type',
             'label' => __('Type'),
             'type' => 'select',
-            'options' => [
-                1 => __('Installment Fee'),
-                2 => __('Monthly Fee'),
-            ]
+            'options' => $this->billingTypeLists(),
         ]);
     }
 

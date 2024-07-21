@@ -129,6 +129,16 @@ class Account extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeWithStatus($query, $statusId)
+    {
+        return $query->where('account_status_id', $statusId);
+    }
+
+    public function scopeWithSubscription($query, $statusId)
+    {
+        return $query->where('subscription_id', $statusId);
+    }
+
     public function scopeP2p($query)
     {
         return $query->whereHas('subscription', function ($q) {
