@@ -97,7 +97,7 @@ trait BillingGroupButtonsOperation
         });
 
         CRUD::operation(['list'], function () {
-            $this->crud->enableBulkActions();
+            // $this->crud->enableBulkActions();
             CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.billing_group_buttons', 'beginning');
         });
     }
