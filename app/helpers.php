@@ -4,6 +4,25 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Backpack\Settings\app\Models\Setting;
 
+// Str
+if (! function_exists('strHumanReadable')) {
+	function strHumanReadable($string) {
+		// Convert camel case to snake case with underscores
+		$snake = Str::snake($string);
+
+		// Replace underscores with spaces
+		$spaced = str_replace('_', ' ', $snake);
+
+		// Convert to title case
+		$humanReadable = Str::title($spaced);
+
+		return $humanReadable;
+	}
+}
+// end Str
+
+
+
 if (! function_exists('modelInstance')) {
 	function modelInstance($class, $useFullPath = false) {
 		if ($useFullPath) {

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Operations;
 
-use App\Exports\BillingExport;
 use Illuminate\Support\Facades\Route;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -54,10 +53,18 @@ trait ExportOperation
         return $this->exportClass();
     }
 
-    // override this in controller to reuse
+    // override this in controller to change the export class
     protected function exportClass()
     {
-        // default
-        return (new BillingExport)->download('billings-'.carbonNow().'.xlsx');
+        $class = ucwords($this->crud->entity_name) . 'Export';
+
+        // Build the class name with the namespace
+        $classExport = 'App\\Exports\\' . $class;
+
+        // Instantiate the class using the variable
+        $classExportInstance = new $classExport();
+
+        return $classExportInstance->download(strHumanReadable($class) . '-' . carbonNow() . '.xlsx');
     }
+
 }

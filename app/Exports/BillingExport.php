@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Billing;
 use Illuminate\Support\Carbon;
+use App\Exports\Traits\ExportHelper;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Concerns\Exportable;
@@ -19,6 +20,7 @@ class BillingExport implements
     WithEvents
 {
     use Exportable;
+    use ExportHelper;
 
     protected $title = 'Billings';
 
@@ -151,7 +153,7 @@ class BillingExport implements
                         
 
                         if ($firstLoop) {
-                            $sheet->setCellValue($col++ . $row, $num++); // Adjust this field based on your model
+                            $sheet->setCellValue($col++ . $row, $num++); 
                             $sheet->setCellValue($col++ . $row, $entry->account_name);
                             $sheet->setCellValue($col++ . $row, $entry->account_planned_application_details);
                             $sheet->setCellValue($col++ . $row, $entry->billingType->name);
@@ -234,32 +236,5 @@ class BillingExport implements
             },
         ];
     }
-
-    protected function setCellNumberFormat($sheet, $cellCoordinate)
-    {
-        $sheet->getStyle($cellCoordinate)->applyFromArray([
-            'numberFormat' => [
-                'formatCode' => '#,##0.00', // Number format with thousand separator and two decimal places
-            ],
-        ]);
-    }
-
-    protected function setTextBold(Worksheet $sheet, $cellCoordinate): void
-    {
-        $sheet->getStyle($cellCoordinate)->applyFromArray([
-            'font' => [
-                'bold' => true,
-            ],
-        ]);
-    }
-
-    // Method to set text color
-    protected function setTextColor(Worksheet $sheet, $cellCoordinate, $color): void
-    {
-        $sheet->getStyle($cellCoordinate)->applyFromArray([
-            'font' => [
-                'color' => ['argb' => $color],
-            ],
-        ]);
-    }
+    
 }

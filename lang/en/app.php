@@ -21,7 +21,7 @@ return [
     'account_field_validation' => 'The account field is required.',
     'account_name' => 'Acount Name (Customer)',
     'account_names' => 'Acount Names (Customers)',
-    'account_google_map_coordinates' => 'Coordiantes',
+    'account_google_map_coordinates' => 'Coordinates',
     
     // Account credits
     'account_credit_latest_udpated' => 'Last Updated',
