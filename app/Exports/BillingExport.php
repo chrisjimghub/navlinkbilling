@@ -29,7 +29,12 @@ class BillingExport implements
         $type = request()->input('type');
         $period = request()->input('period');
 
-        $entries = Billing::query();
+
+        $entries = Billing::join('accounts', 'billings.account_id', '=', 'accounts.id')
+                    ->join('customers', 'accounts.customer_id', '=', 'customers.id')
+                    ->orderBy('customers.last_name', 'asc')
+                    ->orderBy('customers.first_name', 'asc')
+                    ->select('billings.*');
 
         if ($status) {
             if ($status == 1) {
