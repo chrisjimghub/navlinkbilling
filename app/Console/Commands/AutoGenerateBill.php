@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Artisan;
 use Backpack\Settings\app\Models\Setting;
 
@@ -35,6 +36,7 @@ class AutoGenerateBill extends Command
             $period = fiberBillingPeriod();
             if ($this->dateRunIsToday($period)) {
                 Artisan::call('bill:generate', ['--fiber' => true]);
+                Log::info('The bill:generate --fiber command was run.');
             }
 
 
@@ -42,6 +44,7 @@ class AutoGenerateBill extends Command
             $period = p2pBillingPeriod();
             if ($this->dateRunIsToday($period)) {
                 Artisan::call('bill:generate', ['--p2p' => true]);
+                Log::info('The bill:generate --p2p command was run.');
             }
             
         }

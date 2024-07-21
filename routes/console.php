@@ -10,5 +10,4 @@ use Illuminate\Support\Facades\Schedule;
 
 
 Schedule::command('bill:auto-generate')->everyMinute()->withoutOverlapping();
-
-// TODO:: add notification dispatch here
+Schedule::command('bill:auto-send-notification')->everyMinute()->withoutOverlapping();

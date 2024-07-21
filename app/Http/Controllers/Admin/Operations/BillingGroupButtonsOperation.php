@@ -442,7 +442,7 @@ trait BillingGroupButtonsOperation
 
             $billing->notified_at = now();
     
-            return $billing->save();
+            return $billing->saveQuietly();
         }else {
             // send alert that customer has no email   
             return response()->json([
