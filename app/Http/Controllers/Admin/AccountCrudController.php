@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Operations\ExportOperation;
 use App\Models\Account;
 use App\Events\BillProcessed;
+use App\Exports\AccountExport;
 use App\Models\AccountStatus;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
@@ -28,6 +30,7 @@ class AccountCrudController extends CrudController
 
     use CrudExtend;
     use MyFiltersOperation;
+    use ExportOperation;
     use FetchOptions;
 
     /**
