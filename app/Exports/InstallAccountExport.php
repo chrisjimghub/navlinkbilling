@@ -20,13 +20,13 @@ class InstallAccountExport extends CutOffAccountExport
     public function headings(): array
     {
         return [
-            '#',
-            __('app.widgets.account_name'),
-            __('app.widgets.planned_app'),
-            __('app.widgets.sub'),
-            __('app.widgets.address'),
-            __('app.widgets.coordinates'),
-            __('app.widgets.date_created')
+            __('app.row_num'),
+            __('app.customer_name'),
+            __('app.dashboard.planned_app'),
+            __('app.dashboard.sub'),
+            __('app.dashboard.address'),
+            __('app.dashboard.coordinates'),
+            __('app.dashboard.date_created')
         ];
     }
 

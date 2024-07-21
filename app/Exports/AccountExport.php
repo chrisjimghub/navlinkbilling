@@ -60,20 +60,19 @@ class AccountExport implements
                 
                 $this->setTextBold($sheet, 5);
 
-
                 // Define headers in row 5
                 $headers = [
-                    '#', 
-                    'Acount Name (Customer)', 
-                    'Planned Application', 
-                    'Subscription', 
-                    'Status', 
-                    'Coordinates',
-                    'Installed Date',
-                    'Installed address',
-                    'One-Time Charge',
-                    'Contract Period',
-                    'Notes',
+                    __('app.row_num'), 
+                    __('app.customer_name'), 
+                    __('app.planned_application'), 
+                    __('app.subscription'), 
+                    __('app.status'), 
+                    __('app.account_coordinates'),
+                    __('app.account_installed_date'),
+                    __('app.account_installed_address'),
+                    __('app.otc'),
+                    __('app.contract_period'),
+                    __('app.account_notes'),
                 ];
 
                 // Write headers to the sheet

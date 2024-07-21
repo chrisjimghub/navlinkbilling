@@ -111,9 +111,20 @@ class BillingExport implements
 
                 // Define headers in row 5
                 $headers = [
-                    '#', 'Customer Name', 'Planned Application', 'Type', 'Date Start', 'Date End',
-                    'Cut Off', 'Date Change', 'Status', 'Payment Method', 'Created At', 'Description',
-                    'Deduction', 'Amount'
+                    __('app.row_num'), 
+                    __('app.customer_name'), 
+                    __('app.planned_application'), 
+                    __('app.type'), 
+                    __('app.billing_date_start'), 
+                    __('app.billing_date_end'),
+                    __('app.billing_date_cut_off'), 
+                    __('app.billing_date_change'), 
+                    __('app.status'), 
+                    __('app.billing_payment_method'), 
+                    __('app.created'), 
+                    __('app.billing_description'),
+                    __('app.billing_deduction'), 
+                    __('app.billing_amount')
                 ];
 
                 // Write headers to the sheet
@@ -221,7 +232,7 @@ class BillingExport implements
 
                     // Apply bold font to the "Total Balance" cell
                     $this->setTextBold($sheet, $col . $row);
-                    $sheet->setCellValue($col++ . $row, 'Total Balance');
+                    $sheet->setCellValue($col++ . $row, __('app.billing_total'));
                     
                     $tempCoordinate = $particularsColRowStart.':'.$particularsColRowEnd;
 

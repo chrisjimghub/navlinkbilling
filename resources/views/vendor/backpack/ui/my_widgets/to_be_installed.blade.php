@@ -2,11 +2,11 @@
     @canany(['accounts_list'])
         
         <strong class="text-success">
-            {{ __('Install Accounts') }}
+            {{ __('app.dashboard.install_account') }}
         </strong>
 
         <a class="ml-1" href="{{ route('widget.installAccounts') }}">
-            {{ __('Download Excel') }} 
+            {{ __('app.download_excel') }} 
         </a>
 
         @php
@@ -23,13 +23,13 @@
         <table class="table table-striped ">
             <thead>
                 <tr>
-                    <th>{{ __('app.widgets.priority_num') }}</th>
-                    <th>{{ __('app.widgets.account_name') }}</th>
-                    <th>{{ __('app.widgets.planned_app') }}</th>
-                    <th>{{ __('app.widgets.sub') }}</th>
-                    <th>{{ __('app.widgets.address') }}</th>
-                    <th>{{ __('app.widgets.coordinates') }}</th>
-                    <th>{{ __('app.widgets.date_created') }}</th>
+                    <th>{{ __('app.dashboard.priority_num') }}</th>
+                    <th>{{ __('app.dashboard.account_name') }}</th>
+                    <th>{{ __('app.dashboard.planned_app') }}</th>
+                    <th>{{ __('app.dashboard.sub') }}</th>
+                    <th>{{ __('app.dashboard.address') }}</th>
+                    <th>{{ __('app.dashboard.coordinates') }}</th>
+                    <th>{{ __('app.dashboard.date_created') }}</th>
                 </tr>
             </thead>
             <tbody>
