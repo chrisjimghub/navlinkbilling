@@ -70,6 +70,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'customers_show', 
             'customers_update', 
             'customers_delete', 
+            'customers_export', 
         ],
         
         'planned_applications' => [

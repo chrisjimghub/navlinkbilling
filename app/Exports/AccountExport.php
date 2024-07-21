@@ -94,7 +94,6 @@ class AccountExport implements
 
                 $num = 1;
                 foreach ($this->entries() as $entry) {
-                    $customerNameRow = true;
                     $col = 'A'; // Reset column for each row
 
                     $sheet->setCellValue($col++ . $row, $num++); 
