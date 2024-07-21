@@ -1,24 +1,5 @@
 @extends(backpack_view('blank'))
-
 @php
-    if (backpack_theme_config('show_getting_started')) {
-        $widgets['before_content'][] = [
-            'type'        => 'view',
-            'view'        => backpack_view('inc.getting_started'),
-        ];
-    } else {
-        // $widgets['before_content'][] = [
-        //     'type'        => 'jumbotron',
-        //     'heading'     => trans('backpack::base.welcome'),
-        //     'heading_class' => 'display-3 '.(backpack_theme_config('layout') === 'horizontal_overlap' ? ' text-white' : ''),
-        //     'content'     => trans('backpack::base.use_sidebar'),
-        //     'content_class' => backpack_theme_config('layout') === 'horizontal_overlap' ? 'text-white' : '',
-        //     'button_link' => backpack_url('logout'),
-        //     'button_text' => trans('backpack::base.logout'),
-        // ];
-    }
-
-
     $contents = [];
 
     if (auth()->user()->can('customers_list')) {
@@ -34,8 +15,8 @@
                 $totalAccounts / ($totalCustomers == 0 ? 1 : $totalCustomers) * 100
             ))
             ->value($totalCustomers)
-            ->description('Registered Customers.')
-            ->hint($totalAccounts.' total accounts.'); 
+            ->description(__('app.dashboard.registered_customer'))
+            ->hint($totalAccounts. __('app.dashboard.total_accounts')); 
     }
 
     if (auth()->user()->can('accounts_list')) {
@@ -55,11 +36,11 @@
                 $totalAccountsConnected / ($totalAccounts == 0 ? 1 : $totalAccounts) * 100
             ))
             ->value($totalAccountsConnected)
-            ->description('Accounts Connected.')
+            ->description(__('app.dashboard.account_connected'))
             ->hint(
-                $totalAccountsInstalling.' installing, '.
-                $totalAccountsDisconnected.' disconnected, '.
-                $totalAccountsNoBilling.' no billing.'
+                $totalAccountsInstalling.__('app.dashboard.installing').
+                $totalAccountsDisconnected.__('app.dashboard.disconnected').
+                $totalAccountsNoBilling.__('app.dashboard.no_billing')
             );
     }
     
@@ -79,10 +60,10 @@
                 $paidBillings / ($totalBillings == 0 ? 1 : $totalBillings) * 100
             ))
             ->value($paidBillings)
-            ->description('Paid Billings.')
+            ->description(__('app.dashboard.paid_billing'))
             ->hint(
-                $unpaidInstallment .' installment, '.
-                $unpaidMonthly .' monthly unpaid.'
+                $unpaidInstallment .__('app.dashboard.installment').
+                $unpaidMonthly .__('app.dashboard.monthly_unpaid')
             );
     }
 
@@ -97,8 +78,8 @@
             ->value(
                 number_format(modelInstance('AccountCredit')::sum('amount'))
             )
-            ->description('Total Advanced Payment.')
-            ->hint('Sum of all customers advanced.');
+            ->description(__('app.dashboard.total_advanced_payment'))
+            ->hint(__('app.dashboard.sum_of_advanced'));
     }
 
 

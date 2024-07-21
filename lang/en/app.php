@@ -5,24 +5,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | NavLink Billing System Language Lines
+    | Application Language Lines
     |--------------------------------------------------------------------------
-    |
-    | The following language lines are used in NavLink Billing System
-    | messages that we need to display to the user. You are free to modify
-    | these language lines according to your application's requirements.
-    |
     */
-    // Misc.
-    
+
+ 
+
+
     // Accounts
-    
-    'account' => 'Account',
-    'account_field_validation' => 'The account field is required.',
-    'account_name' => 'Acount Name (Customer)',
-    'account_names' => 'Acount Names (Customers)',
+    'account'                        => 'Account',
+    'account_field_validation'       => 'The account field is required.',
+    'account_name'                   => 'Acount Name (Customer)',
+    'account_names'                  => 'Acount Names (Customers)',
     'account_google_map_coordinates' => 'Coordinates',
-    
+    'account_installed_date'         => 'Installed Date',
+    'account_installed_address'      => 'Installed Address',
+    'account_notes'                  => 'Notes',
+    'account_coordinates'            => 'Coordinates',
+
     // Account credits
     'account_credit_latest_udpated' => 'Last Updated',
 
@@ -31,20 +31,24 @@ return [
     'account_statuses' => 'Account Statuses',
     
     // Billing 
-    'billing_date_start' => 'Date Start',
-    'billing_date_end' => 'Date End',
-    'billing_date_cut_off' => 'Date Cut Off',
-    'billing_particulars' => 'Particulars',
-    'billing_description' => 'Description',
-    'billing_period' => 'Billing Period',
-    'billing_total' => 'Total Balance',
+    'billing_date_start'     => 'Date Start',
+    'billing_date_end'       => 'Date End',
+    'billing_date_cut_off'   => 'Date Cut Off',
+    'billing_particulars'    => 'Particulars',
+    'billing_description'    => 'Description',
+    'billing_period'         => 'Billing Period',
+    'billing_total'          => 'Total Balance',
     'billing_payment_method' => 'Payment Method',
+    'billing_date_change'    => 'Date Change',
+    'billing_deduction'      => 'Deduction',
+    'billing_amount'         => 'Amount',
 
+    // Billing Validation
     'billing_unique_account_billing_type_installation' => 'The selected account already has a billing Installation Fee.',
-    'billing_unique_account_billing_type_monthly' => 'The selected account already has unpaid billing Monthly Fee.',
-    'billing_account_must_have_installed_date' => 'The selected account must have installed date in his account record to proceed.',
-    'billing_particulars_description_required' => 'The particulars description is required.',
-    'billing_particulars_amount_required' => 'The particulars amount is required.',
+    'billing_unique_account_billing_type_monthly'      => 'The selected account already has unpaid billing Monthly Fee.',
+    'billing_account_must_have_installed_date'         => 'The selected account must have installed date in his account record to proceed.',
+    'billing_particulars_description_required'         => 'The particulars description is required.',
+    'billing_particulars_amount_required'              => 'The particulars amount is required.',
 
     // Billing Type
     'billing_type' => 'Billing Type',
@@ -55,11 +59,19 @@ return [
     'contract_periods' => 'Contract Periods',
     
     // Customers
-    'customer' => 'Customer',
-    'customer_signature' => 'Please sign here',
+    'customer'                   => 'Customer',
+    'customer_name'              => 'Customer Name',
+    'customer_signature'         => 'Please sign here',
+    'customer_date_birth'        => 'Date of Birth',
+    'customer_contact'           => 'Contact Number',
+    'customer_street'            => 'Block Street',
+    'customer_barangay'          => 'Barangay',
+    'customer_city_municipality' => 'City or Municipality',
+    'customer_social'            => 'Social Media',
+
+    // Customer Validation
     'customer_select_field' => 'The customer field is required.',
 
-    // 
     'installation_fee' => 'Installation Fee',
 
     // Menus
@@ -70,8 +82,8 @@ return [
     'otcs' => 'One-Time Charges',
     
     // Planned Application
-    'planned_application' => 'Planned Applicaton',
-    'planned_applications' => 'Planned Applicatons',
+    'planned_application' => 'Planned Application',
+    'planned_applications' => 'Planned Applications',
     
     // Planned Application Type
     'planned_application_type' => 'Planned Applicaton Type',
@@ -81,11 +93,17 @@ return [
     // Subscription
     'subscription' => 'Subscription',
     'subscriptions' => 'Subscriptions',
-    
 
+    // Misc.
+    'download_excel' => 'Download Excel',
+    'row_num'        => '#',
+    'status'         => 'Status',
+    'type'           => 'Type',
+    'created'        => 'Created At',
+    'email'          => 'Email',
 
-    // Widgets
-    'widgets' => [
+    // Dashboard
+    'dashboard' => [
         'priority_num'   => 'Priority #',
         'account_name'   => 'Account Name',
         'planned_app'    => 'Planned Application',
@@ -96,7 +114,22 @@ return [
         'date_created'   => 'Created Date',
         'address'        => 'Address',
 
-    ]
+        'account_connected'      => 'Accounts Connected.',
+        'disconnected'           => ' disconnected, ',
+        'installing'             => ' installing, ',
+        'installment'            => ' installment, ',
+        'monthly_unpaid'         => ' monthly unpaid.',
+        'no_billing'             => ' no billing.',
+        'paid_billing'           => 'Paid Billings.',
+        'registered_customer'    => 'Registered Customers.',
+        'sum_of_advanced'        => 'Sum of all customers advanced.',
+        'total_accounts'         => ' total accounts.',
+        'total_advanced_payment' => 'Total Advanced Payment.',
+
+        // Near Cut Off 
+        'near_cut_off' => 'Near Cut Off Accounts',
+        'install_account' => 'Install Accounts',
+    ],
     
 
 ];

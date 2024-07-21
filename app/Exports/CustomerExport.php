@@ -43,18 +43,29 @@ class CustomerExport implements
                 
                 $this->setTextBold($sheet, 5);
 
+                /* 
+                        'customer'                   => 'Customer',
+                        'customer_name'              => 'Customer Name',
+                        'customer_signature'         => 'Please sign here',
+                        'customer_date_birth'        => 'Date of Birth',
+                        'customer_contact'           => 'Contact Number',
+                        'customer_street'            => 'Block Street',
+                        'customer_barangay'          => 'Barangay',
+                        'customer_city_municipality' => 'City or Municipality',
+                        'customer_social'            => 'Social Media',
+                */
 
                 // Define headers in row 5
                 $headers = [
-                    '#', 
-                    'Customer Name', 
-                    'Date of Birth', 
-                    'Contact Number', 
-                    'Email',
-                    'Block Street',
-                    'Barangay',
-                    'City or Municipality',
-                    'Social Media',
+                    __('app.row_num'), 
+                    __('app.customer_name'), 
+                    __('app.customer_date_birth'), 
+                    __('app.customer_contact'), 
+                    __('app.email'),
+                    __('app.customer_street'),
+                    __('app.customer_barangay'),
+                    __('app.customer_city_municipality'),
+                    __('app.customer_social'),
                 ];
 
                 // Write headers to the sheet
