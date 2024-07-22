@@ -24,6 +24,7 @@ class BillingRequest extends FormRequest
      */
     public function rules(): array
     {
+        $billingId = $this->input('id');
         $accountId = $this->input('account_id');
         $billingTypeId = $this->input('billing_type_id');
         $dateStart = $this->input('date_start');
@@ -35,7 +36,7 @@ class BillingRequest extends FormRequest
                 'required',
                 'exists:billing_types,id',
                 new UniqueAccountBillingType($accountId, $billingTypeId),
-                new UniqueBillingPeriodPerAccount($accountId, $dateStart, $dateEnd),
+                new UniqueBillingPeriodPerAccount($accountId, $dateStart, $dateEnd, $billingId),
             ],
             'date_start' => function ($attribute, $value, $fail) use ($billingTypeId) {
                 if ($billingTypeId == 2) {
