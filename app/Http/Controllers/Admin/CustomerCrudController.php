@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Controllers\Admin\Operations\ExportOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use RedSquirrelStudio\LaravelBackpackImportOperation\ImportOperation;
 
 /**
  * Class CustomerCrudController
@@ -22,6 +23,7 @@ class CustomerCrudController extends CrudController
 
     use CrudExtend;
     use ExportOperation;
+    // use ImportOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -120,4 +122,52 @@ class CustomerCrudController extends CrudController
         $this->setupCreateOperation();
     }
 
+    protected function setupImportOperation()
+    {
+        $this->setExampleFileUrl('https://example.com/link-to-your-download/file.csv');
+
+        $this->withoutPrimaryKey();
+
+        CRUD::addColumn([
+           'name' => 'last_name',
+           'type' => 'text',
+        ]);
+        
+        CRUD::addColumn([
+            'name' => 'first_name',
+            'type' => 'text',
+        ]);
+
+        CRUD::addColumn([
+            'name' => 'date_of_birth',
+            'type' => 'date',
+        ]);
+
+        CRUD::addColumn([
+            'name' => 'contact_number',
+            'type' => 'text',
+        ]);
+
+        CRUD::addColumn([
+            'name' => 'block_street',
+            'type' => 'text',
+        ]);
+        
+        CRUD::addColumn([
+            'name' => 'barangay',
+            'type' => 'text',
+        ]);
+        
+        CRUD::addColumn([
+            'name' => 'city_or_municipality',
+            'type' => 'text',
+        ]);
+        
+        CRUD::addColumn([
+            'name' => 'social_media',
+            'type' => 'text',
+        ]);
+
+
+    }
 }

@@ -71,6 +71,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'customers_update', 
             'customers_delete', 
             'customers_export', 
+            'customers_import', 
         ],
         
         'planned_applications' => [
