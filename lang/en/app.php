@@ -80,10 +80,15 @@ return [
     // OTC 
     'otc' => 'One-Time Charge',
     'otcs' => 'One-Time Charges',
+    'otc_name' => 'Name',
+    'otc_amount' => 'Amount',
     
     // Planned Application
     'planned_application' => 'Planned Application',
     'planned_applications' => 'Planned Applications',
+    'planned_application_mbps' => 'Mbps',
+    'planned_application_price' => 'Price',
+    'planned_application_details' => 'Planned Application',
     
     // Planned Application Type
     'planned_application_type' => 'Planned Applicaton Type',
@@ -93,6 +98,9 @@ return [
     // Subscription
     'subscription' => 'Subscription',
     'subscriptions' => 'Subscriptions',
+
+    // Location
+    'location' => 'Location',
 
     // Misc.
     'download_excel' => 'Download Excel',

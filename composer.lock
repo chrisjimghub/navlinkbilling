@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "51f4044f2fca1b703e616a540b397254",
+    "content-hash": "a241d28468025a84099a3330d4213241",
     "packages": [
         {
             "name": "backpack/activity-log",
@@ -5664,6 +5664,55 @@
                 }
             ],
             "time": "2024-04-27T21:32:50+00:00"
+        },
+        {
+            "name": "redsquirrelstudio/laravel-backpack-import-operation",
+            "version": "1.6.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/redsquirrelstudio/laravel-backpack-import-operation.git",
+                "reference": "15f286d6c64d3763df2a0220549e44f522c27f28"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/redsquirrelstudio/laravel-backpack-import-operation/zipball/15f286d6c64d3763df2a0220549e44f522c27f28",
+                "reference": "15f286d6c64d3763df2a0220549e44f522c27f28",
+                "shasum": ""
+            },
+            "require": {
+                "backpack/crud": "^6.0",
+                "maatwebsite/excel": "^3.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "RedSquirrelStudio\\LaravelBackpackImportOperation\\Providers\\ImportOperationProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "RedSquirrelStudio\\LaravelBackpackImportOperation\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lewis Raggett",
+                    "email": "lewisraggett17@gmail.com",
+                    "homepage": "https://github.com/redsquirrelstudio"
+                }
+            ],
+            "description": "An operation to make configurable imports for your CRUDs using the Backpack api you know and love",
+            "support": {
+                "issues": "https://github.com/redsquirrelstudio/laravel-backpack-import-operation/issues",
+                "source": "https://github.com/redsquirrelstudio/laravel-backpack-import-operation/tree/1.6.8"
+            },
+            "time": "2024-02-29T21:16:32+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",

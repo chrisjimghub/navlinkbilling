@@ -84,7 +84,7 @@ class PlannedApplication extends Model
             $type = $type[0];
         }
 
-        return $type .' :   '.$this->mbps . 'Mbps ----- ' . $this->currencyFormatAccessor($this->price);
+        return $type .' : '.$this->mbps . 'Mbps --- ' . $this->currencyFormatAccessor($this->price);
     }
     
     // use in custom field select_grouped_planned_application.blade.php in AccountCrudController

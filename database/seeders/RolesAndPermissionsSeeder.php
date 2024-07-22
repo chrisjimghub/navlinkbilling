@@ -71,6 +71,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'customers_update', 
             'customers_delete', 
             'customers_export', 
+            'customers_import', 
         ],
         
         'planned_applications' => [
@@ -79,6 +80,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'planned_applications_show', 
             'planned_applications_update', 
             'planned_applications_delete', 
+            'planned_applications_export', 
         ],
 
         'account_statuses' => [
@@ -112,6 +114,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'otcs_show', 
             'otcs_update', 
             'otcs_delete', 
+            'otcs_export', 
         ],
 
         'contract_periods' => [

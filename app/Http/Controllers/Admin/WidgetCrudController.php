@@ -34,11 +34,15 @@ class WidgetCrudController extends CrudController
 
     public function cutOffAccounts()
     {
-        return (new CutOffAccountExport)->download('cut-off-accounts-'.carbonNow().'.xlsx');
+        $name = __('app.dashboard.near_cut_off');
+
+        return (new CutOffAccountExport(title: $name))->download($name.'-'.carbonNow().'.xlsx');
     }
     
     public function installAccounts()
     {
-        return (new InstallAccountExport)->download('install-accounts-'.carbonNow().'.xlsx');
+        $name = __('app.dashboard.install_account');
+        
+        return (new InstallAccountExport(title: $name))->download($name.'-'.carbonNow().'.xlsx');
     }
 }

@@ -44,4 +44,13 @@ trait ExportHelper
             ],
         ]);
     }
+
+    protected function excelTitle(Worksheet $sheet)
+    {
+        $sheet->mergeCells('A1:C1');
+        $sheet->mergeCells('A2:C2');
+        $sheet->setCellValue('A1', $this->title);
+        $sheet->setCellValue('A2', 'Generated: '. carbonNow());
+        
+    }
 }

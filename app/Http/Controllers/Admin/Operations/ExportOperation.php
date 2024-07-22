@@ -33,13 +33,25 @@ trait ExportOperation
         CRUD::operation('export', function () {
             CRUD::loadDefaultOperationSettingsFromConfig();
         });
+
+        $exportRoute = $this->exportRoute();        
+        $this->crud->macro('exportRoute', function() use ($exportRoute) {
+            return $exportRoute;
+        });
+
+    }
+
+    // this is use for route in blade file. if you define a route here then it will use instead of the auto
+    protected function exportRoute()
+    {
+        return;
     }
 
     /**
      * Show the view for performing the operation.
      *
      */
-    public function export()
+    protected function export()
     {
         CRUD::hasAccessOrFail('export');
 
@@ -59,7 +71,7 @@ trait ExportOperation
         $class = ucwords($this->crud->entity_name) . 'Export';
 
         // Build the class name with the namespace
-        $classExport = 'App\\Exports\\' . $class;
+        $classExport = 'App\\Exports\\' . str_replace(' ', '', $class);
 
         // Instantiate the class using the variable
         $classExportInstance = new $classExport();
