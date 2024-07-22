@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Exports\Traits\ExportHelper;
 use App\Models\Billing;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -27,8 +28,14 @@ class CutOffAccountExport implements
     WithEvents
 {
     use Exportable;
+    use ExportHelper;
 
-    protected $title = 'Cut Off Accounts';
+    protected $title;
+
+    public function __construct($title)
+    {
+        $this->title = $title;
+    }
 
     protected $rowCounter = 1;
 
@@ -97,8 +104,8 @@ class CutOffAccountExport implements
         
         return [
             AfterSheet::class    => function(AfterSheet $event){
-                $event->sheet->setCellValue('B1', $this->title);
-                $event->sheet->setCellValue('B2', 'Generated: '. carbonNow());
+                $sheet = $event->sheet->getDelegate(); // Get PhpSpreadsheet object
+                $this->excelTitle($sheet);
                 
 
             },

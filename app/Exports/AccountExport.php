@@ -55,8 +55,7 @@ class AccountExport implements
             BeforeSheet::class => function(BeforeSheet $event) {
                 $sheet = $event->sheet->getDelegate(); // Get PhpSpreadsheet object
 
-                $sheet->setCellValue('B1', $this->title);
-                $sheet->setCellValue('B2', 'Generated: '. carbonNow());
+                $this->excelTitle($sheet);
                 
                 $this->setTextBold($sheet, 5);
 

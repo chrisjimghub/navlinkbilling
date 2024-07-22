@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Customer;
+use App\Models\PlannedApplication;
 use App\Exports\Traits\ExportHelper;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeSheet;
@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 
-class CustomerExport implements 
+class PlannedApplicationExport implements 
     WithCustomStartCell,
     ShouldAutoSize,
     WithEvents
@@ -19,11 +19,17 @@ class CustomerExport implements
     use Exportable;
     use ExportHelper;
 
-    protected $title = 'Customers';
+    protected $title = 'Planned Applications';
 
     protected function entries()
     {
-        return Customer::all();
+        return PlannedApplication::join('locations', 'planned_applications.location_id', '=', 'locations.id')
+            ->join('planned_application_types', 'planned_applications.planned_application_type_id', '=', 'planned_application_types.id')
+            ->orderBy('locations.name', 'asc')
+            ->orderBy('planned_application_types.name', 'asc')
+            ->select('planned_applications.*')
+            ->get();
+
     }
 
 
@@ -46,14 +52,11 @@ class CustomerExport implements
                 // Define headers in row 5
                 $headers = [
                     __('app.row_num'), 
-                    __('app.customer_name'), 
-                    __('app.customer_date_birth'), 
-                    __('app.customer_contact'), 
-                    __('app.email'),
-                    __('app.customer_street'),
-                    __('app.customer_barangay'),
-                    __('app.customer_city_municipality'),
-                    __('app.customer_social'),
+                    __('app.location'), 
+                    __('app.planned_application_type'), 
+                    __('app.planned_application_mbps'), 
+                    __('app.planned_application_price'),
+                    __('app.planned_application_select'),
                 ];
 
                 // Write headers to the sheet
@@ -77,14 +80,14 @@ class CustomerExport implements
                     $col = 'A'; // Reset column for each row
 
                     $sheet->setCellValue($col++ . $row, $num++); 
-                    $sheet->setCellValue($col++ . $row, $entry->full_name); 
-                    $sheet->setCellValue($col++ . $row, $entry->date_of_birth); 
-                    $sheet->setCellValue($col++ . $row, $entry->contact_number); 
-                    $sheet->setCellValue($col++ . $row, $entry->email); 
-                    $sheet->setCellValue($col++ . $row, $entry->block_street); 
-                    $sheet->setCellValue($col++ . $row, $entry->barangay); 
-                    $sheet->setCellValue($col++ . $row, $entry->city_or_municipality); 
-                    $sheet->setCellValue($col++ . $row, $entry->social_media); 
+                    $sheet->setCellValue($col++ . $row, $entry->location->name); 
+                    $sheet->setCellValue($col++ . $row, $entry->plannedApplicationType->name); 
+                    $sheet->setCellValue($col++ . $row, $entry->mbps); 
+
+                    $this->setCellNumberFormat($sheet, $col . $row);
+                    $sheet->setCellValue($col++ . $row, $entry->price); 
+
+                    $sheet->setCellValue($col++ . $row, $entry->option_label);
 
                     $row++;
                 }

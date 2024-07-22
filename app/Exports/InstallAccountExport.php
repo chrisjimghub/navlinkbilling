@@ -8,7 +8,12 @@ use Illuminate\Support\Carbon;
 
 class InstallAccountExport extends CutOffAccountExport
 {
-    protected $title = 'Install Accounts';
+    protected $title;
+
+    public function __construct($title)
+    {
+        $this->title = $title;
+    }
 
     public function query()
     {

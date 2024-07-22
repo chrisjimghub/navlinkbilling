@@ -2,6 +2,7 @@
     'filters',
     'export',
 ]))
+
 <div class="card">
   <div class="card-header" id="filterHeading">
 
@@ -12,6 +13,11 @@
         @endif
 
         @if($crud->hasAccess('export'))
+            @php
+                // use below in JS 
+                $exportRoute = route(strtolower(str_replace(' ', '-', $crud->entity_name)).'.export');
+            @endphp
+
             <button id="export-button" class="btn btn-link ml-n2" type="button">
                 <span class="la la-download"></span> {{ __('Export') }}  
             </button>
@@ -106,7 +112,7 @@
         const queryParams = currentUrl.searchParams;
         
         // Create the export URL
-        const exportUrl = new URL('{{ route(strtolower($crud->entity_name).'.export') }}', window.location.origin);
+        const exportUrl = new URL('{{ $exportRoute }}', window.location.origin);
         
         // Append all current query parameters to the export URL
         queryParams.forEach((value, key) => {

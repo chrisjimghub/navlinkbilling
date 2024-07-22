@@ -59,7 +59,7 @@ trait ExportOperation
         $class = ucwords($this->crud->entity_name) . 'Export';
 
         // Build the class name with the namespace
-        $classExport = 'App\\Exports\\' . $class;
+        $classExport = 'App\\Exports\\' . str_replace(' ', '', $class);
 
         // Instantiate the class using the variable
         $classExportInstance = new $classExport();

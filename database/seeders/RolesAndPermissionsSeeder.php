@@ -80,6 +80,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'planned_applications_show', 
             'planned_applications_update', 
             'planned_applications_delete', 
+            'planned_applications_export', 
         ],
 
         'account_statuses' => [
