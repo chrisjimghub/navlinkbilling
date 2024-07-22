@@ -354,7 +354,8 @@ class Billing extends Model
     // account_planned_application_details
     public function getAccountPlannedApplicationDetailsAttribute()
     {
-        return $this->account_location_name . ' - '. 
+        return $this->account_location_name . ' - '.
+                $this->account_subscription_name . ', '. 
                 $this->account_planned_application_type_name_shorten . ' :'. 
                 $this->account_planned_application_mbps . 'Mbps ----- '.
                 $this->account_planned_application_price;
