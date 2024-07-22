@@ -23,7 +23,7 @@ class CustomerCrudController extends CrudController
 
     use CrudExtend;
     use ExportOperation;
-    // use ImportOperation;
+    use ImportOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -124,9 +124,10 @@ class CustomerCrudController extends CrudController
 
     protected function setupImportOperation()
     {
-        $this->setExampleFileUrl('https://example.com/link-to-your-download/file.csv');
+        $this->setExampleFileUrl(url('upload_templates/Customer Upload Template.xlsx'));
 
         $this->withoutPrimaryKey();
+        $this->disableUserMapping();
 
         CRUD::addColumn([
            'name' => 'last_name',
@@ -145,6 +146,11 @@ class CustomerCrudController extends CrudController
 
         CRUD::addColumn([
             'name' => 'contact_number',
+            'type' => 'text',
+        ]);
+
+        CRUD::addColumn([
+            'name' => 'email',
             'type' => 'text',
         ]);
 
