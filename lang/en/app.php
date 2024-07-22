@@ -86,7 +86,7 @@ return [
     'planned_applications' => 'Planned Applications',
     'planned_application_mbps' => 'Mbps',
     'planned_application_price' => 'Price',
-    'planned_application_select' => 'Planned Application Select Option',
+    'planned_application_details' => 'Planned Application',
     
     // Planned Application Type
     'planned_application_type' => 'Planned Applicaton Type',

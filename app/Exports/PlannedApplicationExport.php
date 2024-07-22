@@ -56,7 +56,7 @@ class PlannedApplicationExport implements
                     __('app.planned_application_type'), 
                     __('app.planned_application_mbps'), 
                     __('app.planned_application_price'),
-                    __('app.planned_application_select'),
+                    __('app.planned_application_details'),
                 ];
 
                 // Write headers to the sheet
@@ -87,7 +87,7 @@ class PlannedApplicationExport implements
                     $this->setCellNumberFormat($sheet, $col . $row);
                     $sheet->setCellValue($col++ . $row, $entry->price); 
 
-                    $sheet->setCellValue($col++ . $row, $entry->option_label);
+                    $sheet->setCellValue($col++ . $row, $entry->details);
 
                     $row++;
                 }
