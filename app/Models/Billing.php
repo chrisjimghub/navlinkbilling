@@ -336,7 +336,7 @@ class Billing extends Model
             $type = $type[0];
         }
 
-        return $type;
+        return trim($type);
     }
 
     // account_planned_application_mbps
@@ -356,7 +356,7 @@ class Billing extends Model
     {
         return $this->account_location_name . ' - '.
                 $this->account_subscription_name . ', '. 
-                $this->account_planned_application_type_name_shorten . ' :'. 
+                $this->account_planned_application_type_name_shorten . ' : '. 
                 $this->account_planned_application_mbps . 'Mbps ----- '.
                 $this->account_planned_application_price;
     }
