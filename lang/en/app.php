@@ -80,6 +80,8 @@ return [
     // OTC 
     'otc' => 'One-Time Charge',
     'otcs' => 'One-Time Charges',
+    'otc_name' => 'Name',
+    'otc_amount' => 'Amount',
     
     // Planned Application
     'planned_application' => 'Planned Application',

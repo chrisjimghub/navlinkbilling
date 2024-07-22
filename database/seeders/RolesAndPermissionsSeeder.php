@@ -114,6 +114,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'otcs_show', 
             'otcs_update', 
             'otcs_delete', 
+            'otcs_export', 
         ],
 
         'contract_periods' => [

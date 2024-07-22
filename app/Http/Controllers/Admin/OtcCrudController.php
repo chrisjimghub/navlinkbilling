@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\OneTimeChargeExport;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use App\Http\Controllers\Admin\Operations\ExportOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -19,6 +22,7 @@ class OtcCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 
     use CrudExtend;
+    use ExportOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -63,7 +67,6 @@ class OtcCrudController extends CrudController
         ]);
         CRUD::setFromDb(); // set fields from db columns.
 
-        // TODO:: change method
         $this->currencyFormatField('amount');
     }
 
@@ -76,5 +79,17 @@ class OtcCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    protected function exportClass()
+    {
+        $name = strHumanReadable($this->crud->entity_name);
+        
+        return (new OneTimeChargeExport)->download($name.'-'.carbonNow().'.xlsx');
+    }
+
+    protected function exportRoute()
+    {
+        return route('otc.export');
     }
 }

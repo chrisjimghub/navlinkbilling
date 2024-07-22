@@ -14,8 +14,14 @@
 
         @if($crud->hasAccess('export'))
             @php
-                // use below in JS 
-                $exportRoute = route(strtolower(str_replace(' ', '-', $crud->entity_name)).'.export');
+                $exportRoute = '';
+
+                if ($crud->exportRoute()) {
+                    $exportRoute = $crud->exportRoute();
+                }else {
+                    $exportRoute = route(strtolower(str_replace(' ', '-', $crud->entity_name)).'.export');
+                }
+
             @endphp
 
             <button id="export-button" class="btn btn-link ml-n2" type="button">
