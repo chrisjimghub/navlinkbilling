@@ -233,7 +233,7 @@ class SettingsTableSeeder extends Seeder
 ',
                 'active' => 1,
                 'created_at' => NULL,
-                'updated_at' => '2024-07-15 12:34:49',
+                'updated_at' => '2024-07-17 10:17:16',
             ),
             10 => 
             array (
@@ -304,6 +304,42 @@ class SettingsTableSeeder extends Seeder
                 'active' => 1,
                 'created_at' => NULL,
                 'updated_at' => '2024-07-16 10:09:56',
+            ),
+            13 => 
+            array (
+                'id' => 24,
+                'key' => 'invoices.seller.attributes.custom_fields.company',
+                'name' => 'Invoice Company',
+                'description' => '',
+                'value' => 'NavLink Technology',
+                'field' => '{"name":"value","label":"Invoice Company","type":"text"}',
+                'active' => 1,
+                'created_at' => NULL,
+                'updated_at' => '2024-07-22 09:22:07',
+            ),
+            14 => 
+            array (
+                'id' => 25,
+                'key' => 'invoices.seller.attributes.custom_fields.address',
+                'name' => 'Invoice Address',
+                'description' => '',
+                'value' => 'Brgy. San Isidro Palompon Leyte',
+                'field' => '{"name":"value","label":"Invoice Company Address","type":"text"}',
+                'active' => 1,
+                'created_at' => NULL,
+                'updated_at' => '2024-07-22 09:22:07',
+            ),
+            15 => 
+            array (
+                'id' => 26,
+                'key' => 'invoices.seller.attributes.custom_fields.phone',
+                'name' => 'Invoice Company Phone',
+                'description' => '',
+                'value' => '09958476256 / 09093639756',
+                'field' => '{"name":"value","label":"Invoice Company Phone","type":"text"}',
+                'active' => 1,
+                'created_at' => NULL,
+                'updated_at' => '2024-07-22 09:22:07',
             ),
         ));
         
