@@ -101,6 +101,12 @@ class BillEventSubscriber
 
         $this->particulars = [];
 
+        // if instance of billing has particulars, then it must be edit, assign it to property particulars,
+        // dont worry about it to be duplicated because the addOrUdateParticular method will add or update it if duplicate
+        if ($this->billing->particulars) {
+            $this->particulars = $this->billing->particulars;
+        }
+
         $this->snapshot();
                 
         if ($this->billing->isInstallmentFee()) {
@@ -123,10 +129,10 @@ class BillEventSubscriber
 
         // OTCS
         foreach ($this->billing->account->otcs as $otc) {
-            $this->particulars[] = [
+            $this->addOrUpdateParticular([
                 'description' => ucwords($otc->name),
                 'amount' => (float) $otc->amount,
-            ];
+            ]);
         }
         
         // Contract Periods
@@ -135,10 +141,10 @@ class BillEventSubscriber
 
         if ($contractPeriodExists) {
             $contractPeriod = $this->billing->account->contractPeriods()->where('contract_periods.id', $contractId)->first();
-            $this->particulars[] = [
+            $this->addOrUpdateParticular([
                 'description' => ucwords($contractPeriod->name),
                 'amount' => (float) $this->billing->account->plannedApplication->price,
-            ];
+            ]);
         }
     }
 
@@ -163,29 +169,28 @@ class BillEventSubscriber
 
         // if empty before_account_snapshot = No Upgrade Planned Application
         if (!$this->billing->before_account_snapshot) {
-            $this->particulars[] = [
+            $this->addOrUpdateParticular([
                 'description' => ucwords($this->billing->billingType->name),
                 'amount' => $this->billing->monthly_rate,
-            ];
+            ]);
     
             // Pro-rated Service Adjustment
             if ($this->billing->isProRatedMonthly()) {
                 $amountAdjustment = $this->billing->daily_rate * $this->billing->pro_rated_non_service_days; 
-    
-                $this->particulars[] = [
+                $this->addOrUpdateParticular([
                     'description' => ucwords($this->billing->pro_rated_desc),
                     'amount' => -($this->currencyRound($amountAdjustment)),
-                ];
+                ]);
     
             }
     
             // Service Interrptions
             $totalInterruptionDays = $this->billing->total_days_service_interruptions;
             if ($totalInterruptionDays) {
-                $this->particulars[] = [
+                $this->addOrUpdateParticular([
                     'description' => ucwords($this->billing->service_interrupt_desc),
                     'amount' => -($this->currencyRound($totalInterruptionDays * $this->billing->daily_rate)),
-                ];
+                ]);
             }
         }else {
             // Compute Upgrade Planned Application
@@ -195,35 +200,34 @@ class BillEventSubscriber
             // this have 2 monthly fee the new and prev. we just add it as positive and dont display or add monthly fee in particulars.
             
             // before
-            $this->particulars[] = [
+            $this->addOrUpdateParticular([
                 'description' => ucwords($this->billing->before_upgrade_desc),
                 'amount' => $this->currencyRound($this->billing->before_upgrade_daily_rate * $this->billing->before_upgrade_service_days),
-            ];
-            
+            ]);
+
             // new
-            $this->particulars[] = [
+            $this->addOrUpdateParticular([
                 'description' => ucwords($this->billing->new_upgrade_desc),
                 'amount' => $this->currencyRound($this->billing->daily_rate * $this->billing->new_upgrade_service_days),
-            ];
-
+            ]);
 
             // service interruptions
             $totalInterruptionDays = $this->billing->upgrade_total_days_service_interruptions;
 
             // before
             if ($totalInterruptionDays['total_before'] > 0) {
-                $this->particulars[] = [
+                $this->addOrUpdateParticular([
                     'description' => ucwords($this->billing->before_service_interrupt_desc),
                     'amount' => -($this->currencyRound($totalInterruptionDays['total_before'] * $this->billing->before_upgrade_daily_rate)),
-                ];
+                ]);
             }
             
             // new
             if ($totalInterruptionDays['total_new'] > 0) {
-                $this->particulars[] = [
+                $this->addOrUpdateParticular([
                     'description' => ucwords($this->billing->new_service_interrupt_desc),
                     'amount' => -($this->currencyRound($totalInterruptionDays['total_new'] * $this->billing->daily_rate)),
-                ];
+                ]);
             }
 
         } // end - Compute Upgrade Planned Application
@@ -247,6 +251,24 @@ class BillEventSubscriber
         $this->billing->{$column} = $snapshot;
 
         $this->billing->saveQuietly();
+    }
+
+    public function addOrUpdateParticular($newItem) {
+        // Check if description already exists
+        $found = false;
+        foreach ($this->particulars as &$item) {
+            if (strtolower($item['description']) === strtolower($newItem['description'])) {
+                $item['amount'] = $newItem['amount']; // Modify the referenced element
+                $found = true;
+                break;
+            }
+        }
+        unset($item); // Break the reference to avoid unexpected behavior
+
+        // If description not found, add new item
+        if (!$found) {
+            $this->particulars[] = $newItem;
+        }
     }
     
 }

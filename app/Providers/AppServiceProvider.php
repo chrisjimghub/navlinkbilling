@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Backpack\Settings\app\Models\Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,5 +24,23 @@ class AppServiceProvider extends ServiceProvider
         // i dont know if it's a laravel or laravel backpack thing. but if i uncomment this and use
         // artisan event:list it run's twice
         // Event::subscribe(BillEventSubscriber::class);
+
+        $this->overrideConfigValues();
+    }
+
+    protected function overrideConfigValues()
+    {
+        if (\Schema::hasTable('settings')){ 
+            $dbSettings = Setting::where('active', 1)->get();
+
+            $config = [];
+            foreach ($dbSettings as $temp) {
+                $config[$temp->key] = Setting::get($temp->key);
+
+            }
+
+            config($config);
+        }
+
     }
 }
