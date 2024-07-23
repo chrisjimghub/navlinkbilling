@@ -55,11 +55,11 @@ class AccountOptionsColumnExport implements
 
                 // Define headers in row 5
                 $headers = [
-                    __('app.planned_application'), 
-                    __('app.status'), 
-                    __('app.otc'),
-                    __('app.contract_period'),
-                    __('app.subscription'), 
+                    'planned_application_id', 
+                    'account_status_id', 
+                    'one_time_charge',
+                    'contract_period',
+                    'subscription_id', 
                 ];
 
                 // Write headers to the sheet
