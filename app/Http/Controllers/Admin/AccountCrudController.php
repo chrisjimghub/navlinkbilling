@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Operations\ExportOperation;
 use App\Models\Account;
+use App\Models\Customer;
 use App\Events\BillProcessed;
-use App\Exports\AccountExport;
-use App\Models\AccountStatus;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\UploadTemplateExport;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use App\Http\Controllers\Admin\Operations\ExportOperation;
 use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use RedSquirrelStudio\LaravelBackpackImportOperation\ImportOperation;
 
 /**
  * Class AccountCrudController
@@ -31,6 +34,7 @@ class AccountCrudController extends CrudController
     use CrudExtend;
     use MyFiltersOperation;
     use ExportOperation;
+    use ImportOperation;
     use FetchOptions;
 
     /**
@@ -154,7 +158,6 @@ class AccountCrudController extends CrudController
 
         ]);
 
-        // TODO:: order and search logic
         $this->crud->column([
             'name' => 'contractPeriods',
             'label' => __('app.contract_period'),
@@ -288,4 +291,54 @@ class AccountCrudController extends CrudController
         return $response;
     }
     
+    protected function setupImportOperation()
+    {
+        $this->setExampleFileUrl(url($this->accountUploadTemplate()));
+
+        $this->withoutPrimaryKey();
+        $this->disableUserMapping();
+
+        // CRUD::addColumn([
+        //    'name' => 'last_name',
+        //    'type' => 'text',
+        // ]);
+        
+        
+
+
+    }
+
+    public function accountUploadTemplate()
+    {
+        $fileName = 'Account Upload Template.xlsx';
+        $filePath = 'upload_templates/' . $fileName;
+
+        // Check if the file exists
+        if (Storage::exists($filePath)) {
+            // Delete the existing file
+            Storage::delete($filePath);
+        }
+
+        $headers = [
+            __('app.customer_name'), 
+            __('app.planned_application'), 
+            __('app.subscription'), 
+            __('app.status'), 
+            __('app.account_coordinates'),
+            __('app.account_installed_date'),
+            __('app.account_installed_address'),
+            __('app.otc'),
+            __('app.contract_period'),
+            __('app.account_notes'), 
+        ];
+
+        $entries = Customer::all();
+
+
+        // Export and save the file to storage
+        Excel::store(new UploadTemplateExport($headers, $entries), $filePath, 'public');
+
+        return $filePath;
+    }
+
 }
