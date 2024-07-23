@@ -317,24 +317,62 @@ class AccountCrudController extends CrudController
         $this->withoutPrimaryKey();
         $this->disableUserMapping();
 
-        // TODO:: 
-
         // Customer name
         CRUD::addColumn([
             'name' => 'customer_id',
             'type' => 'array',
             'options' => $this->customerLists(),
-         ]);  
+        ]);  
 
         // plan app
+        CRUD::addColumn([
+            'name' => 'planned_application_id',
+            'type' => 'array',
+            'options' => $this->plannedApplicationLists(),
+        ]);
+
         // sub
+        CRUD::addColumn([
+            'name' => 'subscription_id',
+            'type' => 'array',
+            'options' => $this->subscriptionLists(),
+        ]);
+
         // status
+        CRUD::addColumn([
+            'name' => 'account_status_id',
+            'type' => 'array',
+            'options' => $this->accountStatusLists(),
+        ]);
+
         // coordinates
+        CRUD::addColumn([
+            'name' => 'google_map_coordinates',
+            'type' => 'text',
+        ]);
+
         // installed date
+        CRUD::addColumn([
+            'name' => 'installed_date',
+            'type' => 'date',
+        ]);
+
         // installed address
+        CRUD::addColumn([
+            'name' => 'installed_address',
+            'type' => 'text',
+        ]);
+
+        // notes
+        CRUD::addColumn([
+            'name' => 'notes',
+            'type' => 'text',
+        ]);
+
+
+        // TODO:: use event from package import
         // otc
         // contract period
-        // notes
 
     }
 

@@ -7,9 +7,19 @@ use App\Models\BillingType;
 use App\Models\Subscription;
 use App\Models\AccountStatus;
 use App\Models\BillingStatus;
+use App\Models\PlannedApplication;
 
 trait FetchOptions
 {
+    public function customerLists()
+    {
+        $customers = Customer::all();
+
+        return $customers->mapWithKeys(function ($customer) {
+            return [$customer->id => $customer->full_name];
+        })->toArray();
+    }
+
     public function accountStatusLists()
     {
         return AccountStatus::pluck('name', 'id')->toArray();
@@ -30,12 +40,12 @@ trait FetchOptions
         return Subscription::pluck('name', 'id')->toArray();
     }
 
-    public function customerLists()
+    public function plannedApplicationLists()
     {
-        $customers = Customer::all();
+        $entries = PlannedApplication::all();
 
-        return $customers->mapWithKeys(function ($customer) {
-            return [$customer->id => $customer->full_name];
+        return $entries->mapWithKeys(function ($entry) {
+            return [$entry->id => $entry->details];
         })->toArray();
     }
 
