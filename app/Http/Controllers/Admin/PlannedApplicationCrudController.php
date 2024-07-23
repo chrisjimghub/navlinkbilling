@@ -46,6 +46,7 @@ class PlannedApplicationCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        // TODO:: just display 1 column: details and add filters
         $this->relationshipColumn('location');
         $this->relationshipColumn('plannedApplicationType');
         $this->crud->column('mbps');

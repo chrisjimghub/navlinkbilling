@@ -44,11 +44,16 @@ class OtcCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
+        // CRUD::setFromDb(); // set columns from db columns.
+        // $this->crud->modifyColumn('name', ['limit' => 100]);
+        // $this->currencyColumn('amount');
 
-        $this->crud->modifyColumn('name', ['limit' => 100]);
-
-        $this->currencyColumn('amount');
+        // TODO:: fix search logic and order logic
+        $this->crud->column([
+            'name' => 'amount_name',
+            'label' => __('app.otc'),
+            'limit' => 255,
+        ]);
     }
 
     /**
@@ -66,6 +71,10 @@ class OtcCrudController extends CrudController
         CRUD::setFromDb(); // set fields from db columns.
 
         $this->currencyFormatField('amount');
+
+        $this->crud->modifyField('amount', [
+            'default' => 0,
+        ]);
     }
 
     /**
