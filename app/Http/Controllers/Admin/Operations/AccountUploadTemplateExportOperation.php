@@ -6,9 +6,12 @@ use App\Models\Customer;
 use App\Exports\UploadTemplateExport;
 use Illuminate\Support\Facades\Route;
 use App\Exports\AccountOptionsColumnExport;
+use App\Models\Traits\SchemaTableColumn;
 
 trait AccountUploadTemplateExportOperation
 {
+    use SchemaTableColumn;
+
     /**
      * Define which routes are needed for this operation.
      *
@@ -33,6 +36,8 @@ trait AccountUploadTemplateExportOperation
 
     protected function accountOptionColumnExport()
     {
+        $this->crud->hasAccessOrFail('import');
+
         $fileName = 'Account Options Column.xlsx';
         
         return (new AccountOptionsColumnExport)->download($fileName);
@@ -40,20 +45,11 @@ trait AccountUploadTemplateExportOperation
 
     protected function accountUploadTemplateExport()
     {
+        $this->crud->hasAccessOrFail('import');
+
         $fileName = 'Account Upload Template.xlsx';
         
-        $headers = [
-            __('app.customer_name'), 
-            __('app.planned_application'), 
-            __('app.subscription'), 
-            __('app.status'), 
-            __('app.account_coordinates'),
-            __('app.account_installed_date'),
-            __('app.account_installed_address'),
-            __('app.otc') .' (use , for multiple value)',
-            __('app.contract_period') .' (use , for multiple value)',
-            __('app.account_notes'), 
-        ];
+        $headers = $this->getColumns('accounts');
 
         $entries = Customer::all();
 

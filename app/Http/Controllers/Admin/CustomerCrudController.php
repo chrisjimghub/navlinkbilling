@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UploadTemplateExport;
+use App\Models\Traits\SchemaTableColumn;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Controllers\Admin\Operations\ExportOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use RedSquirrelStudio\LaravelBackpackImportOperation\ImportOperation;
+use App\Http\Controllers\Admin\Operations\UploadTemplateExportOperation;
 
 /**
  * Class CustomerCrudController
@@ -24,6 +27,8 @@ class CustomerCrudController extends CrudController
     use CrudExtend;
     use ExportOperation;
     use ImportOperation;
+    use SchemaTableColumn;
+    use UploadTemplateExportOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -124,7 +129,7 @@ class CustomerCrudController extends CrudController
 
     protected function setupImportOperation()
     {
-        $this->setExampleFileUrl(url('upload_templates/Customer Upload Template.xlsx'));
+        $this->setExampleFileUrl(route('customer.uploadTemplateExport'));
 
         $this->withoutPrimaryKey();
         $this->disableUserMapping();
@@ -175,5 +180,20 @@ class CustomerCrudController extends CrudController
         ]);
 
 
+    }
+
+    public function uploadTemplateExport()
+    {
+        $this->crud->hasAccessOrFail('import');
+
+        $fileName = 'Customer Upload Template.xlsx';
+        
+        $excludeColumns = [
+            'id', 'photo', 'facebook_messenger_id', 'signature', 'created_at', 'updated_at', 'deleted_at',
+        ];
+
+        $headers = $this->getColumns('customers', $excludeColumns);
+
+        return (new UploadTemplateExport($headers))->download($fileName);
     }
 }

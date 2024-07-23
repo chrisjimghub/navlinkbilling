@@ -19,7 +19,7 @@ class UploadTemplateExport implements
     public $headers;
     public $entries;
 
-    public function __construct($headers, $entries)
+    public function __construct($headers, $entries = null)
     {
         $this->headers = $headers;
         $this->entries = $entries;
@@ -47,12 +47,14 @@ class UploadTemplateExport implements
                 $row = 2; // Start from row 6 for data
                 $col = 'A'; // Starting column
 
-                foreach ($this->entries as $entry) {
-                    $col = 'A'; // Reset column for each row
-
-                    $sheet->setCellValue($col++ . $row, $entry->full_name); 
-
-                    $row++;
+                if ($this->entries) {
+                    foreach ($this->entries as $entry) {
+                        $col = 'A'; // Reset column for each row
+    
+                        $sheet->setCellValue($col++ . $row, $entry->full_name); 
+    
+                        $row++;
+                    }
                 }
             },
         ];

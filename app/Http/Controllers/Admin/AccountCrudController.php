@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Account;
-use App\Models\Customer;
 use App\Events\BillProcessed;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
@@ -321,10 +320,11 @@ class AccountCrudController extends CrudController
         // TODO:: 
 
         // Customer name
-        // CRUD::addColumn([
-        //    'name' => 'last_name',
-        //    'type' => 'text',
-        // ]);
+        CRUD::addColumn([
+            'name' => 'customer_id',
+            'type' => 'array',
+            'options' => $this->customerLists(),
+         ]);  
 
         // plan app
         // sub

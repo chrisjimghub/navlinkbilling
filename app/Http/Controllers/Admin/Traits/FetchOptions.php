@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin\Traits;
 
+use App\Models\Customer;
 use App\Models\BillingType;
+use App\Models\Subscription;
 use App\Models\AccountStatus;
 use App\Models\BillingStatus;
-use App\Models\Subscription;
 
 trait FetchOptions
 {
@@ -27,6 +28,15 @@ trait FetchOptions
     public function subscriptionLists()
     {
         return Subscription::pluck('name', 'id')->toArray();
+    }
+
+    public function customerLists()
+    {
+        $customers = Customer::all();
+
+        return $customers->mapWithKeys(function ($customer) {
+            return [$customer->id => $customer->full_name];
+        })->toArray();
     }
 
 }
