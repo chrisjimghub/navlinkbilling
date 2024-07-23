@@ -50,8 +50,8 @@ trait AccountUploadTemplateExportOperation
             __('app.account_coordinates'),
             __('app.account_installed_date'),
             __('app.account_installed_address'),
-            __('app.otc'),
-            __('app.contract_period'),
+            __('app.otc') .' (use , for multiple value)',
+            __('app.contract_period') .' (use , for multiple value)',
             __('app.account_notes'), 
         ];
 

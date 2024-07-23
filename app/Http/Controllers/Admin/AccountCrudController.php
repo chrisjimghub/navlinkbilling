@@ -5,12 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Account;
 use App\Models\Customer;
 use App\Events\BillProcessed;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\UploadTemplateExport;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
-use Illuminate\Support\Facades\Storage;
-use App\Exports\AccountOptionsColumnExport;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -310,9 +306,8 @@ class AccountCrudController extends CrudController
                 '<a target="_blank" download title="' . __('import-operation::import.download_example') . '" href="' . $this->example_file_url . '">' . __('import-operation::import.download_example') . '</a>
                 <br>
                 Here are the values or options for columns:
-                <a target="_blank" download href="'.route('account.accountOptionColumnExport').'">Account options column file.</a> 
-                ' 
-                : ''),
+                <a target="_blank" download href="'.route('account.accountOptionColumnExport').'">Account options column file.</a>
+                ' : ''),
         ]);
     }
 
@@ -324,10 +319,22 @@ class AccountCrudController extends CrudController
         $this->disableUserMapping();
 
         // TODO:: 
+
+        // Customer name
         // CRUD::addColumn([
         //    'name' => 'last_name',
         //    'type' => 'text',
         // ]);
+
+        // plan app
+        // sub
+        // status
+        // coordinates
+        // installed date
+        // installed address
+        // otc
+        // contract period
+        // notes
 
     }
 
