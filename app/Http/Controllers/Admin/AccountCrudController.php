@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Account;
 use App\Models\Customer;
 use App\Events\BillProcessed;
+use App\Exports\AccountOptionsColumnExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UploadTemplateExport;
 use App\Http\Requests\AccountRequest;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Admin\Operations\ExportOperation;
 use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use RedSquirrelStudio\LaravelBackpackImportOperation\ImportOperation;
+use RedSquirrelStudio\LaravelBackpackImportOperation\Requests\ImportFileRequest;
 
 /**
  * Class AccountCrudController
@@ -290,7 +292,30 @@ class AccountCrudController extends CrudController
 
         return $response;
     }
-    
+
+    // override hint
+    // TODO:: instead of querying every time the import button is click or th refresh, create a route and only query or form the data when the user click the Account options col.
+    // TODO:: do the same for the account upload template to improve performance
+    protected function setupImportFileUpload(): void
+    {
+        $this->crud->hasAccessOrFail('import');
+        CRUD::setValidation(ImportFileRequest::class);
+
+        CRUD::addField([
+            'name' => 'file',
+            'label' => __('import-operation::import.select_a_file'),
+            'type' => 'upload',
+            'hint' => __('import-operation::import.accepted_types') . '. ' .
+                ($this->example_file_url ? 
+                '<a target="_blank" download title="' . __('import-operation::import.download_example') . '" href="' . $this->example_file_url . '">' . __('import-operation::import.download_example') . '</a>
+                <br>
+                Here are the values or options for columns:
+                <a target="_blank" download href="'.url($this->accountOptionsColumn()).'">Account options column file.</a> 
+                ' 
+                : ''),
+        ]);
+    }
+
     protected function setupImportOperation()
     {
         $this->setExampleFileUrl(url($this->accountUploadTemplate()));
@@ -298,14 +323,32 @@ class AccountCrudController extends CrudController
         $this->withoutPrimaryKey();
         $this->disableUserMapping();
 
+        // TODO:: 
         // CRUD::addColumn([
         //    'name' => 'last_name',
         //    'type' => 'text',
         // ]);
         
-        
 
+    }
 
+    
+
+    public function accountOptionsColumn()
+    {
+        $fileName = 'Account Options Column.xlsx';
+        $filePath = 'upload_templates/' . $fileName;
+
+        // Check if the file exists
+        if (Storage::exists($filePath)) {
+            // Delete the existing file
+            Storage::delete($filePath);
+        }
+
+        // Export and save the file to storage
+        Excel::store(new AccountOptionsColumnExport, $filePath, 'public');
+
+        return $filePath;
     }
 
     public function accountUploadTemplate()

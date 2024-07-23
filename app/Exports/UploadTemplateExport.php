@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Customer;
 use App\Exports\Traits\ExportHelper;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeSheet;
@@ -48,7 +47,6 @@ class UploadTemplateExport implements
                 $row = 2; // Start from row 6 for data
                 $col = 'A'; // Starting column
 
-                $num = 1;
                 foreach ($this->entries as $entry) {
                     $col = 'A'; // Reset column for each row
 
