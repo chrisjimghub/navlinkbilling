@@ -52,7 +52,15 @@ trait AccountUploadTemplateExportOperation
         $headers = $this->getColumns('accounts');
 
         $headers[] = 'one_time_charge';
-        $headers[] = 'contract_periods';
+        $headers[] = 'contract_period';
+
+        // Modify headers by reference to remove '_id' suffix
+        foreach ($headers as &$header) {
+            if (str_ends_with($header, '_id')) {
+                $header = substr($header, 0, -3); // Remove '_id' from the end
+            }
+        }
+        unset($header); // Break the reference
 
         $entries = Customer::all();
 
