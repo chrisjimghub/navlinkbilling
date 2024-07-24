@@ -307,6 +307,11 @@ class AccountCrudController extends CrudController
                 <br>
                 Here are the values or options for columns:
                 <a target="_blank" download href="'.route('account.accountOptionColumnExport').'">Account options column file.</a>
+
+                <br>
+                <span class="text-danger">
+                    For one-time charges and contract periods, the only delimiter accepted is the pipe symbol (|). For example, you can enter multiple values like this: 12 months Lock-in | Advance 1-month monthly payment.
+                </span>
                 ' : ''),
         ]);
     }
