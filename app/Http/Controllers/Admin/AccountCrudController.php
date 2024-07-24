@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Operations\ExportOperation;
 use App\Models\Account;
 use App\Events\BillProcessed;
-use App\Exports\AccountExport;
-use App\Models\AccountStatus;
+use App\Imports\AccountImport;
 use App\Http\Requests\AccountRequest;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use App\Http\Controllers\Admin\Operations\ExportOperation;
 use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use RedSquirrelStudio\LaravelBackpackImportOperation\ImportOperation;
+use App\Http\Controllers\Admin\Operations\AccountUploadTemplateExportOperation;
+use RedSquirrelStudio\LaravelBackpackImportOperation\Requests\ImportFileRequest;
 
 /**
  * Class AccountCrudController
@@ -31,6 +33,8 @@ class AccountCrudController extends CrudController
     use CrudExtend;
     use MyFiltersOperation;
     use ExportOperation;
+    use ImportOperation;
+    use AccountUploadTemplateExportOperation;
     use FetchOptions;
 
     /**
@@ -154,7 +158,6 @@ class AccountCrudController extends CrudController
 
         ]);
 
-        // TODO:: order and search logic
         $this->crud->column([
             'name' => 'contractPeriods',
             'label' => __('app.contract_period'),
@@ -287,5 +290,38 @@ class AccountCrudController extends CrudController
 
         return $response;
     }
-    
+
+    // override hint
+    protected function setupImportFileUpload(): void
+    {
+        $this->crud->hasAccessOrFail('import');
+        CRUD::setValidation(ImportFileRequest::class);
+
+        CRUD::addField([
+            'name' => 'file',
+            'label' => __('import-operation::import.select_a_file'),
+            'type' => 'upload',
+            'hint' => __('import-operation::import.accepted_types') . '. ' .
+                ($this->example_file_url ? 
+                '<a target="_blank" download title="' . __('import-operation::import.download_example') . '" href="' . $this->example_file_url . '">' . __('import-operation::import.download_example') . '</a>
+                <br>
+                Here are the values or options for columns:
+                <a target="_blank" download href="'.route('account.accountOptionColumnExport').'">Account options column file.</a>
+
+                <br>
+                <span class="text-danger">
+                    For one-time charges and contract periods, the only delimiter accepted is the pipe symbol (|). For example, you can enter multiple values like this: 12 months Lock-in | Advance 1-month monthly payment.
+                </span>
+                ' : ''),
+        ]);
+    }
+
+    protected function setupImportOperation()
+    {
+        $this->setExampleFileUrl(route('account.accountUploadTemplateExport'));
+        $this->disableUserMapping();
+        $this->withoutPrimaryKey();
+        $this->setImportHandler(AccountImport::class);
+    }
+
 }

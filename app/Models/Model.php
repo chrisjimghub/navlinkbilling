@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\LocalScopes\ScopeWHereLike;
 use App\Models\Traits\LogsActivity;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,4 +15,5 @@ class Model extends BaseModel
     use HasFactory;
     use LogsActivity;
     use SoftDeletes;
+    use ScopeWHereLike;
 }

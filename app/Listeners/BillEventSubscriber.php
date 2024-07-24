@@ -105,6 +105,12 @@ class BillEventSubscriber
         // dont worry about it to be duplicated because the addOrUdateParticular method will add or update it if duplicate
         if ($this->billing->particulars) {
             $this->particulars = $this->billing->particulars;
+
+            // Check if a particular description contains (n Days) or Pro-rated and unset it if it does. This is because Pro-rated items
+            // need computation and to avoid duplicates. For example, "Service Interruptions (2 Days)" cannot be compared in the 
+            // addOrUpdateParticular method due to the varying labels caused by the integer beside the day text. Therefore, we remove it here.
+            // It will be computed down below and re-added.
+            $this->removeItemsWithDayPatternAndProRated();
         }
 
         $this->snapshot();
@@ -271,4 +277,30 @@ class BillEventSubscriber
         }
     }
     
+    /**
+     * Check if the string contains the pattern (n day) or (n days) and optionally "Pro-rated".
+     *
+     * @param string $string The string to check.
+     * @return bool True if the pattern is found, false otherwise.
+     */
+    public function containsDayPatternAndProRated($string)
+    {
+        return preg_match('/(Pro-rated\s*)?\(\d+\s*day(s?)\)|\(\s*Pro-rated\s*\d+\s*day(s?)\)/i', $string) === 1; 
+    }
+
+    /**
+     * Remove items from the particulars array that contain the day pattern and optionally "Pro-rated".
+     */
+    public function removeItemsWithDayPatternAndProRated()
+    {
+        foreach ($this->particulars as $key => $item) {
+            if (isset($item['description']) && $this->containsDayPatternAndProRated($item['description'])) {
+                unset($this->particulars[$key]);
+            }
+        }
+
+        // Re-index the array to maintain numeric keys in sequence
+        $this->particulars = array_values($this->particulars);
+    }
+
 }

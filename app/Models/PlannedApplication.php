@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Admin\Traits\PlannedApplicationCrud;
 use App\Models\Model;
 use App\Models\Account;
 use App\Models\Location;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 class PlannedApplication extends Model
 {
     use CurrencyFormat;
+    use PlannedApplicationCrud;
 
     /*
     |--------------------------------------------------------------------------
@@ -66,6 +68,26 @@ class PlannedApplication extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeWhereDetails($query, $details)
+    {
+        $parsedDetails = $this->parseDetails($details);
+
+        if ($parsedDetails) {
+            return $query->whereHas('location', function ($query) use ($parsedDetails) {
+                $query->where('name', $parsedDetails['location']);
+            })
+            ->where('mbps', $parsedDetails['mbps'])
+            ->where('price', $parsedDetails['price']) // Updated to use 'price'
+            ->whereHas('plannedApplicationType', function ($query) use ($parsedDetails) {
+                // we use whereLike because in details accessor we use the shorted of planned app type ex: Residential / For Business
+                $query->where('name', 'like', '%' . $parsedDetails['plannedApplicationType'] . '%');
+
+            });
+        }
+
+        return $query->whereRaw('1 = 0'); // Always false
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -74,6 +96,7 @@ class PlannedApplication extends Model
     */
 
     // use in crud field
+    // NOTE: if you modify this check the parseDetails method in trait/PlannedApplicationCrud.php if it's affected,
     public function getOptionLabelAttribute()
     {
         $type = $this->plannedApplicationType->name;
@@ -93,11 +116,12 @@ class PlannedApplication extends Model
         return $this->location->name;
     }
 
-
+    // NOTE: if you modify this check the parseDetails method in trait/PlannedApplicationCrud.php if it's affected
     public function getDetailsAttribute()
     {
         return $this->location->name . ' - '. $this->optionLabel;
     }
+    
     /*
     |--------------------------------------------------------------------------
     | MUTATORS

@@ -6,7 +6,6 @@ use App\Exports\OneTimeChargeExport;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
-use App\Http\Controllers\Admin\Operations\ExportOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -22,7 +21,6 @@ class OtcCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 
     use CrudExtend;
-    use ExportOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -46,11 +44,16 @@ class OtcCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
+        // CRUD::setFromDb(); // set columns from db columns.
+        // $this->crud->modifyColumn('name', ['limit' => 100]);
+        // $this->currencyColumn('amount');
 
-        $this->crud->modifyColumn('name', ['limit' => 100]);
-
-        $this->currencyColumn('amount');
+        // TODO:: fix search logic and order logic
+        $this->crud->column([
+            'name' => 'amount_name',
+            'label' => __('app.otc'),
+            'limit' => 255,
+        ]);
     }
 
     /**
@@ -68,6 +71,10 @@ class OtcCrudController extends CrudController
         CRUD::setFromDb(); // set fields from db columns.
 
         $this->currencyFormatField('amount');
+
+        $this->crud->modifyField('amount', [
+            'default' => 0,
+        ]);
     }
 
     /**

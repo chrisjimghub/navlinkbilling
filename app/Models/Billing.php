@@ -371,10 +371,10 @@ class Billing extends Model
         }
 
         $data = 'total_number_of_days:'. $this->total_number_of_days;
+        $data .= ' | ';
+        $data .= 'daily_rate:'. $this->daily_rate;
 
         if ($this->before_account_snapshot) {
-            $data .= ' | ';
-            $data .= 'daily_rate:'. $this->daily_rate;
             $data .= ' | ';
             $data .= 'before_daily_rate:'. $this->before_upgrade_daily_rate;
         }

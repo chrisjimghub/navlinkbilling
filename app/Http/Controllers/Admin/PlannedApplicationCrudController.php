@@ -7,7 +7,6 @@ use App\Models\PlannedApplication;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
-use App\Http\Controllers\Admin\Operations\ExportOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -24,7 +23,6 @@ class PlannedApplicationCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
-    use ExportOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -48,6 +46,7 @@ class PlannedApplicationCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        // TODO:: just display 1 column: details and add filters
         $this->relationshipColumn('location');
         $this->relationshipColumn('plannedApplicationType');
         $this->crud->column('mbps');

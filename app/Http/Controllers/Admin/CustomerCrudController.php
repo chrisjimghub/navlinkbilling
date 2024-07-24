@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Imports\CustomerImport;
+use App\Exports\UploadTemplateExport;
+use App\Models\Traits\SchemaTableColumn;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Controllers\Admin\Operations\ExportOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use RedSquirrelStudio\LaravelBackpackImportOperation\ImportOperation;
+use App\Http\Controllers\Admin\Operations\UploadTemplateExportOperation;
 
 /**
  * Class CustomerCrudController
@@ -24,6 +28,8 @@ class CustomerCrudController extends CrudController
     use CrudExtend;
     use ExportOperation;
     use ImportOperation;
+    use SchemaTableColumn;
+    use UploadTemplateExportOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -86,7 +92,7 @@ class CustomerCrudController extends CrudController
         CRUD::setValidation([
             'first_name' => 'required|min:2',
             'last_name' => 'required|min:2',
-            'date_of_birth' => 'date',
+            'date_of_birth' => 'nullable|date',
             'contact_number' => 'required',
             'photo' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -122,58 +128,28 @@ class CustomerCrudController extends CrudController
         $this->setupCreateOperation();
     }
 
+
     protected function setupImportOperation()
     {
-        $this->setExampleFileUrl(url('upload_templates/Customer Upload Template.xlsx'));
-
-        $this->withoutPrimaryKey();
+        $this->setExampleFileUrl(route('customer.uploadTemplateExport'));
         $this->disableUserMapping();
+        $this->withoutPrimaryKey();
+        $this->setImportHandler(CustomerImport::class);
+    }
 
-        CRUD::addColumn([
-           'name' => 'last_name',
-           'type' => 'text',
-        ]);
+
+    public function uploadTemplateExport()
+    {
+        $this->crud->hasAccessOrFail('import');
+
+        $fileName = 'Customer Upload Template.xlsx';
         
-        CRUD::addColumn([
-            'name' => 'first_name',
-            'type' => 'text',
-        ]);
+        $excludeColumns = [
+            'id', 'photo', 'facebook_messenger_id', 'signature', 'created_at', 'updated_at', 'deleted_at',
+        ];
 
-        CRUD::addColumn([
-            'name' => 'date_of_birth',
-            'type' => 'date',
-        ]);
+        $headers = $this->getColumns('customers', $excludeColumns);
 
-        CRUD::addColumn([
-            'name' => 'contact_number',
-            'type' => 'text',
-        ]);
-
-        CRUD::addColumn([
-            'name' => 'email',
-            'type' => 'text',
-        ]);
-
-        CRUD::addColumn([
-            'name' => 'block_street',
-            'type' => 'text',
-        ]);
-        
-        CRUD::addColumn([
-            'name' => 'barangay',
-            'type' => 'text',
-        ]);
-        
-        CRUD::addColumn([
-            'name' => 'city_or_municipality',
-            'type' => 'text',
-        ]);
-        
-        CRUD::addColumn([
-            'name' => 'social_media',
-            'type' => 'text',
-        ]);
-
-
+        return (new UploadTemplateExport($headers))->download($fileName);
     }
 }
