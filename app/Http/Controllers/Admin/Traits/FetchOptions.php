@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Traits;
 
+use App\Models\Otc;
 use App\Models\Customer;
 use App\Models\BillingType;
 use App\Models\Subscription;
 use App\Models\AccountStatus;
 use App\Models\BillingStatus;
+use App\Models\ContractPeriod;
 use App\Models\PlannedApplication;
 
 trait FetchOptions
@@ -47,6 +49,20 @@ trait FetchOptions
         return $entries->mapWithKeys(function ($entry) {
             return [$entry->id => $entry->details];
         })->toArray();
+    }
+
+    public function oneTimeChargeLists()
+    {
+        $entries = Otc::all();
+
+        return $entries->mapWithKeys(function ($entry) {
+            return [$entry->id => $entry->amount_name];
+        })->toArray();
+    }
+
+    public function contractPeriodLists()
+    {
+        return ContractPeriod::pluck('name', 'id')->toArray();
     }
 
 }

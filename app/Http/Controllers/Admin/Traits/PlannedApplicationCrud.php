@@ -57,4 +57,48 @@ trait PlannedApplicationCrud
         ]);
         
     }
+
+    // this is to reverse the getDetailsAttribute in planned application model, it is use for whereClause using the details
+    public function parseDetails($details)
+    {
+        // Split by the ' - ' separator for Location and PlannedApplicationType
+        $parts = explode(' - ', $details);
+        
+        if (count($parts) !== 2) {
+            // Handle unexpected format
+            return null;
+        }
+
+        // Extract Location and PlannedApplicationType
+        $location = $parts[0];
+        $applicationType = $parts[1];
+
+        // Further split the PlannedApplicationType by ' : ' separator to get the type and the rest
+        $applicationParts = explode(' : ', $applicationType);
+
+        if (count($applicationParts) !== 2) {
+            // Handle unexpected format
+            return null;
+        }
+
+        // Extract PlannedApplicationType, Mbps, and Price
+        $plannedApplicationType = $applicationParts[0];
+        $detailsRest = $applicationParts[1];
+
+        // Use regex to extract Mbps and Price from the rest
+        preg_match('/(\d+)Mbps/', $detailsRest, $mbpsMatches);
+        preg_match('/₱([\d,\.]+)/', $detailsRest, $priceMatches);
+
+        $mbps = isset($mbpsMatches[1]) ? (int)$mbpsMatches[1] : null;
+        $price = isset($priceMatches[1]) ? (float)str_replace(',', '', $priceMatches[1]) : null;
+
+        return [
+            'location' => $location,
+            'plannedApplicationType' => $plannedApplicationType,
+            'mbps' => $mbps,
+            'price' => $price, // Updated to use 'price'
+        ];
+    }
+
+
 }

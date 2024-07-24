@@ -62,6 +62,18 @@ class Customer extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    // Define a scope to query by full name
+    public function scopeWhereFullName($query, $fullName)
+    {
+        $nameParts = explode(', ', $fullName, 2);
+        if (count($nameParts) === 2) {
+            return $query->where('last_name', $nameParts[0])
+                         ->where('first_name', $nameParts[1]);
+        }
+
+        // Handle cases where the input is not in the expected format
+        return $query->whereRaw('1 = 0'); // Always false
+    }
 
     /*
     |--------------------------------------------------------------------------

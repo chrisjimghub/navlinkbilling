@@ -51,6 +51,9 @@ trait AccountUploadTemplateExportOperation
         
         $headers = $this->getColumns('accounts');
 
+        $headers[] = 'one_time_charge';
+        $headers[] = 'contract_periods';
+
         $entries = Customer::all();
 
         return (new UploadTemplateExport($headers, $entries))->download($fileName);
