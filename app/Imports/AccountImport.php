@@ -16,11 +16,13 @@ use App\Rules\GoogleMapCoordinatesValidator;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class AccountImport implements 
     ToModel, 
     WithValidation, 
-    WithHeadingRow
+    WithHeadingRow,
+    WithMultipleSheets
 {
 
     use FetchOptions;
@@ -111,5 +113,10 @@ class AccountImport implements
         ];
     }
 
-    
+    public function sheets(): array
+    {
+        return [
+            0 => $this, // Use the same class for the first sheet
+        ];
+    }
 }
