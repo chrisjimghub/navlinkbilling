@@ -3,6 +3,7 @@
 namespace App\Exports\Traits;
 
 use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 trait ExportHelper
@@ -52,5 +53,43 @@ trait ExportHelper
         $sheet->setCellValue('A1', $this->title);
         $sheet->setCellValue('A2', 'Generated: '. carbonNow());
         
+    }
+
+    // Reusable method to create and populate a hidden sheet
+    protected function createHiddenSheet($spreadsheet, $sheetName, $data)
+    {
+        $sheet = new Worksheet($spreadsheet, $sheetName);
+        $spreadsheet->addSheet($sheet);
+
+        // Populate the hidden sheet with data
+        $row = 1;
+        foreach ($data as $item) {
+            $sheet->setCellValue('A' . $row, $item);
+            $row++;
+        }
+
+        // Hide the sheet
+        // $sheet->setSheetState(Worksheet::SHEETSTATE_HIDDEN);
+    }
+
+    protected function listDataValidation(Worksheet $sheet, $sheetName = 'Customers', $columnLetter = 'A', $listUptoRow = 100)
+    {
+        // Create a named range for the customer names
+        $spreadsheet = $sheet->getParent();
+        $hiddenSheet = $spreadsheet->getSheetByName($sheetName);
+        $lastHiddenSheetRow = $hiddenSheet->getHighestRow();
+        
+        for ($i = 2; $i < $listUptoRow; $i++) {
+            $cell = $sheet->getCell($columnLetter.$i);
+            $validation = $cell->getDataValidation();
+            $validation->setType(DataValidation::TYPE_LIST)
+                ->setErrorStyle(DataValidation::STYLE_INFORMATION)
+                ->setAllowBlank(true) // Allow blank cells
+                ->setShowInputMessage(true)
+                ->setShowErrorMessage(false) // Disable error messages
+                ->setShowDropDown(true)
+                ->setFormula1('='.$sheetName.'!$A$1:$A$'.$lastHiddenSheetRow); // Use the named range for data validation
+            $cell->setDataValidation($validation);
+        }
     }
 }

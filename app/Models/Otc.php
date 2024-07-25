@@ -39,7 +39,7 @@ class Otc extends Model
 
             return [
                 'amount' => $amount,
-                'name' => $name
+                'name' => trim($name)
             ];
         }
 
