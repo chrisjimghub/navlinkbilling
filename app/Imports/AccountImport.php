@@ -36,7 +36,7 @@ class AccountImport implements
         $otcs = explode('|', $row['one_time_charge']);
         $otcIds = [];
         foreach ($otcs as $otc) {
-            $otcIds[] = Otc::whereAmountName($otc)->pluck('id')->first();
+            $otcIds[] = Otc::whereAmountName(trim($otc))->pluck('id')->first();
         }
 
         $contracts = explode('|', $row['contract_period']);
@@ -96,6 +96,7 @@ class AccountImport implements
             ],
 
             'installed_date' => 'nullable|date',
+            
 
             // Installed address
 

@@ -3,6 +3,7 @@
 namespace App\Exports\Traits;
 
 use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -55,9 +56,21 @@ trait ExportHelper
         
     }
 
-    // Reusable method to create and populate a hidden sheet
-    protected function createHiddenSheet($spreadsheet, $sheetName, $data)
+    protected function convertColumnFormatIntoText(Worksheet $sheet)
     {
+        // Apply text format to all columns from 'A' to the highest column
+        $highestColumn = $sheet->getHighestColumn();
+                
+        // Apply text format to each column from 'A' to the highest column
+        $sheet->getStyle('A:' . $highestColumn)
+              ->getNumberFormat()
+              ->setFormatCode(NumberFormat::FORMAT_TEXT);
+    }
+
+    // Reusable method to create and populate a hidden sheet
+    protected function createHiddenSheet(Worksheet $sheet, $sheetName, $data)
+    {
+        $spreadsheet = $sheet->getParent();
         $sheet = new Worksheet($spreadsheet, $sheetName);
         $spreadsheet->addSheet($sheet);
 

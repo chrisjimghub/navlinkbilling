@@ -15,8 +15,6 @@ use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class AccountUploadTemplateExport implements ShouldAutoSize, WithEvents
 {
@@ -55,11 +53,11 @@ class AccountUploadTemplateExport implements ShouldAutoSize, WithEvents
                     $col++;
                 }
 
-                $spreadsheet = $sheet->getParent();
+                $this->convertColumnFormatIntoText($sheet);
                 
                 // Create and populate the hidden sheet for customer names
                 $customerNames = Customer::all()->pluck('full_name')->toArray();
-                $this->createHiddenSheet($spreadsheet, 'Customers', $customerNames);
+                $this->createHiddenSheet($sheet, 'Customers', $customerNames);
 
                 // plan app hidden sheet
                 $planApp = PlannedApplication::join('locations', 'planned_applications.location_id', '=', 'locations.id')
@@ -70,21 +68,21 @@ class AccountUploadTemplateExport implements ShouldAutoSize, WithEvents
                     ->get()
                     ->pluck('details')
                     ->toArray();
-                $this->createHiddenSheet($spreadsheet, 'PlannedApps', $planApp);
+                $this->createHiddenSheet($sheet, 'PlannedApps', $planApp);
 
                 // subscription
                 $sub = Subscription::all()->pluck('name')->toArray();
-                $this->createHiddenSheet($spreadsheet, 'Subscriptions', $sub);
+                $this->createHiddenSheet($sheet, 'Subscriptions', $sub);
 
                 // acc status
                 $status = AccountStatus::all()->pluck('name')->toArray();
-                $this->createHiddenSheet($spreadsheet, 'AccountStatus', $status);
+                $this->createHiddenSheet($sheet, 'AccountStatus', $status);
 
                 $otc = Otc::all()->pluck('amount_name')->toArray();
-                $this->createHiddenSheet($spreadsheet, 'Otcs', $otc);
+                $this->createHiddenSheet($sheet, 'Otcs', $otc);
             
                 $contract = ContractPeriod::all()->pluck('name')->toArray();
-                $this->createHiddenSheet($spreadsheet, 'ContractPeriods', $contract);
+                $this->createHiddenSheet($sheet, 'ContractPeriods', $contract);
             },
 
             AfterSheet::class => function(AfterSheet $event) {

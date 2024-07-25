@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class UploadTemplateExport implements 
     ShouldAutoSize,
@@ -40,6 +41,7 @@ class UploadTemplateExport implements
                     $col++;
                 }
 
+                $this->convertColumnFormatIntoText($sheet);
             },
 
             AfterSheet::class => function(AfterSheet $event) {
