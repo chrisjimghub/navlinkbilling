@@ -82,7 +82,7 @@ trait ExportHelper
         }
 
         // Hide the sheet
-        // $sheet->setSheetState(Worksheet::SHEETSTATE_HIDDEN);
+        $sheet->setSheetState(Worksheet::SHEETSTATE_HIDDEN);
     }
 
     protected function listDataValidation(Worksheet $sheet, $sheetName = 'Customers', $columnLetter = 'A', $listUptoRow = 100)
