@@ -180,6 +180,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'community_strings_delete', 
         ],
 
+        'olts' => [
+            'olts_list',
+            'olts_create', 
+            'olts_update', 
+            'olts_delete', 
+        ],
+
     ];
 
     /**
