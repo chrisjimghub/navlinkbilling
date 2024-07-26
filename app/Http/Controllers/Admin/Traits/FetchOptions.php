@@ -8,6 +8,7 @@ use App\Models\BillingType;
 use App\Models\Subscription;
 use App\Models\AccountStatus;
 use App\Models\BillingStatus;
+use App\Models\CommunityString;
 use App\Models\ContractPeriod;
 use App\Models\PlannedApplication;
 
@@ -64,5 +65,4 @@ trait FetchOptions
     {
         return ContractPeriod::pluck('name', 'id')->toArray();
     }
-
 }

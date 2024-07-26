@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\CommunityString;
+use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Admin\Traits\FetchOptions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -17,6 +22,8 @@ class OltsCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+
+    use ValidateUniqueRule;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -40,10 +47,22 @@ class OltsCrudController extends CrudController
     {
         CRUD::setFromDb(); // set columns from db columns.
 
-        /**
-         * Columns can be defined using the fluent syntax:
-         * - CRUD::column('price')->type('number');
-         */
+        $this->crud->removeColumns($this->removeColumnFields());
+
+        $this->crud->column([
+            'name' => 'communityRead',
+            'label' => __('app.olt_community_read'),
+        ]);
+
+        $this->crud->column([
+            'name' => 'communityWrite',
+            'label' => __('app.olt_community_write'),
+        ]);
+    }
+
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**
@@ -55,14 +74,42 @@ class OltsCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            // 'name' => 'required|min:2',
+            'name' => 'required|min:2',
+            'model' => 'required|min:2',
+            'ip_address' => $this->validateUniqueRule('ip_address'),
+
+            'communityRead' => [
+                'required',
+                Rule::in(CommunityString::pluck('id')->toArray()),
+            ],
+
+            'communityWrite' => [
+                'required',
+                Rule::in(CommunityString::pluck('id')->toArray()),
+            ],
+
+            'base_oid' => 'required|min:5',
         ]);
+
         CRUD::setFromDb(); // set fields from db columns.
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+        $this->crud->removeFields($this->removeColumnFields());
+
+        $this->crud->modifyField('base_oid', [
+            'hint' => __('app.olt_base_oid_hint')
+        ]);
+
+        $this->crud->field([
+            'name' => 'communityRead',
+            'label' => __('app.olt_community_read'),
+            'default' => 1,
+        ]);
+
+        $this->crud->field([
+            'name' => 'communityWrite',
+            'label' => __('app.olt_community_write'),
+            'default' => 2,
+        ]);
     }
 
     /**
@@ -74,5 +121,13 @@ class OltsCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    private function removeColumnFields()
+    {
+        return [
+            'community_read_id',
+            'community_write_id'
+        ];
     }
 }

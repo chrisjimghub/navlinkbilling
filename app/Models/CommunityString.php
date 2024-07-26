@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Olt;
 use App\Models\Model;
-
 
 class CommunityString extends Model
 {
@@ -32,6 +32,17 @@ class CommunityString extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    // Relationship with Olt model where this is referenced by community_read_id
+    public function oltReadRelations()
+    {
+        return $this->hasMany(Olt::class, 'community_read_id');
+    }
+
+    // Relationship with Olt model where this is referenced by community_write_id
+    public function oltWriteRelations()
+    {
+        return $this->hasMany(Olt::class, 'community_write_id');
+    }
 
     /*
     |--------------------------------------------------------------------------

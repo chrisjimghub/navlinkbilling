@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Model;
-
+use App\Models\CommunityString;
 
 class Olt extends Model
 {
@@ -32,7 +32,17 @@ class Olt extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    // Relationship with the CommunityString model for community_read_id
+    public function communityRead()
+    {
+        return $this->belongsTo(CommunityString::class, 'community_read_id');
+    }
 
+    // Relationship with the CommunityString model for community_write_id
+    public function communityWrite()
+    {
+        return $this->belongsTo(CommunityString::class, 'community_write_id');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES
