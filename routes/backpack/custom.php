@@ -30,4 +30,5 @@ Route::group([
     Route::crud('account-service-interruption', 'AccountServiceInterruptionCrudController');
     Route::crud('account-credit', 'AccountCreditCrudController');
     Route::crud('widget', 'WidgetCrudController');
+    Route::crud('community-string', 'CommunityStringCrudController');
 }); // this should be the absolute last line of this file

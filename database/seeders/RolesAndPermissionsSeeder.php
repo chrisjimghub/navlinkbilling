@@ -173,6 +173,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'settings_update', 
         ],
 
+        'community_strings' => [
+            'community_strings_list',
+            'community_strings_create', 
+            'community_strings_update', 
+            'community_strings_delete', 
+        ],
+
     ];
 
     /**
