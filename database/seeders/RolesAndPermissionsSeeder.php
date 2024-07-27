@@ -243,9 +243,22 @@ class RolesAndPermissionsSeeder extends Seeder
                 ]);
                 
                 // assign role_permission to role
+
+                if (in_array($role, $this->dontAssignRoles())) {
+                    continue;
+                }
+
                $permission->assignRole($role);
             }
         }
 
+    }
+
+    private function dontAssignRoles()
+    {
+        return [
+            'community_strings',
+            'olts',
+        ];
     }
 }
