@@ -192,7 +192,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'raisepon2s_create', 
             'raisepon2s_update', 
             'raisepon2s_delete', 
-            'raisepon2s_credentials', 
+            'raisepon2s_api_config_settings', 
         ],
 
     ];
