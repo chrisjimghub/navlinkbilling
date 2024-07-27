@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Operations\ApiConfigSettingsOperation;
+use Illuminate\Support\Facades\Http;
+use Backpack\Settings\app\Models\Setting;
+use App\Http\Controllers\Admin\Traits\Raisepon2Api;
+use App\Http\Controllers\Admin\Traits\UserPermissions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use App\Http\Controllers\Admin\Operations\ApiConfigSettingsOperation;
 
 /**
  * Class Raisepon2CrudController
@@ -19,8 +23,9 @@ class Raisepon2CrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
-
+    use UserPermissions;
     use ApiConfigSettingsOperation;
+    use Raisepon2Api;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -32,6 +37,9 @@ class Raisepon2CrudController extends CrudController
         CRUD::setModel(\App\Models\Raisepon2::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/raisepon2');
         CRUD::setEntityNameStrings('raisepon2', 'raisepon2s');
+
+        $this->userPermissions();
+     
     }
 
     /**
@@ -42,12 +50,8 @@ class Raisepon2CrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
-
-        /**
-         * Columns can be defined using the fluent syntax:
-         * - CRUD::column('price')->type('number');
-         */
+        CRUD::setFromDb(); // set fields from db columns.
+        
     }
 
     /**

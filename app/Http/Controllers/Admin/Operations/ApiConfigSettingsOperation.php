@@ -70,9 +70,9 @@ trait ApiConfigSettingsOperation
         }
 
 
-        Setting::set('raisepon_url', request()->raisepon_url);
-        Setting::set('raisepon_username', request()->raisepon_username);
-        Setting::set('raisepon_password', request()->raisepon_password);
+        Setting::set('raisepon_url', request()->url);
+        Setting::set('raisepon_username', request()->username);
+        Setting::set('raisepon_password', request()->password);
 
 
         return response()->json([
