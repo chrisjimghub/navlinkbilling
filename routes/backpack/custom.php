@@ -32,4 +32,5 @@ Route::group([
     Route::crud('widget', 'WidgetCrudController');
     Route::crud('community-string', 'CommunityStringCrudController');
     Route::crud('olts', 'OltsCrudController');
+    Route::crud('raisepon2', 'Raisepon2CrudController');
 }); // this should be the absolute last line of this file

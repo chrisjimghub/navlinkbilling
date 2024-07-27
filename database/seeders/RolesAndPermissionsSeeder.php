@@ -187,6 +187,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'olts_delete', 
         ],
 
+        'raisepon2s' => [
+            'raisepon2s_list',
+            'raisepon2s_create', 
+            'raisepon2s_update', 
+            'raisepon2s_delete', 
+            'raisepon2s_credentials', 
+        ],
+
     ];
 
     /**
