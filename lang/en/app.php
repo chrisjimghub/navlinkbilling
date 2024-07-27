@@ -139,5 +139,9 @@ return [
         'install_account' => 'Install Accounts',
     ],
     
+    // OLT
+    'olt_base_oid_hint' => 'Interface based object identifier',
+    'olt_community_read' => 'Community read',
+    'olt_community_write' => 'Community write',
 
 ];

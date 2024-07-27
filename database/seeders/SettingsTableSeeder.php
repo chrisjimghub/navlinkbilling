@@ -341,6 +341,42 @@ class SettingsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => '2024-07-22 09:22:07',
             ),
+            16 => 
+            array (
+                'id' => 27,
+                'key' => 'raisepon_username',
+                'name' => 'raisepon_username',
+                'description' => '',
+                'value' => NULL,
+                'field' => '{"name":"value","label":"Raisepon Username","type":"text"}',
+                'active' => 1,
+                'created_at' => NULL,
+                'updated_at' => '2024-07-27 14:51:52',
+            ),
+            17 => 
+            array (
+                'id' => 28,
+                'key' => 'raisepon_password',
+                'name' => 'raisepon_password',
+                'description' => '',
+                'value' => NULL,
+                'field' => '{"name":"value","label":"Raisepon Password","type":"text"}',
+                'active' => 1,
+                'created_at' => NULL,
+                'updated_at' => '2024-07-27 14:51:52',
+            ),
+            18 => 
+            array (
+                'id' => 29,
+                'key' => 'raisepon_url',
+                'name' => 'raisepon_url',
+                'description' => '',
+                'value' => NULL,
+                'field' => '{"name":"value","label":"Raisepon Url","type":"text"}',
+                'active' => 1,
+                'created_at' => NULL,
+                'updated_at' => '2024-07-27 14:51:52',
+            ),
         ));
         
         

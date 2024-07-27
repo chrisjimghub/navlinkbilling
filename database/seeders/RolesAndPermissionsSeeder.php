@@ -173,6 +173,28 @@ class RolesAndPermissionsSeeder extends Seeder
             'settings_update', 
         ],
 
+        'community_strings' => [
+            'community_strings_list',
+            'community_strings_create', 
+            'community_strings_update', 
+            'community_strings_delete', 
+        ],
+
+        'olts' => [
+            'olts_list',
+            'olts_create', 
+            'olts_update', 
+            'olts_delete', 
+        ],
+
+        'raisepon2s' => [
+            'raisepon2s_list',
+            'raisepon2s_create', 
+            'raisepon2s_update', 
+            'raisepon2s_delete', 
+            'raisepon2s_api_config_settings', 
+        ],
+
     ];
 
     /**
@@ -229,9 +251,22 @@ class RolesAndPermissionsSeeder extends Seeder
                 ]);
                 
                 // assign role_permission to role
+
+                if (in_array($role, $this->dontAssignRoles())) {
+                    continue;
+                }
+
                $permission->assignRole($role);
             }
         }
 
+    }
+
+    private function dontAssignRoles()
+    {
+        return [
+            'community_strings',
+            'olts',
+        ];
     }
 }
