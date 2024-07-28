@@ -1,4 +1,3 @@
-@extends(backpack_view('blank'))
 @php
     $contents = [];
 
@@ -89,6 +88,9 @@
 
 
 @section('content')
+{{-- In case widgets have been added to a 'content' group, show those widgets. --}}
+@include(backpack_view('inc.widgets'), [ 'widgets' => app('widgets')->where('group', 'content')->toArray() ])
+
 
 
 <div class="card bg-white">
@@ -103,8 +105,5 @@
 
     </div>
 </div>
-
-
-
 
 @endsection
