@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 
 // --------------------------
 // Custom Backpack Routes
@@ -23,11 +24,21 @@ Route::group([
     Route::post('switch-layout', function (Request $request) {
         $theme = 'backpack.theme-'.$request->get('theme', 'tabler').'::';
 
-        Session::put('backpack.ui.view_namespace', $theme);
+        // Session::put('backpack.ui.view_namespace', $theme);
+
+        $data = [
+            'backpack.ui.view_namespace' => $theme,
+        ];
 
         if ($theme === 'backpack.theme-tabler::') {
-            Session::put('backpack.theme-tabler.layout', $request->get('layout', 'vertical'));
+            // Session::put('backpack.theme-tabler.layout', $request->get('layout', 'vertical'));
+            $data['backpack.theme-tabler.layout'] = $request->get('layout', 'vertical'); 
         }
+
+        $user = Auth::user();
+        $user->theme = $data;
+        $user->save();
+
         return Redirect::back();
     })->name('tabler.switch.layout');
 
