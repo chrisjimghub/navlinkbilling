@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\NotificationRequest;
+use App\Http\Controllers\Admin\Operations\NotificationMarkedAsReadOperation;
+use App\Http\Controllers\Admin\Traits\UserPermissions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -14,6 +15,11 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 class NotificationCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+
+    use UserPermissions;
+    use NotificationMarkedAsReadOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -25,6 +31,8 @@ class NotificationCrudController extends CrudController
         CRUD::setModel(\App\Models\Notification::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/notification');
         CRUD::setEntityNameStrings('notification', 'notifications');
+
+        $this->userPermissions();
     }
 
     /**
@@ -35,7 +43,9 @@ class NotificationCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->orderBy('created_at', 'desc');
         $this->crud->query->forAuthenticatedUser();
+        $this->crud->query->unread();
 
         $this->crud->column([
             'name' => 'type_human_readable',
@@ -55,5 +65,8 @@ class NotificationCrudController extends CrudController
         ]);
     }
 
-   
+    protected function setupShowOperation()
+    {
+        return $this->setupListOperation();
+    }
 }

@@ -197,7 +197,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
         'notifications' => [
             'notifications_list',
-            'notifications_cut_off',
+            'notifications_delete',
+            'notifications_cut_off', // permission to received noty
+            'notifications_marked_as_read', // button operation
         ],
 
     ];

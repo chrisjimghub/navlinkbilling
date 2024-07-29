@@ -69,7 +69,8 @@ class CutOffNotification extends Notification implements ShouldQueue
                 ' has an outstanding balance of '.$this->currencyFormatAccessor($this->billing->total).
                 ' for the month of '.$this->billing->month.' '.$this->billing->year.
                 '. As the account remains unpaid, please proceed with the necessary actions to cut off the connection.
-                The customer’s current planned is: '.$this->billing->account_planned_application_details.' 
+                <br>
+                Account: <a href="'.route('account.show', $this->billing->account->id).'">'.$this->billing->account->details.'</a>.
             ',
         ];
     }

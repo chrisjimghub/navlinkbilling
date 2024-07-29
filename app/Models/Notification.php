@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
@@ -27,7 +28,8 @@ class Notification extends Model
     // protected $hidden = [];
 
     protected $casts = [
-        'data' => 'array'
+        'id' => 'string',
+        'data' => 'array',
     ];
 
     /*
@@ -64,6 +66,10 @@ class Notification extends Model
                      ->where('notifiable_id', $userId);
     }
 
+    public function scopeUnread($query)
+    {
+        return $query->whereNull('read_at');
+    }
     /*
     |--------------------------------------------------------------------------
     | ACCESSORS
@@ -96,4 +102,9 @@ class Notification extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public function markAsRead()
+    {
+        $this->read_at = Carbon::now();
+        $this->save();
+    }
 }
