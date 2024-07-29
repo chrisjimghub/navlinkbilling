@@ -195,6 +195,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'raisepon2s_api_config_settings', 
         ],
 
+        'notifications' => [
+            'notifications_list',
+            'notifications_cut_off',
+        ],
+
     ];
 
     /**
