@@ -7,17 +7,24 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 
 class CutOffNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+    use CurrencyFormat;
+
+    protected $billing;
+    protected $via;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public Billing $billing)
+    public function __construct(Billing $billing, $via = null)
     {
         //
+        $this->billing = $billing;
+        $this->via = $via;
     }
 
     /**
@@ -27,6 +34,16 @@ class CutOffNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
+        // Check if $this->via is set
+        if ($this->via) {
+            // If $this->via is set, ensure it is returned as an array
+            if (is_array($this->via)) {
+                return $this->via;
+            } else {
+                return [$this->via];
+            }
+        }
+
         return ['mail'];
     }
 
@@ -40,5 +57,23 @@ class CutOffNotification extends Notification implements ShouldQueue
             ->markdown('emails.cut-off', ['billing' => $this->billing]);
     }
 
-    
+    // toDatbase / toArray
+    public function toArray($notifiable)
+    {
+        return [
+            //
+            'model' => 'Billing',
+            'id' => $this->billing->id,
+            'type' => 'info',
+            'message' => '
+                Please be advised that Mr./Mrs. '.$this->billing->account->customer->full_name.
+                ' has an outstanding balance of '.$this->currencyFormatAccessor($this->billing->total).
+                ' for the month of '.$this->billing->month.' '.$this->billing->year.
+                '. As the account remains unpaid, please proceed with the necessary actions to cut off the connection.
+                <br class="mt-5">
+                Account: <a class="btn btn-sm btn-success" href="'.route('account.show', $this->billing->account->id).'">'.$this->billing->account->details.'</a>
+            ',
+        ];
+    }
+
 }

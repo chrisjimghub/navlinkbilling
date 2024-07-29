@@ -195,6 +195,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'raisepon2s_api_config_settings', 
         ],
 
+        'notifications' => [
+            'notifications_list',
+            'notifications_delete',
+            'notifications_cut_off', // permission to received noty
+            'notifications_marked_as_read', // button operation
+            'notifications_filters',
+        ],
+
     ];
 
     /**

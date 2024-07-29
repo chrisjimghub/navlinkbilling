@@ -1,5 +1,5 @@
 @php
-	$menus = \App\Models\Menu::whereNull('parent_id')->orderBy('lft')->get();
+    $menus = \App\Models\Menu::whereNull('parent_id')->orderBy('lft')->get();
 @endphp
 
 @foreach ($menus as $menu)
@@ -9,11 +9,16 @@
 
         @if($menu->permissions)
             @canany($menu->permissions)
-                <x-backpack::menu-item 
-                    title="{{ $menu->label }}" 
-                    icon="{{ $menu->icon }}" 
-                    :link="backpack_url($menu->url)" 
-                />                
+                @if(!in_array('notifications_list', $menu->permissions))
+                    <x-backpack::menu-item 
+                        title="{{ $menu->label }}" 
+                        icon="{{ $menu->icon }}" 
+                        :link="backpack_url($menu->url)" 
+                    />
+                @else 
+                    @include('vendor.backpack.ui.notification_badge')
+                @endif
+
             @endcanany
         @else
             <x-backpack::menu-item 
