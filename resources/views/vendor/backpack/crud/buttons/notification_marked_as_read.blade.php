@@ -1,16 +1,19 @@
 @if ($crud->hasAccess('markedAsRead', $entry))
-    <a 
-        href="javascript:void(0)" 
-        onclick="markedAsRead(this)" 
-        data-route="{{ route('notification.notificationMarkedAsRead', $entry->id) }}" 
-        class="btn btn-sm btn-link" 
-        data-button-type="markedAsRead"
-    >
-        <span>
-            <i class="las la-check-circle"></i>
-            {{ __('Marked as read') }}
-        </span>
-    </a>
+
+    @if($entry->read_at == null)
+        <a 
+            href="javascript:void(0)" 
+            onclick="markedAsRead(this)" 
+            data-route="{{ route('notification.notificationMarkedAsRead', $entry->id) }}" 
+            class="btn btn-sm btn-link" 
+            data-button-type="markedAsRead"
+        >
+            <span>
+                <i class="las la-check-circle"></i>
+                {{ __('Marked as read') }}
+            </span>
+        </a>
+    @endif
 @endif
 
 {{-- Button Javascript --}}

@@ -75,7 +75,6 @@ trait MyFiltersOperation
                 $validator = Validator::make([$filterName => $filterValue], [
                     $filterName => [
                         'nullable',
-                        'integer',
                         'in:' . implode(',', array_keys($filter['options'])), // Dynamic options here
                     ],
                 ]);    

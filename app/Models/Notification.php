@@ -70,6 +70,11 @@ class Notification extends Model
     {
         return $query->whereNull('read_at');
     }
+
+    public function scopeRead($query)
+    {
+        return $query->whereNotNull('read_at');
+    }
     /*
     |--------------------------------------------------------------------------
     | ACCESSORS

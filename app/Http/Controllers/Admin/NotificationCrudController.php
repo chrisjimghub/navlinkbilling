@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use App\Http\Controllers\Admin\Operations\NotificationMarkedAsReadOperation;
+use App\Http\Controllers\Admin\Traits\FetchOptions;
 use App\Http\Controllers\Admin\Traits\UserPermissions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -20,6 +22,7 @@ class NotificationCrudController extends CrudController
 
     use UserPermissions;
     use NotificationMarkedAsReadOperation;
+    use MyFiltersOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -35,6 +38,41 @@ class NotificationCrudController extends CrudController
         $this->userPermissions();
     }
 
+    protected function myFilters()
+    {
+        $this->myFilter([
+            'name' => 'status',
+            'label' => __('Status'),
+            'type' => 'select',
+            'options' => [
+                'read' => 'Read',
+                'unread' => 'Unread',
+            ],
+        ]);
+
+        
+    }
+
+    private function myFiltersAddClause()
+    {   
+        if (!$this->crud->hasAccess('filters')) {
+            return;
+        }
+
+        // if validation fail then dont proceed
+        if (method_exists($this, 'myFiltersValidation')) {
+            if (!$this->myFiltersValidation()) {
+                return;
+            }
+        }
+
+        $status = request()->input('status');
+
+        if ($status) {
+            $this->crud->query->{$status}();
+        }
+    }
+
     /**
      * Define what happens when the List operation is loaded.
      * 
@@ -43,9 +81,11 @@ class NotificationCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        $this->crud->orderBy('created_at', 'desc');
         $this->crud->query->forAuthenticatedUser();
-        $this->crud->query->unread();
+        $this->crud->orderBy('created_at', 'desc');
+
+        $this->myFiltersAddClause();
+
 
         $this->crud->column([
             'name' => 'type_human_readable',
