@@ -24,6 +24,12 @@ trait NotificationMarkedAsReadOperation
             'uses'      => $controller.'@notificationMarkedAsRead',
             'operation' => 'notificationMarkedAsRead',
         ]);
+
+        Route::get($segment.'/unreadCount', [
+            'as'        => $routeName.'.unreadCount',
+            'uses'      => $controller.'@unreadCount',
+            'operation' => 'unreadCount',
+        ]);
     }
 
     /**
@@ -72,6 +78,18 @@ trait NotificationMarkedAsReadOperation
 
         return response()->json([
             'msg' => '<strong>'.__('Success').'</strong><br>'.__('The item is mark as read successfully.'),
+        ]);
+    }
+
+    public function unreadCount()
+    {
+        $count = backpack_user()->unreadNotifications->count();
+
+        $lastNotification = backpack_user()->unreadNotifications()->orderBy('created_at', 'desc')->first();
+
+        return response()->json([
+            'count' => $count,
+            'last_notification' => $lastNotification ? $lastNotification->data : null,
         ]);
     }
 }
