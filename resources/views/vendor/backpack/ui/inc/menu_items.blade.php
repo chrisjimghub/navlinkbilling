@@ -109,4 +109,3 @@
     @endif
 
 @endforeach
-<x-backpack::menu-item title="Notifications" icon="la la-question" :link="backpack_url('notification')" />
