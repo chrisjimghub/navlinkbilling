@@ -77,7 +77,7 @@ trait NotificationMarkedAsReadOperation
         Notification::find($id)->markAsRead();
 
         return response()->json([
-            'msg' => '<strong>'.__('Success').'</strong><br>'.__('The item is mark as read successfully.'),
+            'msg' => '<strong>'.__('Marked Read').'</strong><br>'.__('The item is mark as read successfully.'),
         ]);
     }
 
