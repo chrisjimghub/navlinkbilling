@@ -198,7 +198,7 @@
 
                                 @php
                                     $tempName = str_replace($filter.'_', '', $connected_entity_entry->{$secondary_dependency['attribute']}); 
-                                    $tempName = ucwords($tempName);
+                                    $tempName = ucwords(str_replace('_', ' ', $tempName));
                                     
                                     if ($tempName == 'Show') {
                                         $tempName = 'Show';
