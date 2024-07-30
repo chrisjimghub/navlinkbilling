@@ -19,6 +19,12 @@ if (! function_exists('strHumanReadable')) {
 		return $humanReadable;
 	}
 }
+
+if (! function_exists('stringStartsWith')) {
+	function stringStartsWith($haystack, $needle) {
+		return Str::startsWith($haystack, $needle);
+	}
+}
 // end Str
 
 
