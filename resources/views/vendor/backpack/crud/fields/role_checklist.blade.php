@@ -37,8 +37,6 @@
 
 @include('crud::fields.inc.wrapper_start')
 
-    <label>{!! $field['label'] !!}
-    
     @foreach ($roles as $role)
         @php
             $permissions = collect($field['options'])->filter(function ($item) use ($role) {
