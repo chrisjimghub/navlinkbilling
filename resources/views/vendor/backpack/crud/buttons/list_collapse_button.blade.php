@@ -77,7 +77,7 @@
   jQuery(document).ready(function($) {
     $("#remove_filters_button").click(function(e) {
       // remove filters from URL
-      crud.updateUrl('{{ route("billing.index") }}');
+      crud.updateUrl('#');
     });
   });
 </script>
