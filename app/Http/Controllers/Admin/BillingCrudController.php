@@ -12,10 +12,10 @@ use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Controllers\Admin\Operations\ExportOperation;
-use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use App\Http\Controllers\Admin\Operations\BillSettingOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
+use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
 
 /**
  * Class BillingCrudController
@@ -33,9 +33,9 @@ class BillingCrudController extends CrudController
     use CrudExtend;
     use BillingGroupButtonsOperation;
     use BillSettingOperation;
-    use MyFiltersOperation;
     use ExportOperation;
     use FetchOptions;
+    use FilterOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -59,22 +59,22 @@ class BillingCrudController extends CrudController
      * 
      * @return void
      */
-    protected function myFilters()
+    public function setupFilterOperation()
     {
-        $this->myFilter([
+        $this->crud->field([
             'name' => 'period',
             'label' => __('Billing Period'),
             'type' => 'date_range',
         ]);
 
-        $this->myFilter([
+        $this->crud->field([
             'name' => 'status',
             'label' => __('Status'),
             'type' => 'select',
             'options' => $this->billingStatusLists(),
         ]);
 
-        $this->myFilter([
+        $this->crud->field([
             'name' => 'type',
             'label' => __('Type'),
             'type' => 'select',
@@ -90,7 +90,28 @@ class BillingCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        $this->myFiltersAddClause();
+        $this->filterQueries(function ($query) {
+            $status = request()->input('status');
+            $type = request()->input('type');
+            $period = request()->input('period');
+
+            if ($status) {
+                $query->{$status == 1 ? 'paid' : 'unpaid'}();
+            
+            }
+
+            if ($type) {
+                $query->{$type == 1 ? 'installment' : 'monthly'}();
+            }
+
+            if ($period) {
+                $dates = explode('-', $period);
+                $dateStart = Carbon::parse($dates[0]);
+                $dateEnd = Carbon::parse($dates[1]);
+                $query->withinBillingPeriod($dateStart, $dateEnd);
+            }
+        });
+
 
         if (! $this->crud->getRequest()->has('order')){
             $this->crud->orderBy('billing_status_id', 'desc'); //default order unpaid
@@ -304,38 +325,4 @@ class BillingCrudController extends CrudController
             \Alert::warning('Whooops, you\'re not allowed to do that.');
         }
     }
-
-    private function myFiltersAddClause()
-    {   
-        if (!$this->crud->hasAccess('filters')) {
-            return;
-        }
-
-        // if validation fail then dont proceed
-        if (method_exists($this, 'myFiltersValidation')) {
-            if (!$this->myFiltersValidation()) {
-                return;
-            }
-        }
-
-        $status = request()->input('status');
-        $type = request()->input('type');
-        $period = request()->input('period');
-
-        if ($status) {
-            $this->crud->addClause($status == 1 ? 'paid' : 'unpaid');
-        }
-
-        if ($type) {
-            $this->crud->addClause($type == 1 ? 'installment' : 'monthly');
-        }
-
-        if ($period) {
-            $dates = explode('-', $period);
-            $dateStart = Carbon::parse($dates[0]);
-            $dateEnd = Carbon::parse($dates[1]);
-            $this->crud->query->withinBillingPeriod($dateStart, $dateEnd);
-        }
-    }
-
 }

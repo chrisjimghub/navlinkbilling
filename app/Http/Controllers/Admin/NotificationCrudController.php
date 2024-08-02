@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use App\Http\Controllers\Admin\Operations\NotificationMarkedAsReadOperation;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
 
 /**
  * Class NotificationCrudController
@@ -21,7 +21,7 @@ class NotificationCrudController extends CrudController
 
     use CrudExtend;
     use NotificationMarkedAsReadOperation;
-    use MyFiltersOperation;
+    use FilterOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -37,9 +37,9 @@ class NotificationCrudController extends CrudController
         $this->userPermissions();
     }
 
-    protected function myFilters()
+    public function setupFilterOperation()
     {
-        $this->myFilter([
+        $this->crud->field([
             'name' => 'status',
             'label' => __('Status'),
             'type' => 'select',
@@ -48,28 +48,6 @@ class NotificationCrudController extends CrudController
                 'unread' => 'Unread',
             ],
         ]);
-
-        
-    }
-
-    private function myFiltersAddClause()
-    {   
-        if (!$this->crud->hasAccess('filters')) {
-            return;
-        }
-
-        // if validation fail then dont proceed
-        if (method_exists($this, 'myFiltersValidation')) {
-            if (!$this->myFiltersValidation()) {
-                return;
-            }
-        }
-
-        $status = request()->input('status');
-
-        if ($status) {
-            $this->crud->query->{$status}();
-        }
     }
 
     /**
@@ -83,8 +61,13 @@ class NotificationCrudController extends CrudController
         $this->crud->query->forAuthenticatedUser();
         $this->crud->orderBy('created_at', 'desc');
 
-        $this->myFiltersAddClause();
+        $this->filterQueries(function ($query) {
+            $status = request()->input('status');
 
+            if ($status) {
+                $query->{$status}();
+            }
+        });
 
         $this->crud->column([
             'name' => 'type_human_readable',

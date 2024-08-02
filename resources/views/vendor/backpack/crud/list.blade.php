@@ -47,10 +47,11 @@
           </div>
         </div>
 
+        @include('winex01.backpack-filter::buttons.list_top_collapse')
 
-        @if ($crud->hasAccessToAny(['filters', 'export']))
+        {{-- @if ($crud->hasAccessToAny(['filters', 'export']))
             @include('crud::buttons.list_collapse_button')
-        @endif
+        @endif --}}
 
 
         {{-- Backpack List Filters --}}
