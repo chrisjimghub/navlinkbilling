@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use App\Http\Controllers\Admin\Operations\NotificationMarkedAsReadOperation;
-use App\Http\Controllers\Admin\Traits\FetchOptions;
-use App\Http\Controllers\Admin\Traits\UserPermissions;
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -20,7 +19,7 @@ class NotificationCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 
-    use UserPermissions;
+    use CrudExtend;
     use NotificationMarkedAsReadOperation;
     use MyFiltersOperation;
 

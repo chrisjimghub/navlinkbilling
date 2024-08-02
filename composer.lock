@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dc119f613fcb60afbe2dc7b4ede16654",
+    "content-hash": "1dbd5fa454f87c9ee1b1e16a07e2f0c7",
     "packages": [
         {
             "name": "backpack/activity-log",
@@ -211,16 +211,16 @@
         },
         {
             "name": "backpack/crud",
-            "version": "6.7.22",
+            "version": "6.7.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Backpack/CRUD.git",
-                "reference": "476dc34436496e2fee7f18022f20d46c45856259"
+                "reference": "3c867c2751b74f934c02d8e9620b63acbc6cd7b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Backpack/CRUD/zipball/476dc34436496e2fee7f18022f20d46c45856259",
-                "reference": "476dc34436496e2fee7f18022f20d46c45856259",
+                "url": "https://api.github.com/repos/Laravel-Backpack/CRUD/zipball/3c867c2751b74f934c02d8e9620b63acbc6cd7b9",
+                "reference": "3c867c2751b74f934c02d8e9620b63acbc6cd7b9",
                 "shasum": ""
             },
             "require": {
@@ -299,9 +299,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Backpack/CRUD/issues",
-                "source": "https://github.com/Laravel-Backpack/CRUD/tree/6.7.22"
+                "source": "https://github.com/Laravel-Backpack/CRUD/tree/6.7.24"
             },
-            "time": "2024-07-25T16:24:19+00:00"
+            "time": "2024-08-01T13:33:08+00:00"
         },
         {
             "name": "backpack/filemanager",
@@ -2687,16 +2687,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v11.18.1",
+            "version": "v11.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "b19ba518c56852567e99fbae9321bc436c2cc5a8"
+                "reference": "5e103d499e9ee5bcfc184412d034c4e516b87085"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/b19ba518c56852567e99fbae9321bc436c2cc5a8",
-                "reference": "b19ba518c56852567e99fbae9321bc436c2cc5a8",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/5e103d499e9ee5bcfc184412d034c4e516b87085",
+                "reference": "5e103d499e9ee5bcfc184412d034c4e516b87085",
                 "shasum": ""
             },
             "require": {
@@ -2889,7 +2889,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-07-26T10:39:29+00:00"
+            "time": "2024-07-30T15:22:41+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -9019,6 +9019,130 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "winex01/backpack-filter",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "D:/packages-development/winex01/packages/winex01/backpack-filter",
+                "reference": "0b966f2b85ceae44ddbcc0930da4ca2d47c8605d"
+            },
+            "require": {
+                "backpack/crud": "^6.7",
+                "maatwebsite/excel": "^3.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~5|~6",
+                "phpunit/phpunit": "~9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Winex01\\BackpackFilter\\BackpackFilterServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Winex01\\BackpackFilter\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Winex01\\BackpackFilter\\Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/phpunit --testdox"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Winnie A. Damayo",
+                    "email": "winnie131212592@gmail.com",
+                    "homepage": "https://github.com/winex01"
+                }
+            ],
+            "description": "Laravel backpack free filter without buying pro version.",
+            "homepage": "https://github.com/winex01/backpack-filter",
+            "keywords": [
+                "Backpack",
+                "Backpack Addon",
+                "Backpack Filter",
+                "Backpack Free Filter",
+                "Backpack for Laravel",
+                "Laravel"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": false
+            }
+        },
+        {
+            "name": "winex01/backpack-permission-manager",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/winex01/backpack-permission-manager.git",
+                "reference": "b8006e0514405572d883e5ea23dabb3e7c72a463"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/winex01/backpack-permission-manager/zipball/b8006e0514405572d883e5ea23dabb3e7c72a463",
+                "reference": "b8006e0514405572d883e5ea23dabb3e7c72a463",
+                "shasum": ""
+            },
+            "require": {
+                "backpack/permissionmanager": "^7.2"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~5|~6",
+                "phpunit/phpunit": "~9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Winex01\\BackpackPermissionManager\\BackpackPermissionManagerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Winex01\\BackpackPermissionManager\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Winnie A. Damayo",
+                    "email": "winnie131212592@gmail.com",
+                    "homepage": "https://github.com/winex01"
+                }
+            ],
+            "description": "Group roles and permission field view of checklist in create of laravel backpack permission manager add-on",
+            "homepage": "https://github.com/winex01/backpack-permission-manager",
+            "keywords": [
+                "Backpack Addon",
+                "Backpack Permission Manager",
+                "Backpack for Laravel",
+                "backpack",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/winex01/backpack-permission-manager/issues",
+                "source": "https://github.com/winex01/backpack-permission-manager/tree/1.2.1"
+            },
+            "time": "2024-08-02T08:35:37+00:00"
         }
     ],
     "packages-dev": [
@@ -9633,16 +9757,16 @@
         },
         {
             "name": "laravel/pint",
-            "version": "v1.17.0",
+            "version": "v1.17.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pint.git",
-                "reference": "4dba80c1de4b81dc4c4fb10ea6f4781495eb29f5"
+                "reference": "b5b6f716db298671c1dfea5b1082ec2c0ae7064f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pint/zipball/4dba80c1de4b81dc4c4fb10ea6f4781495eb29f5",
-                "reference": "4dba80c1de4b81dc4c4fb10ea6f4781495eb29f5",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/b5b6f716db298671c1dfea5b1082ec2c0ae7064f",
+                "reference": "b5b6f716db298671c1dfea5b1082ec2c0ae7064f",
                 "shasum": ""
             },
             "require": {
@@ -9695,7 +9819,7 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
-            "time": "2024-07-23T16:40:20+00:00"
+            "time": "2024-08-01T09:06:33+00:00"
         },
         {
             "name": "laravel/sail",
@@ -12253,7 +12377,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "imokhles/signature-field-for-backpack": 20
+        "imokhles/signature-field-for-backpack": 20,
+        "winex01/backpack-filter": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
