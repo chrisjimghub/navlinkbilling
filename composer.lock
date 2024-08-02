@@ -9022,16 +9022,16 @@
         },
         {
             "name": "winex01/backpack-filter",
-            "version": "1.0.4",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/winex01/backpack-filter.git",
-                "reference": "dd4428e833b30752702da9fcf8a6a6e47102420a"
+                "reference": "df18404a221c7a013cd54672a7fe93b8f105289a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/winex01/backpack-filter/zipball/dd4428e833b30752702da9fcf8a6a6e47102420a",
-                "reference": "dd4428e833b30752702da9fcf8a6a6e47102420a",
+                "url": "https://api.github.com/repos/winex01/backpack-filter/zipball/df18404a221c7a013cd54672a7fe93b8f105289a",
+                "reference": "df18404a221c7a013cd54672a7fe93b8f105289a",
                 "shasum": ""
             },
             "require": {
@@ -9078,9 +9078,9 @@
             ],
             "support": {
                 "issues": "https://github.com/winex01/backpack-filter/issues",
-                "source": "https://github.com/winex01/backpack-filter/tree/1.0.4"
+                "source": "https://github.com/winex01/backpack-filter/tree/1.1.0"
             },
-            "time": "2024-08-02T10:23:58+00:00"
+            "time": "2024-08-02T13:01:06+00:00"
         },
         {
             "name": "winex01/backpack-permission-manager",
