@@ -28,7 +28,7 @@
         "maatwebsite/excel": "^3.1",
         "orangehill/iseed": "^3.0",
         "redsquirrelstudio/laravel-backpack-import-operation": "^1.6",
-        "winex01/backpack-filter": "dev-dev",
+        "winex01/backpack-filter": "^1.0",
         "winex01/backpack-permission-manager": "^1.2"
     },
     "require-dev": {
@@ -95,13 +95,6 @@
         "malek77z/signature-field-for-backpack": {
             "type": "vcs",
             "url": "https://github.com/malek77z/signature-field-for-backpack"
-        },
-        "winex01/backpack-filter": {
-            "type": "path",
-            "url": "D:\\packages-development\\winex01\\packages\\winex01\\backpack-filter",
-            "options": {
-                "symlink": true
-            }
         }
     }
 }

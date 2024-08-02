@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1dbd5fa454f87c9ee1b1e16a07e2f0c7",
+    "content-hash": "be796608b05146ae44e2cea726257ef7",
     "packages": [
         {
             "name": "backpack/activity-log",
@@ -9022,11 +9022,17 @@
         },
         {
             "name": "winex01/backpack-filter",
-            "version": "dev-dev",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/winex01/backpack-filter.git",
+                "reference": "0ae9b2fbad4203e5a35dd8e16ec2844f078a212a"
+            },
             "dist": {
-                "type": "path",
-                "url": "D:/packages-development/winex01/packages/winex01/backpack-filter",
-                "reference": "0b966f2b85ceae44ddbcc0930da4ca2d47c8605d"
+                "type": "zip",
+                "url": "https://api.github.com/repos/winex01/backpack-filter/zipball/0ae9b2fbad4203e5a35dd8e16ec2844f078a212a",
+                "reference": "0ae9b2fbad4203e5a35dd8e16ec2844f078a212a",
+                "shasum": ""
             },
             "require": {
                 "backpack/crud": "^6.7",
@@ -9049,16 +9055,7 @@
                     "Winex01\\BackpackFilter\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Winex01\\BackpackFilter\\Tests\\": "tests"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "vendor/bin/phpunit --testdox"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -9072,17 +9069,18 @@
             "description": "Laravel backpack free filter without buying pro version.",
             "homepage": "https://github.com/winex01/backpack-filter",
             "keywords": [
-                "Backpack",
                 "Backpack Addon",
                 "Backpack Filter",
                 "Backpack Free Filter",
                 "Backpack for Laravel",
-                "Laravel"
+                "backpack",
+                "laravel"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": false
-            }
+            "support": {
+                "issues": "https://github.com/winex01/backpack-filter/issues",
+                "source": "https://github.com/winex01/backpack-filter/tree/1.0.3"
+            },
+            "time": "2024-08-02T10:07:38+00:00"
         },
         {
             "name": "winex01/backpack-permission-manager",
@@ -12377,8 +12375,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "imokhles/signature-field-for-backpack": 20,
-        "winex01/backpack-filter": 20
+        "imokhles/signature-field-for-backpack": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
