@@ -49,11 +49,6 @@
 
         @include('winex01.backpack-filter::buttons.list_top_collapse')
 
-        {{-- @if ($crud->hasAccessToAny(['filters', 'export']))
-            @include('crud::buttons.list_collapse_button')
-        @endif --}}
-
-
         {{-- Backpack List Filters --}}
         @if ($crud->filtersEnabled())
           @include('crud::inc.filters_navbar')
