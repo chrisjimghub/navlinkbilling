@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Operations;
 
-use App\Http\Controllers\Admin\Traits\SendNotifications;
 use App\Models\Billing;
 use Illuminate\Support\Str;
 use App\Events\BillProcessed;
@@ -20,6 +19,7 @@ use App\Models\AccountServiceInterruption;
 use App\Rules\MustHaveEnoughAccountCredit;
 use LaravelDaily\Invoices\Facades\Invoice;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
+use App\Http\Controllers\Admin\Traits\SendNotifications;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait BillingGroupButtonsOperation
@@ -209,8 +209,15 @@ trait BillingGroupButtonsOperation
             ->logo(public_path(config('invoices.project_logo')));
         
         // And return invoice itself to browser or have a different view
-        return $invoice->stream();
+        // return $invoice->stream();
         // return $invoice->download();
+
+        return $this->downloadInvoiceType($invoice);
+    }
+
+    public function downloadInvoiceType($invoice)
+    {
+        return $invoice->stream();
     }
 
     public function changePlan($id)

@@ -73,6 +73,11 @@ class HistoryCrudController extends BillingCrudController
         });
     }
 
+    public function downloadInvoiceType($invoice)
+    {
+        return $invoice->download();
+    }
+
     public function setupFilterOperation()
     {
         // TODO:: replace with year & month filter
