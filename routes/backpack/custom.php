@@ -20,28 +20,6 @@ Route::group([
     ),
     'namespace' => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
-
-    Route::post('switch-layout', function (Request $request) {
-        $theme = 'backpack.theme-'.$request->get('theme', 'tabler').'::';
-
-        // Session::put('backpack.ui.view_namespace', $theme);
-
-        $data = [
-            'backpack.ui.view_namespace' => $theme,
-        ];
-
-        if ($theme === 'backpack.theme-tabler::') {
-            // Session::put('backpack.theme-tabler.layout', $request->get('layout', 'vertical'));
-            $data['backpack.theme-tabler.layout'] = $request->get('layout', 'vertical'); 
-        }
-
-        $user = Auth::user();
-        $user->theme = $data;
-        $user->save();
-
-        return Redirect::back();
-    })->name('tabler.switch.layout');
-
     Route::crud('subscription', 'SubscriptionCrudController');
     Route::crud('planned-application-type', 'PlannedApplicationTypeCrudController');
     Route::crud('planned-application', 'PlannedApplicationCrudController');
@@ -60,4 +38,5 @@ Route::group([
     Route::crud('olts', 'OltsCrudController');
     Route::crud('raisepon2', 'Raisepon2CrudController');
     Route::crud('notification', 'NotificationCrudController');
+    Route::crud('theme', 'ThemeCrudController');
 }); // this should be the absolute last line of this file
