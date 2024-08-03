@@ -2,15 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
+Route::get('/', function () {
+    return redirect('customer/login');
+});
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/dashboard', function () {
+    return redirect('customer/dashboard');
+});
 
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
+Route::get('customer/logout', function () {
+    return redirect(config('backpack.base.route_prefix') . '/logout');
+});
 
-require __DIR__.'/auth.php';
 require __DIR__.'/customer.php';

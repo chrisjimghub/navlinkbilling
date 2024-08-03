@@ -35,8 +35,6 @@ class HistoryCrudController extends BillingCrudController
      */
     public function setup()
     {
-        config(['backpack.base.route_prefix' => 'customer']); // TODO::
-
         CRUD::setModel(\App\Models\Billing::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/history');
         CRUD::setEntityNameStrings('history', 'histories');
@@ -52,8 +50,7 @@ class HistoryCrudController extends BillingCrudController
 
         $this->data['breadcrumbs'] = [
             'Dashboard' => backpack_url('dashboard'),
-            $this->crud->entity_name => true,
-            'List' => false,
+            $this->crud->entity_name => false,
         ];
     }
 
@@ -91,5 +88,13 @@ class HistoryCrudController extends BillingCrudController
             'type' => 'select',
             'options' => $this->billingStatusLists(),
         ]);
+    }
+    
+    // we need this, because in the original BillingCrudController it was overrided so we will override the trait setupShowOperation here too
+    // if we dont override it here it will cause an error because of the json columns, so by doing this we make sure that the preview
+    // will use the setupListOperation columns define
+    public function setupShowOperation()
+    {
+        $this->setupListOperation();
     }
 }
