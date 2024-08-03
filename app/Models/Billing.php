@@ -9,12 +9,14 @@ use App\Events\BillProcessed;
 use App\Models\BillingStatus;
 use App\Models\PaymentMethod;
 use Illuminate\Support\Carbon;
-use App\Events\AccountCreditSnapshot;
+use Illuminate\Database\Eloquent\Builder;
 use App\Http\Controllers\Admin\Traits\AccountCrud;
 use App\Models\Traits\LocalScopes\ScopeDateOverlap;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
-use App\Models\Scopes\ExcludeSoftDeletedAccountsScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use App\Models\Scopes\OwnedByAuthenticatedCustomerScope;
 
+#[ScopedBy([OwnedByAuthenticatedCustomerScope::class])]
 class Billing extends Model
 {
     use CurrencyFormat;
@@ -199,6 +201,13 @@ class Billing extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeOwnByCustomer(Builder $query, $customerId)
+    {
+        return $query->whereHas('account', function (Builder $query) use ($customerId) {
+            $query->where('customer_id', $customerId);
+        });
+    }
+
     public function scopeWithinBillingPeriod($query, $startDate, $endDate)
     {
         return $query->whereBetween('date_start', [$startDate, $endDate])
