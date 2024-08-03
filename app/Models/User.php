@@ -63,6 +63,10 @@ class User extends Authenticatable
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public function isCustomer()
+    {
+        return $this->customer_id !== null;
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -79,10 +83,6 @@ class User extends Authenticatable
     | SCOPES
     |--------------------------------------------------------------------------
     */
-    public function scopeBelongsToCustomer(Builder $query)
-    {
-        return $query->whereNotNull('customer_id');
-    }
 
     /*
     |--------------------------------------------------------------------------

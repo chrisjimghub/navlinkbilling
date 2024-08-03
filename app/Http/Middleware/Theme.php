@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
 
 class Theme
 {
@@ -31,7 +30,7 @@ class Theme
                     }
                 }
             }else {
-                // if user theme is empty then show coreui2 as default theme for admin ang tabler horizontal for customer 
+                // if user theme is empty then show coreui2 as default theme for admin and tabler horizontal for customer 
                 if (Auth::user()->belongsToCustomer()) {
                     // default theme for customer if theme is empty
                     Config::set('backpack.ui.view_namespace', 'backpack.theme-tabler::');

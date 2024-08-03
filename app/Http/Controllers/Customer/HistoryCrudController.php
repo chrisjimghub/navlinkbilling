@@ -35,6 +35,8 @@ class HistoryCrudController extends BillingCrudController
      */
     public function setup()
     {
+        config(['backpack.base.route_prefix' => 'customer']); // TODO::
+
         CRUD::setModel(\App\Models\Billing::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/history');
         CRUD::setEntityNameStrings('history', 'histories');
