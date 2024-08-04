@@ -2,26 +2,28 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Http\Controllers\Customer\Operations\PayNowOperation;
 use Illuminate\Support\Carbon;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
-use App\Http\Controllers\Admin\BillingCrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
 use Winex01\BackpackFilter\Http\Controllers\Operations\ExportOperation;
 use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
+use App\Http\Controllers\Admin\BillingCrudController as AdminBillingCrudController;
 
 /**
  * Class HistoryCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class BillingHistoryCrudController extends BillingCrudController
+class BillingHistoryCrudController extends AdminBillingCrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
+    use PayNowOperation;
     use BillingGroupButtonsOperation;
     use CrudExtend;
     use ExportOperation;
@@ -46,6 +48,7 @@ class BillingHistoryCrudController extends BillingCrudController
             'filters',
             'export',
             'downloadInvoice',
+            'payNow'
         ]);
 
         $this->data['breadcrumbs'] = [
@@ -69,7 +72,7 @@ class BillingHistoryCrudController extends BillingCrudController
         });
 
         CRUD::operation(['list'], function () {
-            CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.customer.download_invoice', 'beginning');
+            CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.customer.download_invoice');
         });
     }
 
