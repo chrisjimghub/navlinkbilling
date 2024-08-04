@@ -156,6 +156,8 @@ trait GcashOperation
             $billing->paymentMethodGcash();
             $billing->saveQuietly();
             
+            // TODO:: fire a notification if he paid
+
             \Alert::error('<strong>'.__('Success').'</strong><br>'.__('The bill has been paid successfully.'))->flash();
             return redirect($this->crud->route);
         }
