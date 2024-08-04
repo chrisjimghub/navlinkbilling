@@ -17,7 +17,7 @@ use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class HistoryCrudController extends BillingCrudController
+class BillingHistoryCrudController extends BillingCrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
@@ -36,8 +36,8 @@ class HistoryCrudController extends BillingCrudController
     public function setup()
     {
         CRUD::setModel(\App\Models\Billing::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/history');
-        CRUD::setEntityNameStrings('history', 'histories');
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/billing-history');
+        CRUD::setEntityNameStrings('billing history', 'billings');
 
         $this->crud->denyAllAccess();
         $this->crud->allowAccess([

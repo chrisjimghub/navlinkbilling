@@ -5,5 +5,5 @@
 <x-backpack::menu-dropdown title="Billing" icon="las la-folder-open">
     {{-- <x-backpack::menu-dropdown-header title="Authentication" /> --}}
     <x-backpack::menu-dropdown-item title="Make Payment" icon="las la-credit-card" :link="backpack_url('test')" />
-    <x-backpack::menu-dropdown-item title="History" icon="las la-file-invoice" :link="backpack_url('history')" />
+    <x-backpack::menu-dropdown-item title="History" icon="las la-file-invoice" :link="backpack_url('billing-history')" />
 </x-backpack::menu-dropdown>

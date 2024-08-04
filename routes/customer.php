@@ -11,7 +11,7 @@ Route::group([
     ),
     'namespace' => 'App\Http\Controllers\Customer',
 ], function () { 
-    Route::crud('dashboard', 'DashboardCrudController');
-    Route::crud('history', 'HistoryCrudController');
     Route::crud('theme', 'ThemeCrudController');
+    Route::crud('dashboard', 'DashboardCrudController');
+Route::crud('billing-history', 'BillingHistoryCrudController');
 }); 
