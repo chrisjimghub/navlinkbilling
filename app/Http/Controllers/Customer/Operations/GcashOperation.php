@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Customer\Operations;
 
 use App\Models\Billing;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
 use Luigel\Paymongo\Facades\Paymongo;
@@ -137,8 +138,19 @@ trait GcashOperation
         $id = $this->crud->getCurrentEntryId() ?? $id;
         
         $billing = Billing::findOrFail($id);
-        $source = Paymongo::source()->find($billing->paymongo_reference_number);
+        $reference = $billing->paymongo_reference_number;
+        
+        if (Str::startsWith($reference, 'pay_')) {
+            \Alert::info('<strong>'.__('Info').'</strong><br>'.__('The bill is already paid.'))->flash();
+            return redirect($this->crud->route);
+        }
+        
+        if (!Str::startsWith($reference, 'src_')) {
+            \Alert::error('<strong>'.__('Invalid Reference #').'</strong><br>'.__('Whoops, something went wrong.'))->flash();
+            return redirect($this->crud->route);
+        }
 
+        $source = Paymongo::source()->find($reference);
         $payment = Paymongo::payment()->create([
             'amount' => $source->amount,
             'currency' => $source->currency,
@@ -158,7 +170,7 @@ trait GcashOperation
             
             // TODO:: fire a notification if he paid
 
-            \Alert::error('<strong>'.__('Success').'</strong><br>'.__('The bill has been paid successfully.'))->flash();
+            \Alert::success('<strong>'.__('Success').'</strong><br>'.__('The bill has been paid successfully.'))->flash();
             return redirect($this->crud->route);
         }
     }
