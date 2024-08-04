@@ -75,7 +75,7 @@ trait GcashOperation
         $gcashSource = Paymongo::source()->create([
             'type' => 'gcash',
             // 'amount' => $billing->total , // TODO:: add 2.5%
-            'amount' => 700,
+            'amount' => 199,
             'currency' => 'PHP',
             'redirect' => [
                 'success' => route('billing-history.gcashSuccess', $id),
@@ -177,6 +177,10 @@ trait GcashOperation
 
     public function gcashFailed()
     {
-        dd('whoops, payment failed.');
+        // TODO:: add notification or logs or something...
+        // TODO:: or make sure he can click the gcash pay again? TBD
+
+        \Alert::error('<strong>'.__('Warning').'</strong><br>'.__("Payment didn’t get through. Please try again later."))->flash();
+        return redirect($this->crud->route);
     }
 }
