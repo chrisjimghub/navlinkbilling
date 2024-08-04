@@ -25,6 +25,7 @@
         "laraveldaily/laravel-invoices": "4.0",
         "livewire/livewire": "^3.4",
         "livewire/volt": "^1.0",
+        "luigel/laravel-paymongo": "^2.5",
         "maatwebsite/excel": "^3.1",
         "orangehill/iseed": "^3.0",
         "redsquirrelstudio/laravel-backpack-import-operation": "^1.6",
