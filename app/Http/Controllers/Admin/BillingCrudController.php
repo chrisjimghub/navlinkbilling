@@ -95,7 +95,7 @@ class BillingCrudController extends CrudController
             $period = request()->input('period');
 
             if ($status) {
-                $query->{$status == 1 ? 'paid' : 'unpaid'}();
+                $query->where('billing_status_id', $status);
             
             }
 

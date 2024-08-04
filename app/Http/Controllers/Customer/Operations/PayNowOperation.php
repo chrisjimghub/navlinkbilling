@@ -71,27 +71,27 @@ trait PayNowOperation
             return redirect()->back();
         }
 
-        $bill = Billing::findOrFail($id);
+        dd('wip');
 
-        $link = Paymongo::link()->create([
-            'amount' => $bill->total,
-            'description' => 'Bill for the Month of '.$bill->month.' '.$bill->year,
-            'remarks' => 'laravel-paymongo-link'
-        ]);
+        // $billing = Billing::findOrFail($id);
 
-        if ($link) {
-            $bill->paymong_reference_number = $link->reference_number;
+        // $link = Paymongo::link()->create([
+        //     'amount' => $billing->total,
+        //     'description' => 'Bill for the Month of '.$billing->month.' '.$billing->year,
+        //     'remarks' => 'laravel-paymongo-link'
+        // ]);
 
-            // RUN an schedule to check unpaid bill that where not null paymong_reference_number
-            // to check if the reference number is already paid, if it does, then archive the link bill payment
+        // if ($link) {
+        //     debug($link);
 
-            return redirect($link->checkout_url);
-        }
+        //     $billing->paymongo_reference_number = $link->reference_number;
+        //     $billing->billing_status_id = 3; // 3 = Pending...
+        //     $billing->saveQuietly();
 
+        //     return redirect($link->checkout_url);
+        // }
 
         \Alert::error('Whoops, something went wrong, Please contact administrator.')->flash();
         return redirect()->back();
     }
-
-
 }
