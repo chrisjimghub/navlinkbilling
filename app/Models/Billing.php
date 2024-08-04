@@ -249,6 +249,14 @@ class Billing extends Model
         });
     }
 
+    // this is different from scopeUnpaid, this can be pending or unpaid
+    public function scopeNotPaid($query)
+    {
+        return $query->whereHas('billingStatus', function ($q) {
+            $q->where('id','!=', 1); // not equal to paid
+        });
+    }
+
     public function scopeUnpaid($query)
     {
         return $query->whereHas('billingStatus', function ($q) {
@@ -815,6 +823,20 @@ class Billing extends Model
         $this->billing_status_id = 1; // Set to 1 (paid)
 
         // Optionally return $this for chaining methods
+        return $this;
+    }
+
+    public function markAsPending()
+    {
+        $this->billing_status_id = 3; 
+
+        return $this;
+    }
+
+    public function paymentMethodGcash()
+    {
+        $this->payment_method_id = 3; 
+
         return $this;
     }
 }

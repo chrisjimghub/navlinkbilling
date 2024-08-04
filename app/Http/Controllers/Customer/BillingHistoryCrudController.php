@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Http\Controllers\Customer\Operations\PayNowOperation;
-use Illuminate\Support\Carbon;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
+use App\Http\Controllers\Customer\Operations\GcashOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
 use Winex01\BackpackFilter\Http\Controllers\Operations\ExportOperation;
@@ -23,7 +22,7 @@ class BillingHistoryCrudController extends AdminBillingCrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
-    use PayNowOperation;
+    use GcashOperation;
     use BillingGroupButtonsOperation;
     use CrudExtend;
     use ExportOperation;
@@ -48,7 +47,7 @@ class BillingHistoryCrudController extends AdminBillingCrudController
             'filters',
             'export',
             'downloadInvoice',
-            'payNow'
+            'gcash'
         ]);
 
         $this->data['breadcrumbs'] = [
