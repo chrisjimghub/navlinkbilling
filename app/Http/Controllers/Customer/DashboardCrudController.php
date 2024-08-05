@@ -91,7 +91,11 @@ class DashboardCrudController extends CrudController
                 </div> 
             ',
             // 'description'   => 'Using Gcash Pay has '.$fee.' service fee.',
-            'description'   => 'Using Gcash Pay has '.$fee.' service fee.<hr class="mb-2 mt-1">'.$billing->account->details,
+            'description'   => '
+                                <span class="text-danger">
+                                    Using Gcash Pay has '.$fee.' service fee.
+                                </span>
+                                <hr class="mb-2 mt-1">'.$billing->account->details,
             'progress'      => 100,
             'progressClass' => 'progress-bar '.$progressClass,
             'hint'          => '
