@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Models\Account;
 use App\Models\Billing;
 use Illuminate\Support\Carbon;
 use Backpack\CRUD\app\Library\Widget;
@@ -44,15 +45,25 @@ class DashboardCrudController extends CrudController
         $this->data['title'] = trans('backpack::base.dashboard'); // set the page title
 
         $unpaidBills = Billing::monthly()->unpaid()->get();
-
         foreach ($unpaidBills as $billing)  {
-            $this->currentBill($billing);
+            $this->currentBillCard($billing);
+        }
+
+        $accounts = Account::where('customer_id', auth()->user()->customer_id)
+            ->connected()
+            ->whereDoesntHave('billings', function ($query) {
+                $query->unpaid();
+            })
+            ->get();
+        
+        foreach ($accounts as $account) {
+            $this->noCurrentBillCard($account);
         }
 
         return view(backpack_view('customer.dashboard'), $this->data);
     }
 
-    public function currentBill(Billing $billing)
+    public function currentBillCard(Billing $billing)
     {
         $fee = $this->totalWithPaymongoServiceCharge($billing->total) - $billing->total;
         $fee = currencyFormat($fee);
@@ -67,9 +78,10 @@ class DashboardCrudController extends CrudController
                     </div>
                 </div> 
             ',
-            'description'   => 'Using Gcash Pay has '.$fee.' service fee.',
+            // 'description'   => 'Using Gcash Pay has '.$fee.' service fee.',
+            'description'   => 'Using Gcash Pay has '.$fee.' service fee.<hr class="mb-2 mt-1">'.$billing->account->details,
             'progress'      => 100,
-            'progressClass' => 'progress-bar bg-success',
+            'progressClass' => 'progress-bar bg-info',
             'hint'          => '
                 <div class="" style="text-transform: none;">
                     Bill generation: '.$billing->created_at->format('D, M j, Y').' <br>
@@ -78,26 +90,56 @@ class DashboardCrudController extends CrudController
                 </div>
             ',
         ]);
+    }
+
+    public function noCurrentBillCard(Account $account)
+    {
+        $sub = strtolower($account->subscription->name);
+        $period = null;
+
+        if ($sub == 'fiber') {
+            $period = fiberBillingPeriod(now());
+        }elseif ($sub == 'p2p') {
+            $period = p2pBillingPeriod(now());
+        }else {
+            return;
+        }
+
+        // before we proceed let's check first if the user already paid this month's bill
+        // if the user already paid it then dont show the card.
+        $hasPaidThisMonthBill = Billing::withinBillingPeriod($period['date_start'], $period['date_end'])->paid()->exists();;
         
-        // $this->data['contents'][] = Widget::make([
-        //     'type'          => 'progress_white',
-        //     'class'         => 'card mb-2',
-        //     'value'         => '
-        //        <div class="row">
-        //             <div class="col">'.currencyFormat(0).'</div>
-        //        </div> 
-        //     ',
-        //     'description'   => __('Upcoming Bill'),
-        //     'progress'      => 100,
-        //     'progressClass' => 'progress-bar bg-success',
-        //     'hint'          => '
-        //         <div class="" style="text-transform: none;">
-        //             Bill generation:  <br>
-        //             Cut-off date:  <br>
-        //             Bill period:  <br>
-        //         </div>
-        //     ',
-        // ]);
+        if ($hasPaidThisMonthBill) {
+            return;
+        }
+
+
+        $cutOff = Carbon::parse($period['date_cut_off'])->format('D, M j, Y');
+        $billPeriod= Carbon::parse($period['date_start'])->format(dateHumanReadable()) . ' - '.
+                    Carbon::parse($period['date_end'])->format(dateHumanReadable());
+
+        $subDays = (int) Setting::get('days_before_generate_bill');
+        $dateGenerate = Carbon::parse($period['date_end'])->subDays($subDays)->format('D, M j, Y');
+
+        $this->data['contents'][] = Widget::make([
+            'type'          => 'progress_white',
+            'class'         => 'card mb-2',
+            'value'         => '
+               <div class="row">
+                    <div class="col">'.currencyFormat(0).'</div>
+               </div> 
+            ',
+            'description'   => $account->details,
+            'progress'      => 100,
+            'progressClass' => 'progress-bar bg-warning',
+            'hint'          => '
+                <div class="" style="text-transform: none;">
+                    Bill generation: '.$dateGenerate.' <br>
+                    Cut-off date: '.$cutOff.' <br>
+                    Bill period: '.$billPeriod.' <br>
+                </div>
+            ',
+        ]);
     }
 
 }
