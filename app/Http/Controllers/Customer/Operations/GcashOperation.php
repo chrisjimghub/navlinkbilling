@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Customer\Operations;
 
-use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Models\Billing;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
 use Luigel\Paymongo\Facades\Paymongo;
+use Backpack\Settings\app\Models\Setting;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait GcashOperation
@@ -147,7 +148,7 @@ trait GcashOperation
                             = 1332.31
         */
 
-        $transactionServiceCharge = 2.5 / 100; // 2.5%
+        $transactionServiceCharge = (float) Setting::get('paymongo_service_charge') / 100; 
         $totalWithFee = $total / (1 - $transactionServiceCharge);
 
         return $totalWithFee;
