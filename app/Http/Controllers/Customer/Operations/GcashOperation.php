@@ -127,6 +127,25 @@ trait GcashOperation
         return true;
     }
 
+    public function gcashPaymongoServiceCharge()
+    {
+        /* 
+        Total with Fee = Original Total / 1−Transaction Fee Percentage
+        Where: 
+            • Original Total is the amount you want to receive after the fee is deducted (e.g., 1299).
+            • Transaction Fee Percentage is the fee percentage in decimal form (e.g., 2.5% = 0.025).
+
+        Using the given example:
+            • Original Total=1299
+            • Transaction Fee Percentage=0.025
+
+        So,
+            Total with Fee  = 1299 / 1−0.025
+                            = 1299 / 0.975
+                            = 1332.31
+        */
+    }
+
     public function gcashSuccess($id)
     {
         CRUD::hasAccessOrFail('gcash');
