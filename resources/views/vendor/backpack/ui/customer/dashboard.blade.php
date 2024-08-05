@@ -16,8 +16,12 @@
             'button_text' => trans('backpack::base.logout'),
         ];
     }
-@endphp
 
+    if (!empty($contents)) {
+        Widget::add()->to('after_content')->type('div')->class('row')->content($contents);
+    }
+
+@endphp
 
 @section('content')
     {{-- In case widgets have been added to a 'content' group, show those widgets. --}}
