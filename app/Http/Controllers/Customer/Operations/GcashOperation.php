@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer\Operations;
 
+use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Models\Billing;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -12,6 +13,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait GcashOperation
 {
+    use CurrencyFormat;
     /**
      * Define which routes are needed for this operation.
      *
@@ -74,14 +76,13 @@ trait GcashOperation
 
         $gcashSource = Paymongo::source()->create([
             'type' => 'gcash',
-            // 'amount' => $billing->total , // TODO:: add 2.5%
-            'amount' => 199,
+            'amount' => $this->totalWithPaymongoServiceCharge($billing->total),
             'currency' => 'PHP',
             'redirect' => [
                 'success' => route('billing-history.gcashSuccess', $id),
                 'failed' => route('billing-history.gcashFailed', $id)
             ],
-            'description' => 'Bill for the Month of '.$billing->month.' '.$billing->year,
+            'description' => 'Bill for the Month of '.$billing->month.' '.$billing->year.': '. $this->currencyFormatAccessor($billing->total),
             'statement_descriptor' => config('app.name'),
             'billing' => [
                 "name" => $billing->account->customer->full_name,
@@ -127,10 +128,11 @@ trait GcashOperation
         return true;
     }
 
-    public function gcashPaymongoServiceCharge()
+    public function totalWithPaymongoServiceCharge($total)
     {
         /* 
         Total with Fee = Original Total / 1−Transaction Fee Percentage
+
         Where: 
             • Original Total is the amount you want to receive after the fee is deducted (e.g., 1299).
             • Transaction Fee Percentage is the fee percentage in decimal form (e.g., 2.5% = 0.025).
@@ -144,6 +146,11 @@ trait GcashOperation
                             = 1299 / 0.975
                             = 1332.31
         */
+
+        $transactionServiceCharge = 2.5 / 100; // 2.5%
+        $totalWithFee = $total / (1 - $transactionServiceCharge);
+
+        return $totalWithFee;
     }
 
     public function gcashSuccess($id)
