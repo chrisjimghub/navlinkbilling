@@ -148,4 +148,7 @@ return [
     'gcash_button_pending' => 'Reprocess...',
     'gcash_button_pay' => 'Gcash pay',
 
+    'customer' => [
+        'next_bill' => 'Next Bill'
+    ]
 ];

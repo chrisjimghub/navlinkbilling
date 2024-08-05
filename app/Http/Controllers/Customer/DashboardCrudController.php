@@ -152,7 +152,7 @@ class DashboardCrudController extends CrudController
             'class'         => 'card mb-2',
             'value'         => '
                <div class="row">
-                    <div class="col">'.currencyFormat(0).'</div>
+                    <div class="col">'.__('app.customer.next_bill').'</div>
                </div> 
             ',
             'description'   => $account->details,
