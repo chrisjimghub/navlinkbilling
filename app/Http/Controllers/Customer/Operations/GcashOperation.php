@@ -80,8 +80,10 @@ trait GcashOperation
             'amount' => $this->totalWithPaymongoServiceCharge($billing->total),
             'currency' => 'PHP',
             'redirect' => [
-                'success' => route('billing-history.gcashSuccess', $id),
-                'failed' => route('billing-history.gcashFailed', $id)
+                // 'success' => route('billing-history.gcashSuccess', $id),
+                // 'failed' => route('billing-history.gcashFailed', $id)
+                'success' => url($this->crud->route.'/'.$id.'/'.'gcashSuccess'),
+                'failed' => url($this->crud->route.'/'.$id.'/'.'gcashFailed')
             ],
             'description' => 'Bill for the Month of '.$billing->month.' '.$billing->year.': '. $this->currencyFormatAccessor($billing->total),
             'statement_descriptor' => config('app.name'),
