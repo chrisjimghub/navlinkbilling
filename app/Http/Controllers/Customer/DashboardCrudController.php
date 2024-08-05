@@ -44,7 +44,10 @@ class DashboardCrudController extends CrudController
     {
         $this->data['title'] = trans('backpack::base.dashboard'); // set the page title
 
-        $unpaidBills = Billing::monthly()->unpaid()->get();
+        $unpaidBills = Billing::monthly()
+                        ->notPaid() // this scope is different from unPaid check model 
+                        ->get();
+                        
         foreach ($unpaidBills as $billing)  {
             $this->currentBillCard($billing);
         }
@@ -67,6 +70,15 @@ class DashboardCrudController extends CrudController
     {
         $fee = $this->totalWithPaymongoServiceCharge($billing->total) - $billing->total;
         $fee = currencyFormat($fee);
+
+        $progressClass = 'bg-info';
+        $button = '<a href="'.route('dashboard.gcashPay', $billing->id).'" class="btn btn-default" style="background-color: #007bff; color: #ffffff;">Gcash Pay</a>';
+
+        if ($billing->isPending()) {
+            $button = '<a href="'.route('dashboard.gcashPay', $billing->id).'" class="btn btn-outline btn-warning" style="">'.$billing->billingStatus->name.'</a>';
+            $progressClass = 'bg-warning';
+        }
+
         $this->data['contents'][] = Widget::make([
             'type'          => 'progress_white',
             'class'         => 'card mb-2',
@@ -74,14 +86,14 @@ class DashboardCrudController extends CrudController
                 <div class="row">
                     <div class="col">'.currencyFormat($billing->total).'</div>
                     <div class="col">
-                        <a href="'.route('dashboard.gcashPay', $billing->id).'" class="btn btn-default" style="background-color: #007bff; color: #ffffff;">Gcash Pay</a>
+                        '.$button.'
                     </div>
                 </div> 
             ',
             // 'description'   => 'Using Gcash Pay has '.$fee.' service fee.',
             'description'   => 'Using Gcash Pay has '.$fee.' service fee.<hr class="mb-2 mt-1">'.$billing->account->details,
             'progress'      => 100,
-            'progressClass' => 'progress-bar bg-info',
+            'progressClass' => 'progress-bar '.$progressClass,
             'hint'          => '
                 <div class="" style="text-transform: none;">
                     Bill generation: '.$billing->created_at->format('D, M j, Y').' <br>
@@ -107,9 +119,19 @@ class DashboardCrudController extends CrudController
 
         // before we proceed let's check first if the user already paid this month's bill
         // if the user already paid it then dont show the card.
-        $hasPaidThisMonthBill = Billing::withinBillingPeriod($period['date_start'], $period['date_end'])->paid()->exists();;
-        
-        if ($hasPaidThisMonthBill) {
+        $exists = Billing::
+            withinBillingPeriod($period['date_start'], $period['date_end'])
+            ->where('account_id', $account->id)
+            ->where(function ($query) {
+                $query->paid()
+                    ->orWhere(function ($subQuery) {
+                        $subQuery->pending();
+                    });
+            })
+            ->exists();
+            
+
+        if ($exists) {
             return;
         }
 
@@ -131,7 +153,7 @@ class DashboardCrudController extends CrudController
             ',
             'description'   => $account->details,
             'progress'      => 100,
-            'progressClass' => 'progress-bar bg-warning',
+            'progressClass' => 'progress-bar bg-danger',
             'hint'          => '
                 <div class="" style="text-transform: none;">
                     Bill generation: '.$dateGenerate.' <br>

@@ -79,6 +79,15 @@ class Billing extends Model
         return false;
     }
 
+    public function isPending() : bool
+    {
+        if ($this->billing_status_id == 3) {
+            return true;
+        }        
+
+        return false;
+    }
+
     public function isUnpaid() : bool
     {
         if ($this->billing_status_id == 2) {
@@ -248,12 +257,19 @@ class Billing extends Model
             $q->where('id', 1); // installment 
         });
     }
-
+    
     // this is different from scopeUnpaid, this can be pending or unpaid
     public function scopeNotPaid($query)
     {
         return $query->whereHas('billingStatus', function ($q) {
             $q->where('id','!=', 1); // not equal to paid
+        });
+    }
+
+    public function scopePending($query)
+    {
+        return $query->whereHas('billingStatus', function ($q) {
+            $q->where('id', 3); // Pending..
         });
     }
 
