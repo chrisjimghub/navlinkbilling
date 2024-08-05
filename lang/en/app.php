@@ -144,4 +144,8 @@ return [
     'olt_community_read' => 'Community read',
     'olt_community_write' => 'Community write',
 
+    // Customer Portal
+    'gcash_button_pending' => 'Reprocess...',
+    'gcash_button_pay' => 'Gcash pay',
+
 ];

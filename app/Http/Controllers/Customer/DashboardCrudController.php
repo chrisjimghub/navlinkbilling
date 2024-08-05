@@ -72,10 +72,10 @@ class DashboardCrudController extends CrudController
         $fee = currencyFormat($fee);
 
         $progressClass = 'bg-info';
-        $button = '<a href="'.route('dashboard.gcashPay', $billing->id).'" class="btn btn-default" style="background-color: #007bff; color: #ffffff;">Gcash Pay</a>';
+        $button = '<a href="'.route('dashboard.gcashPay', $billing->id).'" class="btn btn-default" style="background-color: #007bff; color: #ffffff;">'.__('app.gcash_button_pay').'</a>';
 
         if ($billing->isPending()) {
-            $button = '<a href="'.route('dashboard.gcashPay', $billing->id).'" class="btn btn-outline btn-warning" style="">'.$billing->billingStatus->name.'</a>';
+            $button = '<a href="'.route('dashboard.gcashPay', $billing->id).'" class="btn btn-outline btn-warning" style="">'.__('app.gcash_button_pending').'</a>';
             $progressClass = 'bg-warning';
         }
 
@@ -153,7 +153,7 @@ class DashboardCrudController extends CrudController
             ',
             'description'   => $account->details,
             'progress'      => 100,
-            'progressClass' => 'progress-bar bg-danger',
+            'progressClass' => 'progress-bar bg-dark',
             'hint'          => '
                 <div class="" style="text-transform: none;">
                     Bill generation: '.$dateGenerate.' <br>
