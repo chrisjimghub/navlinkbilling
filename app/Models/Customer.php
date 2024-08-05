@@ -51,12 +51,11 @@ class Customer extends Model
     {
         return $this->hasMany(Account::class);
     }
-    
+
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(User::class);
     }
-
     /*
     |--------------------------------------------------------------------------
     | SCOPES

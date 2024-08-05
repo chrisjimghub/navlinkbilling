@@ -3,12 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Customer;
 use App\Models\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
+use Backpack\CRUD\app\Models\Traits\CrudTrait; 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;// <---------------------- and this one
-use Backpack\CRUD\app\Models\Traits\CrudTrait; // <------------------------------- this one
 
 class User extends Authenticatable
 {
@@ -61,13 +63,20 @@ class User extends Authenticatable
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public function isCustomer()
+    {
+        return $this->customer_id !== null;
+    }
 
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 
     /*
     |--------------------------------------------------------------------------

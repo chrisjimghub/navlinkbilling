@@ -231,14 +231,7 @@ if (! function_exists('p2pBillingPeriod')) {
 	}
 
 }
-
-// TODO:: fiberDateCutOff
-// TODO:: p2pDateCutOff
-
-
-
 // end billing
-
 
 if (! function_exists('currencyFormat')) {
 	function currencyFormat($value) {

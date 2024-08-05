@@ -19,7 +19,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'admin_backups',
             'admin_logs',
             'admin_activity_logs',
-            // 'admin_settings',
         ],
 
         'billings' => [
@@ -275,6 +274,7 @@ class RolesAndPermissionsSeeder extends Seeder
         return [
             'community_strings',
             'olts',
+            'raisepon2s'
         ];
     }
 }

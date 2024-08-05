@@ -1,3 +1,4 @@
+@extends(backpack_view('blank'))
 @php
     $contents = [];
 

@@ -24,3 +24,4 @@ yarn-error.log
 todo.php
 /public/vendor/telescope/*
 app/Console/Commands/Test.php
+/packages/*

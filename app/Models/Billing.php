@@ -9,12 +9,14 @@ use App\Events\BillProcessed;
 use App\Models\BillingStatus;
 use App\Models\PaymentMethod;
 use Illuminate\Support\Carbon;
-use App\Events\AccountCreditSnapshot;
+use Illuminate\Database\Eloquent\Builder;
 use App\Http\Controllers\Admin\Traits\AccountCrud;
 use App\Models\Traits\LocalScopes\ScopeDateOverlap;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
-use App\Models\Scopes\ExcludeSoftDeletedAccountsScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use App\Models\Scopes\OwnedByAuthenticatedCustomerScope;
 
+#[ScopedBy([OwnedByAuthenticatedCustomerScope::class])]
 class Billing extends Model
 {
     use CurrencyFormat;
@@ -71,6 +73,15 @@ class Billing extends Model
     public function isPaid() : bool
     {
         if ($this->billing_status_id == 1) {
+            return true;
+        }        
+
+        return false;
+    }
+
+    public function isPending() : bool
+    {
+        if ($this->billing_status_id == 3) {
             return true;
         }        
 
@@ -199,6 +210,13 @@ class Billing extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeOwnByCustomer(Builder $query, $customerId)
+    {
+        return $query->whereHas('account', function (Builder $query) use ($customerId) {
+            $query->where('customer_id', $customerId);
+        });
+    }
+
     public function scopeWithinBillingPeriod($query, $startDate, $endDate)
     {
         return $query->whereBetween('date_start', [$startDate, $endDate])
@@ -237,6 +255,21 @@ class Billing extends Model
     {
         return $query->whereHas('billingType', function ($q) {
             $q->where('id', 1); // installment 
+        });
+    }
+    
+    // this is different from scopeUnpaid, this can be pending or unpaid
+    public function scopeNotPaid($query)
+    {
+        return $query->whereHas('billingStatus', function ($q) {
+            $q->where('id','!=', 1); // not equal to paid
+        });
+    }
+
+    public function scopePending($query)
+    {
+        return $query->whereHas('billingStatus', function ($q) {
+            $q->where('id', 3); // Pending..
         });
     }
 
@@ -806,6 +839,20 @@ class Billing extends Model
         $this->billing_status_id = 1; // Set to 1 (paid)
 
         // Optionally return $this for chaining methods
+        return $this;
+    }
+
+    public function markAsPending()
+    {
+        $this->billing_status_id = 3; 
+
+        return $this;
+    }
+
+    public function paymentMethodGcash()
+    {
+        $this->payment_method_id = 3; 
+
         return $this;
     }
 }

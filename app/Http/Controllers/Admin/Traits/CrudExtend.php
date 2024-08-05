@@ -7,9 +7,9 @@ use App\Http\Controllers\Admin\Traits\CustomerCrud;
 use App\Http\Controllers\Admin\Traits\UtilityHelper;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 use App\Http\Controllers\Admin\Traits\UrlQueryString;
-use App\Http\Controllers\Admin\Traits\UserPermissions;
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
 use App\Http\Controllers\Admin\Traits\PlannedApplicationCrud;
+use Winex01\BackpackPermissionManager\Http\Controllers\Traits\UserPermissions;
 
 trait CrudExtend
 {

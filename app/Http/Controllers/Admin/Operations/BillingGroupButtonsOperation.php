@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Operations;
 
-use App\Http\Controllers\Admin\Traits\SendNotifications;
 use App\Models\Billing;
 use Illuminate\Support\Str;
 use App\Events\BillProcessed;
@@ -14,14 +13,13 @@ use App\Rules\UpgradePlanValidDate;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
 use App\Rules\UniqueServiceInterruption;
-use LaravelDaily\Invoices\Classes\Buyer;
 use LaravelDaily\Invoices\Classes\Party;
 use Illuminate\Support\Facades\Validator;
 use App\Models\AccountServiceInterruption;
-use App\Notifications\NewBillNotification;
 use App\Rules\MustHaveEnoughAccountCredit;
 use LaravelDaily\Invoices\Facades\Invoice;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
+use App\Http\Controllers\Admin\Traits\SendNotifications;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait BillingGroupButtonsOperation
@@ -97,8 +95,8 @@ trait BillingGroupButtonsOperation
         });
 
         CRUD::operation(['list'], function () {
-            // $this->crud->enableBulkActions();
-            CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.billing_group_buttons', 'beginning');
+            $button = config('backpack.ui.view_namespace') == 'backpack.theme-coreuiv2::' ? 'billing_group_buttons' : 'billing_group_buttons_bs5';
+            CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.'.$button, 'beginning');
         });
     }
 
@@ -211,8 +209,15 @@ trait BillingGroupButtonsOperation
             ->logo(public_path(config('invoices.project_logo')));
         
         // And return invoice itself to browser or have a different view
-        return $invoice->stream();
+        // return $invoice->stream();
         // return $invoice->download();
+
+        return $this->downloadInvoiceType($invoice);
+    }
+
+    public function downloadInvoiceType($invoice)
+    {
+        return $invoice->stream();
     }
 
     public function changePlan($id)

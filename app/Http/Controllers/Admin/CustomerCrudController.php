@@ -7,9 +7,9 @@ use App\Exports\UploadTemplateExport;
 use App\Models\Traits\SchemaTableColumn;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
-use App\Http\Controllers\Admin\Operations\ExportOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use RedSquirrelStudio\LaravelBackpackImportOperation\ImportOperation;
+use Winex01\BackpackFilter\Http\Controllers\Operations\ExportOperation;
 use App\Http\Controllers\Admin\Operations\UploadTemplateExportOperation;
 
 /**
@@ -42,7 +42,6 @@ class CustomerCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/customer');
         CRUD::setEntityNameStrings('customer', 'customers');
 
-        // dont delete
         $this->userPermissions();
     }
 

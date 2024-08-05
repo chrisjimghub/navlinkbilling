@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
 use App\Http\Requests\CommunityStringRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -20,6 +21,7 @@ class CommunityStringCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     // use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
+    use CrudExtend;
     use ValidateUniqueRule;
 
     /**
@@ -32,6 +34,8 @@ class CommunityStringCrudController extends CrudController
         CRUD::setModel(\App\Models\CommunityString::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/community-string');
         CRUD::setEntityNameStrings('community string', 'community strings');
+        
+        $this->userPermissions();
     }
 
     /**

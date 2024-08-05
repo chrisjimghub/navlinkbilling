@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\CommunityString;
-use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 use Illuminate\Validation\Rule;
-use App\Http\Controllers\Admin\Traits\FetchOptions;
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -23,6 +22,7 @@ class OltsCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
+    use CrudExtend;
     use ValidateUniqueRule;
 
     /**
@@ -35,6 +35,8 @@ class OltsCrudController extends CrudController
         CRUD::setModel(\App\Models\Olt::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/olts');
         CRUD::setEntityNameStrings('OLT Device', 'OLT Device');
+
+        $this->userPermissions();
     }
 
     /**
