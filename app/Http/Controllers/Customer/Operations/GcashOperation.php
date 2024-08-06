@@ -209,6 +209,8 @@ trait GcashOperation
 
     public function gcashFailed()
     {
+        CRUD::hasAccessOrFail('gcash');
+
         \Alert::error('<strong>'.__('Warning').'</strong><br>'.__("Payment didn’t get through. Please try again later."))->flash();
         return redirect($this->crud->route);
     }

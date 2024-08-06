@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Http\Controllers\Customer\Traits\CustomerPermissions;
 use App\Models\Account;
 use App\Models\Billing;
 use Illuminate\Support\Carbon;
@@ -18,16 +19,17 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
 class DashboardCrudController extends CrudController
-{
+{   
+    use CustomerPermissions;
     use GcashOperation;
 
     public function setup()
     {
         CRUD::setRoute(config('backpack.base.route_prefix') . '/customer/dashboard');
 
-        $this->crud->denyAllAccess();
-        $this->crud->allowAccess([
-            'gcash'
+        $this->customerPermissions([
+            'gcash',
+            'dashboard'
         ]);
     }
 
@@ -42,6 +44,8 @@ class DashboardCrudController extends CrudController
 
     public function dashboard()
     {
+        $this->crud->hasAccessOrFail('dashboard');
+
         $this->data['title'] = trans('backpack::base.dashboard'); // set the page title
 
         $unpaidBills = Billing::monthly()

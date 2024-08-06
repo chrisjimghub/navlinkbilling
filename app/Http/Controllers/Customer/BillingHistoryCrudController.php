@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Http\Controllers\Customer\Traits\CustomerPermissions;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
@@ -28,6 +29,7 @@ class BillingHistoryCrudController extends AdminBillingCrudController
     use ExportOperation;
     use FilterOperation;
     use FetchOptions;
+    use CustomerPermissions;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -40,8 +42,7 @@ class BillingHistoryCrudController extends AdminBillingCrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/billing-history');
         CRUD::setEntityNameStrings('billing history', 'billings');
 
-        $this->crud->denyAllAccess();
-        $this->crud->allowAccess([
+        $this->customerPermissions([
             'list',
             'show',
             'filters',
