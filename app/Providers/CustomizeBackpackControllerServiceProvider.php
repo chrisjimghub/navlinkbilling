@@ -20,5 +20,9 @@ class CustomizeBackpackControllerServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        $this->app->bind(
+            \Winex01\BackpackPermissionManager\Http\Controllers\UserCrudController::class, 
+            \App\Http\Controllers\Admin\UserCrudController::class
+        );
     }
 }
