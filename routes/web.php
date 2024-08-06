@@ -3,14 +3,14 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('customer/login');
+    dd('test');
 });
 
-Route::get('/dashboard', function () {
+Route::get('/customer', function () {
     return redirect('customer/dashboard');
 });
 
-Route::get('customer/logout', function () {
+Route::get('/customer/logout', function () {
     return redirect(config('backpack.base.route_prefix') . '/logout');
 });
 

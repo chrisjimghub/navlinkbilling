@@ -203,6 +203,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'notifications_customer_payment',
         ],
 
+        // 'customer_portal' => [
+        //     'customer_portal_dashboard',
+        //     'customer_portal_history', 
+        // ],
+
     ];
 
     /**

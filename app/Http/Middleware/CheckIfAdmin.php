@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
 
 class CheckIfAdmin
 {
@@ -28,11 +27,7 @@ class CheckIfAdmin
      */
     private function checkIfUserIsAdmin($user)
     {
-        if (Auth::check() && Auth::user()->isCustomer()) {
-            return false;
-        }
-        
-        return true; // admin
+        return true;
     }
 
     /**
@@ -65,6 +60,15 @@ class CheckIfAdmin
 
         if (! $this->checkIfUserIsAdmin(backpack_user())) {
             return $this->respondToUnauthorizedRequest($request);
+        }
+
+        if ( auth()->check() && auth()->user()->isCustomer() ) {
+            $origRoutePrefix = config('backpack.base.route_prefix');
+            config(['backpack.base.route_prefix' => 'customer']);
+
+            if ($request->is($origRoutePrefix.'/dashboard')) {
+                return redirect('customer/dashboard');
+            }
         }
 
         return $next($request);
