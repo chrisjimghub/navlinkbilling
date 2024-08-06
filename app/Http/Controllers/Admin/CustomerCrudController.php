@@ -94,6 +94,7 @@ class CustomerCrudController extends CrudController
             'date_of_birth' => 'nullable|date',
             'contact_number' => 'required',
             'photo' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'email' => $this->nullableUniqueEmail()
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.
