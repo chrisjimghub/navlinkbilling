@@ -62,15 +62,6 @@ class CheckIfAdmin
             return $this->respondToUnauthorizedRequest($request);
         }
 
-        if ( auth()->check() && auth()->user()->isCustomer() ) {
-            $origRoutePrefix = config('backpack.base.route_prefix');
-            config(['backpack.base.route_prefix' => 'customer']);
-
-            if ($request->is($origRoutePrefix.'/dashboard')) {
-                return redirect('customer/dashboard');
-            }
-        }
-
         return $next($request);
     }
 }

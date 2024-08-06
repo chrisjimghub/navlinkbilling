@@ -115,6 +115,7 @@ return [
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \Backpack\CRUD\app\Http\Middleware\AuthenticateSession::class,
         // \Backpack\CRUD\app\Http\Middleware\UseBackpackAuthGuardInsteadOfDefaultAuthGuard::class,
+        App\Http\Middleware\CheckIfCustomer::class,
     ],
 
     // Alias for that middleware
