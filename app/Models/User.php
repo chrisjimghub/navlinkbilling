@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 use Backpack\CRUD\app\Models\Traits\CrudTrait; 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -86,6 +87,14 @@ class User extends Authenticatable
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeAdminUsersOnly(Builder $query, $withEmailContainWith = null)
+    {
+        if ($withEmailContainWith) {
+            $query->where('email', 'NOT LIKE', "%{$withEmailContainWith}%");
+        }
+
+        return $query->whereNull('customer_id');
+    }
     
 
     /*

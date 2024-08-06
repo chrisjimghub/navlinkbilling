@@ -21,6 +21,15 @@ class UserCrudController extends Winex01UserCrudController
         // because if you do, What will happen is! since this is User model, and if each model you do auth check
         // then it will blow the UNIVERSE!!!!, but since we are 100% sure that this /admin are all admin users then
         // we dont need to add auth check. now the users that will be display here are all those users that has null customer_id or a.k.a admins
-        $this->crud->query->whereNull('customer_id');
+    
+        $this->crud->query->adminUsersOnly('131212592@gmail.com');
     } 
+
+    public function setupListOperation()
+    {
+        parent::setupListOperation();
+        
+        $this->crud->setOperationSetting('showEntryCount', false);
+    }
+
 }
