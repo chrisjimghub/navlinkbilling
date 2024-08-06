@@ -13,12 +13,16 @@ class OwnedByAuthenticatedCustomerScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $customerId = auth()->user()->customer_id;
-
-        if ($customerId !== null) {
-            $builder->whereHas('account', function (Builder $query) use ($customerId) {
-                $query->where('customer_id', $customerId);
-            });
+        // add auth check so we could run billing query on console
+        if (auth()->check()) {
+            $customerId = auth()->user()->customer_id;
+    
+            if ($customerId !== null) {
+                $builder->whereHas('account', function (Builder $query) use ($customerId) {
+                    $query->where('customer_id', $customerId);
+                });
+            }
         }
+
     }
 }

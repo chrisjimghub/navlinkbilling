@@ -85,6 +85,7 @@ class Notification extends Model
         $type = $this->type;
 
         $type = str_replace('App\Notifications\\', '', $type);
+        $type = str_replace('Notification', '', $type);
 
         return strHumanReadable($type);
     }

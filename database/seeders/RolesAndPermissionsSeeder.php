@@ -200,6 +200,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'notifications_cut_off', // permission to received noty
             'notifications_marked_as_read', // button operation
             'notifications_filters',
+            'notifications_customer_payment',
         ],
 
     ];
@@ -239,6 +240,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin = User::findOrFail(1);
 
         $roles = collect($this->rolesAndPermissions)->keys()->unique()->toArray();
+        $roles = array_diff($roles, $this->dontAssignRoles());
         $admin->syncRoles($roles);
     }
 
@@ -258,11 +260,6 @@ class RolesAndPermissionsSeeder extends Seeder
                 ]);
                 
                 // assign role_permission to role
-
-                if (in_array($role, $this->dontAssignRoles())) {
-                    continue;
-                }
-
                $permission->assignRole($role);
             }
         }

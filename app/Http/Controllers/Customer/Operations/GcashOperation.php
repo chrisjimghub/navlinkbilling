@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer\Operations;
 
+use App\Http\Controllers\Admin\Traits\SendNotifications;
 use App\Models\Billing;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -15,6 +16,8 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 trait GcashOperation
 {
     use CurrencyFormat;
+    use SendNotifications;
+
     /**
      * Define which routes are needed for this operation.
      *
@@ -197,7 +200,7 @@ trait GcashOperation
             $billing->paymentMethodGcash();
             $billing->saveQuietly();
             
-            // TODO:: fire a notification if he paid
+            $this->customerOnlinePaymentNotification($billing);
 
             \Alert::success('<strong>'.__('Success').'</strong><br>'.__('The bill has been paid successfully.'))->flash();
             return redirect($this->crud->route);
@@ -206,9 +209,6 @@ trait GcashOperation
 
     public function gcashFailed()
     {
-        // TODO:: add notification or logs or something...
-        // TODO:: or make sure he can click the gcash pay again? TBD
-
         \Alert::error('<strong>'.__('Warning').'</strong><br>'.__("Payment didn’t get through. Please try again later."))->flash();
         return redirect($this->crud->route);
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Traits;
 use App\Models\User;
 use App\Models\Billing;
 use App\Models\Customer;
+use App\Notifications\CustomerOnlinePaymentNotification;
 use App\Notifications\CutOffNotification;
 use App\Notifications\NewBillNotification;
 use Illuminate\Support\Facades\Notification;
@@ -33,4 +34,17 @@ trait SendNotifications
         Notification::send($users, $notification);
     }
 
+    public function customerOnlinePaymentNotification(Billing $billing, $queue = 'default')
+    {
+        if (!$billing->isPaid()) {
+            return;
+        }
+
+        // Get the users with the specific permission
+        $users = User::permission('notifications_customer_payment')->get();
+        // Create a notification instance and specify the queue
+        $notification = (new CustomerOnlinePaymentNotification($billing))->onQueue($queue);
+        // Send the notification in bulk
+        Notification::send($users, $notification);
+    }
 }
