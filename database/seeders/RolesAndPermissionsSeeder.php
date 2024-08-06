@@ -71,6 +71,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'customers_delete', 
             'customers_export', 
             'customers_import', 
+            'customers_generate_portal_account', 
         ],
         
         'planned_applications' => [
@@ -202,12 +203,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'notifications_filters',
             'notifications_customer_payment',
         ],
-
-        // 'customer_portal' => [
-        //     'customer_portal_dashboard',
-        //     'customer_portal_history', 
-        // ],
-
     ];
 
     /**

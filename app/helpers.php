@@ -257,3 +257,13 @@ if (! function_exists('coordinatesLink')) {
         
 	}
 }
+
+// Flash / Messages
+if (! function_exists('flashSuccess')) {
+	function flashSuccess($msg) {
+		return [
+			'msg' => '<strong>'.__('Success!').'</strong><br>'.$msg,
+		];
+	}
+}
+

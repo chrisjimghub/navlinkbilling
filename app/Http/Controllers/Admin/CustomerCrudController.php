@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Operations\GeneratePortalAccountOperation;
 use App\Imports\CustomerImport;
 use App\Exports\UploadTemplateExport;
 use App\Models\Traits\SchemaTableColumn;
@@ -30,6 +31,7 @@ class CustomerCrudController extends CrudController
     use ImportOperation;
     use SchemaTableColumn;
     use UploadTemplateExportOperation;
+    use GeneratePortalAccountOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
