@@ -87,7 +87,7 @@ class OtcCrudController extends CrudController
         $this->setupCreateOperation();
     }
 
-    protected function exportClass()
+    public function exportClass()
     {
         $name = strHumanReadable($this->crud->entity_name);
         

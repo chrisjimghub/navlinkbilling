@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Http\Controllers\Customer\Traits\CustomerPermissions;
+use App\Exports\BillingExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
 use App\Http\Controllers\Customer\Operations\GcashOperation;
+use App\Http\Controllers\Customer\Traits\CustomerPermissions;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
 use Winex01\BackpackFilter\Http\Controllers\Operations\ExportOperation;
@@ -104,5 +106,12 @@ class BillingHistoryCrudController extends AdminBillingCrudController
     public function setupShowOperation()
     {
         $this->setupListOperation();
+    }
+
+    public function exportClass()
+    {
+        $name = strHumanReadable($this->crud->entity_name);
+        
+        return (new BillingExport)->download($name.'-'.carbonNow().'.xlsx');
     }
 }
