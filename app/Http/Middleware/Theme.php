@@ -31,7 +31,7 @@ class Theme
                 }
             }else {
                 // if user theme is empty then show coreui2 as default theme for admin and tabler horizontal for customer 
-                if (Auth::user()->belongsToCustomer()) {
+                if (Auth::user()->isCustomer()) {
                     // default theme for customer if theme is empty
                     Config::set('backpack.ui.view_namespace', 'backpack.theme-tabler::');
                     Config::set('backpack.theme-tabler.layout', 'horizontal_overlap');
