@@ -62,6 +62,26 @@ class User extends Authenticatable
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Attach an event listener for the 'saved' event
+        static::saved(function ($user) {
+            // Check if email was changed and customer_id is not null
+            if ($user->isDirty('email') && !is_null($user->customer_id)) {
+                // Find the associated customer
+                $customer = $user->customer;
+
+                if ($customer) {
+                    // Update the customer's email to match the user's email
+                    $customer->email = $user->email;
+                    $customer->save();
+                }
+            }
+        });
+    }
+
     public function isCustomer()
     {
         return $this->customer_id !== null;
@@ -108,4 +128,22 @@ class User extends Authenticatable
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    /**
+     * Set the customer's ID.
+     *
+     * @param  mixed  $value
+     * @return void
+     */
+    public function setCustomerIdAttribute($value)
+    {
+        // sync User email and customer email.
+
+        // Example custom logic
+        if ($value == 1) {
+            // Do something specific when setting customer_id to 1
+        }
+
+        // Set the attribute value
+        $this->attributes['customer_id'] = $value;
+    }
 }
