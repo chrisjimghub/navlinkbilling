@@ -259,11 +259,48 @@ if (! function_exists('coordinatesLink')) {
 }
 
 // Flash / Messages
-if (! function_exists('flashSuccess')) {
-	function flashSuccess($msg) {
+if (! function_exists('notySuccess')) {
+	function notySuccess($msg) {
 		return [
+			'type' => 'success',
 			'msg' => '<strong>'.__('Success!').'</strong><br>'.$msg,
 		];
 	}
 }
 
+if (! function_exists('notyError')) {
+	function notyError($msg) {
+		return [
+			'type' => 'danger',
+			'msg' => '<strong>'.__('Error!').'</strong><br>'.$msg,
+		];
+	}
+}
+
+if (! function_exists('notyValidatorError')) {
+	function notyValidatorError($validator) {
+		return response()->json([
+			'errors' => $validator->errors()->all()
+		], 422); // HTTP status code for Unprocessable Entity
+	}
+}
+
+// alias
+if (! function_exists('notyValidatorErrors')) {
+	function notyValidatorErrors($validator) {
+		return notyValidatorError($validator);
+	}
+}
+
+if (! function_exists('alertValidatorError')) {
+	function alertValidatorError($validator) {
+		\Alert::error($validator->errors()->all())->flash();
+	}
+}
+
+// alias
+if (! function_exists('alertValidatorErrors')) {
+	function alertValidatorErrors($validator) {
+		alertValidatorError($validator);
+	}
+}

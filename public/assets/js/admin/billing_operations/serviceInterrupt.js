@@ -91,22 +91,21 @@ if (typeof serviceInterrupt != 'function') {
                 account_id: accountId,
             },
             success: function(result) {
-                // console.log('Success:', result);
-
-                if (typeof crud !== 'undefined') {
-                    crud.table.ajax.reload();
-                }
-
-                if (result) {
+                if (result.msg) {
                     new Noty({
-                        type: "success",
+                        type: result.type,
                         text: result.msg
                     }).show();
                 }
 
-                // Close the modal
-                $('#serviceInterruptModal-'+billingId).modal('hide');
+                if (result.type == 'success') {
+                    if (typeof crud !== 'undefined') {
+                        crud.table.ajax.reload();
+                    }
 
+                    // Close the modal
+                    $('#serviceInterruptModal-'+billingId).modal('hide');
+                }
             },
             error: function(xhr, status, error) {
                 // console.log('Error:', xhr.responseJSON.errors);

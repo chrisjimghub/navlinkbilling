@@ -64,20 +64,14 @@ trait ApiConfigSettingsOperation
 
         // Check if validation fails
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()->all()
-            ], 422); // HTTP status code for Unprocessable Entity
+            return notyValidatorError($validator);
         }
-
 
         Setting::set('raisepon_url', request()->url);
         Setting::set('raisepon_username', request()->username);
         Setting::set('raisepon_password', request()->password);
 
-
-        return response()->json([
-            'msg' => '<strong>'.__('Success').'</strong><br>'.__('API config settings saved successfully.'),
-        ]);
+        return notySuccess('API config settings saved successfully.');
     }
 
     public function apiTestConnection()
@@ -89,9 +83,7 @@ trait ApiConfigSettingsOperation
 
         // Check if validation fails
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()->all()
-            ], 422); // HTTP status code for Unprocessable Entity
+            return notyValidatorError($validator);
         }
 
         $response = $this->testConnection(
@@ -102,14 +94,10 @@ trait ApiConfigSettingsOperation
 
         if ($response === true) {
             // Authenticated
-            return response()->json([
-                'msg' => '<strong>' . __('200') . '</strong><br>' . __('Test Connected Successfully.'),
-            ]); // HTTP status code for success
+            return notySuccess('200: Test Connected Successfully.');
         }
 
-        return response()->json([
-            'error' => '<strong>' . __('Failed') . '</strong><br>' . __($response),
-        ]); // HTTP status code for unauthorized or failure
+        return notyError($response);
     }
     
     private function rules()

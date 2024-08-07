@@ -58,6 +58,6 @@ trait GeneratePortalAccountOperation
 
         debug($id);
 
-        return flashSuccess('Customer portal account generated successfully.');
+        return notySuccess('Customer portal account generated successfully.');
     }
 }

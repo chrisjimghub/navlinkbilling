@@ -52,7 +52,7 @@
 					
 						// Show a success notification bubble
 						new Noty({
-							type: "success",
+							type: result.type,
 							text: result.msg
 						}).show();
 					

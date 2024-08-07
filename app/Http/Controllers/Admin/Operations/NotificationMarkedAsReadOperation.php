@@ -69,16 +69,12 @@ trait NotificationMarkedAsReadOperation
         // Check if validation fails
         if ($validator->fails()) {
             // Return validation errors as JSON response
-            return response()->json([
-                'errors' => $validator->errors()->all()
-            ], 422); // HTTP status code for Unprocessable Entity
+            return notyValidatorError($validator);
         }
 
         Notification::find($id)->markAsRead();
 
-        return response()->json([
-            'msg' => '<strong>'.__('Marked Read').'</strong><br>'.__('The item is mark as read successfully.'),
-        ]);
+        return notySuccess('The item is mark as read successfully.');
     }
 
     public function unreadCount()
