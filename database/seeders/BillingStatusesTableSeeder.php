@@ -35,6 +35,14 @@ class BillingStatusesTableSeeder extends Seeder
                 'updated_at' => '2024-07-03 09:04:48',
                 'deleted_at' => NULL,
             ),
+            2 => 
+            array (
+                'id' => 3,
+                'name' => 'Pending...',
+                'created_at' => '2024-08-04 12:41:06',
+                'updated_at' => '2024-08-04 12:41:06',
+                'deleted_at' => NULL,
+            ),
         ));
         
         

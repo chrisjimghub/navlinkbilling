@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Operations;
 
-use App\Http\Controllers\Admin\Traits\SendNotifications;
 use App\Models\Billing;
 use Illuminate\Support\Str;
 use App\Events\BillProcessed;
@@ -14,14 +13,13 @@ use App\Rules\UpgradePlanValidDate;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
 use App\Rules\UniqueServiceInterruption;
-use LaravelDaily\Invoices\Classes\Buyer;
 use LaravelDaily\Invoices\Classes\Party;
 use Illuminate\Support\Facades\Validator;
 use App\Models\AccountServiceInterruption;
-use App\Notifications\NewBillNotification;
 use App\Rules\MustHaveEnoughAccountCredit;
 use LaravelDaily\Invoices\Facades\Invoice;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
+use App\Http\Controllers\Admin\Traits\SendNotifications;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait BillingGroupButtonsOperation
@@ -97,8 +95,8 @@ trait BillingGroupButtonsOperation
         });
 
         CRUD::operation(['list'], function () {
-            // $this->crud->enableBulkActions();
-            CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.billing_group_buttons', 'beginning');
+            $button = config('backpack.ui.view_namespace') == 'backpack.theme-coreuiv2::' ? 'billing_group_buttons' : 'billing_group_buttons_bs5';
+            CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.'.$button, 'beginning');
         });
     }
 
@@ -148,8 +146,7 @@ trait BillingGroupButtonsOperation
         // Check if validation fails
         if ($validator->fails()) {
             // Return validation errors as JSON response
-            \Alert::error($validator->errors()->all())->flash();
-
+            alertValidatorError($validator);
             return redirect()->back();
         }
 
@@ -211,8 +208,15 @@ trait BillingGroupButtonsOperation
             ->logo(public_path(config('invoices.project_logo')));
         
         // And return invoice itself to browser or have a different view
-        return $invoice->stream();
+        // return $invoice->stream();
         // return $invoice->download();
+
+        return $this->downloadInvoiceType($invoice);
+    }
+
+    public function downloadInvoiceType($invoice)
+    {
+        return $invoice->stream();
     }
 
     public function changePlan($id)
@@ -249,10 +253,7 @@ trait BillingGroupButtonsOperation
 
         // Check if validation fails
         if ($validator->fails()) {
-            // Return validation errors as JSON response
-            return response()->json([
-                'errors' => $validator->errors()->all()
-            ], 422); // HTTP status code for Unprocessable Entity
+            return notyValidatorError($validator);
         }
 
         $billing = Billing::findOrFail($id);
@@ -279,9 +280,7 @@ trait BillingGroupButtonsOperation
         event(new BillProcessed($billing));
 
         // Return success response
-        return response()->json([
-            'msg' => '<strong>'.__('Planned Change').'</strong><br>'.__('The planned application has been successfully updated.'),
-        ]);
+        return notySuccess('The planned application has been successfully updated.');
     }
 
     public function payUsingCredit($id)
@@ -310,9 +309,7 @@ trait BillingGroupButtonsOperation
         // Check if validation fails
         if ($validator->fails()) {
             // Return validation errors as JSON response
-            return response()->json([
-                'errors' => $validator->errors()->all()
-            ], 422); // HTTP status code for Unprocessable Entity
+            return notyValidatorError($validator);
         }
 
         // mark billing as paid
@@ -328,9 +325,7 @@ trait BillingGroupButtonsOperation
         } 
 
         // Return success response
-        return response()->json([
-            'msg' => '<strong>'.__('Item Paid').'</strong><br>'.__('The item is mark paid using credit successfully.'),
-        ]);
+        return notySuccess('The item is mark paid using credit successfully.');
     }
 
     // pay
@@ -406,10 +401,7 @@ trait BillingGroupButtonsOperation
             // Commit the transaction
             DB::commit();
 
-            // Return success response
-            return response()->json([
-                'msg' => '<strong>'.__('Item Paid').'</strong><br>'.__('The item has been marked as paid successfully.'),
-            ]);
+            return notySuccess('The item has been marked as paid successfully.');
 
         } catch (\Exception $e) {
             // If an error occurs, rollback the transaction
@@ -424,45 +416,50 @@ trait BillingGroupButtonsOperation
 
         $id = $this->crud->getCurrentEntryId() ?? $id;
         
+        $billing = Billing::find($id);
+
+        if (!$billing) {
+            return notyError('The selected billing item does not exist.');
+        }
+
+        $customer = $billing->account->customer;
+        $email = $customer->email; // add this to valdiator and must be valid and required 
+
         //Validate request data
-        $validator = Validator::make(['id' => $id], [
-            'id' => [
-                'required',
-                'integer',
-                'min:1',
-                'exists:billings,id',
-                new BillingMustBeUnpaid($id),
+        $customer = $billing->account->customer;
+        $email = $customer->email; // Get the customer's email
+
+        // Validate request data
+        $validator = Validator::make(
+            ['id' => $id, 'email' => $email],
+            [
+                'id' => [
+                    'required',
+                    'integer',
+                    'min:1',
+                    'exists:billings,id',
+                    new BillingMustBeUnpaid($id),
+                ],
+                'email' => [
+                    'required',
+                    'email',
+                ],
             ],
-        ], [
-            'id.required' => 'Invalid billing item.',
-            'id.exists' => 'The selected billing item does not exist.', 
-        ]);
+            [
+                'id.required' => 'Invalid billing item.',
+                'id.exists' => 'The selected billing item does not exist.',
+                'email.required' => 'The customer email is required.',
+                'email.email' => 'The customer email must be a valid email address.',
+            ]
+        );
 
         // Check if validation fails
         if ($validator->fails()) {
-            // Return validation errors as JSON response
-            return response()->json([
-                'errors' => $validator->errors()->all()
-            ], 422); // HTTP status code for Unprocessable Entity
+            return notyValidatorError($validator);            
         }
 
+        $this->billNotification($customer, $billing);
 
-        $billing = Billing::find($id);
-
-        $customer = $billing->account->customer;
-
-        if ($customer->email) {
-            // Notify the customer
-            // $this->billNotification($customer, $billing, 'high');
-            $this->billNotification($customer, $billing);
-            return true;
-        }else {
-            // send alert that customer has no email   
-            return response()->json([
-                'msg' => 'Customer has no email.'
-            ]);
-                    
-        }
     }
     
     public function serviceInterrupt($id)
@@ -502,9 +499,7 @@ trait BillingGroupButtonsOperation
         // Check if validation fails
         if ($validator->fails()) {
             // Return validation errors as JSON response
-            return response()->json([
-                'errors' => $validator->errors()->all()
-            ], 422); // HTTP status code for Unprocessable Entity
+            return notyValidatorError($validator);
         }
 
         // Validation passed, proceed to save data
@@ -517,8 +512,6 @@ trait BillingGroupButtonsOperation
         // NOTE:: no need to dispatch BillProcessed it will automatically dispatch, check AccountServiceInterruption model.
 
         // Return success response
-        return response()->json([
-            'msg' => '<strong>'.__('Item Saved').'</strong><br>'.__('The service interruption was saved successfully.'),
-        ]);
+        return notySuccess('The service interruption was saved successfully.');
     }
 }

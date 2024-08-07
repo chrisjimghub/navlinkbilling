@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\OneTimeChargeExport;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -88,7 +87,7 @@ class OtcCrudController extends CrudController
         $this->setupCreateOperation();
     }
 
-    protected function exportClass()
+    public function exportClass()
     {
         $name = strHumanReadable($this->crud->entity_name);
         

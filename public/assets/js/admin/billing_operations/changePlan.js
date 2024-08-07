@@ -150,15 +150,13 @@ if (typeof changePlan != 'function') {
                 planned_application_id: planAppId,
             },
             success: function(result) {
-                console.log('Success:', result);
-
-                if (typeof crud !== 'undefined') {
-                    crud.table.ajax.reload();
-                }
-
-                if (result) {
+                if (result.msg) {
+                    if (typeof crud !== 'undefined') {
+                        crud.table.ajax.reload();
+                    }
+                    
                     new Noty({
-                        type: "success",
+                        type: result.type,
                         text: result.msg
                     }).show();
                 }

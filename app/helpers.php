@@ -231,14 +231,7 @@ if (! function_exists('p2pBillingPeriod')) {
 	}
 
 }
-
-// TODO:: fiberDateCutOff
-// TODO:: p2pDateCutOff
-
-
-
 // end billing
-
 
 if (! function_exists('currencyFormat')) {
 	function currencyFormat($value) {
@@ -262,5 +255,81 @@ if (! function_exists('coordinatesLink')) {
 			</a>
 		';
         
+	}
+}
+
+// Flash / Messages
+if (! function_exists('notySuccess')) {
+	function notySuccess($msg) {
+		return [
+			'type' => 'success',
+			'msg' => '<strong>'.__('Success!').'</strong><br>'.$msg,
+		];
+	}
+}
+
+if (! function_exists('notyError')) {
+	function notyError($msg) {
+		return [
+			'type' => 'danger',
+			'msg' => '<strong>'.__('Error!').'</strong><br>'.$msg,
+		];
+	}
+}
+
+if (! function_exists('notyValidatorError')) {
+	function notyValidatorError($validator) {
+		return response()->json([
+			'errors' => $validator->errors()->all()
+		], 422); // HTTP status code for Unprocessable Entity
+	}
+}
+
+// alias
+if (! function_exists('notyValidatorErrors')) {
+	function notyValidatorErrors($validator) {
+		return notyValidatorError($validator);
+	}
+}
+
+if (! function_exists('alertValidatorError')) {
+	function alertValidatorError($validator) {
+		\Alert::error($validator->errors()->all())->flash();
+	}
+}
+
+// alias
+if (! function_exists('alertValidatorErrors')) {
+	function alertValidatorErrors($validator) {
+		alertValidatorError($validator);
+	}
+}
+
+if (! function_exists('alertInfo')) {
+	function alertInfo($msg) {
+		\Alert::info('<strong>'.__('Info!').'</strong><br>'.$msg)->flash();
+	}
+}
+
+if (! function_exists('alertError')) {
+	function alertError($msg) {
+		\Alert::error('<strong>'.__('Error!').'</strong><br>'.$msg)->flash();
+	}
+}
+
+if (! function_exists('alertSuccess')) {
+	function alertSuccess($msg) {
+		\Alert::success('<strong>'.__('Success!').'</strong><br>'.$msg)->flash();
+	}
+}
+
+// 
+if (! function_exists('isBootstrap4')) {
+	function isBootstrap4() {
+		if (config('backpack.ui.view_namespace') == 'backpack.theme-coreuiv2::') {
+			return true;
+		}
+		
+		return false;
 	}
 }

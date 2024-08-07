@@ -347,11 +347,11 @@ class SettingsTableSeeder extends Seeder
                 'key' => 'raisepon_username',
                 'name' => 'raisepon_username',
                 'description' => '',
-                'value' => NULL,
+                'value' => 'admin',
                 'field' => '{"name":"value","label":"Raisepon Username","type":"text"}',
                 'active' => 1,
                 'created_at' => NULL,
-                'updated_at' => '2024-07-27 14:51:52',
+                'updated_at' => '2024-07-27 17:06:52',
             ),
             17 => 
             array (
@@ -359,11 +359,11 @@ class SettingsTableSeeder extends Seeder
                 'key' => 'raisepon_password',
                 'name' => 'raisepon_password',
                 'description' => '',
-                'value' => NULL,
+                'value' => 'admin123',
                 'field' => '{"name":"value","label":"Raisepon Password","type":"text"}',
                 'active' => 1,
                 'created_at' => NULL,
-                'updated_at' => '2024-07-27 14:51:52',
+                'updated_at' => '2024-07-27 17:06:52',
             ),
             18 => 
             array (
@@ -371,11 +371,31 @@ class SettingsTableSeeder extends Seeder
                 'key' => 'raisepon_url',
                 'name' => 'raisepon_url',
                 'description' => '',
-                'value' => NULL,
+                'value' => 'http://raisepon2.test/api/',
                 'field' => '{"name":"value","label":"Raisepon Url","type":"text"}',
                 'active' => 1,
                 'created_at' => NULL,
-                'updated_at' => '2024-07-27 14:51:52',
+                'updated_at' => '2024-07-27 17:06:52',
+            ),
+            19 => 
+            array (
+                'id' => 30,
+                'key' => 'paymongo_service_charge',
+                'name' => 'Paymongo Service Charge',
+                'description' => '',
+                'value' => '2.5',
+                'field' => '{
+"name": "value",
+"label": "Value must be in %",
+"type": "number",
+"attributes": {
+"step": "any",
+"required": "required"
+}
+}',
+                'active' => 1,
+                'created_at' => '2024-08-05 10:00:32',
+                'updated_at' => '2024-08-05 10:12:06',
             ),
         ));
         

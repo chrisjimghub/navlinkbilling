@@ -3,12 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Customer;
 use App\Models\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
+use Backpack\CRUD\app\Models\Traits\CrudTrait; 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;// <---------------------- and this one
-use Backpack\CRUD\app\Models\Traits\CrudTrait; // <------------------------------- this one
 
 class User extends Authenticatable
 {
@@ -16,7 +18,6 @@ class User extends Authenticatable
     use HasRoles;
     use CrudTrait;
     use LogsActivity;
-
 
     /**
      * The attributes that are mass assignable.
@@ -61,19 +62,60 @@ class User extends Authenticatable
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Attach an event listener for the 'saved' event
+        static::saved(function ($user) {
+            // Check if email was changed and customer_id is not null
+            if ($user->isDirty('email') && !is_null($user->customer_id)) {
+                // Find the associated customer
+                $customer = $user->customer;
+
+                if ($customer) {
+                    // Update the customer's email to match the user's email
+                    $customer->email = $user->email;
+                    $customer->save();
+                }
+            }
+        });
+    }
+
+    public function isCustomer()
+    {
+        return $this->customer_id !== null;
+    }
+
+    public function isAdmin()
+    {
+        return $this->customer_id == null;
+    }
 
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 
     /*
     |--------------------------------------------------------------------------
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeAdminUsersOnly(Builder $query, $withEmailContainWith = null)
+    {
+        if ($withEmailContainWith) {
+            $query->where('email', 'NOT LIKE', "%{$withEmailContainWith}%");
+        }
+
+        return $query->whereNull('customer_id');
+    }
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -86,4 +128,22 @@ class User extends Authenticatable
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    /**
+     * Set the customer's ID.
+     *
+     * @param  mixed  $value
+     * @return void
+     */
+    public function setCustomerIdAttribute($value)
+    {
+        // sync User email and customer email.
+
+        // Example custom logic
+        if ($value == 1) {
+            // Do something specific when setting customer_id to 1
+        }
+
+        // Set the attribute value
+        $this->attributes['customer_id'] = $value;
+    }
 }

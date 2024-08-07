@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Operations\GeneratePortalAccountOperation;
 use App\Imports\CustomerImport;
 use App\Exports\UploadTemplateExport;
 use App\Models\Traits\SchemaTableColumn;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
-use App\Http\Controllers\Admin\Operations\ExportOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use RedSquirrelStudio\LaravelBackpackImportOperation\ImportOperation;
+use Winex01\BackpackFilter\Http\Controllers\Operations\ExportOperation;
 use App\Http\Controllers\Admin\Operations\UploadTemplateExportOperation;
 
 /**
@@ -30,6 +31,7 @@ class CustomerCrudController extends CrudController
     use ImportOperation;
     use SchemaTableColumn;
     use UploadTemplateExportOperation;
+    use GeneratePortalAccountOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -42,7 +44,6 @@ class CustomerCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/customer');
         CRUD::setEntityNameStrings('customer', 'customers');
 
-        // dont delete
         $this->userPermissions();
     }
 
@@ -95,6 +96,7 @@ class CustomerCrudController extends CrudController
             'date_of_birth' => 'nullable|date',
             'contact_number' => 'required',
             'photo' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'email' => $this->nullableUniqueEmail()
         ]);
         
         CRUD::setFromDb(); // set fields from db columns.

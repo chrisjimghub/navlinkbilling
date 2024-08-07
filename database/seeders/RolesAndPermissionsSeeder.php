@@ -19,7 +19,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'admin_backups',
             'admin_logs',
             'admin_activity_logs',
-            // 'admin_settings',
         ],
 
         'billings' => [
@@ -72,6 +71,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'customers_delete', 
             'customers_export', 
             'customers_import', 
+            'customers_generate_portal_account', 
         ],
         
         'planned_applications' => [
@@ -201,8 +201,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'notifications_cut_off', // permission to received noty
             'notifications_marked_as_read', // button operation
             'notifications_filters',
+            'notifications_customer_payment',
         ],
-
     ];
 
     /**
@@ -240,6 +240,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin = User::findOrFail(1);
 
         $roles = collect($this->rolesAndPermissions)->keys()->unique()->toArray();
+        $roles = array_diff($roles, $this->dontAssignRoles());
         $admin->syncRoles($roles);
     }
 
@@ -259,11 +260,6 @@ class RolesAndPermissionsSeeder extends Seeder
                 ]);
                 
                 // assign role_permission to role
-
-                if (in_array($role, $this->dontAssignRoles())) {
-                    continue;
-                }
-
                $permission->assignRole($role);
             }
         }
@@ -275,6 +271,7 @@ class RolesAndPermissionsSeeder extends Seeder
         return [
             'community_strings',
             'olts',
+            'raisepon2s'
         ];
     }
 }

@@ -14,7 +14,7 @@ return [
     | By default the registration is open only on localhost.
     */
 
-    'registration_open' => env('BACKPACK_REGISTRATION_OPEN', env('APP_ENV') === 'local'),
+    'registration_open' => env('BACKPACK_REGISTRATION_OPEN', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -115,6 +115,7 @@ return [
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \Backpack\CRUD\app\Http\Middleware\AuthenticateSession::class,
         // \Backpack\CRUD\app\Http\Middleware\UseBackpackAuthGuardInsteadOfDefaultAuthGuard::class,
+        App\Http\Middleware\CheckIfCustomer::class,
     ],
 
     // Alias for that middleware

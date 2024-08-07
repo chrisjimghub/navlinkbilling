@@ -25,6 +25,7 @@ class CustomerImport implements
             'last_name' => 'required|min:2',
             'date_of_birth' => 'nullable|date',
             'contact_number' => 'required',
+            'email' => 'nullable|email|unique:customers,email'
         ];
     }
 

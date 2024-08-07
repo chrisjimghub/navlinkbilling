@@ -45,28 +45,11 @@ if (typeof pay != 'function') {
                             }
                             // Show a success notification bubble
                             new Noty({
-                                type: "success",
+                                type: result.type,
                                 text: result.msg
                             }).show();
                             // Hide the modal, if any
                             $('.modal').modal('hide');
-                        } else {
-                            // if the result is an array, it means 
-                            // we have notification bubbles to show
-                            if (result instanceof Object) {
-                                // trigger one or more bubble notifications 
-                                Object.entries(result).forEach(function(entry) {
-                                    var type = entry[0];
-                                    entry[1].forEach(function(message) {
-                                        new Noty({
-                                            type: type,
-                                            text: message
-                                        }).show();
-                                    });
-                                });
-                            } else {// Show an error alert
-                                swalError("There's been an error. Your item might not have been marked as paid.")
-                            }			          	  
                         }
                     },
                     error: function(xhr) {

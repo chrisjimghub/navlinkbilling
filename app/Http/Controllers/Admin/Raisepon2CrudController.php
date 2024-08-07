@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Facades\Http;
-use Backpack\Settings\app\Models\Setting;
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\Raisepon2Api;
 use App\Http\Controllers\Admin\Traits\UserPermissions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -23,7 +22,7 @@ class Raisepon2CrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
-    use UserPermissions;
+    use CrudExtend;
     use ApiConfigSettingsOperation;
     use Raisepon2Api;
 

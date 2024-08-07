@@ -22,7 +22,7 @@ if (typeof manualGenerateBill != 'function') {
                 if (response.msg) {
                     new Noty({
                         text: response.msg,
-                        type: 'success'
+                        type: response.type
                     }).show();
                 }
 

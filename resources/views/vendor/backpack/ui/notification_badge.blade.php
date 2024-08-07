@@ -50,11 +50,6 @@
 							let type = ['success', 'warning', 'error', 'info'].includes(data.last_notification.type) ? data.last_notification.type : "info";
 							var message = data.last_notification.message;
 
-							// if message_long is present, show that in the notification too
-							if (data.last_notification.message_long !== null) {
-								message = '<strong>' + data.last_notification.message + '</strong><br>' + data.last_notification.message_long;
-							}
-
 							new Noty({
 								type: type,
 								text: message,

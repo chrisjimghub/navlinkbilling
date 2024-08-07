@@ -10,12 +10,12 @@ use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
-use App\Http\Controllers\Admin\Operations\ExportOperation;
-use App\Http\Controllers\Admin\Operations\MyFiltersOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use RedSquirrelStudio\LaravelBackpackImportOperation\ImportOperation;
 use App\Http\Controllers\Admin\Operations\AccountUploadTemplateExportOperation;
 use RedSquirrelStudio\LaravelBackpackImportOperation\Requests\ImportFileRequest;
+use Winex01\BackpackFilter\Http\Controllers\Operations\ExportOperation;
+use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
 
 /**
  * Class AccountCrudController
@@ -31,11 +31,11 @@ class AccountCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
-    use MyFiltersOperation;
-    use ExportOperation;
     use ImportOperation;
     use AccountUploadTemplateExportOperation;
     use FetchOptions;
+    use FilterOperation;
+    use ExportOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -51,47 +51,21 @@ class AccountCrudController extends CrudController
         $this->userPermissions();
     }
 
-    protected function myFilters()
+    public function setupFilterOperation()
     {
-        $this->myFilter([
+        $this->crud->field([
             'name' => 'status',
             'label' => __('Status'),
             'type' => 'select',
             'options' => $this->accountStatusLists(),
         ]);
 
-        $this->myFilter([
+        $this->crud->field([
             'name' => 'subscription',
             'label' => __('Subscription'),
             'type' => 'select',
             'options' => $this->subscriptionLists(),
         ]);
-    }
-
-    private function myFiltersAddClause()
-    {   
-        if (!$this->crud->hasAccess('filters')) {
-            return;
-        }
-
-        // if validation fail then dont proceed
-        if (method_exists($this, 'myFiltersValidation')) {
-            if (!$this->myFiltersValidation()) {
-                return;
-            }
-        }
-
-        $status = request()->input('status');
-        $sub = request()->input('subscription');
-
-        if ($status) {
-            $this->crud->query->withStatus($status);
-        }
-
-        if ($sub) {
-            $this->crud->query->withSubscription($sub);
-        }
-
     }
 
     /**
@@ -102,7 +76,18 @@ class AccountCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        $this->myFiltersAddClause();
+        $this->filterQueries(function ($query) {
+            $status = request()->input('status');
+            $sub = request()->input('subscription');
+
+            if ($status) {
+                $query->withStatus($status);
+            }
+
+            if ($sub) {
+                $query->withSubscription($sub);
+            }
+        });
 
         // eager loading improves performance
         $this->crud->with('customer');

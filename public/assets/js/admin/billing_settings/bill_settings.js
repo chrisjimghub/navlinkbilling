@@ -31,10 +31,6 @@ $(document).ready(function() {
 });
 
 
-
-
-
-
 if (typeof billSettings != 'function') {
 
     function billSettings(button) {
@@ -63,12 +59,10 @@ if (typeof billSettings != 'function') {
             url: route, 
             data: formData,
             success: function(response) {
-                // console.log(response)
-
                 if (response.msg) {
                     new Noty({
                         text: response.msg,
-                        type: 'success'
+                        type: response.type
                     }).show();
                 }
 

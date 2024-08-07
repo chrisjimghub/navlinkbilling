@@ -50,11 +50,19 @@ class BillingStatus extends Model
     */
     public function getBadgeAttribute()
     {
-        if ($this->id == 1) {
-            return "<strong class='text-success'>{$this->name}</strong>";
+        $class = '';
+
+        if ($this->id == 1) { // paid
+            $class = 'text-success';
+        }elseif ($this->id == 2) { // unpaid
+            $class = 'text-danger';
+        }elseif ($this->id == 3) { // pending...
+            $class = 'text-warning';
+        }else {
+            $class = 'text-default';
         }
 
-        return "<strong class='text-danger'>{$this->name}</strong>";
+        return "<strong class='".$class."'>{$this->name}</strong>";
     }
 
     /*

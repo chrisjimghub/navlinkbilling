@@ -80,12 +80,10 @@ if (typeof apiConfigSettings != 'function') {
             url: route, 
             data: formData,
             success: function(response) {
-                // console.log(response)
-
                 if (response.msg) {
                     new Noty({
+                        type: response.type,
                         text: response.msg,
-                        type: 'success'
                     }).show();
                 }
 

@@ -83,9 +83,7 @@ trait BillSettingOperation
         // Check if validation fails
         if ($validator->fails()) {
             // Return validation errors as JSON response
-            return response()->json([
-                'errors' => $validator->errors()->all()
-            ], 422); // HTTP status code for Unprocessable Entity
+            return notyValidatorError($validator);
         }
 
         foreach (request()->generate_bill as $type) {
@@ -96,9 +94,7 @@ trait BillSettingOperation
             }
         }
 
-        return response()->json([
-            'msg' => '<strong>'.__('Generating Bill').'</strong><br>'.__('Bill generated successfully.'),
-        ]);
+        return notySuccess('Bill generated successfully.');
     }
 
     /**
@@ -205,9 +201,7 @@ trait BillSettingOperation
         // Check if validation fails
         if ($validator->fails()) {
             // Return validation errors as JSON response
-            return response()->json([
-                'errors' => $validator->errors()->all()
-            ], 422); // HTTP status code for Unprocessable Entity
+            return notyValidatorError($validator);
         }
         
         Setting::set('enable_auto_bill', request()->enable_auto_bill);
@@ -227,8 +221,6 @@ trait BillSettingOperation
         Setting::set('days_before_send_bill_notification', request()->days_before_send_bill_notification);
         Setting::set('days_before_send_cut_off_notification', request()->days_before_send_cut_off_notification);
 
-        return response()->json([
-            'msg' => '<strong>'.__('Billing Settings Updated').'</strong><br>'.__('The billing settings have been successfully updated.'),
-        ]);
+        return notySuccess('The billing settings have been successfully updated.');
     }
 }

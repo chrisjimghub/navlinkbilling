@@ -4,12 +4,6 @@
     "description": "The skeleton application for the Laravel framework.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
-    "repositories": [ 
-        {
-            "type": "vcs",
-            "url": "https://github.com/malek77z/signature-field-for-backpack"
-        }
-    ],
     "require": {
         "php": "^8.2",
         "backpack/activity-log": "^2.0",
@@ -31,9 +25,12 @@
         "laraveldaily/laravel-invoices": "4.0",
         "livewire/livewire": "^3.4",
         "livewire/volt": "^1.0",
+        "luigel/laravel-paymongo": "^2.5",
         "maatwebsite/excel": "^3.1",
         "orangehill/iseed": "^3.0",
-        "redsquirrelstudio/laravel-backpack-import-operation": "^1.6"
+        "redsquirrelstudio/laravel-backpack-import-operation": "^1.6",
+        "winex01/backpack-filter": "^1.1",
+        "winex01/backpack-permission-manager": "^1.2"
     },
     "require-dev": {
         "backpack/generators": "^4.0",
@@ -94,5 +91,11 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": {
+        "malek77z/signature-field-for-backpack": {
+            "type": "vcs",
+            "url": "https://github.com/malek77z/signature-field-for-backpack"
+        }
+    }
 }

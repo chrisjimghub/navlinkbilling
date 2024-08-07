@@ -12,32 +12,20 @@ if (typeof sendNotificationEntry != 'function') {
                 url: route,
                 type: 'POST',
                 success: function(result) {
-                    console.log(result);
-                    if (result == 1) {
+                    // console.log(result);
+                    if (result.msg) {
                         // Reload the CRUD table
                         if (typeof crud !== 'undefined') {
                             crud.table.ajax.reload();
                         }
 
-                        // Show a success notification
                         new Noty({
-                            type: "success",
-                            text: "<strong>Notification Sent</strong><br>The bill was sent successfully."
+                            type: result.type,
+                            text: result.msg
                         }).show();
 
                         // Hide any modal
                         $('.modal').modal('hide');
-                    } else if (result.msg) {
-                        // Show an error notification with the received message
-                        new Noty({
-                            type: "warning",
-                            text: "<strong>Notification Not Sent</strong><br>" +result.msg
-                        }).show();
-
-                        swalError(result.msg);
-
-                    } else {
-                        swalError("There\'s been an error. Your item might not have been processed.");
                     }
                 },
                 error: function(xhr, status, error) {
