@@ -126,8 +126,7 @@ trait GcashOperation
 
         // Check if validation fails
         if ($validator->fails()) {
-            // Return validation errors as JSON response
-            \Alert::error($validator->errors()->all())->flash();
+            alertValidatorError($validator);
             return false;
         }
 
@@ -173,12 +172,12 @@ trait GcashOperation
         $reference = $billing->paymongo_reference_number;
         
         if (Str::startsWith($reference, 'pay_')) {
-            \Alert::info('<strong>'.__('Info').'</strong><br>'.__('The bill is already paid.'))->flash();
+            alertInfo('The bill is already paid.');
             return redirect($this->crud->route);
         }
         
         if (!Str::startsWith($reference, 'src_')) {
-            \Alert::error('<strong>'.__('Invalid Reference #').'</strong><br>'.__('Whoops, something went wrong.'))->flash();
+            alertError('Whoops, something went wrong. Invalid Reference #.');
             return redirect($this->crud->route);
         }
 
@@ -202,7 +201,7 @@ trait GcashOperation
             
             $this->customerOnlinePaymentNotification($billing);
 
-            \Alert::success('<strong>'.__('Success').'</strong><br>'.__('The bill has been paid successfully.'))->flash();
+            alertSuccess('The bill has been paid successfully.');
             return redirect($this->crud->route);
         }
     }
@@ -211,7 +210,7 @@ trait GcashOperation
     {
         CRUD::hasAccessOrFail('gcash');
 
-        \Alert::error('<strong>'.__('Warning').'</strong><br>'.__("Payment didn’t get through. Please try again later."))->flash();
+        alertError('Payment didn’t get through. Please try again later.');
         return redirect($this->crud->route);
     }
 }

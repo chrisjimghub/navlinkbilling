@@ -67,7 +67,7 @@ trait PayNowOperation
         // Check if validation fails
         if ($validator->fails()) {
             // Return validation errors as JSON response
-            \Alert::error($validator->errors()->all())->flash();
+            alertValidatorError($validator);
             return redirect()->back();
         }
 
@@ -91,7 +91,7 @@ trait PayNowOperation
         //     return redirect($link->checkout_url);
         // }
 
-        \Alert::error('Whoops, something went wrong, Please contact administrator.')->flash();
+        alertError('Whoops, something went wrong, Please contact administrator.');
         return redirect()->back();
     }
 }

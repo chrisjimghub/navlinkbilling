@@ -304,3 +304,21 @@ if (! function_exists('alertValidatorErrors')) {
 		alertValidatorError($validator);
 	}
 }
+
+if (! function_exists('alertInfo')) {
+	function alertInfo($msg) {
+		\Alert::info('<strong>'.__('Info!').'</strong><br>'.$msg)->flash();
+	}
+}
+
+if (! function_exists('alertError')) {
+	function alertError($msg) {
+		\Alert::error('<strong>'.__('Error!').'</strong><br>'.$msg)->flash();
+	}
+}
+
+if (! function_exists('alertSuccess')) {
+	function alertSuccess($msg) {
+		\Alert::success('<strong>'.__('Success!').'</strong><br>'.$msg)->flash();
+	}
+}
