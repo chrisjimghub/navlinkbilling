@@ -3,7 +3,7 @@
 	data-route="{{ url($crud->route.'/'.$entry->getKey().'/generate-portal-account') }}"
 	class="btn btn-sm btn-link text-success" data-button-type="generatePortalAccount">
 	<i class="las la-plus-circle"></i>
-	{{ __('New Portal Account') }}
+	{{ __('Portal Account') }}
 </a>
 @endif
 
@@ -20,7 +20,7 @@
 
 		swal({
 		  title: "{!! trans('backpack::base.warning') !!}",
-		  text: "Generate new account or reset new password?",
+		  text: "Create new account or generate password?",
 		  icon: "warning",
 		  buttons: {
 		  	cancel: {
