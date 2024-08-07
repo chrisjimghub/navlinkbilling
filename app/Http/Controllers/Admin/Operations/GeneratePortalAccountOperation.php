@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Operations;
 
+use App\Models\User;
+use App\Models\Customer;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Validator;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait GeneratePortalAccountOperation
@@ -52,12 +57,35 @@ trait GeneratePortalAccountOperation
 
         $id = $this->crud->getCurrentEntryId() ?? $id;
 
-        // validate email customer if it alreaddy exist in users
-        // generate password then hash save it.
-        // show dialogue or modal the username and password
+        $customer = Customer::findOrFail($id);
 
-        debug($id);
+        if (!$customer) {
+            return notyError('The selected customer is invalid.');
+        }
 
-        return notySuccess('Customer portal account generated successfully.');
+        $validator = Validator::make(['email' => $customer->email], [
+            'email' => [
+                'required',
+                'email',
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return notyValidatorError($validator);
+        }
+
+        $email = $customer->email;
+        $password = Str::password(8, true, true, false, false);
+
+        $user = User::firstOrNew(['email' => $email]);
+        $user->name = $customer->full_name;
+        $user->password = Hash::make($password);
+        $user->customer_id = $customer->id;
+        $user->saveQuietly();
+
+        return array_merge(notySuccess('Customer portal account generated successfully.'), [
+            'email' => $email,
+            'password' => $password
+        ]);
     }
 }

@@ -3,7 +3,7 @@
 	data-route="{{ url($crud->route.'/'.$entry->getKey().'/generate-portal-account') }}"
 	class="btn btn-sm btn-link text-success" data-button-type="generatePortalAccount">
 	<i class="las la-plus-circle"></i>
-	{{ __('Portal Account') }}
+	{{ __('New Portal Account') }}
 </a>
 @endif
 
@@ -20,7 +20,7 @@
 
 		swal({
 		  title: "{!! trans('backpack::base.warning') !!}",
-		  text: "Generate portal account for this customer?",
+		  text: "Generate new account or reset new password?",
 		  icon: "warning",
 		  buttons: {
 		  	cancel: {
@@ -44,7 +44,7 @@
 			      url: route,
 			      type: 'POST',
 			      success: function(result) {
-					console.log(result);
+					// console.log(result);
 					if (result.msg) {
 						if (typeof crud !== 'undefined') {
 							crud.table.ajax.reload();
@@ -56,8 +56,7 @@
 							text: result.msg
 						}).show();
 					
-						// Hide the modal, if any
-						$('.modal').modal('hide');
+						showUserCredentialsModal(result.email, result.password);
 					} 
 			      },
 			      error: function(xhr) {
@@ -82,8 +81,81 @@
 
       }
 	}
-
 	// make it so that the function above is run after each DataTable draw event
 	// crud.addFunctionToDataTablesDrawEventQueue('generatePortalAccountEntry');
 </script>
+
+
+
+
+<script>
+if (typeof showUserCredentialsModal != 'function') {
+	function showUserCredentialsModal(email, password) {
+        // Create modal HTML
+        const modalHTML = `
+            <div class="modal fade" id="userCredentialsModal" tabindex="-1" aria-labelledby="userCredentialsModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="userCredentialsModalLabel">Customer Portal Account</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="modal-email-input">Email:</label>
+                                <input type="email" id="modal-email-input" class="form-control" value="${email}" readonly>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="modal-password-input">Password:</label>
+                                <div class="input-group">
+                                    <input type="password" id="modal-password-input" class="form-control" value="${password}" readonly>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" type="button" id="toggle-modal-password-visibility">
+                                            <i class="las la-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Append modal to body
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+        // Show the modal
+        $('#userCredentialsModal').modal('show');
+
+        // Toggle password visibility
+        document.getElementById('toggle-modal-password-visibility').addEventListener('click', function () {
+            var passwordInput = document.getElementById('modal-password-input');
+            var icon = this.querySelector('i');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Remove modal from DOM when hidden
+        $('#userCredentialsModal').on('hidden.bs.modal', function () {
+            document.getElementById('userCredentialsModal').remove();
+        });
+    }
+}
+</script>
+
+
+
 @if (!request()->ajax()) @endpush @endif

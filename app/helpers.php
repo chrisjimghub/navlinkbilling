@@ -322,3 +322,14 @@ if (! function_exists('alertSuccess')) {
 		\Alert::success('<strong>'.__('Success!').'</strong><br>'.$msg)->flash();
 	}
 }
+
+// 
+if (! function_exists('isBootstrap4')) {
+	function isBootstrap4() {
+		if (config('backpack.ui.view_namespace') == 'backpack.theme-coreuiv2::') {
+			return true;
+		}
+		
+		return false;
+	}
+}
