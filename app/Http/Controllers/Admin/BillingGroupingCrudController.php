@@ -48,6 +48,89 @@ class BillingGroupingCrudController extends CrudController
         CRUD::setFromDb(); 
     }
 
+    protected function setupShowOperation()
+    {
+        $this->crud->column('name');
+        
+        $this->crud->column([
+            'name' => 'billingCycle',
+            'label' => 'Billing cycle'
+        ]);
+
+        $this->crud->column([
+            'name' => 'day_start',
+            'label' => 'Date start',
+        ]);
+
+        $this->crud->column([
+            'name' => 'day_end',
+            'label' => 'Date end',
+        ]);
+
+        $this->crud->column([
+            'name' => 'day_cut_off',
+            'label' => 'Date cut off',
+        ]);
+
+        
+        foreach ([
+            'auto_generate_bill',
+            'auto_send_bill_notification',
+            'auto_send_cut_off_notification'
+        ] as $fieldName) {
+            $this->crud->column([
+                'name' => $fieldName,
+                'label' => strHumanReadable($fieldName),
+                'type'     => 'closure',
+                'function' => function($entry) use($fieldName) {
+
+                    if ($entry->{$fieldName}) {
+                        return badgeSuccess(booleanYesOrNo($entry->{$fieldName}));
+                    }
+                    
+                    return badgeDanger(booleanYesOrNo($entry->{$fieldName}));
+                },
+                'escaped' => false,
+            ]);
+        }
+
+        $this->crud->column([
+            'name' => 'bill_generate_days_before_end_of_billing_period',
+            'label' => __('When should the bill be auto-generated?'),
+            'type'     => 'closure',
+            'function' => function($entry) {
+                if (!$entry->auto_generate_bill) {
+                    return;
+                }
+                return $this->billGenerateOptions()[$entry->bill_generate_days_before_end_of_billing_period];
+            },
+        ]);
+
+        $this->crud->column([
+            'name' => 'bill_notification_days_after_the_bill_created',
+            'label' => __('When should we send customer notifications?'),
+            'type'     => 'closure',
+            'function' => function($entry) {
+                if (!$entry->auto_send_bill_notification) {
+                    return;
+                }
+                return $this->billNotificationOptions()[$entry->bill_notification_days_after_the_bill_created];
+            },
+        ]);
+
+        $this->crud->column([
+            'name' => 'bill_cut_off_notification_days_before_cut_off_date',
+            'label' => __('When should we send customer notifications?'),
+            'type'     => 'closure',
+            'function' => function($entry) {
+                if (!$entry->auto_send_cut_off_notification) {
+                    return;
+                }
+                return $this->cutOffNotificationOptions()[$entry->bill_cut_off_notification_days_before_cut_off_date];
+            },
+        ]);
+    }
+
     /**
      * Define what happens when the Create operation is loaded.
      * 
@@ -216,10 +299,5 @@ class BillingGroupingCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
-    }
-
-    protected function setupShowOperation()
-    {
-        $this->setupListOperation();
     }
 }

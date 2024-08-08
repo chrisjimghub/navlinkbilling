@@ -27,7 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LocationsTableSeeder::class);
         $this->call(PlannedApplicationsTableSeeder::class);
         $this->call(AccountStatusesTableSeeder::class);
-        //$this->call(CustomersTableSeeder::class); 
         $this->call(BillingTypesTableSeeder::class); 
         $this->call(MenusTableSeeder::class); 
         $this->call(BillingStatusesTableSeeder::class); 
@@ -35,5 +34,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PaymentMethodsTableSeeder::class);
         $this->call(CommunityStringsTableSeeder::class);
         $this->call(BillingCyclesTableSeeder::class);
+        $this->call(BillingGroupingsTableSeeder::class);
     }
 }

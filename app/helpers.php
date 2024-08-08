@@ -333,3 +333,22 @@ if (! function_exists('isBootstrap4')) {
 		return false;
 	}
 }
+
+if (! function_exists('booleanYesOrNo')) {
+    function booleanYesOrNo($value) {
+        $boolean = (bool) $value;
+        return $boolean ? 'Yes' : 'No';
+    }
+}
+
+if (! function_exists('badgeSuccess')) {
+    function badgeSuccess($value) {
+		return "<span class='badge badge-success'>{$value}</span>";
+    }
+}
+
+if (! function_exists('badgeDanger')) {
+    function badgeDanger($value) {
+		return "<span class='badge badge-danger'>{$value}</span>";
+    }
+}
