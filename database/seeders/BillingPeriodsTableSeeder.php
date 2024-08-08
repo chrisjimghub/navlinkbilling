@@ -22,7 +22,7 @@ class BillingPeriodsTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'name' => 'previous_month_current_month',
+                'name' => 'Previous Month - Current Month',
                 'created_at' => '2024-08-07 19:59:46',
                 'updated_at' => '2024-08-07 19:59:46',
                 'deleted_at' => NULL,
@@ -30,7 +30,7 @@ class BillingPeriodsTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 2,
-                'name' => 'current_month_current_month',
+                'name' => 'Current Month - Current Month',
                 'created_at' => '2024-08-07 19:59:57',
                 'updated_at' => '2024-08-07 19:59:57',
                 'deleted_at' => NULL,
@@ -38,7 +38,7 @@ class BillingPeriodsTableSeeder extends Seeder
             2 => 
             array (
                 'id' => 3,
-                'name' => 'current_month_next_month',
+                'name' => 'Current Month - Next Month',
                 'created_at' => '2024-08-07 20:00:06',
                 'updated_at' => '2024-08-07 20:00:06',
                 'deleted_at' => NULL,

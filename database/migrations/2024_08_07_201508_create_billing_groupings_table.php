@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('bill_notification_days_after_the_bill_created')->nullable();
             $table->integer('bill_cut_off_notification_days_before_cut_off_date')->nullable();
             $table->foreignId('billing_period_id')->constrained('billing_periods');
-            $table->boolean('auto_generate')->default(false);
+            $table->boolean('auto_generate_bill')->default(false);
             $table->boolean('auto_send_bill_notification')->default(false);
             $table->boolean('auto_send_cut_off_notification')->default(false);
             $table->timestamps();

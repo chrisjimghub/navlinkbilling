@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Requests\BillingGroupingRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -19,6 +20,7 @@ class BillingGroupingCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
+    use CrudExtend;
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -29,6 +31,8 @@ class BillingGroupingCrudController extends CrudController
         CRUD::setModel(\App\Models\BillingGrouping::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/billing-grouping');
         CRUD::setEntityNameStrings('billing grouping', 'billing groupings');
+        
+        $this->userPermissions();
     }
 
     /**
@@ -39,12 +43,7 @@ class BillingGroupingCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
-
-        /**
-         * Columns can be defined using the fluent syntax:
-         * - CRUD::column('price')->type('number');
-         */
+        CRUD::setFromDb(); 
     }
 
     /**
@@ -56,14 +55,72 @@ class BillingGroupingCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            // 'name' => 'required|min:2',
+            'name' => 'required|min:2',
+            // TODO::
         ]);
-        CRUD::setFromDb(); // set fields from db columns.
+        
+        $this->crud->field('name');
+        
+        $this->crud->field([
+            'name'  => 'separator',
+            'type'  => 'custom_html',
+            'value' => '<label>Automate Process</label>',
+            'wrapper' => [
+                'class' => 'form-group col-sm-12 mb-n1'
+            ]
+        ]);
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+        foreach ([
+            'auto_generate_bill',
+            'auto_send_bill_notification',
+            'auto_send_cut_off_notification'
+        ] as $name) {
+            $this->crud->field([
+                'name' => $name,
+                'attributes' => [
+                    'class' => 'ml-n3'
+                ],
+                'wrapper' => [
+                    'class' => 'form-group col-sm-12 mb-2'
+                ]
+            ]);
+        }
+
+        $this->crud->field('billingPeriod')->label(__('Billing Period'));
+
+        $this->crud->field([
+            'name' => 'day_start',
+            'wrapper' => [
+                'class' => 'form-group col-md-3'
+            ]
+        ]);
+        
+        $this->crud->field([
+            'name' => 'day_end',
+            'wrapper' => [
+                'class' => 'form-group col-md-3'
+            ]
+        ]);
+
+        $this->crud->field([
+            'name' => 'day_cut_off',
+            'wrapper' => [
+                'class' => 'form-group col-md-6'
+            ]
+        ]);
+
+        $this->crud->field([
+            'name' => 'bill_generate_days_before_end_of_billing_period',
+        ]);
+
+        $this->crud->field([
+            'name' => 'bill_notification_days_after_the_bill_created',
+        ]);
+
+        $this->crud->field([
+            'name' => 'bill_cut_off_notification_days_before_cut_off_date',
+        ]);
+
     }
 
     /**
