@@ -58,11 +58,8 @@ class BillingGroupingCrudController extends CrudController
     {
         Widget::add()->type('script')->content('assets/js/admin/forms/billing_grouping.js');
 
-        CRUD::setValidation([
-            'name' => $this->validateUniqueRule(),
-            // TODO::
-        ]);
-        
+        $this->crud->setValidation(BillingGroupingRequest::class);
+
         $this->crud->field('name');
 
         $this->crud->field('billingCycle')->label(__('Billing Cycle'));
@@ -219,5 +216,10 @@ class BillingGroupingCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
     }
 }

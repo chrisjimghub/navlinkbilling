@@ -207,6 +207,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         'billing_groupings' => [
             'billing_groupings_list',
+            'billing_groupings_show',
             'billing_groupings_create', 
             'billing_groupings_update', 
             'billing_groupings_delete', 
