@@ -203,6 +203,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'notifications_filters',
             'notifications_customer_payment',
         ],
+
+        'billing_groupings' => [
+            'billing_groupings_list',
+            'billing_groupings_create', 
+            'billing_groupings_update', 
+            'billing_groupings_delete', 
+        ],
     ];
 
     /**

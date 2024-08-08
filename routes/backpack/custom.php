@@ -35,4 +35,5 @@ Route::group([
     Route::crud('raisepon2', 'Raisepon2CrudController');
     Route::crud('notification', 'NotificationCrudController');
     Route::crud('theme', 'ThemeCrudController');
+    Route::crud('billing-grouping', 'BillingGroupingCrudController');
 }); // this should be the absolute last line of this file

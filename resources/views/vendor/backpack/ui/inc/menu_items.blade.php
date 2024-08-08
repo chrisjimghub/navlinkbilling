@@ -3,3 +3,4 @@
 @else
     @include(backpack_view('admin.menu_items'))
 @endif
+<x-backpack::menu-item title="Billing groupings" icon="la la-question" :link="backpack_url('billing-grouping')" />
