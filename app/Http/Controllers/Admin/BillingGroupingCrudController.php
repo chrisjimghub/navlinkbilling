@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Traits\CrudExtend;
+use Backpack\CRUD\app\Library\Widget;
 use App\Http\Requests\BillingGroupingRequest;
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -55,6 +56,8 @@ class BillingGroupingCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
+        Widget::add()->type('script')->content('assets/js/admin/forms/billing_grouping.js');
+
         CRUD::setValidation([
             'name' => $this->validateUniqueRule(),
             // TODO::
@@ -97,7 +100,6 @@ class BillingGroupingCrudController extends CrudController
             ]
         ]);
 
-
         $this->crud->field([
             'name'  => 'separator',
             'type'  => 'custom_html',
@@ -122,7 +124,6 @@ class BillingGroupingCrudController extends CrudController
                 ]
             ]);
         }
-
 
         $this->crud->field([
             'name' => 'bill_generate_days_before_end_of_billing_period',
