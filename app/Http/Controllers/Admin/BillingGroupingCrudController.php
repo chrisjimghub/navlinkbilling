@@ -45,7 +45,7 @@ class BillingGroupingCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); 
+        $this->setupShowOperation();
     }
 
     protected function setupShowOperation()
@@ -70,6 +70,10 @@ class BillingGroupingCrudController extends CrudController
         $this->crud->column([
             'name' => 'day_cut_off',
             'label' => 'Date cut off',
+            'type' => 'closure',
+            'function' => function($entry) {
+                return $this->cutOffOptions()[$entry->day_cut_off];
+            },
         ]);
 
         
