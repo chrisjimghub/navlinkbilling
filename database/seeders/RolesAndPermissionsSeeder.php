@@ -61,6 +61,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'accounts_delete', 
             'accounts_filters', 
             'accounts_export', 
+            'accounts_import', 
         ],
 
        'customers' => [
