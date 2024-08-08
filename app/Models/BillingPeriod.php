@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Model;
+use App\Models\BillingGrouping;
 
 class BillingPeriod extends Model
 {
@@ -30,6 +31,10 @@ class BillingPeriod extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function billingGroupings()
+    {
+        return $this->hasMany(BillingGrouping::class);
+    }
 
     /*
     |--------------------------------------------------------------------------
