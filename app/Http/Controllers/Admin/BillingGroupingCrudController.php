@@ -21,6 +21,7 @@ class BillingGroupingCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -55,12 +56,48 @@ class BillingGroupingCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            'name' => 'required|min:2',
+            'name' => $this->validateUniqueRule(),
             // TODO::
         ]);
         
         $this->crud->field('name');
+
+        $this->crud->field('billingCycle')->label(__('Billing Cycle'));
+
+        $this->crud->field([
+            'name' => 'day_start',
+            'label' => 'Date start',
+            'type' => 'select_from_array',
+            'options' => $this->dayOptions(),
+            'allows_null' => true,
+            'wrapper' => [
+                'class' => 'form-group col-md-3'
+            ]
+        ]);
         
+        $this->crud->field([
+            'name' => 'day_end',
+            'label' => 'Date end',
+            'type' => 'select_from_array',
+            'options' => $this->dayOptions(),
+            'allows_null' => true,
+            'wrapper' => [
+                'class' => 'form-group col-md-3'
+            ]
+        ]);
+
+        $this->crud->field([
+            'name' => 'day_cut_off',
+            'label' => 'Date cut off',
+            'type' => 'select_from_array',
+            'options' => $this->cutOffOptions(),
+            'allows_null' => true,
+            'wrapper' => [
+                'class' => 'form-group col-md-6'
+            ]
+        ]);
+
+
         $this->crud->field([
             'name'  => 'separator',
             'type'  => 'custom_html',
@@ -86,49 +123,98 @@ class BillingGroupingCrudController extends CrudController
             ]);
         }
 
-        $this->crud->field('billingCycle')->label(__('Billing Cycle'));
-
-        $this->crud->field([
-            'name' => 'day_start',
-            'wrapper' => [
-                'class' => 'form-group col-md-3'
-            ]
-        ]);
-        
-        $this->crud->field([
-            'name' => 'day_end',
-            'wrapper' => [
-                'class' => 'form-group col-md-3'
-            ]
-        ]);
-
-        $this->crud->field([
-            'name' => 'day_cut_off',
-            'wrapper' => [
-                'class' => 'form-group col-md-6'
-            ]
-        ]);
 
         $this->crud->field([
             'name' => 'bill_generate_days_before_end_of_billing_period',
+            'label' => __('When should the bill be auto-generated?'),
+            'type' => 'select_from_array',
+            'options' => $this->billGenerateOptions(),
+            'allows_null' => true,
         ]);
 
         $this->crud->field([
             'name' => 'bill_notification_days_after_the_bill_created',
+            'label' => __('When should we send customer notifications?'),
+            'type' => 'select_from_array',
+            'options' => $this->billNotificationOptions(),
+            'allows_null' => true,
         ]);
 
         $this->crud->field([
             'name' => 'bill_cut_off_notification_days_before_cut_off_date',
+            'label' => __('When should we send cut-off notifications?'),
+            'type' => 'select_from_array',
+            'options' => $this->cutOffNotificationOptions(),
+            'allows_null' => true,
         ]);
-
     }
 
-    /**
-     * Define what happens when the Update operation is loaded.
-     * 
-     * @see https://backpackforlaravel.com/docs/crud-operation-update
-     * @return void
-     */
+    public function cutOffNotificationOptions()
+    {
+        $options = [];
+        
+        $options[0] = 'Same day as date cut off.';
+        for($day = 1; $day <= 3; $day++) {
+            $label = $day. ' '. ($day == 1 ? 'day' : 'days') .' before the date cut off.';
+        
+            $options[$day] = $label;
+        }
+
+        return $options;
+    }
+
+    public function billNotificationOptions()
+    {
+        $options = [];
+        
+        $options[0] = 'Same day as the bill created.';
+        for($day = 1; $day <= 10; $day++) {
+            $label = $day. ' '. ($day == 1 ? 'day' : 'days') .' after the bill is created.';
+        
+            $options[$day] = $label;
+        }
+
+        return $options;
+    }
+
+    public function billGenerateOptions()
+    {
+        $options = [];
+        
+        $options[0] = 'Same day as date end.';
+        for($day = 1; $day <= 10; $day++) {
+            $label = $day. ' '. ($day == 1 ? 'day' : 'days') .' before date end.';
+        
+            $options[$day] = $label;
+        }
+
+        return $options;
+    }
+
+    public function cutOffOptions()
+    {
+        $options = [];
+        
+        $options[0] = 'Same day as date end.';
+        for($day = 1; $day <= 10; $day++) {
+            $label = $day. ' '. ($day == 1 ? 'day' : 'days') .' after date end.';
+            $options[$day] = $label;
+        }
+
+        return $options;
+    }
+
+    public function dayOptions()
+    {
+        $options = [];
+
+        for ($day = 1; $day <= 31; $day++) {
+            $options[$day] = $day;
+        }
+
+        return $options;
+    }
+
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
