@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class BillingPeriodsTableSeeder extends Seeder
+class BillingCyclesTableSeeder extends Seeder
 {
 
     /**
@@ -16,9 +16,9 @@ class BillingPeriodsTableSeeder extends Seeder
     {
         
 
-        \DB::table('billing_periods')->delete();
+        \DB::table('billing_cycles')->delete();
         
-        \DB::table('billing_periods')->insert(array (
+        \DB::table('billing_cycles')->insert(array (
             0 => 
             array (
                 'id' => 1,

@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Model;
-use App\Models\BillingPeriod;
+use App\Models\BillingCycle;
 
 class BillingGrouping extends Model
 {
@@ -31,9 +31,9 @@ class BillingGrouping extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function billingPeriod()
+    public function billingCycle()
     {
-        return $this->belongsTo(BillingPeriod::class);
+        return $this->belongsTo(BillingCycle::class);
     }
 
     /*

@@ -86,7 +86,7 @@ class BillingGroupingCrudController extends CrudController
             ]);
         }
 
-        $this->crud->field('billingPeriod')->label(__('Billing Period'));
+        $this->crud->field('billingCycle')->label(__('Billing Cycle'));
 
         $this->crud->field([
             'name' => 'day_start',

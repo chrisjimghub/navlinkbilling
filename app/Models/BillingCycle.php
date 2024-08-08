@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\Model;
 use App\Models\BillingGrouping;
 
-class BillingPeriod extends Model
+class BillingCycle extends Model
 {
     /*
     |--------------------------------------------------------------------------
@@ -13,7 +13,7 @@ class BillingPeriod extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'billing_periods';
+    protected $table = 'billing_cycles';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];

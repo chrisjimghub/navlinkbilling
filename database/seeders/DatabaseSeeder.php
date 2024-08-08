@@ -34,6 +34,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingsTableSeeder::class);
         $this->call(PaymentMethodsTableSeeder::class);
         $this->call(CommunityStringsTableSeeder::class);
-        $this->call(BillingPeriodsTableSeeder::class);
+        $this->call(BillingCyclesTableSeeder::class);
     }
 }
