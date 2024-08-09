@@ -11,9 +11,9 @@ use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
-use App\Http\Controllers\Admin\Operations\BillSettingOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
+use App\Http\Controllers\Admin\Operations\GenerateByGroupOperation;
 use Winex01\BackpackFilter\Http\Controllers\Operations\ExportOperation;
 use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
 
@@ -32,10 +32,10 @@ class BillingCrudController extends CrudController
 
     use CrudExtend;
     use BillingGroupButtonsOperation;
-    use BillSettingOperation;
     use FetchOptions;
     use FilterOperation;
     use ExportOperation;
+    use GenerateByGroupOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.

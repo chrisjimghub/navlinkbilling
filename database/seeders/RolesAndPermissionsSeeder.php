@@ -34,10 +34,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'billings_service_interrupt', 
             'billings_send_notification', 
             'billings_download_invoice', 
-            'billings_bill_setting', 
-            'billings_manual_generate_bill', 
             'billings_filters', 
             'billings_export', 
+            'billings_generate_by_group', 
         ],
 
         'menu_separator' => [
