@@ -150,5 +150,7 @@ return [
 
     'customer_portal' => [
         'next_bill' => 'Next Bill'
-    ]
+    ],
+
+    'billing_grouping' => 'Billing Grouping',
 ];

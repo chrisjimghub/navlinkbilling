@@ -154,6 +154,8 @@ class AccountCrudController extends CrudController
         ]);
 
         $this->crud->column('notes');
+
+        $this->crud->column('billingGrouping')->label(__('app.billing_grouping'));
     }
 
     protected function setupShowOperation()
@@ -242,6 +244,11 @@ class AccountCrudController extends CrudController
         $this->crud->field([
             'name' => 'notes',
             'type' => 'textarea',
+        ]);
+
+        $this->crud->field([
+            'name' => 'billingGrouping',
+            'label' => __('app.billing_grouping')
         ]);
 
         $this->crud->field([

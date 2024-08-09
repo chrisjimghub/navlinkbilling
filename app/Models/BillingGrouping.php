@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Model;
+use App\Models\Account;
 use App\Models\BillingCycle;
 
 class BillingGrouping extends Model
@@ -31,11 +32,15 @@ class BillingGrouping extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
     public function billingCycle()
     {
         return $this->belongsTo(BillingCycle::class);
     }
-
     /*
     |--------------------------------------------------------------------------
     | SCOPES
