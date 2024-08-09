@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
-use Backpack\Settings\app\Models\Setting;
 
 // Str
 if (! function_exists('strHumanReadable')) {
@@ -26,8 +25,6 @@ if (! function_exists('stringStartsWith')) {
 	}
 }
 // end Str
-
-
 
 if (! function_exists('modelInstance')) {
 	function modelInstance($class, $useFullPath = false) {
@@ -128,111 +125,7 @@ if (! function_exists('adjustDayWithinMonth')) {
 }
 // end DATES
 
-// billing
-if (! function_exists('billingPeriod')) {
-	function billingPeriod($billingPeriod, $dayStart, $dayEnd, $dayCutOff, $billingType, $currentDate = null) {
-		if (!$currentDate) {
-			$currentDate = Carbon::now();
-		}else {
-			$currentDate = Carbon::parse($currentDate);
-		}
-
-		$dateStart = '';
-		$dateEnd = '';
-		$dateCutOff = '';
-
-		if ($billingPeriod == 'previous_month_current_month') {
-			
-			$dateStart = $currentDate->copy();
-			$dateStart->subMonthNoOverflow()->day( adjustDayWithinMonth(day: $dayStart, currentDate: $dateStart) );
-
-			$dateEnd = $currentDate->copy();
-			$dateEnd->day( adjustDayWithinMonth(day: $dayEnd, currentDate: $dateEnd) );
-
-			$dateCutOff = $dateEnd->copy()->addDays($dayCutOff);
-
-		}elseif ($billingPeriod == 'current_month_current_month') {
-		
-			$dateStart = $currentDate->copy();
-			$dateStart->day( adjustDayWithinMonth(day: $dayStart, currentDate: $dateStart) );
-			
-			$dateEnd = $currentDate->copy();
-			$dateEnd->day( adjustDayWithinMonth(day: $dayEnd, currentDate: $dateEnd) );
-
-			$dateCutOff = $dateEnd->copy()->addDays($dayCutOff);
-
-		}elseif ($billingPeriod == 'current_month_next_month') {
-
-			$dateStart = $currentDate->copy();
-			$dateStart->day( adjustDayWithinMonth(day: $dayStart, currentDate: $dateStart) );
-
-			$dateEnd = $currentDate->copy();
-			$dateEnd->addMonthNoOverflow()->day( adjustDayWithinMonth(day: $dayEnd, currentDate: $dateEnd) );
-
-			$dateCutOff = $dateEnd->copy()->addDays($dayCutOff);
-
-		}else {
-			throw new InvalidArgumentException("Setting::get('".$billingType."_billing_period') is invalid or not exist!");
-		}
-
-		return [
-			'billing_type' => $billingType,
-			'current_month' => $currentDate->copy()->format('F'),
-			'current_date' => $currentDate->copy()->toDateString(),
-			'period_in_text' => $billingPeriod,	
-			'day_start' => $dayStart,
-			'day_end' => $dayEnd,
-			'day_cut_off' => $dayCutOff,
-			'date_start' => $dateStart->toDateString(),
-			'date_end' => $dateEnd->toDateString(),
-			'date_cut_off' => $dateCutOff->toDateString(),
-		];
-		
-	}
-
-}
-
-
-if (! function_exists('fiberBillingPeriod')) {
-	function fiberBillingPeriod($currentDate = null) {
-		$periodInText = Setting::get('fiber_billing_period');
-		$dayStart = (int) Setting::get('fiber_day_start'); 
-		$dayEnd = (int) Setting::get('fiber_day_end'); 
-		$dayCutOff = (int) Setting::get('fiber_day_cut_off'); 
-
-		return billingPeriod(
-			billingPeriod: $periodInText, 
-			dayStart: $dayStart, 
-			dayEnd: $dayEnd, 
-			dayCutOff: $dayCutOff,
-			billingType: 'fiber',
-			currentDate: $currentDate,
-		);
-	}
-
-}
-
-if (! function_exists('p2pBillingPeriod')) {
-	function p2pBillingPeriod($currentDate = null) {
-		$periodInText = Setting::get('p2p_billing_period');
-		$dayStart = (int) Setting::get('p2p_day_start'); 
-		$dayEnd = (int) Setting::get('p2p_day_end'); 
-		$dayCutOff = (int) Setting::get('p2p_day_cut_off'); 
-
-		return billingPeriod(
-			billingPeriod: $periodInText, 
-			dayStart: $dayStart, 
-			dayEnd: $dayEnd, 
-			dayCutOff: $dayCutOff,
-			billingType: 'p2p',
-			currentDate: $currentDate,
-		);
-		
-	}
-
-}
-// end billing
-
+// 
 if (! function_exists('currencyFormat')) {
 	function currencyFormat($value) {
 		return config('app-settings.currency_prefix').' '.
