@@ -48,7 +48,7 @@ class BillEventSubscriber
     public function handleBillGenerated(BillGenerated $event): void
     {
         if ($event->account == null) {
-            $accounts = Account::allowedBill()->installed()->get();
+            $accounts = Account::allowedBill()->get();
             
             foreach ($accounts as $account) {
                 $this->generateBill($account);
@@ -68,11 +68,12 @@ class BillEventSubscriber
             // No unpaid monthly billings found, proceed to create a new billing
             $attributes = [
                 'account_id' => $account->id,
-                'billing_type_id' => 2,
+                'billing_type_id' => 2, // monthly
             ];
             
             $values = [];
             
+            // TODO:: use billing groupings instead of config
             if ($account->isFiber()) {
                 // fiber dates
                 $period = fiberBillingPeriod();
@@ -157,6 +158,7 @@ class BillEventSubscriber
     public function processMonthly()
     {
         if (empty($this->billing->date_start) || empty($this->billing->date_end) || empty($this->billing->date_cut_off)) {
+            // TODO:: change this from using config settings to billing groupings
             if ($this->billing->account->isFiber()) {
                 // fiber dates
                 $period = fiberBillingPeriod();

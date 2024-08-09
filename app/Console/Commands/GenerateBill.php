@@ -32,7 +32,7 @@ class GenerateBill extends Command
         $fiber = $this->option('fiber');
         $p2p = $this->option('p2p');
 
-        $accounts = Account::allowedBill()->installed();
+        $accounts = Account::allowedBill();
 
         // avoid conflict scope
         if ($fiber && !$p2p) {
