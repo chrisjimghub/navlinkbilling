@@ -32,20 +32,6 @@ class AutoGenerateBill extends Command
         //
         if (Setting::get('enable_auto_bill') && Setting::get('enable_auto_bill') == "1") {
 
-            // fiber
-            $period = fiberBillingPeriod();
-            if ($this->dateRunIsToday($period)) {
-                Artisan::call('bill:generate', ['--fiber' => true]);
-                Log::info('The bill:generate --fiber command was run.');
-            }
-
-
-            // p2p
-            $period = p2pBillingPeriod();
-            if ($this->dateRunIsToday($period)) {
-                Artisan::call('bill:generate', ['--p2p' => true]);
-                Log::info('The bill:generate --p2p command was run.');
-            }
             
         }
 

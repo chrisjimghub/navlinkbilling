@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Http\Controllers\Customer\Traits\CustomerPermissions;
 use App\Models\Account;
 use App\Models\Billing;
 use Illuminate\Support\Carbon;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
 use Backpack\Settings\app\Models\Setting;
+use App\Http\Controllers\Admin\Traits\BillingPeriod;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Controllers\Customer\Operations\GcashOperation;
+use App\Http\Controllers\Customer\Traits\CustomerPermissions;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -22,6 +23,7 @@ class DashboardCrudController extends CrudController
 {   
     use CustomerPermissions;
     use GcashOperation;
+    use BillingPeriod;
 
     public function setup()
     {
@@ -114,16 +116,7 @@ class DashboardCrudController extends CrudController
 
     public function noCurrentBillCard(Account $account)
     {
-        $sub = strtolower($account->subscription->name);
-        $period = null;
-
-        if ($sub == 'fiber') {
-            $period = fiberBillingPeriod(now());
-        }elseif ($sub == 'p2p') {
-            $period = p2pBillingPeriod(now());
-        }else {
-            return;
-        }
+        $period = $this->billingPeriod($account->billingGrouping);
 
         // before we proceed let's check first if the user already paid this month's bill
         // if the user already paid it then dont show the card.
@@ -137,12 +130,10 @@ class DashboardCrudController extends CrudController
                     });
             })
             ->exists();
-            
 
         if ($exists) {
             return;
         }
-
 
         $cutOff = Carbon::parse($period['date_cut_off'])->format('D, M j, Y');
         $billPeriod= Carbon::parse($period['date_start'])->format(dateHumanReadable()) . ' - '.

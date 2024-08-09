@@ -11,6 +11,7 @@ use App\Models\AccountCredit;
 use App\Models\AccountStatus;
 use App\Models\ContractPeriod;
 use Illuminate\Support\Carbon;
+use App\Models\BillingGrouping;
 use Illuminate\Support\Facades\DB;
 use App\Models\AccountServiceInterruption;
 use App\Http\Controllers\Admin\Traits\AccountCrud;
@@ -79,6 +80,11 @@ class Account extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function billingGrouping()
+    {
+        return $this->belongsTo(BillingGrouping::class);
+    }
+
     public function accountServiceInterruptions()
     {
         return $this->hasMany(AccountServiceInterruption::class);
@@ -159,7 +165,7 @@ class Account extends Model
             $q->whereIn('id', [1,2]);
             // connected
             // installing 
-        });
+        })->installed();
                 
     }
 

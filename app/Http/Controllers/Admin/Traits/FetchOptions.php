@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\BillingType;
 use App\Models\Subscription;
 use App\Models\AccountStatus;
+use App\Models\BillingGrouping;
 use App\Models\BillingStatus;
 use App\Models\CommunityString;
 use App\Models\ContractPeriod;
@@ -64,5 +65,10 @@ trait FetchOptions
     public function contractPeriodLists()
     {
         return ContractPeriod::pluck('name', 'id')->toArray();
+    }
+
+    public function billingGroupingLists()
+    {
+        return BillingGrouping::pluck('name', 'id')->toArray();
     }
 }

@@ -37,6 +37,11 @@ class AccountRequest extends FormRequest
             // Validate Google Maps coordinates
             'google_map_coordinates' => ['nullable', new GoogleMapCoordinatesValidator],
 
+            'billingGrouping' => [
+                'required',
+                'exists:billing_groupings,id'
+            ]
+
         ];
     }
 

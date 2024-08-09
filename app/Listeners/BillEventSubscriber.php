@@ -2,34 +2,23 @@
 
 namespace App\Listeners;
 
+use App\Events\GenerateBillEvent;
 use App\Models\Account;
 use App\Models\Billing;
-use App\Events\BillGenerated;
 use App\Events\BillProcessed;
-use Illuminate\Support\Carbon;
-use Backpack\Settings\app\Models\Setting;
 use Illuminate\Database\Eloquent\Collection;
+use App\Http\Controllers\Admin\Traits\BillingPeriod;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 
 class BillEventSubscriber
 {
     use CurrencyFormat;
+    use BillingPeriod;
 
     protected $billing;
 
     protected $particulars;
 
-    /**
-     * Create the event listener.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Handle the event.
-     */
     public function handleBillProcessed(BillProcessed $event): void
     {
         if ($event->billing instanceof Collection) {
@@ -44,55 +33,33 @@ class BillEventSubscriber
         
     }
 
-    // Generate monthly fee only
-    public function handleBillGenerated(BillGenerated $event): void
+    public function handleGenerateBillEvent(GenerateBillEvent $event): void
     {
-        if ($event->account == null) {
-            $accounts = Account::allowedBill()->installed()->get();
-            
-            foreach ($accounts as $account) {
-                $this->generateBill($account);
-            }
-
-        }elseif ($event->account instanceof Account) {
-            $this->generateBill($event->account);
-        }
-    }
-
-    public function generateBill(Account $account)
-    {
-        // make sure generate or create only bill if the account has no current unpaid bill with a type of monthly
-        if (!$account->billings()->where(function ($query) {
-            $query->monthly()->unpaid();
-        })->exists()) {
-            // No unpaid monthly billings found, proceed to create a new billing
-            $attributes = [
-                'account_id' => $account->id,
-                'billing_type_id' => 2,
-            ];
-            
-            $values = [];
-            
-            if ($account->isFiber()) {
-                // fiber dates
-                $period = fiberBillingPeriod();
+        foreach ($event->accounts as $account) {
+            // make sure generate or create only bill if the account has no current unpaid bill with a type of monthly
+            if (!$account->billings()->where(function ($query) {
+                $query->monthly()->unpaid();
+            })->exists()) {
+                // No unpaid monthly billings found, proceed to create a new billing
+                $attributes = [
+                    'account_id' => $account->id,
+                    'billing_type_id' => 2, // monthly
+                ];
+                
+                $values = [];
+                
+                $group = $account->billingGrouping;
+                $period = $this->billingPeriod($group);
                 $values['date_start'] = $period['date_start'];
                 $values['date_end'] = $period['date_end'];
                 $values['date_cut_off'] = $period['date_cut_off'];
-            } elseif ($account->isP2P()) {
-                // p2p dates
-                $period = p2pBillingPeriod();
-                $values['date_start'] = $period['date_start'];
-                $values['date_end'] = $period['date_end'];
-                $values['date_cut_off'] = $period['date_cut_off'];
+                
+                // We use firstOrCreate to avoid duplicate if ever it has same billing period.
+                // also this will trigger the dispatch property in billing and run the BillProcessed event.
+                Billing::firstOrCreate($attributes, $values); 
             }
-            
-            // this will trigger the dispatch property in billing and run the BillProcessed event.
-            // we use firstOrCreate to avoid duplicate if ever it has same billing period.
-            Billing::firstOrCreate($attributes, $values); 
         }
     }
-
 
     // 1 run of this = 1 Billing process
     public function processed($billing)
@@ -157,20 +124,11 @@ class BillEventSubscriber
     public function processMonthly()
     {
         if (empty($this->billing->date_start) || empty($this->billing->date_end) || empty($this->billing->date_cut_off)) {
-            if ($this->billing->account->isFiber()) {
-                // fiber dates
-                $period = fiberBillingPeriod();
-                $this->billing->date_start = $period['date_start'];
-                $this->billing->date_end = $period['date_end'];
-                $this->billing->date_cut_off = $period['date_cut_off'];
-
-            } elseif ($this->billing->account->isP2P()) { 
-                // p2p dates
-                $period = p2pBillingPeriod();
-                $this->billing->date_start = $period['date_start'];
-                $this->billing->date_end = $period['date_end'];
-                $this->billing->date_cut_off = $period['date_cut_off'];
-            }
+            $group = $this->billing->account->billingGrouping;
+            $period = $this->billingPeriod($group);
+            $this->billing->date_start = $period['date_start'];
+            $this->billing->date_end = $period['date_end'];
+            $this->billing->date_cut_off = $period['date_cut_off'];
         }
 
         // if empty before_account_snapshot = No Upgrade Planned Application

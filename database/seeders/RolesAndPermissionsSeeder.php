@@ -34,10 +34,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'billings_service_interrupt', 
             'billings_send_notification', 
             'billings_download_invoice', 
-            'billings_bill_setting', 
-            'billings_manual_generate_bill', 
             'billings_filters', 
             'billings_export', 
+            'billings_generate_by_group', 
         ],
 
         'menu_separator' => [
@@ -61,6 +60,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'accounts_delete', 
             'accounts_filters', 
             'accounts_export', 
+            'accounts_import', 
         ],
 
        'customers' => [
@@ -202,6 +202,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'notifications_marked_as_read', // button operation
             'notifications_filters',
             'notifications_customer_payment',
+        ],
+
+        'billing_groupings' => [
+            'billing_groupings_list',
+            'billing_groupings_show',
+            'billing_groupings_create', 
+            'billing_groupings_update', 
+            'billing_groupings_delete', 
         ],
     ];
 
