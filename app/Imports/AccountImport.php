@@ -16,6 +16,7 @@ use App\Rules\GoogleMapCoordinatesValidator;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
+use App\Models\BillingGrouping;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class AccountImport implements 
@@ -46,6 +47,7 @@ class AccountImport implements
         }
 
         $statusId = AccountStatus::whereLike('name', trim($row['account_status']))->pluck('id')->first();
+        $grouping = BillingGrouping::whereLike('name', trim($row['billing_grouping']))->pluck('id')->first();
         
         $account = new Account([
             'customer_id' => $customerId,
@@ -56,6 +58,7 @@ class AccountImport implements
             'google_map_coordinates' => $row['google_map_coordinates'],
             'notes' => $row['notes'],
             'account_status_id' => $statusId,
+            'billing_grouping_id' => $grouping,
         ]);
 
         $account->save();
@@ -96,7 +99,6 @@ class AccountImport implements
             ],
 
             'installed_date' => 'nullable|date',
-            
 
             // Installed address
 
@@ -108,6 +110,11 @@ class AccountImport implements
             'account_status' => [
                 'required', // Make this field mandatory
                 Rule::in($this->accountStatusLists()), // Check if the value is in the provided list
+            ],
+
+            'billing_grouping' => [
+                'required', // Make this field mandatory
+                Rule::in($this->billingGroupingLists()), // Check if the value is in the provided list
             ],
 
 

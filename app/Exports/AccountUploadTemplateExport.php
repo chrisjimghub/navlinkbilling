@@ -6,9 +6,10 @@ use App\Models\Otc;
 use App\Models\Customer;
 use App\Models\Subscription;
 use App\Models\AccountStatus;
+use App\Models\ContractPeriod;
+use App\Models\BillingGrouping;
 use App\Models\PlannedApplication;
 use App\Exports\Traits\ExportHelper;
-use App\Models\ContractPeriod;
 use App\Models\Traits\SchemaTableColumn;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeSheet;
@@ -83,6 +84,9 @@ class AccountUploadTemplateExport implements ShouldAutoSize, WithEvents
             
                 $contract = ContractPeriod::all()->pluck('name')->toArray();
                 $this->createHiddenSheet($sheet, 'ContractPeriods', $contract);
+
+                $grouping = BillingGrouping::all()->pluck('name')->toArray();
+                $this->createHiddenSheet($sheet, 'BillingGroupings', $grouping);
             },
 
             AfterSheet::class => function(AfterSheet $event) {
@@ -92,8 +96,9 @@ class AccountUploadTemplateExport implements ShouldAutoSize, WithEvents
                 $this->listDataValidation($sheet, 'PlannedApps', 'B');                
                 $this->listDataValidation($sheet, 'Subscriptions', 'C');                
                 $this->listDataValidation($sheet, 'AccountStatus', 'H');                
-                $this->listDataValidation($sheet, 'Otcs', 'I');                
-                $this->listDataValidation($sheet, 'ContractPeriods', 'J');                
+                $this->listDataValidation($sheet, 'BillingGroupings', 'I');                
+                $this->listDataValidation($sheet, 'Otcs', 'J');                
+                $this->listDataValidation($sheet, 'ContractPeriods', 'K');                
             },
             
             
