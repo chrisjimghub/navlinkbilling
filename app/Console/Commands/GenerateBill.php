@@ -13,7 +13,7 @@ class GenerateBill extends Command
      *
      * @var string
      */
-    protected $signature = 'bill:generate {--fiber : Include fiber charge} {--p2p : Include P2P charge}';
+    protected $signature = 'bill:generate-test {--fiber : Include fiber charge} {--p2p : Include P2P charge}';
 
 
     /**

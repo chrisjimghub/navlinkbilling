@@ -165,7 +165,7 @@ class Account extends Model
             $q->whereIn('id', [1,2]);
             // connected
             // installing 
-        });
+        })->installed();
                 
     }
 
