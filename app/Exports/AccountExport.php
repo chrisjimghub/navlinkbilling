@@ -72,6 +72,7 @@ class AccountExport implements
                     __('app.otc'),
                     __('app.contract_period'),
                     __('app.account_notes'),
+                    __('app.billing_grouping'),
                 ];
 
                 // Write headers to the sheet
@@ -136,7 +137,8 @@ class AccountExport implements
 
                     $row = $beforeRow;
                     $sheet->setCellValue($col++ . $row, $entry->notes);
-
+                    
+                    $sheet->setCellValue($col++ . $row, $entry->billingGrouping->name); 
 
                     if ($otcLastRow > $row) {
                         $row = $otcLastRow;
