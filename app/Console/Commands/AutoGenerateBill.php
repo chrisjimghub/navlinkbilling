@@ -2,14 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Account;
 use Illuminate\Support\Carbon;
 use App\Models\BillingGrouping;
 use Illuminate\Console\Command;
 use App\Http\Controllers\Admin\Traits\GenerateBill;
 use App\Http\Controllers\Admin\Traits\BillingPeriod;
 
-class AutoGenerateBillCommand extends Command
+class AutoGenerateBill extends Command
 {
     use BillingPeriod;
     use GenerateBill;

@@ -2,15 +2,15 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Controllers\Admin\Traits\SendNotifications;
 use App\Models\Billing;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use Backpack\Settings\app\Models\Setting;
+use App\Http\Controllers\Admin\Traits\BillingPeriod;
+use App\Http\Controllers\Admin\Traits\SendNotifications;
 
 class AutoSendNotification extends Command
 {
+    use BillingPeriod;
     use SendNotifications;
 
     /**
@@ -25,94 +25,35 @@ class AutoSendNotification extends Command
      *
      * @var string
      */
-    protected $description = 'Automatically send bill notifications to customers';
+    protected $description = 'Automatically send billing notifications to all relevant accounts';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        if (Setting::get('enable_auto_bill') && Setting::get('enable_auto_bill') == "1") {
+        $billings = Billing::whereNull('notified_at')
+                    ->monthly()  
+                    ->unpaid()
+                    ->get();
 
-            $this->sendBillNotifications();
-            $this->sendCutOffNOtifications();
+        foreach ($billings as $billing) {
+            $group = $billing->account->billingGrouping;
+            $addDays = $group->bill_notification_days_after_the_bill_created;
+            $dateRun = Carbon::parse($billing->created_at)->addDays($addDays);
+
+            if (!$dateRun->isToday()) {
+                continue;
+            }
+
+            $customer = $billing->account->customer;
+            if (empty($customer->email) || $customer->email == null) {
+                continue;
+            }
+
+            $this->billNotification($customer, $billing);
+            sleep(1);
         }
 
     }
-    
-    private function sendCutOffNOtifications()
-    {
-        $subDays = (int) Setting::get('days_before_send_cut_off_notification');
-
-        $billings = Billing::whereNull('cut_off_notified_at')
-                        ->unpaid()
-                        ->get();
-
-        foreach ($billings as $bill) {
-            $customer = $bill->account->customer;
-
-            // Check if customer email is not empty
-            if (empty($customer->email)) {
-                // Log the issue
-                Log::warning('Customer email is empty for billing ID: ' . $bill->id);
-                continue;
-            }
-
-            $dateRun = Carbon::parse($bill->date_cut_off)->subDays($subDays);
-
-            if (!$dateRun->isToday()) {
-                // dump('NOT TODAY id:' . $bill->id. ' - '.$dateRun->toDateString());
-                continue;
-
-            }
-
-            // dump('TODAY id:' . $bill->id. ' - '.$dateRun->toDateString());
-
-            $this->cutOffNotification($customer, $bill);
-
-            sleep(1);
-
-        }// end foreach
-
-        // dd();
-    }
-
-    private function sendBillNotifications()
-    {
-        $billings = Billing::whereNull('notified_at')
-                                ->unpaid()
-                                ->get();
-
-        $addDays = (int) Setting::get('days_before_send_bill_notification');
-
-                            
-        foreach ($billings as $bill) {
-            $customer = $bill->account->customer;
-
-            // Check if customer email is not empty
-            if (empty($customer->email)) {
-                // Log the issue
-                Log::warning('Customer email is empty for billing ID: ' . $bill->id);
-                continue;
-            }
-
-            $dateRun = Carbon::parse($bill->created_at)->addDays($addDays);
-
-            if (!$dateRun->isToday()) {
-                // dump('NOT TODAY id:' . $bill->id. ' - '.$dateRun->toDateString());
-                continue;
-
-            }
-
-            // dump('TODAY id:' . $bill->id. ' - '.$dateRun->toDateString());
-
-            $this->billNotification($customer, $bill);
-
-            sleep(1);
-
-        }// end foreach
-
-        // dd();
-    }
-
 }
