@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Number;
 
 // Str
 if (! function_exists('strHumanReadable')) {
@@ -244,4 +245,11 @@ if (! function_exists('badgeDanger')) {
     function badgeDanger($value) {
 		return "<span class='badge badge-danger'>{$value}</span>";
     }
+}
+
+// Number
+if (! function_exists('ordinal')) {
+    function ordinal($num) {
+		return Number::ordinal($num);
+	}
 }
