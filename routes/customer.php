@@ -14,16 +14,15 @@ Route::group([
         Route::crud('theme', 'ThemeCrudController');
         Route::crud('dashboard', 'DashboardCrudController');
         Route::crud('billing-history', 'BillingHistoryCrudController');
-    });
-
-    // Group with 'Backpack\CRUD\app\Http\Controllers' namespace
-    Route::group(['namespace' => 'Backpack\CRUD\app\Http\Controllers'], function() {
-        Route::get('edit-account-info', 'MyAccountController@getAccountInfoForm')->name('backpack.account.info');
-        Route::post('edit-account-info', 'MyAccountController@postAccountInfoForm')->name('backpack.account.info.store');
-        Route::post('change-password', 'MyAccountController@postChangePasswordForm')->name('backpack.account.password');
 
         // logout
         Route::get('logout', 'Auth\LoginController@logout')->name('backpack.auth.logout');
         Route::post('logout', 'Auth\LoginController@logout');
     });
+
+    // Group with 'Backpack\CRUD\app\Http\Controllers' namespace
+    Route::group(['namespace' => 'Backpack\CRUD\app\Http\Controllers'], function() {
+        
+    });
+    
 });
