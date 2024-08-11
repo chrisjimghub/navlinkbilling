@@ -3,13 +3,16 @@
 namespace App\Console\Commands;
 
 use Illuminate\Support\Carbon;
+use App\Models\BillingGrouping;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Artisan;
-use Backpack\Settings\app\Models\Setting;
+use App\Http\Controllers\Admin\Traits\GenerateBill;
+use App\Http\Controllers\Admin\Traits\BillingPeriod;
 
 class AutoGenerateBill extends Command
 {
+    use BillingPeriod;
+    use GenerateBill;
+
     /**
      * The name and signature of the console command.
      *
@@ -17,35 +20,34 @@ class AutoGenerateBill extends Command
      */
     protected $signature = 'bill:auto-generate';
 
+
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Automatically generate bills for all accounts';
+
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        //
-        if (Setting::get('enable_auto_bill') && Setting::get('enable_auto_bill') == "1") {
+        $groupings = BillingGrouping::all();
 
-            
+        foreach ($groupings as $group) {
+            $this->info('Generating group '.$group->name.'....');
+            $period = $this->billingPeriod($group);
+
+            $subDays = $group->bill_generate_days_before_end_of_billing_period;
+            $dateRun = Carbon::parse($period['date_end'])->subDays($subDays);
+
+            if ($dateRun->isToday()) {
+                $this->generateBill($group);
+            }
         }
 
-    }
-
-    private function dateRunIsToday($period)
-    {
-        $subDays = (int) Setting::get('days_before_generate_bill');
-        $dateRun = Carbon::parse($period['date_end'])->subDays($subDays);
-
-        if ($dateRun->isToday()) {
-            return true;
-        }
-
-        return false;
+        $this->info('Bills generated successfully.');
     }
 }

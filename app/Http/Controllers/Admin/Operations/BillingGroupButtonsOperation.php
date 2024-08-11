@@ -460,6 +460,8 @@ trait BillingGroupButtonsOperation
 
         $this->billNotification($customer, $billing);
 
+        return notySuccess('Bill notification has been sent successfully!');
+
     }
     
     public function serviceInterrupt($id)

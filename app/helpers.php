@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Number;
 
 // Str
 if (! function_exists('strHumanReadable')) {
@@ -45,6 +46,12 @@ if (! function_exists('modelInstance')) {
 }
 
 // DATES / related to dates
+if (! function_exists('carbonInstance')) {
+	function carbonInstance($date) {
+		return Carbon::parse($date);
+	}
+}
+
 if (! function_exists('dateDaysAndHoursDifference')) {
 	function dateDaysAndHoursDifference($dateStart, $dateEnd) {
 		$dateStart = Carbon::parse($dateStart);
@@ -244,4 +251,11 @@ if (! function_exists('badgeDanger')) {
     function badgeDanger($value) {
 		return "<span class='badge badge-danger'>{$value}</span>";
     }
+}
+
+// Number
+if (! function_exists('ordinal')) {
+    function ordinal($num) {
+		return Number::ordinal($num);
+	}
 }
