@@ -124,7 +124,7 @@ class BillingGroupingCrudController extends CrudController
 
         $this->crud->column([
             'name' => 'bill_cut_off_notification_days_before_cut_off_date',
-            'label' => __('When should we send customer notifications?'),
+            'label' => __('When should we send cut-off notifications?'),
             'type'     => 'closure',
             'function' => function($entry) {
                 if (!$entry->auto_send_cut_off_notification) {
