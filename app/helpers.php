@@ -46,6 +46,12 @@ if (! function_exists('modelInstance')) {
 }
 
 // DATES / related to dates
+if (! function_exists('carbonInstance')) {
+	function carbonInstance($date) {
+		return Carbon::parse($date);
+	}
+}
+
 if (! function_exists('dateDaysAndHoursDifference')) {
 	function dateDaysAndHoursDifference($dateStart, $dateEnd) {
 		$dateStart = Carbon::parse($dateStart);
