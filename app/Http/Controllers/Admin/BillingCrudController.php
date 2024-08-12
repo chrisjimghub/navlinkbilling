@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\FilterQueries\BillingFilterQueries;
 use App\Models\Billing;
 use App\Models\BillingType;
 use App\Models\ContractPeriod;
@@ -31,11 +32,12 @@ class BillingCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
-    use BillingGroupButtonsOperation;
     use FetchOptions;
     use FilterOperation;
     use ExportOperation;
+    use BillingFilterQueries;
     use GenerateByGroupOperation;
+    use BillingGroupButtonsOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -90,27 +92,8 @@ class BillingCrudController extends CrudController
     protected function setupListOperation()
     {
         $this->filterQueries(function ($query) {
-            $status = request()->input('status');
-            $type = request()->input('type');
-            $period = request()->input('period');
-
-            if ($status) {
-                $query->where('billing_status_id', $status);
-            
-            }
-
-            if ($type) {
-                $query->{$type == 1 ? 'installment' : 'monthly'}();
-            }
-
-            if ($period) {
-                $dates = explode('-', $period);
-                $dateStart = Carbon::parse($dates[0]);
-                $dateEnd = Carbon::parse($dates[1]);
-                $query->withinBillingPeriod($dateStart, $dateEnd);
-            }
+            $this->billingFilterQueries($query);
         });
-
 
         if (! $this->crud->getRequest()->has('order')){
             $this->crud->orderBy('billing_status_id', 'desc'); //default order unpaid
