@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6233134ea7a8ec5e29b234c7fe9781a1",
+    "content-hash": "08185cff19aeaf8d6a2183625d74310d",
     "packages": [
         {
             "name": "backpack/activity-log",
@@ -9089,6 +9089,66 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "winex01/access",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/winex01/access.git",
+                "reference": "3704feeaa97f0d89c3cc62cb6f923d1fd1b665a3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/winex01/access/zipball/3704feeaa97f0d89c3cc62cb6f923d1fd1b665a3",
+                "reference": "3704feeaa97f0d89c3cc62cb6f923d1fd1b665a3",
+                "shasum": ""
+            },
+            "require": {
+                "backpack/crud": "^6.7"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~5|~6",
+                "phpunit/phpunit": "~9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Winex01\\Access\\AccessServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap/helpers.php"
+                ],
+                "psr-4": {
+                    "Winex01\\Access\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Winnie A. Damayo",
+                    "email": "winnie131212592@gmail.com",
+                    "homepage": "https://github.com/winex01"
+                }
+            ],
+            "description": ".....",
+            "homepage": "https://github.com/winex01/access",
+            "keywords": [
+                "access",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/winex01/access/issues",
+                "source": "https://github.com/winex01/access/tree/1.0.0"
+            },
+            "time": "2024-08-12T07:39:49+00:00"
         },
         {
             "name": "winex01/backpack-filter",
