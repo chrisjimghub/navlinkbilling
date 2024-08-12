@@ -9092,16 +9092,16 @@
         },
         {
             "name": "winex01/access",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/winex01/access.git",
-                "reference": "3704feeaa97f0d89c3cc62cb6f923d1fd1b665a3"
+                "reference": "8b895bf0619b2bc9d4156ba119647537f15c88f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/winex01/access/zipball/3704feeaa97f0d89c3cc62cb6f923d1fd1b665a3",
-                "reference": "3704feeaa97f0d89c3cc62cb6f923d1fd1b665a3",
+                "url": "https://api.github.com/repos/winex01/access/zipball/8b895bf0619b2bc9d4156ba119647537f15c88f8",
+                "reference": "8b895bf0619b2bc9d4156ba119647537f15c88f8",
                 "shasum": ""
             },
             "require": {
@@ -9146,9 +9146,9 @@
             ],
             "support": {
                 "issues": "https://github.com/winex01/access/issues",
-                "source": "https://github.com/winex01/access/tree/1.0.0"
+                "source": "https://github.com/winex01/access/tree/1.0.1"
             },
-            "time": "2024-08-12T07:39:49+00:00"
+            "time": "2024-08-12T08:26:40+00:00"
         },
         {
             "name": "winex01/backpack-filter",
@@ -9214,16 +9214,16 @@
         },
         {
             "name": "winex01/backpack-permission-manager",
-            "version": "1.2.2",
+            "version": "1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/winex01/backpack-permission-manager.git",
-                "reference": "eadd4cc189183f2fd4846ee8c46729e0b206addc"
+                "reference": "3878d5593f75ae7062bf117ef2589f09a1435e40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/winex01/backpack-permission-manager/zipball/eadd4cc189183f2fd4846ee8c46729e0b206addc",
-                "reference": "eadd4cc189183f2fd4846ee8c46729e0b206addc",
+                "url": "https://api.github.com/repos/winex01/backpack-permission-manager/zipball/3878d5593f75ae7062bf117ef2589f09a1435e40",
+                "reference": "3878d5593f75ae7062bf117ef2589f09a1435e40",
                 "shasum": ""
             },
             "require": {
@@ -9268,9 +9268,9 @@
             ],
             "support": {
                 "issues": "https://github.com/winex01/backpack-permission-manager/issues",
-                "source": "https://github.com/winex01/backpack-permission-manager/tree/1.2.2"
+                "source": "https://github.com/winex01/backpack-permission-manager/tree/1.2.3"
             },
-            "time": "2024-08-02T12:00:45+00:00"
+            "time": "2024-08-11T14:51:53+00:00"
         }
     ],
     "packages-dev": [
@@ -11575,16 +11575,16 @@
         },
         {
             "name": "sebastian/comparator",
-            "version": "5.0.1",
+            "version": "5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/comparator.git",
-                "reference": "2db5010a484d53ebf536087a70b4a5423c102372"
+                "reference": "2d3e04c3b4c1e84a5e7382221ad8883c8fbc4f53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/2db5010a484d53ebf536087a70b4a5423c102372",
-                "reference": "2db5010a484d53ebf536087a70b4a5423c102372",
+                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/2d3e04c3b4c1e84a5e7382221ad8883c8fbc4f53",
+                "reference": "2d3e04c3b4c1e84a5e7382221ad8883c8fbc4f53",
                 "shasum": ""
             },
             "require": {
@@ -11595,7 +11595,7 @@
                 "sebastian/exporter": "^5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^10.3"
+                "phpunit/phpunit": "^10.4"
             },
             "type": "library",
             "extra": {
@@ -11640,7 +11640,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/comparator/issues",
                 "security": "https://github.com/sebastianbergmann/comparator/security/policy",
-                "source": "https://github.com/sebastianbergmann/comparator/tree/5.0.1"
+                "source": "https://github.com/sebastianbergmann/comparator/tree/5.0.2"
             },
             "funding": [
                 {
@@ -11648,7 +11648,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-08-14T13:18:12+00:00"
+            "time": "2024-08-12T06:03:08+00:00"
         },
         {
             "name": "sebastian/complexity",

