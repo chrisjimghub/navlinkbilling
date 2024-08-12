@@ -19,7 +19,8 @@ function () {
         Route::get('email/verify/{id}/{hash}', 'Auth\VerifyEmailController@verifyEmail')->name('verification.verify');
         Route::post('email/verification-notification', 'Auth\VerifyEmailController@resendVerificationEmail')->name('verification.send');
 
-        // My account profile 
+        // My account profile, override the backpack route that has prefix for edit account, no need to add this to group middleware,
+        // because it's already has middle in the class constructor 
         Route::get('edit-account-info', 'MyAccountController@getAccountInfoForm')->name('backpack.account.info');
         Route::post('edit-account-info', 'MyAccountController@postAccountInfoForm')->name('backpack.account.info.store');
         Route::post('change-password', 'MyAccountController@postChangePasswordForm')->name('backpack.account.password');
