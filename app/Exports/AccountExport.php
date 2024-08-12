@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Http\Controllers\Admin\FilterQueries\AccountFilterQueries;
 use App\Models\Account;
 use App\Exports\Traits\ExportHelper;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -21,6 +22,7 @@ class AccountExport implements
     use Exportable;
     use ExportHelper;
     use UrlQueryString;
+    use AccountFilterQueries;
 
     protected $title = 'Accounts';
 
@@ -29,16 +31,7 @@ class AccountExport implements
         $entries = Account::query();
 
         // This request input is already validated in the Export operation
-        $status = request()->input('status');
-        $sub = request()->input('subscription');
-
-        if ($status) {
-            $entries->withStatus($status);
-        }
-
-        if ($sub) {
-            $entries->withSubscription($sub);
-        }
+        $entries = $this->accountFilterQueries($entries);
 
         return $entries->get();
     }

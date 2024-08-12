@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use App\Http\Controllers\Admin\FilterQueries\AccountFilterQueries;
 use RedSquirrelStudio\LaravelBackpackImportOperation\ImportOperation;
 use App\Http\Controllers\Admin\Operations\AccountUploadTemplateExportOperation;
 use RedSquirrelStudio\LaravelBackpackImportOperation\Requests\ImportFileRequest;
@@ -31,11 +32,12 @@ class AccountCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
-    use ImportOperation;
-    use AccountUploadTemplateExportOperation;
     use FetchOptions;
     use FilterOperation;
     use ExportOperation;
+    use ImportOperation;
+    use AccountFilterQueries;
+    use AccountUploadTemplateExportOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -77,16 +79,7 @@ class AccountCrudController extends CrudController
     protected function setupListOperation()
     {
         $this->filterQueries(function ($query) {
-            $status = request()->input('status');
-            $sub = request()->input('subscription');
-
-            if ($status) {
-                $query->withStatus($status);
-            }
-
-            if ($sub) {
-                $query->withSubscription($sub);
-            }
+            $this->accountFilterQueries($query);
         });
 
         // eager loading improves performance
