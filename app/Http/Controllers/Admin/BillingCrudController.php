@@ -66,20 +66,29 @@ class BillingCrudController extends CrudController
             'name' => 'period',
             'label' => __('Billing Period'),
             'type' => 'date_range',
+            'wrapper' => [
+                'class' => 'form-group col-md-3'
+            ]
         ]);
 
         $this->crud->field([
             'name' => 'status',
             'label' => __('Status'),
-            'type' => 'select',
+            'type' => 'select_from_array',
             'options' => $this->billingStatusLists(),
+            'wrapper' => [
+                'class' => 'form-group col-md-2'
+            ]
         ]);
 
         $this->crud->field([
             'name' => 'type',
             'label' => __('Type'),
-            'type' => 'select',
+            'type' => 'select_from_array',
             'options' => $this->billingTypeLists(),
+            'wrapper' => [
+                'class' => 'form-group col-md-2'
+            ]
         ]);
     }
 

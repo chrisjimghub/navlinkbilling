@@ -58,22 +58,31 @@ class AccountCrudController extends CrudController
         $this->crud->field([
             'name' => 'status',
             'label' => __('Status'),
-            'type' => 'select',
+            'type' => 'select_from_array',
             'options' => $this->accountStatusLists(),
+            'wrapper' => [
+                'class' => 'form-group col-md-2'
+            ]
         ]);
 
         $this->crud->field([
             'name' => 'subscription',
             'label' => __('Subscription'),
-            'type' => 'select',
+            'type' => 'select_from_array',
             'options' => $this->subscriptionLists(),
+            'wrapper' => [
+                'class' => 'form-group col-md-2'
+            ]
         ]);
 
         $this->crud->field([
             'name' => 'grouping',
             'label' => __('Billing Grouping'),
-            'type' => 'select',
+            'type' => 'select_from_array',
             'options' => $this->billingGroupingLists(),
+            'wrapper' => [
+                'class' => 'form-group col-md-2'
+            ]
         ]);
     }
 
