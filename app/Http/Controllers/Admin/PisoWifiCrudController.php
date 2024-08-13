@@ -43,7 +43,22 @@ class PisoWifiCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
+        CRUD::setFromDb(); 
+
+        $this->accountColumn();
+
+        $this->crud->modifyColumn('schedule', [
+            'type'     => 'closure',
+            'function' => function($entry) {
+                return 'Every <span class="text-success">'.ordinal($entry->schedule) .'</span> day of the month.';
+            },
+            'escaped' => false,            
+        ]);
+
+        $this->crud->column([
+            'name' => 'users',
+            'label' => __('app.piso_wifi.harvestor'),
+        ]);
     }
 
     protected function setupShowOperation()
@@ -66,7 +81,7 @@ class PisoWifiCrudController extends CrudController
 
         $this->crud->setValidation([
             'schedule' => 'required|integer|min:1|max:31', 
-            'users' => 'required|array|min:1|max:2', 
+            'users' => 'required|array|min:1', 
             'account_id' => 'required|integer|exists:accounts,id|unique:piso_wifis,account_id,'.$id,
         ], [
             'users.required' => __('app.piso_wifi.harvestor_required')
