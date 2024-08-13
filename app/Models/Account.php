@@ -135,6 +135,11 @@ class Account extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeWithBillingGrouping($query, $id)
+    {
+        return $query->where('billing_grouping_id', $id);
+    }
+
     public function scopeWithStatus($query, $statusId)
     {
         return $query->where('account_status_id', $statusId);

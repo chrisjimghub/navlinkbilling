@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Http\Controllers\Admin\FilterQueries\BillingFilterQueries;
 use App\Models\Billing;
 use Illuminate\Support\Carbon;
 use App\Exports\Traits\ExportHelper;
@@ -21,45 +22,19 @@ class BillingExport implements
 {
     use Exportable;
     use ExportHelper;
+    use BillingFilterQueries;
 
     protected $title = 'Billings';
 
     protected function entries()
     {
-        // this request inputs are already validated in Export operation
-        $status = request()->input('status');
-        $type = request()->input('type');
-        $period = request()->input('period');
-
-
         $entries = Billing::join('accounts', 'billings.account_id', '=', 'accounts.id')
                     ->join('customers', 'accounts.customer_id', '=', 'customers.id')
                     ->orderBy('customers.last_name', 'asc')
                     ->orderBy('customers.first_name', 'asc')
                     ->select('billings.*');
 
-        if ($status) {
-            if ($status == 1) {
-                $entries = $entries->paid();
-            } elseif ($status == 2) {
-                $entries = $entries->unpaid();
-            }
-        }
-
-        if ($type) {
-            if ($type == 1) {
-                $entries = $entries->installment();
-            } elseif ($type == 2) {
-                $entries = $entries->monthly();
-            }
-        }
-
-        if ($period) {
-            $dates = explode('-', $period);
-            $dateStart = Carbon::parse($dates[0]);
-            $dateEnd = Carbon::parse($dates[1]);
-            $entries->withinBillingPeriod($dateStart, $dateEnd);
-        }
+        $entries = $this->billingFilterQueries($entries);
 
         return $entries->get();
     }
