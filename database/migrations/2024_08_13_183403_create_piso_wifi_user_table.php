@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('piso_wifis', function (Blueprint $table) {
+        Schema::create('piso_wifi_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_id')->constrained('accounts')->onDelete('cascade')->unique();
-            $table->integer('schedule');
+            $table->foreignId('piso_wifi_id')->constrained('piso_wifis')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('piso_wifis');
+        Schema::dropIfExists('piso_wifi_user');
     }
 };

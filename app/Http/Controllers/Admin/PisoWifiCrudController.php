@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\PisoWifiRequest;
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -19,6 +19,8 @@ class PisoWifiCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
+    use CrudExtend;
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -29,6 +31,8 @@ class PisoWifiCrudController extends CrudController
         CRUD::setModel(\App\Models\PisoWifi::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/piso-wifi');
         CRUD::setEntityNameStrings('piso wifi', 'piso wifis');
+
+        $this->userPermissions();
     }
 
     /**
@@ -40,11 +44,11 @@ class PisoWifiCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::setFromDb(); // set columns from db columns.
+    }
 
-        /**
-         * Columns can be defined using the fluent syntax:
-         * - CRUD::column('price')->type('number');
-         */
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**
@@ -55,15 +59,44 @@ class PisoWifiCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation([
-            // 'name' => 'required|min:2',
-        ]);
-        CRUD::setFromDb(); // set fields from db columns.
+        $id = null;
+        if ($this->crud->getOperation() == 'update') {
+            $id = $this->crud->getCurrentEntryId();
+        }
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+        $this->crud->setValidation([
+            'schedule' => 'required|integer|min:1|max:31', 
+            'users' => 'required|array|min:1|max:2', 
+            'account_id' => 'required|integer|exists:accounts,id|unique:piso_wifis,account_id,'.$id,
+        ], [
+            'users.required' => __('app.piso_wifi.harvestor_required')
+        ]);
+        
+        $this->accountField(label: __('app.account'));
+
+        $this->crud->field([
+            'name' => 'schedule',
+            'type' => 'number',
+            'hint' => __('app.piso_wifi.schedule_hint'),
+            'attributes' => [
+                "step" => "any",
+                'min' => '1',
+                'max' => '31',
+            ],
+        ]);
+
+        $this->crud->field([ 
+            'label' => __('app.piso_wifi.harvestor'),
+            'type'  => 'select_multiple',
+            'name'  => 'users',
+             
+            'options'   => (function ($query) {
+                return $query
+                    ->adminUsersOnly()
+                    ->orderBy('name', 'ASC')
+                    ->get();
+            }),
+        ]);
     }
 
     /**

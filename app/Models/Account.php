@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Otc;
 use App\Models\Model;
 use App\Models\Billing;
+use App\Models\PisoWifi;
 use App\Models\Subscription;
 use App\Events\BillProcessed;
 use App\Models\AccountCredit;
@@ -80,6 +81,11 @@ class Account extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function pisoWifi()
+    {
+        return $this->hasOne(PisoWifi::class);
+    }
+
     public function billingGrouping()
     {
         return $this->belongsTo(BillingGrouping::class);

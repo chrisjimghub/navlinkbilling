@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Model;
+use App\Models\Account;
 
 class PisoWifi extends Model
 {
@@ -31,6 +33,16 @@ class PisoWifi extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'piso_wifi_user')->withTimestamps();
+    }
+
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
 
     /*
     |--------------------------------------------------------------------------
