@@ -68,6 +68,13 @@ class AccountCrudController extends CrudController
             'type' => 'select',
             'options' => $this->subscriptionLists(),
         ]);
+
+        $this->crud->field([
+            'name' => 'grouping',
+            'label' => __('Billing Grouping'),
+            'type' => 'select',
+            'options' => $this->billingGroupingLists(),
+        ]);
     }
 
     /**

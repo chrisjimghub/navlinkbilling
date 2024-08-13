@@ -8,6 +8,7 @@ trait AccountFilterQueries
     {
         $status = request()->input('status');
         $sub = request()->input('subscription');
+        $grouping = request()->input('grouping');
 
         if ($status) {
             $query->withStatus($status);
@@ -15,6 +16,10 @@ trait AccountFilterQueries
 
         if ($sub) {
             $query->withSubscription($sub);
+        }
+
+        if ($grouping) {
+            $query->withBillingGrouping($grouping);
         }
 
         return $query;

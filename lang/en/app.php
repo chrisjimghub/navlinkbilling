@@ -15,8 +15,8 @@ return [
     // Accounts
     'account'                        => 'Account',
     'account_field_validation'       => 'The account field is required.',
-    'account_name'                   => 'Acount Name (Customer)',
-    'account_names'                  => 'Acount Names (Customers)',
+    'account_name'                   => 'Account Name (Customer)',
+    'account_names'                  => 'Account Names (Customers)',
     'account_google_map_coordinates' => 'Coordinates',
     'account_installed_date'         => 'Installed Date',
     'account_installed_address'      => 'Installed Address',
