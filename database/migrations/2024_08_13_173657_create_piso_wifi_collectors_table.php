@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('account_id')->constrained('accounts')->onDelete('cascade')->unique();
             $table->integer('schedule');
+            $table->timestamp('last_notified_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
