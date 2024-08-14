@@ -197,6 +197,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         'notifications' => [
             'notifications_list',
+            'notifications_show',
             'notifications_delete',
             'notifications_cut_off', // permission to received noty
             'notifications_marked_as_read', // button operation
@@ -248,9 +249,12 @@ class RolesAndPermissionsSeeder extends Seeder
         // assign all roles define in config/seeder to admin
         $this->assignAllRolesToAdmin();
 
+        // collector
+        $this->roleCollectorAndPermissions();
+
     }
 
-    private function assignAllRolesToAdmin()
+    public function assignAllRolesToAdmin()
     {
         // super admin ID = 1
         $admin = User::findOrFail(1);
@@ -260,7 +264,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin->syncRoles($roles);
     }
 
-    private function createRolesAndPermissions()
+    public function createRolesAndPermissions()
     {
         foreach ($this->rolesAndPermissions as $role => $permissions){
             // create role
@@ -282,12 +286,29 @@ class RolesAndPermissionsSeeder extends Seeder
 
     }
 
-    private function dontAssignRoles()
+    public function dontAssignRoles()
     {
         return [
             'community_strings',
             'olts',
             'raisepon2s'
         ];
+    }
+
+    public function roleCollectorAndPermissions()
+    {
+        $role = config('permission.models.role')::firstOrCreate([
+            'name' => 'collector',
+            'guard_name' => $this->guardName,
+        ]);
+
+        $role->syncPermissions([
+            'notifications_list',
+            'notifications_show',
+            'notifications_delete',
+            'notifications_filters',
+            'notifications_marked_as_read',
+            'accounts_show',
+        ]);
     }
 }
