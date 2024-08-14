@@ -113,6 +113,13 @@ class User extends Authenticatable
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    // In User model
+    public function scopeRoleCollectors($query)
+    {
+        return $query->role('collector');
+    }
+
+
     public function scopeAdminUsersOnly(Builder $query, $withEmailContainWith = null)
     {
         if ($withEmailContainWith) {
@@ -122,7 +129,6 @@ class User extends Authenticatable
         return $query->whereNull('customer_id');
     }
     
-
     /*
     |--------------------------------------------------------------------------
     | ACCESSORS

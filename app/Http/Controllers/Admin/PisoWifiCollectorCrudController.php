@@ -107,7 +107,7 @@ class PisoWifiCollectorCrudController extends CrudController
              
             'options'   => (function ($query) {
                 return $query
-                    ->adminUsersOnly()
+                    ->roleCollectors()                    
                     ->orderBy('name', 'ASC')
                     ->get();
             }),
