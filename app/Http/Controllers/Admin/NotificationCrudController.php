@@ -42,11 +42,14 @@ class NotificationCrudController extends CrudController
         $this->crud->field([
             'name' => 'status',
             'label' => __('Status'),
-            'type' => 'select',
+            'type' => 'select_from_array',
             'options' => [
                 'read' => 'Read',
                 'unread' => 'Unread',
             ],
+            'wrapper' => [
+                'class' => 'form-group col-md-2'
+            ]
         ]);
     }
 

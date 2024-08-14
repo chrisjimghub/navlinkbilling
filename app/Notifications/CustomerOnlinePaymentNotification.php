@@ -4,10 +4,11 @@ namespace App\Notifications;
 
 use App\Models\Billing;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
 
-class CustomerOnlinePaymentNotification extends Notification
+class CustomerOnlinePaymentNotification extends Notification implements ShouldQueue
 {
     use Queueable;
     use CurrencyFormat;

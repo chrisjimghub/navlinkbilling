@@ -153,4 +153,10 @@ return [
     ],
 
     'billing_grouping' => 'Billing Grouping',
+
+    'piso_wifi' => [
+        'schedule_hint' => 'Harvest date.',
+        'harvestor' => 'Harvestor / Collector',
+        'harvestor_required' => 'The harvestor / collector field is required.',
+    ]
 ];

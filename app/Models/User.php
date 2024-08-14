@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Customer;
+use App\Models\PisoWifiCollector;
 use App\Models\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -97,6 +98,11 @@ class User extends Authenticatable
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function pisoWifiCollectors()
+    {
+        return $this->belongsToMany(PisoWifiCollector::class, 'piso_wifi_user')->withTimestamps();
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
