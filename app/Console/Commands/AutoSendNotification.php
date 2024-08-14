@@ -18,7 +18,7 @@ class AutoSendNotification extends Command
      *
      * @var string
      */
-    protected $signature = 'bill:auto-send-notification';
+    protected $signature = 'auto:send-notification';
 
     /**
      * The console command description.

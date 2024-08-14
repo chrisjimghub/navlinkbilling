@@ -18,7 +18,7 @@ class AutoGenerateBill extends Command
      *
      * @var string
      */
-    protected $signature = 'bill:auto-generate';
+    protected $signature = 'auto:generate-bill';
 
 
     /**

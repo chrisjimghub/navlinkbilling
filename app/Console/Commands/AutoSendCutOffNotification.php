@@ -16,7 +16,7 @@ class AutoSendCutOffNotification extends Command
      *
      * @var string
      */
-    protected $signature = 'bill:auto-send-cut-off-notification';
+    protected $signature = 'auto:send-cut-off-notification';
 
 
     /**
