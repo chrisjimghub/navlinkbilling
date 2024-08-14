@@ -173,8 +173,8 @@ class Account extends Model
     {
         return $query->whereHas('accountStatus', function ($q) {
             $q->whereIn('id', [1,2]);
-            // connected
-            // installing 
+            // 1. connected
+            // 2. installing 
         })->installed();
                 
     }
