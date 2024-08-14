@@ -55,6 +55,24 @@ class AccountStatusesTableSeeder extends Seeder
                 'updated_at' => '2024-07-04 16:52:56',
                 'deleted_at' => NULL,
             ),
+            4 => 
+            array (
+                'id' => 5,
+                'name' => 'Connected - Piso Wifi',
+                'badge_css' => 'badge badge-info',
+                'created_at' => '2024-08-14 16:31:41',
+                'updated_at' => '2024-08-14 16:33:10',
+                'deleted_at' => NULL,
+            ),
+            5 => 
+            array (
+                'id' => 6,
+                'name' => 'Connected - Voucher Wifi',
+                'badge_css' => 'badge badge-primary',
+                'created_at' => '2024-08-14 16:34:46',
+                'updated_at' => '2024-08-14 16:34:46',
+                'deleted_at' => NULL,
+            ),
         ));
         
         
