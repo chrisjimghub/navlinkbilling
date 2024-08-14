@@ -212,12 +212,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'billing_groupings_delete', 
         ],
 
-        'piso_wifis' => [
-            'piso_wifis_list',
-            'piso_wifis_show',
-            'piso_wifis_create', 
-            'piso_wifis_update', 
-            'piso_wifis_delete', 
+        'piso_wifi_collectors' => [
+            'piso_wifi_collectors_list',
+            'piso_wifi_collectors_show',
+            'piso_wifi_collectors_create', 
+            'piso_wifi_collectors_update', 
+            'piso_wifi_collectors_delete', 
         ],
     ];
 

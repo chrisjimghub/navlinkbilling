@@ -11,7 +11,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class PisoWifiCrudController extends CrudController
+class PisoWifiCollectorCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -28,9 +28,9 @@ class PisoWifiCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\PisoWifi::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/piso-wifi');
-        CRUD::setEntityNameStrings('piso wifi', 'piso wifis');
+        CRUD::setModel(\App\Models\PisoWifiCollector::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/piso-wifi-collector');
+        CRUD::setEntityNameStrings('piso wifi collector', 'piso wifi collectors');
 
         $this->userPermissions();
     }
@@ -82,7 +82,7 @@ class PisoWifiCrudController extends CrudController
         $this->crud->setValidation([
             'schedule' => 'required|integer|min:1|max:31', 
             'users' => 'required|array|min:1', 
-            'account_id' => 'required|integer|exists:accounts,id|unique:piso_wifis,account_id,'.$id,
+            'account_id' => 'required|integer|exists:accounts,id|unique:piso_wifi_collectors,account_id,'.$id,
         ], [
             'users.required' => __('app.piso_wifi.harvestor_required')
         ]);

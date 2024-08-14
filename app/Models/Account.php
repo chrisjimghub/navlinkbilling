@@ -5,14 +5,13 @@ namespace App\Models;
 use App\Models\Otc;
 use App\Models\Model;
 use App\Models\Billing;
-use App\Models\PisoWifi;
 use App\Models\Subscription;
-use App\Events\BillProcessed;
 use App\Models\AccountCredit;
 use App\Models\AccountStatus;
 use App\Models\ContractPeriod;
 use Illuminate\Support\Carbon;
 use App\Models\BillingGrouping;
+use App\Models\PisoWifiCollector;
 use Illuminate\Support\Facades\DB;
 use App\Models\AccountServiceInterruption;
 use App\Http\Controllers\Admin\Traits\AccountCrud;
@@ -83,7 +82,7 @@ class Account extends Model
     */
     public function pisoWifi()
     {
-        return $this->hasOne(PisoWifi::class);
+        return $this->hasOne(PisoWifiCollector::class);
     }
 
     public function billingGrouping()

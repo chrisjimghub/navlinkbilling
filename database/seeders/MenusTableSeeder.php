@@ -502,16 +502,16 @@ class MenusTableSeeder extends Seeder
             32 => 
             array (
                 'id' => 33,
-                'label' => 'Piso Wifis',
-                'icon' => 'las la-wifi',
+                'label' => 'Piso Wifi Collectors',
+                'icon' => 'las la-user-tie',
                 'url' => 'piso-wifi',
-                'permissions' => '["piso_wifis_list"]',
+                'permissions' => '["piso_wifi_collectors_list"]',
                 'parent_id' => NULL,
                 'lft' => 12,
                 'rgt' => 13,
                 'depth' => 1,
                 'created_at' => '2024-08-13 18:19:00',
-                'updated_at' => '2024-08-13 18:19:00',
+                'updated_at' => '2024-08-14 08:22:22',
                 'deleted_at' => NULL,
             ),
         ));

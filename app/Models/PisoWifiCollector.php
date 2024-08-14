@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Model;
 use App\Models\Account;
 
-class PisoWifi extends Model
+class PisoWifiCollector extends Model
 {
 
     /*
@@ -15,7 +15,7 @@ class PisoWifi extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'piso_wifis';
+    protected $table = 'piso_wifi_collectors';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -35,7 +35,7 @@ class PisoWifi extends Model
     */
     public function users()
     {
-        return $this->belongsToMany(User::class, 'piso_wifi_user')->withTimestamps();
+        return $this->belongsToMany(User::class, 'piso_wifi_collector_user')->withTimestamps();
     }
 
 
