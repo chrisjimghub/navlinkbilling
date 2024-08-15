@@ -57,7 +57,7 @@ class WifiHarvestCrudController extends CrudController
         CRUD::setValidation([
             // 'name' => 'required|min:2',
         ]);
-        CRUD::setFromDb(); // set fields from db columns.
+        // CRUD::setFromDb(); // set fields from db columns.
     }
 
     /**
