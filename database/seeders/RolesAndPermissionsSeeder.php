@@ -103,7 +103,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'subscriptions_create', 
             'subscriptions_show', 
             'subscriptions_update', 
-            'subscriptions_delete', 
         ],
 
         // One-Time Charge
@@ -291,7 +290,8 @@ class RolesAndPermissionsSeeder extends Seeder
         return [
             'community_strings',
             'olts',
-            'raisepon2s'
+            'raisepon2s',
+            'subscriptions',
         ];
     }
 

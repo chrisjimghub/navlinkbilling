@@ -38,8 +38,9 @@ class AccountRequest extends FormRequest
             'google_map_coordinates' => ['nullable', new GoogleMapCoordinatesValidator],
 
             'billingGrouping' => [
-                'required',
-                'exists:billing_groupings,id'
+                'nullable',
+                'exists:billing_groupings,id',
+                'required_unless:subscription,4' // hotspot voucher
             ]
 
         ];
@@ -65,6 +66,8 @@ class AccountRequest extends FormRequest
             'otcs.*.exists' => 'Each selected one-time charge must exist in the database.',
 
             'accountStatus.required' => 'The account status field is required.',
+
+            'billingGrouping.required_unless' => 'The billing grouping field is required unless subscription is hotspot voucher.'
         ];
     }
 
