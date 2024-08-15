@@ -398,4 +398,16 @@ class Account extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public function setBillingGroupingIdAttribute($value)
+    {
+        // Check if subscription_id is 4
+        if ($this->subscription_id == 4) {
+            // If so, set billing_grouping_id to null
+            $this->attributes['billing_grouping_id'] = null;
+        } else {
+            // Otherwise, set billing_grouping_id to the provided value
+            $this->attributes['billing_grouping_id'] = $value;
+        }
+    }
+    
 }
