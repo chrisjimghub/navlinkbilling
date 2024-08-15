@@ -219,6 +219,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'piso_wifi_collectors_update', 
             'piso_wifi_collectors_delete', 
         ],
+
+        'wifi_harvests' => [
+            'wifi_harvests_list',
+            'wifi_harvests_show',
+            'wifi_harvests_create', 
+            'wifi_harvests_update', 
+            'wifi_harvests_delete', 
+        ],
     ];
 
     /**
