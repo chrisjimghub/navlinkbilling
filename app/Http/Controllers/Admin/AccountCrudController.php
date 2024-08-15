@@ -180,7 +180,7 @@ class AccountCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        Widget::add()->type('script')->content(asset('assets/js/admin/forms/planned_application.js'));
+        Widget::add()->type('script')->content(asset('assets/js/admin/forms/account.js'));
 
         $this->crud->setValidation(AccountRequest::class);
         

@@ -25,3 +25,12 @@ crud.field('planned_application_id').onChange(function(field) {
         });
     }
 }).change();
+
+
+crud.field('subscription').onChange(function(field) {
+    if (field.value != 4) { // hotspot voucher  
+        crud.field('billingGrouping').show();
+    } else {
+        crud.field('billingGrouping').hide();
+    }   
+}).change();
