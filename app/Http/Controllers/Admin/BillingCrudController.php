@@ -53,6 +53,8 @@ class BillingCrudController extends CrudController
         $this->userPermissions();
 
         $this->overrideButtonDeleteUpdate();
+
+        $this->crud->query->billingCrudOnly();
     }
 
     /**

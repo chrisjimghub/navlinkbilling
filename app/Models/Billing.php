@@ -210,6 +210,13 @@ class Billing extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeBillingCrudOnly(Builder $query)
+    {
+        return $query->whereHas('account', function (Builder $query) {
+            $query->whereNotIn('subscription_id', [3,4]); // Not 3. Piso Wifi / 4.Voucher
+        });
+    }
+
     public function scopeOwnByCustomer(Builder $query, $customerId)
     {
         return $query->whereHas('account', function (Builder $query) use ($customerId) {
