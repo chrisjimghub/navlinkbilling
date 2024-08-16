@@ -39,16 +39,21 @@ trait AccountCrud
                 });
             },
             'orderLogic' => function ($query, $column, $columnDirection) use ($currentTable) {
-                return $query->leftJoin('accounts', 'accounts.id', '=', $currentTable.'.account_id')
-                            ->leftJoin('customers', 'customers.id', '=', 'accounts.customer_id')
-                            ->leftJoin('planned_applications', 'planned_applications.id', '=', 'accounts.planned_application_id')
-                            ->leftJoin('locations', 'locations.id', '=', 'planned_applications.location_id')
-                            ->leftJoin('subscriptions', 'subscriptions.id', '=', 'accounts.subscription_id')
-                            ->orderBy('customers.last_name', $columnDirection)
-                            ->orderBy('customers.first_name', $columnDirection)
-                            ->orderBy('subscriptions.name', $columnDirection) 
-                            ->orderBy('locations.name', $columnDirection)
-                            ->select($currentTable.'.*');
+                // return $query->leftJoin('accounts', 'accounts.id', '=', $currentTable.'.account_id')
+                            // ->leftJoin('customers', 'customers.id', '=', 'accounts.customer_id')
+                            // ->orderBy('customers.first_name', $columnDirection)
+                            // ->orderBy('customers.last_name', $columnDirection)
+                            // ->leftJoin('planned_applications', 'planned_applications.id', '=', 'accounts.planned_application_id')
+                            // ->leftJoin('locations', 'locations.id', '=', 'planned_applications.location_id')
+                            // ->leftJoin('subscriptions', 'subscriptions.id', '=', 'accounts.subscription_id')
+                            // ->orderBy('subscriptions.name', $columnDirection) 
+                            // ->orderBy('locations.name', $columnDirection)
+                            // ->select($currentTable.'.*');
+
+                return $query->whereHas('account.customer', function ($query) use ($columnDirection) {
+                    $query->orderBy('last_name', $columnDirection);
+                    $query->orderBy('first_name', $columnDirection);
+                });
             },
             'orderable' => true,
             'wrapper' => [
@@ -57,6 +62,22 @@ trait AccountCrud
                 },
                 // 'target' => '_blank'
             ]
+        ]);
+    }
+
+    public function accountColumnDetails($label = null)
+    {
+        $this->accountColumn($label);
+        $this->crud->modifyColumn('account_id', [
+            'function' => function($entry)  {
+                if ($entry->accountDetails) {
+                    return $entry->accountDetails;
+                }
+                
+                return;
+            },
+            'escaped' => false,
+            'wrapper' => false
         ]);
     }
 

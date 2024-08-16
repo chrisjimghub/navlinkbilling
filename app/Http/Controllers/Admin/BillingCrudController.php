@@ -112,18 +112,7 @@ class BillingCrudController extends CrudController
             $this->crud->orderBy('billing_status_id', 'desc'); //default order unpaid
         }
 
-        $this->accountColumn(label: __('app.account'));
-        $this->crud->modifyColumn('account_id', [
-            'function' => function($entry)  {
-                if ($entry->accountDetails) {
-                    return $entry->accountDetails;
-                }
-                
-                return;
-            },
-            'escaped' => false,
-            'wrapper' => false
-        ]);
+        $this->accountColumnDetails(label: __('app.account'));
         
         // $this->relationshipColumn(column: 'billing_type_id', label: __('app.billing_type')); // NOTE:: uncomment this if you want to show column for billing type
 

@@ -46,7 +46,8 @@ class WifiHarvestCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-
+        $this->accountColumnDetails(label: __('app.account'));
+    
         
     }
 
