@@ -87,7 +87,7 @@ class PisoWifiCollectorCrudController extends CrudController
             'users.required' => __('app.piso_wifi.harvestor_required')
         ]);
         
-        $this->accountField(label: __('app.account'));
+        $this->accountFieldHarvest(label: __('app.account'));
 
         $this->crud->field([
             'name' => 'schedule',

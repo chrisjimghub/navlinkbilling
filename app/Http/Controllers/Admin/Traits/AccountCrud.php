@@ -85,6 +85,29 @@ trait AccountCrud
         ]);
     }
 
+    public function accountFieldBilling($label = null)
+    {
+        $this->accountField($label);
+        $this->crud->modifyField('account_id', [
+            'options'   => (function ($query) {
+                $query->where('subscription_id', '!=', 3); // Piso Wifi
+                $query->where('subscription_id', '!=', 4); // Voucher
+                return $query->allowedBill()->get();
+            }),
+        ]);
+    }
+
+    public function accountFieldHarvest($label = null)
+    {
+        $this->accountField($label);
+        $this->crud->modifyField('account_id', [
+            'options'   => (function ($query) {
+                $query->withSubscription(3); // Piso Wifi
+                return $query->allowedBill()->get();
+            }),
+        ]);
+    }
+
     // use in model accesor for account details and billing account snapshot
     public function accountDetails(
         $from,

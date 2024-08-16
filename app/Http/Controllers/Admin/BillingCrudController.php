@@ -179,7 +179,7 @@ class BillingCrudController extends CrudController
     {
         $this->crud->setValidation(BillingRequest::class);
 
-        $this->accountField(label: __('app.account'));
+        $this->accountFieldBilling(label: __('app.account'));
 
         $this->crud->field([
             'name'        => 'billing_type_id', // the name of the db column
