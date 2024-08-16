@@ -32,6 +32,10 @@ class WifiHarvestCrudController extends CrudController
         CRUD::setEntityNameStrings('wifi harvest', 'wifi harvests');
     
         $this->userPermissions('wifi_harvests');
+
+        $this->crud->query->whereHas('account', function ($query) {
+            $query->harvestCrud();
+        });
     }
 
     /**
@@ -42,8 +46,28 @@ class WifiHarvestCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-
+        $this->accountColumnDetails(label: __('app.account'));
         
+        $this->crud->column([
+            'name' => 'account.installed_address',
+            'label' => __('app.account_installed_address'),
+            'limit' => 255,
+        ]);
+
+        $this->crud->column([
+            'name' => 'created_at',
+            'type'  => 'date',
+            'label' => 'Date',
+        ]);
+
+        // TODO::
+        // particulars:
+        //     Revenue
+        //     Monthly Fee
+        //     Electric Bill
+        //     Lessor 20%
+        //     Others:
+
     }
 
     /**
