@@ -54,7 +54,9 @@ class BillingCrudController extends CrudController
 
         $this->overrideButtonDeleteUpdate();
 
-        $this->crud->query->billingCrudOnly();
+        $this->crud->query->whereHas('account', function ($query) {
+            $query->billingCrud();
+        });
     }
 
     /**

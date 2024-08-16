@@ -140,6 +140,18 @@ class Account extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    // harvest crud
+    public function scopeHarvestCrud($query) 
+    {
+        return $query->withSubscription(3);
+    }
+
+    // billing crud
+    public function scopeBillingCrud($query)
+    {
+        return $query->whereNotIn('subscription_id', [3,4]); // piso wifi, voucher
+    }
+
     public function scopeWithBillingGrouping($query, $id)
     {
         return $query->where('billing_grouping_id', $id);
@@ -152,7 +164,11 @@ class Account extends Model
 
     public function scopeWithSubscription($query, $statusId)
     {
-        return $query->where('subscription_id', $statusId);
+        if (!is_array($statusId)) {
+            $statusId = (array) $statusId;
+        }
+
+        return $query->whereIn('subscription_id', $statusId);
     }
 
     public function scopeP2p($query)

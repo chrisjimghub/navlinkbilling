@@ -32,6 +32,10 @@ class WifiHarvestCrudController extends CrudController
         CRUD::setEntityNameStrings('wifi harvest', 'wifi harvests');
     
         $this->userPermissions('wifi_harvests');
+
+        $this->crud->query->whereHas('account', function ($query) {
+            $query->harvestCrud();
+        });
     }
 
     /**

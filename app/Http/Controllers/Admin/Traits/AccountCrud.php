@@ -102,7 +102,7 @@ trait AccountCrud
         $this->accountField($label);
         $this->crud->modifyField('account_id', [
             'options'   => (function ($query) {
-                $query->withSubscription(3); // Piso Wifi
+                $query->harvestCrud();
                 return $query->allowedBill()->get();
             }),
         ]);
