@@ -47,18 +47,34 @@ class WifiHarvestCrudController extends CrudController
     protected function setupListOperation()
     {
         $this->accountColumnDetails(label: __('app.account'));
-        
+
         $this->crud->column([
-            'name' => 'account.installed_address',
-            'label' => __('app.account_installed_address'),
-            'limit' => 255,
+            'name' => 'particulars',
+            'type'     => 'closure',
+            'function' => function($entry) {
+                return $entry->particularDetails;
+            },
+            'escaped' => false
+        ]);
+
+        $this->currencyFormatColumn(fieldName: 'total', label: __('app.wifi_harvest.total'));
+
+
+        $this->crud->column([
+            'name' => 'billing_status_id',
+            'type' => 'closure',
+            'function' => function ($entry) {
+                return $entry->billingStatus->badge;
+            },
+            'escaped' => false
         ]);
 
         $this->crud->column([
             'name' => 'created_at',
-            'type'  => 'date',
-            'label' => 'Date',
+            'type' => 'date',
+            'label' => __('Date'),
         ]);
+        
 
         // TODO::
         // particulars:
@@ -68,6 +84,13 @@ class WifiHarvestCrudController extends CrudController
         //     Lessor 20%
         //     Others:
 
+
+
+    }
+
+    public function setupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**
@@ -94,4 +117,5 @@ class WifiHarvestCrudController extends CrudController
     {
         $this->setupCreateOperation();
     }
+    
 }

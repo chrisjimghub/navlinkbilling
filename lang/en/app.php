@@ -158,5 +158,9 @@ return [
         'schedule_hint' => 'Harvest date.',
         'harvestor' => 'Harvestor / Collector',
         'harvestor_required' => 'The harvestor / collector field is required.',
+    ],
+
+    'wifi_harvest' => [
+        'total' => 'Total Harvested'
     ]
 ];
