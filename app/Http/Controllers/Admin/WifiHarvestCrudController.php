@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\BillingType;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -47,17 +48,13 @@ class WifiHarvestCrudController extends CrudController
     protected function setupListOperation()
     {
         $this->accountColumnDetails(label: __('app.account'));
-        
-        $this->crud->column([
-            'name' => 'billing_period',
-            'label' => __('app.billing_period'),
-            'type'     => 'closure',
-            'function' => function($entry) {
-                return $entry->billingPeriodDetails;
-            },
-            'escaped' => false
-        ]);
 
+        $this->crud->column([
+            'name' => 'created_at',
+            'type' => 'date',
+            'label' => __('app.wifi_harvest.date')
+        ]);
+        
         $this->crud->column([
             'name' => 'particulars',
             'type'     => 'closure',
@@ -88,8 +85,6 @@ class WifiHarvestCrudController extends CrudController
             },
             'escaped' => false
         ]);
-
-        $this->crud->column('created_at');
     }
 
     protected function setupShowOperation()
@@ -108,15 +103,14 @@ class WifiHarvestCrudController extends CrudController
         CRUD::setValidation([
             // 'name' => 'required|min:2',
         ]);
-        // CRUD::setFromDb(); // set fields from db columns.
+        
+        $this->accountFieldHarvest(label: __('app.account'));
 
-        // TODO::
-        // particulars:
-        //     Revenue
-        //     Monthly Fee
-        //     Electric Bill
-        //     Lessor 20%
-        //     Others:
+        $this->crud->field([
+            'name' => 'billing_type_id', 
+            'type'  => 'hidden',
+            'value' => 3, // Harvest Piso Wifi
+        ]);
     }
 
     /**
@@ -128,5 +122,28 @@ class WifiHarvestCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+
+        $this->crud->field([   // repeatable
+            'name'  => 'particulars',
+            'label' => __('app.billing_particulars'),
+            'type'  => 'repeat',
+            'fields' => [ // also works as: "fields"
+                [
+                    'name'    => 'description',
+                    'type'    => 'text',
+                    'label'   => __('app.billing_description'),
+                    'wrapper' => ['class' => 'form-group col-sm-6'],
+                ],
+                [
+                    'name'    => 'amount',
+                    'type'    => 'number',
+                    'label'   => 'Amount',
+                    'wrapper' => ['class' => 'form-group col-sm-6'],
+                    'attributes' => ["step" => "any"],
+                ],
+            ],
+            // 'init_rows' => 1, // number of empty rows to be initialized, by default 1
+            // 'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
+        ]);
     }
 }

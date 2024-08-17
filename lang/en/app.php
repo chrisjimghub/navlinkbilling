@@ -163,5 +163,10 @@ return [
     'wifi_harvest' => [
         'total' => 'Net Income',
         'status' => 'Status',
+        'gross_income' => 'Gross Income',
+        'internet_fee' => 'Internet Fee',
+        'electric_bill' => 'Electric Bill',
+        'lessor' => 'Lessor',  
+        'date' => 'Date',  
     ]
 ];
