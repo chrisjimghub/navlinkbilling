@@ -111,17 +111,6 @@ class WifiHarvestCrudController extends CrudController
             'type'  => 'hidden',
             'value' => 3, // Harvest Piso Wifi
         ]);
-    }
-
-    /**
-     * Define what happens when the Update operation is loaded.
-     * 
-     * @see https://backpackforlaravel.com/docs/crud-operation-update
-     * @return void
-     */
-    protected function setupUpdateOperation()
-    {
-        $this->setupCreateOperation();
 
         $this->crud->field([   // repeatable
             'name'  => 'particulars',
@@ -142,8 +131,20 @@ class WifiHarvestCrudController extends CrudController
                     'attributes' => ["step" => "any"],
                 ],
             ],
-            // 'init_rows' => 1, // number of empty rows to be initialized, by default 1
+            'hint' => $this->crud->getOperation() == 'create' ? __('app.wifi_harvest.particulars_hint') : __('app.wifi_harvest.particulars_hint_edit'),
+            'init_rows' => 0, // number of empty rows to be initialized, by default 1
             // 'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
         ]);
+    }
+
+    /**
+     * Define what happens when the Update operation is loaded.
+     * 
+     * @see https://backpackforlaravel.com/docs/crud-operation-update
+     * @return void
+     */
+    protected function setupUpdateOperation()
+    {
+        $this->setupCreateOperation();
     }
 }
