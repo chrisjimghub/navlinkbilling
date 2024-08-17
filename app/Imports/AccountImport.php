@@ -120,7 +120,7 @@ class AccountImport implements
             'billing_grouping' => [    
                 'nullable',
                 Rule::in($this->billingGroupingLists()),
-                'required_unless:subscription,Hotspot Voucher',
+                'required_unless:subscription,'.Subscription::whereIn('id', [3,4])->pluck('name')->implode(','),
             ],
 
 

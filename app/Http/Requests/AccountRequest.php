@@ -40,8 +40,9 @@ class AccountRequest extends FormRequest
             'billingGrouping' => [
                 'nullable',
                 'exists:billing_groupings,id',
-                'required_unless:subscription,4' // hotspot voucher
+                'required_if:subscription,4,3' // voucher and piso wifi
             ]
+
 
         ];
     }
