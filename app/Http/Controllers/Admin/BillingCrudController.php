@@ -79,7 +79,7 @@ class BillingCrudController extends CrudController
             'name' => 'status',
             'label' => __('Status'),
             'type' => 'select_from_array',
-            'options' => $this->billingStatusLists(),
+            'options' => $this->billingStatusLists(4),
             'wrapper' => [
                 'class' => 'form-group col-md-2'
             ]

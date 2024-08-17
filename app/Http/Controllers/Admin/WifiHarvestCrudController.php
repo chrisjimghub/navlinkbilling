@@ -49,25 +49,52 @@ class WifiHarvestCrudController extends CrudController
         $this->accountColumnDetails(label: __('app.account'));
         
         $this->crud->column([
+            'name' => 'billing_period',
+            'label' => __('app.billing_period'),
+            'type'     => 'closure',
+            'function' => function($entry) {
+                return $entry->billingPeriodDetails;
+            },
+            'escaped' => false
+        ]);
+
+        $this->crud->column([
+            'name' => 'particulars',
+            'type'     => 'closure',
+            'function' => function($entry) {
+                return $entry->particularDetails;
+            },
+            'escaped' => false
+        ]);
+
+        $this->currencyFormatColumn(fieldName: 'total', label: __('app.wifi_harvest.total'));
+
+        $this->crud->column([
             'name' => 'account.installed_address',
             'label' => __('app.account_installed_address'),
             'limit' => 255,
         ]);
 
         $this->crud->column([
-            'name' => 'created_at',
-            'type'  => 'date',
-            'label' => 'Date',
+            'name' => 'billing_status_id',
+            'label' => __('app.wifi_harvest.status'),
+            'type' => 'closure',
+            'function' => function ($entry) {
+                if ($entry->billing_status_id != '4') {
+                    return;
+                }
+
+                return $entry->billingStatus->badge;
+            },
+            'escaped' => false
         ]);
 
-        // TODO::
-        // particulars:
-        //     Revenue
-        //     Monthly Fee
-        //     Electric Bill
-        //     Lessor 20%
-        //     Others:
+        $this->crud->column('created_at');
+    }
 
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**
@@ -82,6 +109,14 @@ class WifiHarvestCrudController extends CrudController
             // 'name' => 'required|min:2',
         ]);
         // CRUD::setFromDb(); // set fields from db columns.
+
+        // TODO::
+        // particulars:
+        //     Revenue
+        //     Monthly Fee
+        //     Electric Bill
+        //     Lessor 20%
+        //     Others:
     }
 
     /**

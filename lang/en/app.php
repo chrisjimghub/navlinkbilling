@@ -161,6 +161,7 @@ return [
     ],
 
     'wifi_harvest' => [
-        'total' => 'Total Harvested'
+        'total' => 'Net Income',
+        'status' => 'Status',
     ]
 ];
