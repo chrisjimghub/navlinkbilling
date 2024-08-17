@@ -167,6 +167,7 @@ return [
         'internet_fee' => 'Internet Fee',
         'electric_bill' => 'Electric Bill',
         'lessor' => 'Lessor',  
-        'date' => 'Date',  
+        'date' => 'Date',
+        'particulars_hint' => 'Enter a negative value for deductions and a positive value for non-deductions in the particulars input. You can also leave it blank, and it will automatically populate with the basic particulars.',  
     ]
 ];
