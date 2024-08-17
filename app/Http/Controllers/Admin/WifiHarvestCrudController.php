@@ -131,7 +131,7 @@ class WifiHarvestCrudController extends CrudController
                     'attributes' => ["step" => "any"],
                 ],
             ],
-            'hint' => __('app.wifi_harvest.particulars_hint'),
+            'hint' => $this->crud->getOperation() == 'create' ? __('app.wifi_harvest.particulars_hint') : __('app.wifi_harvest.particulars_hint_edit'),
             'init_rows' => 0, // number of empty rows to be initialized, by default 1
             // 'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
         ]);
