@@ -101,7 +101,7 @@ class BillEventSubscriber
         if (empty($this->particulars)) {
             $this->addOrUpdateParticular([
                 'description' => __('app.wifi_harvest.gross_income'),
-                'amount' => 0,
+                'amount' => null,
             ]);
             
             $this->addOrUpdateParticular([
@@ -111,12 +111,12 @@ class BillEventSubscriber
 
             $this->addOrUpdateParticular([
                 'description' => __('app.wifi_harvest.electric_bill'),
-                'amount' => 0,
+                'amount' => null,
             ]);
 
             $this->addOrUpdateParticular([
                 'description' => __('app.wifi_harvest.lessor'),
-                'amount' => 0,
+                'amount' => null,
             ]);
         }
     }
