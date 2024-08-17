@@ -35,6 +35,14 @@ class BillingTypesTableSeeder extends Seeder
                 'updated_at' => '2024-06-28 17:11:40',
                 'deleted_at' => NULL,
             ),
+            2 => 
+            array (
+                'id' => 3,
+                'name' => 'Harvest Piso Wifi',
+                'created_at' => '2024-08-17 16:04:26',
+                'updated_at' => '2024-08-17 16:04:26',
+                'deleted_at' => NULL,
+            ),
         ));
         
         

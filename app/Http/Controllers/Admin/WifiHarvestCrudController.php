@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\BillingType;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -47,7 +48,24 @@ class WifiHarvestCrudController extends CrudController
     protected function setupListOperation()
     {
         $this->accountColumnDetails(label: __('app.account'));
+
+        $this->crud->column([
+            'name' => 'created_at',
+            'type' => 'date',
+            'label' => __('app.wifi_harvest.date')
+        ]);
         
+        $this->crud->column([
+            'name' => 'particulars',
+            'type'     => 'closure',
+            'function' => function($entry) {
+                return $entry->particularDetails;
+            },
+            'escaped' => false
+        ]);
+
+        $this->currencyFormatColumn(fieldName: 'total', label: __('app.wifi_harvest.total'));
+
         $this->crud->column([
             'name' => 'account.installed_address',
             'label' => __('app.account_installed_address'),
@@ -55,19 +73,23 @@ class WifiHarvestCrudController extends CrudController
         ]);
 
         $this->crud->column([
-            'name' => 'created_at',
-            'type'  => 'date',
-            'label' => 'Date',
+            'name' => 'billing_status_id',
+            'label' => __('app.wifi_harvest.status'),
+            'type' => 'closure',
+            'function' => function ($entry) {
+                if ($entry->billing_status_id != '4') {
+                    return;
+                }
+
+                return $entry->billingStatus->badge;
+            },
+            'escaped' => false
         ]);
+    }
 
-        // TODO::
-        // particulars:
-        //     Revenue
-        //     Monthly Fee
-        //     Electric Bill
-        //     Lessor 20%
-        //     Others:
-
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**
@@ -81,7 +103,14 @@ class WifiHarvestCrudController extends CrudController
         CRUD::setValidation([
             // 'name' => 'required|min:2',
         ]);
-        // CRUD::setFromDb(); // set fields from db columns.
+        
+        $this->accountFieldHarvest(label: __('app.account'));
+
+        $this->crud->field([
+            'name' => 'billing_type_id', 
+            'type'  => 'hidden',
+            'value' => 3, // Harvest Piso Wifi
+        ]);
     }
 
     /**
@@ -93,5 +122,28 @@ class WifiHarvestCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+
+        $this->crud->field([   // repeatable
+            'name'  => 'particulars',
+            'label' => __('app.billing_particulars'),
+            'type'  => 'repeat',
+            'fields' => [ // also works as: "fields"
+                [
+                    'name'    => 'description',
+                    'type'    => 'text',
+                    'label'   => __('app.billing_description'),
+                    'wrapper' => ['class' => 'form-group col-sm-6'],
+                ],
+                [
+                    'name'    => 'amount',
+                    'type'    => 'number',
+                    'label'   => 'Amount',
+                    'wrapper' => ['class' => 'form-group col-sm-6'],
+                    'attributes' => ["step" => "any"],
+                ],
+            ],
+            // 'init_rows' => 1, // number of empty rows to be initialized, by default 1
+            // 'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
+        ]);
     }
 }

@@ -29,8 +29,12 @@ trait FetchOptions
         return AccountStatus::pluck('name', 'id')->toArray();
     }
 
-    public function billingStatusLists()
+    public function billingStatusLists($whereNotId = null)
     {
+        if ($whereNotId)  {
+            return BillingStatus::whereNotIn('id', (array) $whereNotId)->pluck('name', 'id')->toArray();
+        }
+
         return BillingStatus::pluck('name', 'id')->toArray();
     }
 

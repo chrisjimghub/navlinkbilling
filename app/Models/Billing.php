@@ -97,6 +97,15 @@ class Billing extends Model
         return false;
     }
     
+    public function isHarvestPisoWifi() : bool
+    {
+        if ($this->billing_type_id == 3) {
+            return true;
+        }        
+
+        return false;
+    }
+
     public function isMonthlyFee() : bool
     {
         if ($this->billing_type_id == 2) {

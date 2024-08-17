@@ -32,22 +32,27 @@ class AccountImport implements
     {
         $customerId = Customer::whereFullName($row['customer'])->pluck('id')->first();
         $plannedApplicationId = PlannedApplication::whereDetails($row['planned_application'])->pluck('id')->first();
-        $subscriptionId = Subscription::whereLike('name', trim($row['subscription']))->pluck('id')->first();
+        $subscriptionId = Subscription::whereLike('name', $row['subscription'])->pluck('id')->first();
 
         $otcs = explode('|', $row['one_time_charge']);
         $otcIds = [];
         foreach ($otcs as $otc) {
-            $otcIds[] = Otc::whereAmountName(trim($otc))->pluck('id')->first();
+            if ($otc) {
+                $otcIds[] = Otc::whereAmountName(trim($otc))->pluck('id')->first();
+            }
         }
 
         $contracts = explode('|', $row['contract_period']);
         $contractPeriodIds = [];
         foreach ($contracts as $cp) {
-            $contractPeriodIds[] = ContractPeriod::whereLike('name', trim($cp))->pluck('id')->first();
+            if ($cp) {
+                $contractPeriodIds[] = ContractPeriod::whereLike('name', trim($cp))->pluck('id')->first();
+            }
         }
 
-        $statusId = AccountStatus::whereLike('name', trim($row['account_status']))->pluck('id')->first();
-        $grouping = BillingGrouping::whereLike('name', trim($row['billing_grouping']))->pluck('id')->first();
+
+        $statusId = AccountStatus::whereLike('name', $row['account_status'])->pluck('id')->first();
+        $grouping = BillingGrouping::whereLike('name', $row['billing_grouping'])->pluck('id')->first();
         
         $account = new Account([
             'customer_id' => $customerId,
@@ -112,12 +117,20 @@ class AccountImport implements
                 Rule::in($this->accountStatusLists()), // Check if the value is in the provided list
             ],
 
-            'billing_grouping' => [
-                'required', // Make this field mandatory
-                Rule::in($this->billingGroupingLists()), // Check if the value is in the provided list
+            'billing_grouping' => [    
+                'nullable',
+                Rule::in($this->billingGroupingLists()),
+                'required_unless:subscription,'.Subscription::whereIn('id', [3,4])->pluck('name')->implode(','),
             ],
 
 
+        ];
+    }
+
+    public function customValidationMessages(): array
+    {
+        return [
+            'billing_grouping.required_unless' => 'The billing grouping field is required unless subscription is hotspot voucher.',
         ];
     }
 

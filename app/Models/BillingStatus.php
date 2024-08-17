@@ -52,7 +52,7 @@ class BillingStatus extends Model
     {
         $class = '';
 
-        if ($this->id == 1) { // paid
+        if ($this->id == 1 || $this->id == 4) { // paid & harvested
             $class = 'text-success';
         }elseif ($this->id == 2) { // unpaid
             $class = 'text-danger';

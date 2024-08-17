@@ -158,5 +158,15 @@ return [
         'schedule_hint' => 'Harvest date.',
         'harvestor' => 'Harvestor / Collector',
         'harvestor_required' => 'The harvestor / collector field is required.',
+    ],
+
+    'wifi_harvest' => [
+        'total' => 'Net Income',
+        'status' => 'Status',
+        'gross_income' => 'Gross Income',
+        'internet_fee' => 'Internet Fee',
+        'electric_bill' => 'Electric Bill',
+        'lessor' => 'Lessor',  
+        'date' => 'Date',  
     ]
 ];

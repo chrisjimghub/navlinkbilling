@@ -85,13 +85,40 @@ class BillEventSubscriber
         if ($this->billing->isInstallmentFee()) {
             // installment 
             $this->processInstallment();
-        } elseif ($this->billing->isMonthlyFee()) {
+        }elseif ($this->billing->isMonthlyFee()) {
             // monthly
             $this->processMonthly();
+        }elseif ($this->billing->isHarvestPisoWifi()) {
+            $this->processHarvestWifi();
         }
 
         $this->billing->particulars = $this->particulars;
         $this->billing->saveQuietly();
+    }
+
+    public function processHarvestWifi()
+    {
+        if (empty($this->particulars)) {
+            $this->addOrUpdateParticular([
+                'description' => __('app.wifi_harvest.gross_income'),
+                'amount' => 0,
+            ]);
+            
+            $this->addOrUpdateParticular([
+                'description' => __('app.wifi_harvest.internet_fee'),
+                'amount' => -$this->billing->monthly_rate,
+            ]);
+
+            $this->addOrUpdateParticular([
+                'description' => __('app.wifi_harvest.electric_bill'),
+                'amount' => 0,
+            ]);
+
+            $this->addOrUpdateParticular([
+                'description' => __('app.wifi_harvest.lessor'),
+                'amount' => 0,
+            ]);
+        }
     }
 
     public function processInstallment()

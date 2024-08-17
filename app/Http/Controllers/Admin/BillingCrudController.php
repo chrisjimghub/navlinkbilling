@@ -79,7 +79,7 @@ class BillingCrudController extends CrudController
             'name' => 'status',
             'label' => __('Status'),
             'type' => 'select_from_array',
-            'options' => $this->billingStatusLists(),
+            'options' => $this->billingStatusLists(4),
             'wrapper' => [
                 'class' => 'form-group col-md-2'
             ]
@@ -176,7 +176,7 @@ class BillingCrudController extends CrudController
             'name'        => 'billing_type_id', // the name of the db column
             'label'       => __('app.billing_type'), // the input label
             'type'        => 'radio',
-            'options'     =>  BillingType::all()->pluck('name', 'id')->toArray(),
+            'options'     =>  BillingType::where('id', '!=', 3)->pluck('name', 'id')->toArray(),
             // optional
             'inline'      => false, // show the radios all on the same line?
             'hint'        => __('app.billing_type_id_hint'),

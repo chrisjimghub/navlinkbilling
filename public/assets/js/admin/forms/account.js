@@ -28,9 +28,9 @@ crud.field('planned_application_id').onChange(function(field) {
 
 
 crud.field('subscription').onChange(function(field) {
-    if (field.value != 4) { // hotspot voucher  
-        crud.field('billingGrouping').show();
-    } else {
+    if (field.value == 4 || field.value == 3) { // 4. hotspot voucher , 3. Piso wifi
         crud.field('billingGrouping').hide();
+    } else {
+        crud.field('billingGrouping').show();
     }   
 }).change();
