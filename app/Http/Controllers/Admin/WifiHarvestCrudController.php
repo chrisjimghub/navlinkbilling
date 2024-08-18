@@ -121,9 +121,11 @@ class WifiHarvestCrudController extends CrudController
                 'in:3',
             ],
             'particulars' => [
-                new ParticularsRepeatField(request()->account_id, request()->id)
+                new ParticularsRepeatField()
             ]
         ]);
+
+        // TODO:: add validation that each account can only have 1 unharvested status just like unpaid
         
         $this->accountFieldHarvest(label: __('app.account'));
 
