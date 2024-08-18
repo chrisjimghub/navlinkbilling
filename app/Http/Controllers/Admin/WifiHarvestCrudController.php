@@ -76,6 +76,16 @@ class WifiHarvestCrudController extends CrudController
         $this->currencyFormatColumn(fieldName: 'total', label: __('app.wifi_harvest.total'));
 
         $this->crud->column([
+            'name' => 'billing_status_id',
+            'label' => __('app.wifi_harvest.status'),
+            'type' => 'closure',
+            'function' => function ($entry) {
+                return $entry->billingStatus->badge;
+            },
+            'escaped' => false
+        ]);
+
+        $this->crud->column([
             'name' => 'account.installed_address',
             'label' => __('app.account_installed_address'),
             'limit' => 255,
@@ -125,7 +135,6 @@ class WifiHarvestCrudController extends CrudController
             ]
         ]);
 
-        // TODO:: add validation that each account can only have 1 unharvested status just like unpaid
         
         $this->accountFieldHarvest(label: __('app.account'));
 

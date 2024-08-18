@@ -52,14 +52,24 @@ class BillingStatus extends Model
     {
         $class = '';
 
-        if ($this->id == 1 || $this->id == 4) { // paid & harvested
-            $class = 'text-success';
-        }elseif ($this->id == 2) { // unpaid
-            $class = 'text-danger';
-        }elseif ($this->id == 3) { // pending...
-            $class = 'text-warning';
-        }else {
-            $class = 'text-default';
+        switch ($this->id) {
+            case 1:
+            case 4:
+                $class = 'text-success';
+                break;
+
+            case 2:
+            case 5:
+                $class = 'text-danger';
+                break;
+            
+            case 3:
+                $class = 'text-warning';
+                break;
+                
+            default:
+                $class = 'text-default';
+                break;
         }
 
         return "<strong class='".$class."'>{$this->name}</strong>";

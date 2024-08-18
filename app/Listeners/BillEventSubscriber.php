@@ -98,6 +98,8 @@ class BillEventSubscriber
 
     public function processHarvestWifi()
     {
+        $this->billing->markAsUnharvested();
+
         if (empty($this->particulars)) {
             $this->addOrUpdateParticular([
                 'description' => __('app.wifi_harvest.gross_income'),
