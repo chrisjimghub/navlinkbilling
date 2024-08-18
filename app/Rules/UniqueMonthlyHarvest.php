@@ -33,29 +33,35 @@ class UniqueMonthlyHarvest implements ValidationRule
         $month = $date->month;
         $year = $date->year;
 
-        // Check for existing record with the same account_id in the same month/year
+        //1. Check for existing record with the same account_id in the same month/year
         $query = Billing::where('account_id', $value)
-            ->where(function ($query) use ($month, $year) {
-                // where this block 
-                $query->where(function ($q) use ($month, $year) {
-                    $q->whereMonth('created_at', $month);
-                    $q->whereYear('created_at', $year);
-                })
-                // or where this block
-                ->orWhere(function ($query) {
-                    // $query->
-                });
-            });
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year);
 
-        // Exclude the record being updated from the check
         if ($this->ignoreId) {
             $query->where('id', '!=', $this->ignoreId);
         }
 
-        $exists = $query->exists();
+        $existsForMonthYear = $query->exists();
 
-        if ($exists) {
+        if ($existsForMonthYear) {
             $fail('This account already has a harvest record for the current month.');
+            return;
+        }
+
+
+        //2. Check if there's any unharvested record
+        $query = Billing::where('account_id', $value)->unharvested();
+
+        if ($this->ignoreId) {
+            $query->where('id', '!=', $this->ignoreId);
+        }
+
+        $unharvestedExists = $query->exists();
+
+        if ($unharvestedExists) {
+            $fail('This account has an unharvested record.');
         }
     }
+
 }
