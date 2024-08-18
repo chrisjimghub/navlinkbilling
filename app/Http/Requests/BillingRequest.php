@@ -30,7 +30,7 @@ class BillingRequest extends FormRequest
         $dateStart = $this->input('date_start');
         $dateEnd = $this->input('date_end');
 
-        return [
+        $rules = [
             'account_id' => 'required|integer|min:1',
             'billing_type_id' => [
                 'required',
@@ -67,13 +67,13 @@ class BillingRequest extends FormRequest
                     }
                 }
             },  
-
-            'particulars' => [
-                // 'required',
-                new ParticularsRepeatField($accountId, $billingTypeId)
-            ],
-
         ];
+
+        if(request()->isMethod('PUT')) {
+            $rules['particulars'] = new ParticularsRepeatField();
+        }
+
+        return $rules;
     }
 
     public function messages()

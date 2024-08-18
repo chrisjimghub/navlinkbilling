@@ -79,7 +79,7 @@ class BillingCrudController extends CrudController
             'name' => 'status',
             'label' => __('Status'),
             'type' => 'select_from_array',
-            'options' => $this->billingStatusLists(4),
+            'options' => $this->billingStatusLists([4,5]),
             'wrapper' => [
                 'class' => 'form-group col-md-2'
             ]
@@ -89,7 +89,7 @@ class BillingCrudController extends CrudController
             'name' => 'type',
             'label' => __('Type'),
             'type' => 'select_from_array',
-            'options' => $this->billingTypeLists(),
+            'options' => $this->billingTypeLists(3),
             'wrapper' => [
                 'class' => 'form-group col-md-2'
             ]
@@ -136,7 +136,6 @@ class BillingCrudController extends CrudController
         ]);
 
         $this->currencyFormatColumn(fieldName: 'total', label: __('app.billing_total'));
-
 
         $this->crud->column([
             'name' => 'billing_status_id',

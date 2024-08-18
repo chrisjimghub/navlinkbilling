@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\BillingType;
+use App\Rules\UniqueMonthlyHarvest;
+use App\Rules\ParticularsRepeatField;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -39,6 +41,13 @@ class WifiHarvestCrudController extends CrudController
         });
     }
 
+    // TODO::
+    // filters: or a filter field number that return total > then the inputed amount
+        // Profit
+        // Break Even
+        // Net Loss
+
+
     /**
      * Define what happens when the List operation is loaded.
      * 
@@ -65,6 +74,16 @@ class WifiHarvestCrudController extends CrudController
         ]);
 
         $this->currencyFormatColumn(fieldName: 'total', label: __('app.wifi_harvest.total'));
+
+        $this->crud->column([
+            'name' => 'billing_status_id',
+            'label' => __('app.wifi_harvest.status'),
+            'type' => 'closure',
+            'function' => function ($entry) {
+                return $entry->billingStatus->badge;
+            },
+            'escaped' => false
+        ]);
 
         $this->crud->column([
             'name' => 'account.installed_address',
@@ -101,8 +120,21 @@ class WifiHarvestCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            // 'name' => 'required|min:2',
+            'account_id' => [
+                'required',
+                'integer',
+                new UniqueMonthlyHarvest(request()->id),
+            ],
+            'billing_type_id' => [
+                'required',
+                'exists:billing_types,id',
+                'in:3',
+            ],
+            'particulars' => [
+                new ParticularsRepeatField()
+            ]
         ]);
+
         
         $this->accountFieldHarvest(label: __('app.account'));
 

@@ -70,6 +70,15 @@ class Billing extends Model
         return $dateCutOff->isPast() || $dateCutOff->isToday();
     }
 
+    public function isUnharvested() : bool
+    {
+        if ($this->billing_status_id == 5) {
+            return true;
+        }        
+
+        return false;
+    }
+
     public function isPaid() : bool
     {
         if ($this->billing_status_id == 1) {
@@ -272,6 +281,13 @@ class Billing extends Model
     {
         return $query->whereHas('billingStatus', function ($q) {
             $q->where('id','!=', 1); // not equal to paid
+        });
+    }
+
+    public function scopeUnharvested($query)
+    {
+        return $query->whereHas('billingStatus', function ($q) {
+            $q->where('id', 5); 
         });
     }
 
@@ -861,6 +877,13 @@ class Billing extends Model
     public function paymentMethodGcash()
     {
         $this->payment_method_id = 3; 
+
+        return $this;
+    }
+
+    public function markAsUnharvested()
+    {
+        $this->billing_status_id = 5; 
 
         return $this;
     }
