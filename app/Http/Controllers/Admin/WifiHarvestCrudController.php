@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\BillingType;
 use App\Rules\UniqueMonthlyHarvest;
 use App\Rules\ParticularsRepeatField;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use App\Http\Controllers\Admin\Operations\HarvestedOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -23,6 +23,8 @@ class WifiHarvestCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
+    use HarvestedOperation;
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -47,6 +49,11 @@ class WifiHarvestCrudController extends CrudController
         // Break Even
         // Net Loss
 
+    // TODO:: Widgets
+        // Today Schedule: Total
+        // Daily: Total
+        // Monthly: Total
+        // Annual: Total
 
     /**
      * Define what happens when the List operation is loaded.
@@ -73,6 +80,7 @@ class WifiHarvestCrudController extends CrudController
             'escaped' => false
         ]);
 
+        
         $this->currencyFormatColumn(fieldName: 'total', label: __('app.wifi_harvest.total'));
 
         $this->crud->column([
