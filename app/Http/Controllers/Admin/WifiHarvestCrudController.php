@@ -62,6 +62,8 @@ class WifiHarvestCrudController extends CrudController
 
         $this->accountColumnDetails(label: __('app.account'));
 
+        // TODO:: use date_start/date_end instead of created_at
+        // TODO:: then create field for date
         $this->crud->column([
             'name' => 'created_at',
             'type' => 'date',
@@ -174,46 +176,52 @@ class WifiHarvestCrudController extends CrudController
     public function widgets()
     {
         // TODO:: Widgets
-        $contents[] = [
-            'type'          => 'progress_white',
-            'class'         => 'card mb-3',
-            'value'         => '11.456',
-            'description'   => 'Today\'s Schedule',
-            'progress'      => 100, 
-            'progressClass' => 'progress-bar bg-success',
-            'hint'          => 'Piso Wi-Fi units scheduled for harvest today.',
-        ];
+        if ($this->crud->getOperation() == 'list') {
 
-        $contents[] = [
-            'type'          => 'progress_white',
-            'class'         => 'card mb-3',
-            'value'         => '11.456',
-            'description'   => 'Daily Income',
-            'progress'      => 100, 
-            'progressClass' => 'progress-bar bg-info',
-            'hint'          => 'Daily harvest for '.now()->format(dateHumanReadable()).'.',
-        ];
+            // $totalScheduleToday
+            // $totalScheduleTodayHarvested
 
-        $contents[] = [
-            'type'          => 'progress_white',
-            'class'         => 'card mb-3',
-            'value'         => '11.456',
-            'description'   => 'Monthly Income',
-            'progress'      => 100, 
-            'progressClass' => 'progress-bar bg-warning',
-            'hint'          => 'Monthly harvest for '.now()->format('M, Y').'.',
-        ];
+            $contents[] = [
+                'type'          => 'progress_white',
+                'class'         => 'card mb-3',
+                'value'         => ' 0/0',
+                'description'   => 'Today\'s Schedule',
+                'progress'      => 100, 
+                'progressClass' => 'progress-bar bg-success',
+                'hint'          => 'Piso Wi-Fi units scheduled for harvest today.',
+            ];
 
-        $contents[] = [
-            'type'          => 'progress_white',
-            'class'         => 'card mb-3',
-            'value'         => '11.456',
-            'description'   => 'Annual Income',
-            'progress'      => 100, 
-            'progressClass' => 'progress-bar bg-dark',
-            'hint'          => 'Total revenue for the year '.date('Y').'.',
-        ];
+            $contents[] = [
+                'type'          => 'progress_white',
+                'class'         => 'card mb-3',
+                'value'         => '11.456',
+                'description'   => 'Daily Income',
+                'progress'      => widgetProgress(now()->hour, 24), 
+                'progressClass' => 'progress-bar bg-info',
+                'hint'          => 'Today\'s harvest for '.now()->format(dateHumanReadable()).'.',
+            ];
 
-        Widget::add()->to('before_content')->type('div')->class('row')->content($contents);
+            $contents[] = [
+                'type'          => 'progress_white',
+                'class'         => 'card mb-3',
+                'value'         => '11.456',
+                'description'   => 'Monthly Income',
+                'progress'      => widgetProgress(now()->day, now()->daysInMonth()), 
+                'progressClass' => 'progress-bar bg-warning',
+                'hint'          => 'This month\'s harvest for '.now()->format('M, Y').'.',
+            ];
+
+            $contents[] = [
+                'type'          => 'progress_white',
+                'class'         => 'card mb-3',
+                'value'         => '11.456',
+                'description'   => 'Annual Income',
+                'progress'      => widgetProgress(now()->month, 12), 
+                'progressClass' => 'progress-bar bg-dark',
+                'hint'          => 'Total revenue for the year '.date('Y').'.',
+            ];
+
+            Widget::add()->to('before_content')->type('div')->class('row')->content($contents);
+        }
     }
 }

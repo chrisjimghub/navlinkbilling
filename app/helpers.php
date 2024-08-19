@@ -259,3 +259,10 @@ if (! function_exists('ordinal')) {
 		return Number::ordinal($num);
 	}
 }
+
+// widgets
+if (! function_exists('widgetProgress')) {
+    function widgetProgress($score, $maxScore) {
+		return ($score / $maxScore) * 100; 
+	}
+}
