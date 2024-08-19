@@ -40,8 +40,17 @@ trait CurrencyFormat {
 
         $this->crud->modifyColumn($fieldName, [
             'wrapper' => [
-                'class' => 'text-success'
-            ]
+                'class' => function ($crud, $col) {
+                    $val = $col['value'];
+                    $css = '';                    
+                    if ($val > 0) {
+                        $css = 'text-success';
+                    }elseif ($val < 0) {
+                        $css = 'text-danger';
+                    }
+                    return $css;
+                }
+            ],
         ]);
     
         if ($label != null) {

@@ -887,4 +887,11 @@ class Billing extends Model
 
         return $this;
     }
+
+    public function markAsHarvested()
+    {
+        $this->billing_status_id = 4; 
+
+        return $this;
+    }
 }
