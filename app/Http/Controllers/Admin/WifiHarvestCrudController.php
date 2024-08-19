@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Rules\UniqueMonthlyHarvest;
 use App\Rules\ParticularsRepeatField;
+use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Controllers\Admin\Operations\HarvestedOperation;
@@ -49,20 +50,16 @@ class WifiHarvestCrudController extends CrudController
         // Break Even
         // Net Loss
 
-    // TODO:: Widgets
-        // Today Schedule: Total
-        // Daily: Total
-        // Monthly: Total
-        // Annual: Total
-
     /**
      * Define what happens when the List operation is loaded.
-     * 
+     * -
      * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
      * @return void
      */
     protected function setupListOperation()
     {
+        $this->widgets();
+
         $this->accountColumnDetails(label: __('app.account'));
 
         $this->crud->column([
@@ -172,5 +169,51 @@ class WifiHarvestCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    public function widgets()
+    {
+        // TODO:: Widgets
+        $contents[] = [
+            'type'          => 'progress_white',
+            'class'         => 'card mb-3',
+            'value'         => '11.456',
+            'description'   => 'Today\'s Schedule',
+            'progress'      => 100, 
+            'progressClass' => 'progress-bar bg-success',
+            'hint'          => 'Piso Wi-Fi units scheduled for harvest today.',
+        ];
+
+        $contents[] = [
+            'type'          => 'progress_white',
+            'class'         => 'card mb-3',
+            'value'         => '11.456',
+            'description'   => 'Daily Income',
+            'progress'      => 100, 
+            'progressClass' => 'progress-bar bg-info',
+            'hint'          => 'Daily harvest for '.now()->format(dateHumanReadable()).'.',
+        ];
+
+        $contents[] = [
+            'type'          => 'progress_white',
+            'class'         => 'card mb-3',
+            'value'         => '11.456',
+            'description'   => 'Monthly Income',
+            'progress'      => 100, 
+            'progressClass' => 'progress-bar bg-warning',
+            'hint'          => 'Monthly harvest for '.now()->format('M, Y').'.',
+        ];
+
+        $contents[] = [
+            'type'          => 'progress_white',
+            'class'         => 'card mb-3',
+            'value'         => '11.456',
+            'description'   => 'Annual Income',
+            'progress'      => 100, 
+            'progressClass' => 'progress-bar bg-dark',
+            'hint'          => 'Total revenue for the year '.date('Y').'.',
+        ];
+
+        Widget::add()->to('before_content')->type('div')->class('row')->content($contents);
     }
 }
