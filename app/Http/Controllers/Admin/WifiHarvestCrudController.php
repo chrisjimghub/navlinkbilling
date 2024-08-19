@@ -198,7 +198,7 @@ class WifiHarvestCrudController extends CrudController
                 'description'   => 'Daily Income',
                 'progress'      => widgetProgress(now()->hour, 24), 
                 'progressClass' => 'progress-bar bg-info',
-                'hint'          => 'Daily harvest for '.now()->format(dateHumanReadable()).'.',
+                'hint'          => 'Today\'s harvest for '.now()->format(dateHumanReadable()).'.',
             ];
 
             $contents[] = [
@@ -208,7 +208,7 @@ class WifiHarvestCrudController extends CrudController
                 'description'   => 'Monthly Income',
                 'progress'      => widgetProgress(now()->day, now()->daysInMonth()), 
                 'progressClass' => 'progress-bar bg-warning',
-                'hint'          => 'Monthly harvest for '.now()->format('M, Y').'.',
+                'hint'          => 'This month\'s harvest for '.now()->format('M, Y').'.',
             ];
 
             $contents[] = [
