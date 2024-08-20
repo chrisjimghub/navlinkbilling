@@ -211,16 +211,16 @@ class WifiHarvestCrudController extends CrudController
             $month = $date->month;
             $year = $date->year;
 
-            // $totalScheduleToday
-            // $totalScheduleTodayHarvested
-
-            // TODO:: widget today's schedule count
+            $billingSchedule = clone $billing;
+            $billingHarvested = clone $billing;
+            $totalSchedule = $billingSchedule->whereDate('date_start', $date)->count();
+            $harvested = $billingHarvested->whereDate('date_start', $date)->harvested()->count();
             $contents[] = [
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
-                'value'         => ' 0/0',
+                'value'         => $harvested.'/'.$totalSchedule,
                 'description'   => 'Today\'s Schedule',
-                'progress'      => 100, 
+                'progress'      => widgetProgress($harvested, $totalSchedule), 
                 'progressClass' => 'progress-bar bg-success',
                 'hint'          => 'Piso Wi-Fi units scheduled for harvest today.',
             ];
