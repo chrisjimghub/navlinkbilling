@@ -300,6 +300,13 @@ class Billing extends Model
         });
     }
 
+    public function scopeHarvested($query)
+    {
+        return $query->whereHas('billingStatus', function ($q) {
+            $q->where('id', 4); 
+        });
+    }
+
     public function scopePending($query)
     {
         return $query->whereHas('billingStatus', function ($q) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Billing;
+use Illuminate\Support\Carbon;
 use App\Rules\UniqueMonthlyHarvest;
 use App\Rules\ParticularsRepeatField;
 use Backpack\CRUD\app\Library\Widget;
@@ -200,46 +201,60 @@ class WifiHarvestCrudController extends CrudController
 
     public function widgets()
     {
-        // TODO:: Widgets
         if ($this->crud->getOperation() == 'list') {
 
-            // $totalScheduleToday
-            // $totalScheduleTodayHarvested
+            $billing = Billing::whereHas('account', function ($query) {
+                $query->harvestCrud();
+            });
 
+            $date = Carbon::now();
+            $month = $date->month;
+            $year = $date->year;
+
+            $billingSchedule = clone $billing;
+            $billingHarvested = clone $billing;
+            $totalSchedule = $billingSchedule->whereDate('date_start', $date)->count();
+            $harvested = $billingHarvested->whereDate('date_start', $date)->harvested()->count();
             $contents[] = [
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
-                'value'         => ' 0/0',
+                'value'         => $harvested.'/'.$totalSchedule,
                 'description'   => 'Today\'s Schedule',
-                'progress'      => 100, 
+                'progress'      => widgetProgress($harvested, $totalSchedule), 
                 'progressClass' => 'progress-bar bg-success',
                 'hint'          => 'Piso Wi-Fi units scheduled for harvest today.',
             ];
 
+            $billingForDaily = clone $billing;
+            $total = $billingForDaily->whereDate('date_start', $date)->get()->sum('total');
             $contents[] = [
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
-                'value'         => '11.456',
+                'value'         => $this->currencyFormatAccessor($total),
                 'description'   => 'Daily Income',
                 'progress'      => widgetProgress(now()->hour, 24), 
                 'progressClass' => 'progress-bar bg-info',
                 'hint'          => 'Today\'s harvest for '.now()->format(dateHumanReadable()).'.',
             ];
 
+            $billingForMonth = clone $billing;
+            $total = $billingForMonth->whereMonth('date_start', $month)->get()->sum('total');
             $contents[] = [
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
-                'value'         => '11.456',
+                'value'         => $this->currencyFormatAccessor($total),
                 'description'   => 'Monthly Income',
                 'progress'      => widgetProgress(now()->day, now()->daysInMonth()), 
                 'progressClass' => 'progress-bar bg-warning',
                 'hint'          => 'This month\'s harvest for '.now()->format('M, Y').'.',
             ];
 
+            $billingForYear = clone $billing;
+            $total = $billingForYear->whereYear('date_start', $year)->get()->sum('total');
             $contents[] = [
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
-                'value'         => '11.456',
+                'value'         => $this->currencyFormatAccessor($total),
                 'description'   => 'Annual Income',
                 'progress'      => widgetProgress(now()->month, 12), 
                 'progressClass' => 'progress-bar bg-dark',
