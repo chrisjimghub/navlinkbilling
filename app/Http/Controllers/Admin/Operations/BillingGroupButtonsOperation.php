@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin\Operations;
 
 use App\Models\Billing;
-use Illuminate\Support\Str;
 use App\Events\BillProcessed;
 use App\Models\AccountCredit;
 use Illuminate\Support\Carbon;
@@ -19,12 +18,14 @@ use App\Models\AccountServiceInterruption;
 use App\Rules\MustHaveEnoughAccountCredit;
 use LaravelDaily\Invoices\Facades\Invoice;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
+use App\Http\Controllers\Admin\Traits\AdvancePayment;
 use App\Http\Controllers\Admin\Traits\SendNotifications;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait BillingGroupButtonsOperation
 {
     use SendNotifications;
+    use AdvancePayment;
 
     /**
      * Define which routes are needed for this operation.
@@ -367,46 +368,21 @@ trait BillingGroupButtonsOperation
 
         try {
             DB::beginTransaction();
-            
+
             $billing = Billing::findOrFail($id); 
             $billing->markAsPaid();
             $billing->payment_method_id = request()->payment_method;
-            $billing->saveQuietly(); 
-            
-            // Find the label for one month advancem ID = 1 = 1 Month advance
-            // NOTE:: this is just taking the label of id 1 in contract so it's not neccessary to use snapshots
-            $oneMonthAdvanceLabel = $billing->account->contractPeriods()->where('contract_periods.id', 1)->first(); 
+            $billing->saveQuietly();  
 
-            if ($oneMonthAdvanceLabel) {
-                // Create account credit for relevant particulars
-                foreach ($billing->particulars as $particular) {
-                    if (Str::contains(strtolower($particular['description']), strtolower($oneMonthAdvanceLabel->name))) {
-                        // if label/name = name of ID=1 then deposit as credit
-                        AccountCredit::create([
-                            'account_id' => $billing->account_id,
-                            'amount' => $particular['amount'],
-                        ]);
-                    }
-                    
-                    // if label/name = Deposit Account Credit then deposit as credit
-                    if (Str::contains(strtolower($particular['description']), strtolower("Deposit Account Credit"))) {
-                        AccountCredit::create([
-                            'account_id' => $billing->account_id,
-                            'amount' => $particular['amount'],
-                        ]);
-                    }
-                }
-            }
-            
-            // Commit the transaction
+            $this->advancePayment($billing);
+
             DB::commit();
 
             return notySuccess('The item has been marked as paid successfully.');
 
         } catch (\Exception $e) {
-            // If an error occurs, rollback the transaction
             DB::rollback();
-            throw $e; // You may handle or log the exception as needed
+            throw $e; 
         }
     }
 

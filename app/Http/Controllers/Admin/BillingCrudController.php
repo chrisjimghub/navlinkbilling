@@ -264,11 +264,8 @@ class BillingCrudController extends CrudController
     {
         // override buttons and hide if status is paid
         $this->crud->operation(['list', 'show'], function () {
-            $this->crud->addButton('line', 'delete', 'view', 'crud::buttons.delete_bill', 'end');
-        });
-
-        $this->crud->operation(['list', 'show'], function () {
-            $this->crud->addButton('line', 'update', 'view', 'crud::buttons.update_bill', 'end');
+            $this->crud->addButton('line', 'update', 'view', 'crud::buttons.update_bill');
+            $this->crud->addButton('line', 'delete', 'view', 'crud::buttons.delete_bill');
         });
     }
 
