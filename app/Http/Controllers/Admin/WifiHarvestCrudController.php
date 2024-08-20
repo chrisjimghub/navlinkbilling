@@ -95,7 +95,7 @@ class WifiHarvestCrudController extends CrudController
             'type' => 'closure',
             'function' => function ($entry) {
 
-                $this->eachRowPermissions($entry);
+                $this->denyAccessIf($entry->id);
  
                 return $entry->billingStatus->badge;
             },
@@ -265,23 +265,9 @@ class WifiHarvestCrudController extends CrudController
         }
     }
 
-    private function eachRowPermissions($entry)
-    {
-        $this->crud->denyAllAccess();
-
-        if ($entry->isHarvested()) {
-            if (auth()->user()->can('wifi_harvests_show')) {
-                $this->crud->allowAccessOnlyTo('show');
-            }
-
-        }else {
-            $this->userPermissions('wifi_harvests');
-        }
-    }
-
     public function edit($id)
     {
-        $this->denyAccessIfHarvested($id);
+        $this->denyAccessIf($id);
 
         $response = $this->traitEdit($id);
 
@@ -290,22 +276,19 @@ class WifiHarvestCrudController extends CrudController
 
     public function destroy($id)
     {
-        $this->denyAccessIfHarvested($id);
+        $this->denyAccessIf($id);
 
         $response = $this->traitDestroy($id);
 
         return $response;
     }
 
-    private function denyAccessIfHarvested($id)
+    private function denyAccessIf($id)
     {
         $bill = Billing::findOrFail($id);
 
         if ($bill->isHarvested()) { 
             $this->crud->denyAccess(['update', 'delete']);
-            
-            // add this in case they type it in address bar, show alert
-            alertError('Whooops, you\'re not allowed to do that.');
         }
     }
 }

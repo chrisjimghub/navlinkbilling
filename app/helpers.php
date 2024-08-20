@@ -263,6 +263,10 @@ if (! function_exists('ordinal')) {
 // widgets
 if (! function_exists('widgetProgress')) {
     function widgetProgress($score, $maxScore) {
+		if ($maxScore == 0) {
+			return 0;
+		}
+
 		return ($score / $maxScore) * 100; 
 	}
 }
