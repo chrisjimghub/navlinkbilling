@@ -62,8 +62,6 @@ class WifiHarvestCrudController extends CrudController
 
         $this->accountColumnDetails(label: __('app.account'));
 
-        // TODO:: use date_start/date_end instead of created_at
-        // TODO:: then create field for date
         $this->crud->column([
             'name' => 'date_start',
             'type' => 'date',
@@ -116,7 +114,7 @@ class WifiHarvestCrudController extends CrudController
             'account_id' => [
                 'required',
                 'integer',
-                new UniqueMonthlyHarvest(request()->id),
+                new UniqueMonthlyHarvest(),
             ],
             'billing_type_id' => [
                 'required',
