@@ -172,5 +172,6 @@ return [
         'mark_harvest_msg' => 'Are you sure you want to harvest this item?',
         'particulars_hint' => 'Enter a negative value for deductions and a positive value for non-deductions in the particulars amount. You can also leave it blank, and it will automatically populate with the basic particulars. You can also edit it later for each amount value.',  
         'particulars_hint_edit' => 'Enter a negative value for deductions and a positive value for non-deductions in the particulars amount.',
+        'date_required' => 'The date field is required.',
     ]
 ];

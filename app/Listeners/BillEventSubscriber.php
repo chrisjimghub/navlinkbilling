@@ -101,7 +101,9 @@ class BillEventSubscriber
     {
         $this->billing->markAsUnharvested();
 
-        // TODO:: assign date_start herE?
+        if (!$this->billing->date_start) {
+            $this->billing->date_start = date('Y-m-d');
+        }
 
         if (empty($this->particulars)) {
             $this->addOrUpdateParticular([

@@ -65,7 +65,7 @@ class WifiHarvestCrudController extends CrudController
         // TODO:: use date_start/date_end instead of created_at
         // TODO:: then create field for date
         $this->crud->column([
-            'name' => 'created_at',
+            'name' => 'date_start',
             'type' => 'date',
             'label' => __('app.wifi_harvest.date')
         ]);
@@ -112,7 +112,7 @@ class WifiHarvestCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation([
+        $this->crud->setValidation([
             'account_id' => [
                 'required',
                 'integer',
@@ -125,11 +125,25 @@ class WifiHarvestCrudController extends CrudController
             ],
             'particulars' => [
                 new ParticularsRepeatField()
+            ],
+            'date_start' => [
+                'required',
+                'date',
+                'date_format:Y-m-d',
             ]
+        ], [
+            'date_start.required' => __('app.wifi_harvest.date_required')
         ]);
 
         
         $this->accountFieldHarvest(label: __('app.account'));
+
+        $this->crud->field([
+            'name' => 'date_start',
+            'label' => __('app.wifi_harvest.date'),
+            'type' => 'date',
+            'default' => date('Y-m-d'),
+        ]);
 
         $this->crud->field([
             'name' => 'billing_type_id', 

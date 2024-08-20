@@ -35,8 +35,8 @@ class UniqueMonthlyHarvest implements ValidationRule
 
         //1. Check for existing record with the same account_id in the same month/year
         $query = Billing::where('account_id', $value)
-            ->whereMonth('created_at', $month)
-            ->whereYear('created_at', $year);
+            ->whereMonth('date_start', $month)
+            ->whereYear('date_start', $year);
 
         if ($this->ignoreId) {
             $query->where('id', '!=', $this->ignoreId);
