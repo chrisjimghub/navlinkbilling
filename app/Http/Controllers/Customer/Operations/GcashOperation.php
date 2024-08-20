@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Customer\Operations;
 
-use App\Http\Controllers\Admin\Traits\SendNotifications;
 use App\Models\Billing;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Luigel\Paymongo\Facades\Paymongo;
 use Backpack\Settings\app\Models\Setting;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Admin\Traits\CurrencyFormat;
+use App\Http\Controllers\Admin\Traits\AdvancePayment;
+use App\Http\Controllers\Admin\Traits\SendNotifications;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait GcashOperation
 {
     use CurrencyFormat;
     use SendNotifications;
+    use AdvancePayment;
 
     /**
      * Define which routes are needed for this operation.
@@ -194,15 +197,26 @@ trait GcashOperation
         ]);
 
         if ($payment && strtolower($payment->status) == 'paid') {
-            $billing->paymongo_reference_number = $payment->id;
-            $billing->markAsPaid();
-            $billing->paymentMethodGcash();
-            $billing->saveQuietly();
-            
-            $this->customerOnlinePaymentNotification($billing);
-
-            alertSuccess('The bill has been paid successfully.');
-            return redirect($this->crud->route);
+            try {
+                DB::beginTransaction();
+    
+                $billing->paymongo_reference_number = $payment->id;
+                $billing->markAsPaid();
+                $billing->paymentMethodGcash();
+                $billing->saveQuietly();
+    
+                $this->advancePayment($billing);
+                $this->customerOnlinePaymentNotification($billing);
+                
+                DB::commit();
+    
+                alertSuccess('The bill has been paid successfully.');
+                return redirect($this->crud->route);
+    
+            } catch (\Exception $e) {
+                DB::rollback();
+                throw $e; 
+            }
         }
     }
 

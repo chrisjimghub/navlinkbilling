@@ -79,6 +79,15 @@ class Billing extends Model
         return false;
     }
 
+    public function isHarvested() : bool
+    {
+        if ($this->billing_status_id == 4) {
+            return true;
+        }        
+
+        return false;
+    }
+
     public function isPaid() : bool
     {
         if ($this->billing_status_id == 1) {

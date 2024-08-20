@@ -9,19 +9,6 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class UniqueMonthlyHarvest implements ValidationRule
 {
-    protected $ignoreId;
-
-    /**
-     * Create a new rule instance.
-     *
-     * @param  int|null  $ignoreId
-     * @return void
-     */
-    public function __construct($ignoreId = null)
-    {
-        $this->ignoreId = $ignoreId;
-    }
-
     /**
      * Run the validation rule.
      *
@@ -29,32 +16,40 @@ class UniqueMonthlyHarvest implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $date = Carbon::now(); // Use current date
+        $ignoreId = null;
+        $accountId = request()->account_id;
+        $date = request()->date_start;
+
+        if (request()->isMethod('PUT')) {
+            $ignoreId = request()->id ?? null;
+        }
+
+        $date = Carbon::parse($date); 
         $month = $date->month;
         $year = $date->year;
 
         //1. Check for existing record with the same account_id in the same month/year
-        $query = Billing::where('account_id', $value)
-            ->whereMonth('created_at', $month)
-            ->whereYear('created_at', $year);
+        $query = Billing::where('account_id', $accountId)
+            ->whereMonth('date_start', $month)
+            ->whereYear('date_start', $year);
 
-        if ($this->ignoreId) {
-            $query->where('id', '!=', $this->ignoreId);
+        if ($ignoreId) {
+            $query->where('id', '!=', $ignoreId);
         }
 
         $existsForMonthYear = $query->exists();
 
         if ($existsForMonthYear) {
-            $fail('This account already has a harvest record for the current month.');
+            $fail('This account already has a harvest record for '.$date->format('F').'.');
             return;
         }
 
 
         //2. Check if there's any unharvested record
-        $query = Billing::where('account_id', $value)->unharvested();
+        $query = Billing::where('account_id', $accountId)->unharvested();
 
-        if ($this->ignoreId) {
-            $query->where('id', '!=', $this->ignoreId);
+        if ($ignoreId) {
+            $query->where('id', '!=', $ignoreId);
         }
 
         $unharvestedExists = $query->exists();

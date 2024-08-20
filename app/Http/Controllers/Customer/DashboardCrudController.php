@@ -27,7 +27,7 @@ class DashboardCrudController extends CrudController
 
     public function setup()
     {
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/customer/dashboard');
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/dashboard');
 
         $this->customerPermissions([
             'gcash',

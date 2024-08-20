@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Billing;
 use App\Rules\UniqueMonthlyHarvest;
 use App\Rules\ParticularsRepeatField;
 use Backpack\CRUD\app\Library\Widget;
@@ -19,9 +20,10 @@ class WifiHarvestCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation { edit as traitEdit;}
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation { destroy as traitDestroy;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    
 
     use CrudExtend;
     use HarvestedOperation;
@@ -62,10 +64,8 @@ class WifiHarvestCrudController extends CrudController
 
         $this->accountColumnDetails(label: __('app.account'));
 
-        // TODO:: use date_start/date_end instead of created_at
-        // TODO:: then create field for date
         $this->crud->column([
-            'name' => 'created_at',
+            'name' => 'date_start',
             'type' => 'date',
             'label' => __('app.wifi_harvest.date')
         ]);
@@ -93,6 +93,9 @@ class WifiHarvestCrudController extends CrudController
             'label' => __('app.wifi_harvest.status'),
             'type' => 'closure',
             'function' => function ($entry) {
+
+                $this->eachRowPermissions($entry);
+ 
                 return $entry->billingStatus->badge;
             },
             'escaped' => false
@@ -112,11 +115,11 @@ class WifiHarvestCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation([
+        $this->crud->setValidation([
             'account_id' => [
                 'required',
                 'integer',
-                new UniqueMonthlyHarvest(request()->id),
+                new UniqueMonthlyHarvest(),
             ],
             'billing_type_id' => [
                 'required',
@@ -125,17 +128,39 @@ class WifiHarvestCrudController extends CrudController
             ],
             'particulars' => [
                 new ParticularsRepeatField()
+            ],
+            'date_start' => [
+                'required',
+                'date',
+                'date_format:Y-m-d',
             ]
+        ], [
+            'date_start.required' => __('app.wifi_harvest.date_required')
         ]);
 
         
         $this->accountFieldHarvest(label: __('app.account'));
 
         $this->crud->field([
+            'name' => 'date_start',
+            'label' => __('app.wifi_harvest.date'),
+            'type' => 'date',
+            'default' => date('Y-m-d'),
+        ]);
+
+        $this->crud->field([
             'name' => 'billing_type_id', 
             'type'  => 'hidden',
             'value' => 3, // Harvest Piso Wifi
         ]);
+
+        $hint = '<span class="text-success">';
+        if ($this->crud->getOperation() == 'create') {
+            $hint .= __('app.wifi_harvest.particulars_hint');
+        }else {
+            $hint .= __('app.wifi_harvest.particulars_hint_edit');
+        }
+        $hint .= '</span>';
 
         $this->crud->field([   // repeatable
             'name'  => 'particulars',
@@ -156,7 +181,7 @@ class WifiHarvestCrudController extends CrudController
                     'attributes' => ["step" => "any"],
                 ],
             ],
-            'hint' => $this->crud->getOperation() == 'create' ? __('app.wifi_harvest.particulars_hint') : __('app.wifi_harvest.particulars_hint_edit'),
+            'hint' => $hint,
             'init_rows' => 0, // number of empty rows to be initialized, by default 1
             // 'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
         ]);
@@ -222,6 +247,50 @@ class WifiHarvestCrudController extends CrudController
             ];
 
             Widget::add()->to('before_content')->type('div')->class('row')->content($contents);
+        }
+    }
+
+    private function eachRowPermissions($entry)
+    {
+        $this->crud->denyAllAccess();
+
+        if ($entry->isHarvested()) {
+            if (auth()->user()->can('wifi_harvests_show')) {
+                $this->crud->allowAccessOnlyTo('show');
+            }
+
+        }else {
+            $this->userPermissions('wifi_harvests');
+        }
+    }
+
+    public function edit($id)
+    {
+        $this->denyAccessIfHarvested($id);
+
+        $response = $this->traitEdit($id);
+
+        return $response;
+    }
+
+    public function destroy($id)
+    {
+        $this->denyAccessIfHarvested($id);
+
+        $response = $this->traitDestroy($id);
+
+        return $response;
+    }
+
+    private function denyAccessIfHarvested($id)
+    {
+        $bill = Billing::findOrFail($id);
+
+        if ($bill->isHarvested()) { 
+            $this->crud->denyAccess(['update', 'delete']);
+            
+            // add this in case they type it in address bar, show alert
+            alertError('Whooops, you\'re not allowed to do that.');
         }
     }
 }

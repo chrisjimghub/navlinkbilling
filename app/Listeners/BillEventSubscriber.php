@@ -101,7 +101,9 @@ class BillEventSubscriber
     {
         $this->billing->markAsUnharvested();
 
-        // TODO:: assign date_start herE?
+        if (!$this->billing->date_start) {
+            $this->billing->date_start = date('Y-m-d');
+        }
 
         if (empty($this->particulars)) {
             $this->addOrUpdateParticular([
@@ -163,7 +165,7 @@ class BillEventSubscriber
             $this->billing->date_cut_off = $period['date_cut_off'];
         }
 
-        // if empty before_account_snapshot = No Upgrade Planned Application
+        // if not empty before_account_snapshot = No Upgrade Planned Application
         if (!$this->billing->before_account_snapshot) {
             $this->addOrUpdateParticular([
                 'description' => ucwords($this->billing->billingType->name),
@@ -191,6 +193,15 @@ class BillEventSubscriber
         }else {
             // Compute Upgrade Planned Application
             
+            // remove Monthly Fee in pro rated upgrade if exist
+            $this->particulars = array_filter($this->particulars, function($item) {
+                return strtolower($item['description']) !== strtolower($this->billing->billingType->name);
+            });
+            
+            // Re-index array to maintain numeric keys
+            $this->particulars = array_values($this->particulars);
+
+
             // no need to negate the value we wont do it as deductions, bec. since we have 2 monthly fee: the prev and new, we wont do
             // the same as the normal Pro-rated, the normal is we put the monthly fee and then add the prorated deductions. but since
             // this have 2 monthly fee the new and prev. we just add it as positive and dont display or add monthly fee in particulars.
