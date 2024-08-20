@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Billing;
 use App\Rules\UniqueMonthlyHarvest;
 use App\Rules\ParticularsRepeatField;
 use Backpack\CRUD\app\Library\Widget;
@@ -19,9 +20,10 @@ class WifiHarvestCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation { edit as traitEdit;}
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation { destroy as traitDestroy;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    
 
     use CrudExtend;
     use HarvestedOperation;
@@ -91,6 +93,9 @@ class WifiHarvestCrudController extends CrudController
             'label' => __('app.wifi_harvest.status'),
             'type' => 'closure',
             'function' => function ($entry) {
+
+                $this->eachRowPermissions($entry);
+ 
                 return $entry->billingStatus->badge;
             },
             'escaped' => false
@@ -242,6 +247,50 @@ class WifiHarvestCrudController extends CrudController
             ];
 
             Widget::add()->to('before_content')->type('div')->class('row')->content($contents);
+        }
+    }
+
+    private function eachRowPermissions($entry)
+    {
+        $this->crud->denyAllAccess();
+
+        if ($entry->isHarvested()) {
+            if (auth()->user()->can('wifi_harvests_show')) {
+                $this->crud->allowAccessOnlyTo('show');
+            }
+
+        }else {
+            $this->userPermissions('wifi_harvests');
+        }
+    }
+
+    public function edit($id)
+    {
+        $this->denyAccessIfHarvested($id);
+
+        $response = $this->traitEdit($id);
+
+        return $response;
+    }
+
+    public function destroy($id)
+    {
+        $this->denyAccessIfHarvested($id);
+
+        $response = $this->traitDestroy($id);
+
+        return $response;
+    }
+
+    private function denyAccessIfHarvested($id)
+    {
+        $bill = Billing::findOrFail($id);
+
+        if ($bill->isHarvested()) { 
+            $this->crud->denyAccess(['update', 'delete']);
+            
+            // add this in case they type it in address bar, show alert
+            alertError('Whooops, you\'re not allowed to do that.');
         }
     }
 }

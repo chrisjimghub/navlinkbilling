@@ -302,10 +302,10 @@ class BillingCrudController extends CrudController
         // if already paid, then dont allow
 
         if ($bill->isPaid()) { 
-            $this->crud->denyAccess('update');
+            $this->crud->denyAccess(['update', 'delete']);
 
             // add this in case they type it in address bar, show alert
-            \Alert::warning('Whooops, you\'re not allowed to do that.');
+            alertError('Whooops, you\'re not allowed to do that.');
         }
     }
 }
