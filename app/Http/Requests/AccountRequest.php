@@ -68,7 +68,7 @@ class AccountRequest extends FormRequest
 
             'accountStatus.required' => 'The account status field is required.',
 
-            'billingGrouping.required_unless' => 'The billing grouping field is required unless subscription is hotspot voucher.'
+            'billingGrouping.required_unless' => 'The billing grouping field is required unless subscription is hotspot voucher or piso wifi.'
         ];
     }
 
