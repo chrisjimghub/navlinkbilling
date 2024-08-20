@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\FilterQueries\BillingFilterQueries;
 use App\Models\Billing;
 use App\Models\BillingType;
 use App\Models\ContractPeriod;
-use Illuminate\Support\Carbon;
 use App\Http\Requests\BillingRequest;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
+use App\Http\Controllers\Admin\FilterQueries\BillingFilterQueries;
 use App\Http\Controllers\Admin\Operations\GenerateByGroupOperation;
+use App\Http\Controllers\Admin\Operations\BillingGroupButtonsOperation;
 use Winex01\BackpackFilter\Http\Controllers\Operations\ExportOperation;
 use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
 
@@ -51,8 +50,6 @@ class BillingCrudController extends CrudController
         CRUD::setEntityNameStrings('Billing', 'Billings');
         
         $this->userPermissions();
-
-        $this->overrideButtonDeleteUpdate();
 
         $this->crud->query->whereHas('account', function ($query) {
             $query->billingCrud();
@@ -141,6 +138,9 @@ class BillingCrudController extends CrudController
             'name' => 'billing_status_id',
             'type' => 'closure',
             'function' => function ($entry) {
+
+                $this->denyAccessIf($entry->id);
+
                 return $entry->billingStatus->badge;
             },
             'escaped' => false
@@ -260,15 +260,6 @@ class BillingCrudController extends CrudController
         ]);
     }
 
-    private function overrideButtonDeleteUpdate()
-    {
-        // override buttons and hide if status is paid
-        $this->crud->operation(['list', 'show'], function () {
-            $this->crud->addButton('line', 'update', 'view', 'crud::buttons.update_bill');
-            $this->crud->addButton('line', 'delete', 'view', 'crud::buttons.delete_bill');
-        });
-    }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -277,7 +268,7 @@ class BillingCrudController extends CrudController
      */
     public function edit($id)
     {
-        $this->denyAccessIfPaid($id);
+        $this->denyAccessIf($id);
 
         $response = $this->traitEdit($id);
 
@@ -286,23 +277,19 @@ class BillingCrudController extends CrudController
 
     public function destroy($id)
     {
-        $this->denyAccessIfPaid($id);
+        $this->denyAccessIf($id);
 
         $response = $this->traitDestroy($id);
 
         return $response;
     }
 
-    private function denyAccessIfPaid($id)
+    private function denyAccessIf($id)
     {
         $bill = Billing::findOrFail($id);
-        // if already paid, then dont allow
 
         if ($bill->isPaid()) { 
             $this->crud->denyAccess(['update', 'delete']);
-
-            // add this in case they type it in address bar, show alert
-            alertError('Whooops, you\'re not allowed to do that.');
         }
     }
 }
