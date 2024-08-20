@@ -89,6 +89,7 @@ class BillEventSubscriber
             // monthly
             $this->processMonthly();
         }elseif ($this->billing->isHarvestPisoWifi()) {
+            // harvest
             $this->processHarvestWifi();
         }
 
@@ -99,6 +100,8 @@ class BillEventSubscriber
     public function processHarvestWifi()
     {
         $this->billing->markAsUnharvested();
+
+        // TODO:: assign date_start herE?
 
         if (empty($this->particulars)) {
             $this->addOrUpdateParticular([

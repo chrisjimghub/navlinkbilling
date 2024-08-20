@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\BillingType;
 use App\Rules\UniqueMonthlyHarvest;
 use App\Rules\ParticularsRepeatField;
+use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use App\Http\Controllers\Admin\Operations\HarvestedOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -23,6 +24,8 @@ class WifiHarvestCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
+    use HarvestedOperation;
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -47,17 +50,20 @@ class WifiHarvestCrudController extends CrudController
         // Break Even
         // Net Loss
 
-
     /**
      * Define what happens when the List operation is loaded.
-     * 
+     * -
      * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
      * @return void
      */
     protected function setupListOperation()
     {
+        $this->widgets();
+
         $this->accountColumnDetails(label: __('app.account'));
 
+        // TODO:: use date_start/date_end instead of created_at
+        // TODO:: then create field for date
         $this->crud->column([
             'name' => 'created_at',
             'type' => 'date',
@@ -73,6 +79,7 @@ class WifiHarvestCrudController extends CrudController
             'escaped' => false
         ]);
 
+        
         $this->currencyFormatColumn(fieldName: 'total', label: __('app.wifi_harvest.total'));
 
         $this->crud->column([
@@ -164,5 +171,57 @@ class WifiHarvestCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    public function widgets()
+    {
+        // TODO:: Widgets
+        if ($this->crud->getOperation() == 'list') {
+
+            // $totalScheduleToday
+            // $totalScheduleTodayHarvested
+
+            $contents[] = [
+                'type'          => 'progress_white',
+                'class'         => 'card mb-3',
+                'value'         => ' 0/0',
+                'description'   => 'Today\'s Schedule',
+                'progress'      => 100, 
+                'progressClass' => 'progress-bar bg-success',
+                'hint'          => 'Piso Wi-Fi units scheduled for harvest today.',
+            ];
+
+            $contents[] = [
+                'type'          => 'progress_white',
+                'class'         => 'card mb-3',
+                'value'         => '11.456',
+                'description'   => 'Daily Income',
+                'progress'      => widgetProgress(now()->hour, 24), 
+                'progressClass' => 'progress-bar bg-info',
+                'hint'          => 'Today\'s harvest for '.now()->format(dateHumanReadable()).'.',
+            ];
+
+            $contents[] = [
+                'type'          => 'progress_white',
+                'class'         => 'card mb-3',
+                'value'         => '11.456',
+                'description'   => 'Monthly Income',
+                'progress'      => widgetProgress(now()->day, now()->daysInMonth()), 
+                'progressClass' => 'progress-bar bg-warning',
+                'hint'          => 'This month\'s harvest for '.now()->format('M, Y').'.',
+            ];
+
+            $contents[] = [
+                'type'          => 'progress_white',
+                'class'         => 'card mb-3',
+                'value'         => '11.456',
+                'description'   => 'Annual Income',
+                'progress'      => widgetProgress(now()->month, 12), 
+                'progressClass' => 'progress-bar bg-dark',
+                'hint'          => 'Total revenue for the year '.date('Y').'.',
+            ];
+
+            Widget::add()->to('before_content')->type('div')->class('row')->content($contents);
+        }
     }
 }
