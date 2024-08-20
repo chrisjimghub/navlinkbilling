@@ -137,6 +137,14 @@ class WifiHarvestCrudController extends CrudController
             'value' => 3, // Harvest Piso Wifi
         ]);
 
+        $hint = '<span class="text-success">';
+        if ($this->crud->getOperation() == 'create') {
+            $hint .= __('app.wifi_harvest.particulars_hint');
+        }else {
+            $hint .= __('app.wifi_harvest.particulars_hint_edit');
+        }
+        $hint .= '</span>';
+
         $this->crud->field([   // repeatable
             'name'  => 'particulars',
             'label' => __('app.billing_particulars'),
@@ -156,7 +164,7 @@ class WifiHarvestCrudController extends CrudController
                     'attributes' => ["step" => "any"],
                 ],
             ],
-            'hint' => $this->crud->getOperation() == 'create' ? __('app.wifi_harvest.particulars_hint') : __('app.wifi_harvest.particulars_hint_edit'),
+            'hint' => $hint,
             'init_rows' => 0, // number of empty rows to be initialized, by default 1
             // 'min_rows' => 1, // minimum rows allowed, when reached the "delete" buttons will be hidden
         ]);

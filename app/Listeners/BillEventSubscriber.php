@@ -163,7 +163,7 @@ class BillEventSubscriber
             $this->billing->date_cut_off = $period['date_cut_off'];
         }
 
-        // if empty before_account_snapshot = No Upgrade Planned Application
+        // if not empty before_account_snapshot = No Upgrade Planned Application
         if (!$this->billing->before_account_snapshot) {
             $this->addOrUpdateParticular([
                 'description' => ucwords($this->billing->billingType->name),
