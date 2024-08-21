@@ -42,7 +42,7 @@ class BillingHistoryCrudController extends AdminBillingCrudController
     {
         CRUD::setModel(\App\Models\Billing::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/billing-history');
-        CRUD::setEntityNameStrings('billing history', 'billings');
+        CRUD::setEntityNameStrings('invoice', 'invoices');
 
         $this->customerPermissions([
             'list',
@@ -53,10 +53,12 @@ class BillingHistoryCrudController extends AdminBillingCrudController
             'gcash'
         ]);
 
-        $this->data['breadcrumbs'] = [
-            'Dashboard' => backpack_url('dashboard'),
-            $this->crud->entity_name => false,
-        ];
+        $this->crud->query->billingCrud();
+
+        // $this->data['breadcrumbs'] = [
+        //     'Dashboard' => backpack_url('dashboard'),
+        //     $this->crud->entity_name => false,
+        // ];
     }
 
     protected function setupBillingGroupButtonsDefaults()
@@ -99,11 +101,21 @@ class BillingHistoryCrudController extends AdminBillingCrudController
             'name' => 'status',
             'label' => __('Status'),
             'type' => 'select_from_array',
-            'options' => $this->billingStatusLists(),
+            'options' => $this->billingStatusLists([4,5]),
             'wrapper' => [
                 'class' => 'form-group col-md-2'
             ]
         ]);
+
+        // $this->crud->field([
+        //     'name' => 'type',
+        //     'label' => __('Type'),
+        //     'type' => 'select_from_array',
+        //     'options' => $this->billingTypeLists(3),
+        //     'wrapper' => [
+        //         'class' => 'form-group col-md-2'
+        //     ]
+        // ]);
     }
     
     // we need this, because in the original BillingCrudController it was overrided so we will override the trait setupShowOperation here too

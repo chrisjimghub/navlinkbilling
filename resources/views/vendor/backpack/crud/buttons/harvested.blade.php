@@ -45,15 +45,8 @@
 			      url: route,
 			      type: 'POST',
 			      success: function(result) {
-                        if (result.msg) {
-                            if (typeof crud !== 'undefined') {
-                                crud.table.ajax.reload();
-                            }
-                            // Show a success notification bubble
-                            new Noty({
-                                type: result.type,
-                                text: result.msg
-                            }).show();
+                        if (result.success == true) {
+							window.location.reload();
                         }
                     },
                     error: function(xhr) {

@@ -237,6 +237,20 @@ class Billing extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeBillingCrud($query)
+    {
+        return $query->whereHas('account', function ($query) {
+            $query->billingCrud();
+        });
+    }
+
+    public function scopeHarvestCrud($query)
+    {
+        return $query->whereHas('account', function ($query) {
+            $query->harvestCrud();
+        });
+    }
+
     public function scopeOwnByCustomer(Builder $query, $customerId)
     {
         return $query->whereHas('account', function (Builder $query) use ($customerId) {
@@ -563,7 +577,7 @@ class Billing extends Model
                         $textColor = 'text-danger';
                     }
 
-                    $amount = $this->currencyFormatAccessor($amount);
+                    $amount = $this->currencyFormatAccessor(abs($amount));
                 }
     
 

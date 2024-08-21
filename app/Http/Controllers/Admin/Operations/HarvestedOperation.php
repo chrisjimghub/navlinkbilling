@@ -72,7 +72,10 @@ trait HarvestedOperation
         $billing->markAsHarvested();
         $billing->saveQuietly();
 
-        return notySuccess('Item mark as harvest.');
+        alertSuccess('Item mark as harvest.');
 
+        return response()->json([
+            'success' => true,
+        ]);
     }
 }

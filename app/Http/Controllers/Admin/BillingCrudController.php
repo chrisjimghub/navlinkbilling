@@ -51,9 +51,7 @@ class BillingCrudController extends CrudController
         
         $this->userPermissions();
 
-        $this->crud->query->whereHas('account', function ($query) {
-            $query->billingCrud();
-        });
+        $this->crud->query->billingCrud();
     }
 
     /**
