@@ -12,7 +12,7 @@
     @endphp
 
     @if($hasPisoWifi)
-        <x-backpack::menu-dropdown-item title="Piso Wifi" icon="las la-credit-card" :link="backpack_url('test')" />
+        <x-backpack::menu-dropdown-item title="Piso Wifi" icon="las la-credit-card" :link="backpack_url('piso-wifi')" />
     @endif
 
 </x-backpack::menu-dropdown>
