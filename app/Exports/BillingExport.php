@@ -28,7 +28,10 @@ class BillingExport implements
 
     protected function entries()
     {
-        $entries = Billing::join('accounts', 'billings.account_id', '=', 'accounts.id')
+        $entries = Billing::whereHas('account', function ($query) {
+                        $query->billingCrud();
+                    })
+                    ->join('accounts', 'billings.account_id', '=', 'accounts.id')
                     ->join('customers', 'accounts.customer_id', '=', 'customers.id')
                     ->orderBy('customers.last_name', 'asc')
                     ->orderBy('customers.first_name', 'asc')

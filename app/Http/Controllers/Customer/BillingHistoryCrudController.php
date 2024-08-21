@@ -42,7 +42,7 @@ class BillingHistoryCrudController extends AdminBillingCrudController
     {
         CRUD::setModel(\App\Models\Billing::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/billing-history');
-        CRUD::setEntityNameStrings('billing history', 'billings');
+        CRUD::setEntityNameStrings('invoice', 'invoices');
 
         $this->customerPermissions([
             'list',
