@@ -53,9 +53,7 @@ class BillingHistoryCrudController extends AdminBillingCrudController
             'gcash'
         ]);
 
-        $this->crud->query->whereHas('account', function ($query) {
-            $query->billingCrud();
-        });
+        $this->crud->query->billingCrud();
 
         $this->data['breadcrumbs'] = [
             'Dashboard' => backpack_url('dashboard'),

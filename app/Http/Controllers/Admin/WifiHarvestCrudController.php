@@ -42,9 +42,7 @@ class WifiHarvestCrudController extends CrudController
     
         $this->userPermissions('wifi_harvests');
 
-        $this->crud->query->whereHas('account', function ($query) {
-            $query->harvestCrud();
-        });
+        $this->crud->query->harvestCrud();
     }
 
     // TODO::
