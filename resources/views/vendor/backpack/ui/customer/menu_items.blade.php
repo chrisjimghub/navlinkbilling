@@ -16,5 +16,3 @@
     @endif
 
 </x-backpack::menu-dropdown>
-
-

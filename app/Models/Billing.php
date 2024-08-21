@@ -577,7 +577,7 @@ class Billing extends Model
                         $textColor = 'text-danger';
                     }
 
-                    $amount = $this->currencyFormatAccessor($amount);
+                    $amount = $this->currencyFormatAccessor(abs($amount));
                 }
     
 

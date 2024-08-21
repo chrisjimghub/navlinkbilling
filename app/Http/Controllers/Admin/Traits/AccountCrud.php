@@ -142,8 +142,14 @@ trait AccountCrud
         $data,
     )
     {
+        $anchor = $name;
+
+        if (auth()->user()->can('accounts_show')) {
+            $anchor = '<a href='.backpack_url('account/'.$accountId.'/show').'>'.$name.'</a>';
+        }
+
         return 
-            '<strong from="'.$from.'" data="'.$data.'">Name: </strong><a href='.backpack_url('account/'.$accountId.'/show').'>'.$name.'</a><br/>'.
+            '<strong from="'.$from.'" data="'.$data.'">Name: </strong>'.$anchor.'<br/>'.
             '<strong>Location: </strong>' . $location . '<br/>'.
             '<strong>Type: </strong>' . $type . '<br/>'.
             '<strong>Installed: </strong>' . $installedDate . '<br/>'.

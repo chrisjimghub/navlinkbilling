@@ -55,10 +55,10 @@ class BillingHistoryCrudController extends AdminBillingCrudController
 
         $this->crud->query->billingCrud();
 
-        $this->data['breadcrumbs'] = [
-            'Dashboard' => backpack_url('dashboard'),
-            $this->crud->entity_name => false,
-        ];
+        // $this->data['breadcrumbs'] = [
+        //     'Dashboard' => backpack_url('dashboard'),
+        //     $this->crud->entity_name => false,
+        // ];
     }
 
     protected function setupBillingGroupButtonsDefaults()
