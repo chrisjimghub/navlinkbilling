@@ -53,6 +53,10 @@ class BillingHistoryCrudController extends AdminBillingCrudController
             'gcash'
         ]);
 
+        $this->crud->query->whereHas('account', function ($query) {
+            $query->billingCrud();
+        });
+
         $this->data['breadcrumbs'] = [
             'Dashboard' => backpack_url('dashboard'),
             $this->crud->entity_name => false,
@@ -99,7 +103,17 @@ class BillingHistoryCrudController extends AdminBillingCrudController
             'name' => 'status',
             'label' => __('Status'),
             'type' => 'select_from_array',
-            'options' => $this->billingStatusLists(),
+            'options' => $this->billingStatusLists([4,5]),
+            'wrapper' => [
+                'class' => 'form-group col-md-2'
+            ]
+        ]);
+
+        $this->crud->field([
+            'name' => 'type',
+            'label' => __('Type'),
+            'type' => 'select_from_array',
+            'options' => $this->billingTypeLists(3),
             'wrapper' => [
                 'class' => 'form-group col-md-2'
             ]

@@ -74,6 +74,10 @@ class DashboardCrudController extends CrudController
 
     public function currentBillCard(Billing $billing)
     {
+        if (!$billing->account->billingGrouping) {
+            return;
+        }
+
         $fee = $this->totalWithPaymongoServiceCharge($billing->total) - $billing->total;
         $fee = currencyFormat($fee);
 
@@ -116,6 +120,10 @@ class DashboardCrudController extends CrudController
 
     public function noCurrentBillCard(Account $account)
     {
+        if (!$account->billingGrouping) {
+            return;
+        }
+
         $period = $this->billingPeriod($account->billingGrouping);
 
         // before we proceed let's check first if the user already paid this month's bill

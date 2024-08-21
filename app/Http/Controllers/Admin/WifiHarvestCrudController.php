@@ -226,7 +226,7 @@ class WifiHarvestCrudController extends CrudController
             ];
 
             $billingForDaily = clone $billing;
-            $total = $billingForDaily->whereDate('date_start', $date)->get()->sum('total');
+            $total = $billingForDaily->whereDate('date_start', $date)->harvested()->get()->sum('total');
             $contents[] = [
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
@@ -238,7 +238,7 @@ class WifiHarvestCrudController extends CrudController
             ];
 
             $billingForMonth = clone $billing;
-            $total = $billingForMonth->whereMonth('date_start', $month)->get()->sum('total');
+            $total = $billingForMonth->whereMonth('date_start', $month)->harvested()->get()->sum('total');
             $contents[] = [
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
@@ -250,7 +250,7 @@ class WifiHarvestCrudController extends CrudController
             ];
 
             $billingForYear = clone $billing;
-            $total = $billingForYear->whereYear('date_start', $year)->get()->sum('total');
+            $total = $billingForYear->whereYear('date_start', $year)->harvested()->get()->sum('total');
             $contents[] = [
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
