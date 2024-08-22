@@ -1,9 +1,5 @@
 @php
     $menus = \App\Models\Menu::whereNull('parent_id')->orderBy('lft')->get();
-
-//TODO:: Total Active Accounts, Total Income Today, Total Income This Month, Total Income This Year
-//TODO:: Income: PisoWifi, Voucher, Internet(P2P/FIBER)
-
 @endphp
 
 

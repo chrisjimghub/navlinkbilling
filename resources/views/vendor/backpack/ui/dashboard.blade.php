@@ -1,7 +1,6 @@
 @extends(backpack_view('blank'))
 @php
-    $contents = [];
-
+    /*
     if (auth()->user()->can('customers_list')) {
         $totalCustomers = modelInstance('Customer')::count();
         $totalAccounts = modelInstance('Account')::count();
@@ -81,8 +80,36 @@
             ->description(__('app.dashboard.total_advanced_payment'))
             ->hint(__('app.dashboard.sum_of_advanced'));
     }
+    */
+    
+    // $totalAccounts = modelInstance('Account')::count();
+    // $totalAccountsConnected = modelInstance('Account')::connected()->count();
+    // $totalAccountsInstalling = modelInstance('Account')::installing()->count();
+    // $totalAccountsDisconnected = modelInstance('Account')::disconnected()->count();
+    // $totalAccountsNoBilling = modelInstance('Account')::connectedNoBilling()->count();
 
+    // $contents[] = 
+    //     Widget::make()
+    //     ->type('progress')
+    //     ->class('card border-0 text-white bg-success my-widgets mb-2')
+    //     ->progressClass('progress-bar')
+    //     ->progress(round(
+    //         // connected accounts / total accounts * 100
+    //         $totalAccountsConnected / ($totalAccounts == 0 ? 1 : $totalAccounts) * 100
+    //     ))
+    //     ->value($totalAccountsConnected)
+    //     ->description(__('app.dashboard.account_connected'))
+    //     ->hint(
+    //         $totalAccountsInstalling.__('app.dashboard.installing').
+    //         $totalAccountsDisconnected.__('app.dashboard.disconnected').
+    //         $totalAccountsNoBilling.__('app.dashboard.no_billing')
+    //     );
+    
 
+    //TODO:: Total Active Accounts, Total Income Today, Total Income This Month, Total Income This Year
+    //TODO:: Income: PisoWifi, Voucher, Internet(P2P/FIBER)
+    
+    $contents = [];
     Widget::add()->to('before_content')->type('div')->class('row')->content($contents);
 @endphp
 
