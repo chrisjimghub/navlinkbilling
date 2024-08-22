@@ -108,7 +108,8 @@
 
     //TODO:: Total Active Accounts, Total Income Today, Total Income This Month, Total Income This Year
     //TODO:: Income: PisoWifi, Voucher, Internet(P2P/FIBER)
-
+    
+    $contents = [];
     Widget::add()->to('before_content')->type('div')->class('row')->content($contents);
 @endphp
 
