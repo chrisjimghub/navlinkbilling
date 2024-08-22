@@ -72,12 +72,6 @@ class BillEventSubscriber
         // dont worry about it to be duplicated because the addOrUdateParticular method will add or update it if duplicate
         if ($this->billing->particulars) {
             $this->particulars = $this->billing->particulars;
-
-            // Check if a particular description contains (n Days) or Pro-rated and unset it if it does. This is because Pro-rated items
-            // need computation and to avoid duplicates. For example, "Service Interruptions (2 Days)" cannot be compared in the 
-            // addOrUpdateParticular method due to the varying labels caused by the integer beside the day text. Therefore, we remove it here.
-            // It will be computed down below and re-added.
-            $this->removeItemsWithDayPatternAndProRated();
         }
 
         $this->snapshot();
@@ -99,6 +93,9 @@ class BillEventSubscriber
 
     public function processHarvestWifi()
     {
+        // the default for billing_type_id is 2 or unpaid, let' just put it here so its created it will assigned as unharvested
+        // and dont put if statement here, because its not necessary it we will just updated this to unharvested everytime this is touch
+        // anyway when this item is marked as harvested it will use the saveQuietly so this will not run.
         $this->billing->markAsUnharvested();
 
         if (!$this->billing->date_start) {
@@ -157,6 +154,12 @@ class BillEventSubscriber
 
     public function processMonthly()
     {
+        // Check if a particular description contains (n Days) or Pro-rated and unset it if it does. This is because Pro-rated items
+        // need computation and to avoid duplicates. For example, "Service Interruptions (2 Days)" cannot be compared in the 
+        // addOrUpdateParticular method due to the varying labels caused by the integer beside the day text. Therefore, we remove it here.
+        // It will be computed down below and re-added.
+        $this->removeItemsWithDayPatternAndProRated();
+
         if (empty($this->billing->date_start) || empty($this->billing->date_end) || empty($this->billing->date_cut_off)) {
             $group = $this->billing->account->billingGrouping;
             $period = $this->billingPeriod($group);
