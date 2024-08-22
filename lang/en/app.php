@@ -127,7 +127,7 @@ return [
         'installing'             => ' installing, ',
         'installment'            => ' installment, ',
         'monthly_unpaid'         => ' monthly unpaid.',
-        'no_billing'             => ' no billing.',
+        'no_billing'             => ' no-billing.',
         'paid_billing'           => 'Paid Billings.',
         'registered_customer'    => 'Registered Customers.',
         'sum_of_advanced'        => 'Sum of all customers advanced.',
