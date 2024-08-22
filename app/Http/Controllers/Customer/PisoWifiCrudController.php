@@ -47,13 +47,14 @@ class PisoWifiCrudController extends WifiHarvestCrudController
         $this->crud->removeColumns([
             'billing_status_id',
             'total',
+            'particulars'
         ]);
 
-        $this->crud->modifyColumn('particulars', [
-            'function' => function($entry) {
-                return $entry->particular_details;
-            },
-        ]);
+        // $this->crud->modifyColumn('particulars', [
+        //     'function' => function($entry) {
+        //         return $entry->particular_details;
+        //     },
+        // ]);
 
         $this->crud->column([
             'name' => 'earnings',
@@ -62,7 +63,9 @@ class PisoWifiCrudController extends WifiHarvestCrudController
                 $total = 0;
 
                 foreach ($entry->particulars as $particular) {
-                    if (str_contains(strtolower($particular['description']), 'lessor')) {
+                    if (str_contains(strtolower($particular['description']), 'lessor') || 
+                        str_contains(strtolower($particular['description']), 'electric bill')
+                    ) {
                         $total += $particular['amount'];
                     }
                 }
@@ -81,7 +84,7 @@ class PisoWifiCrudController extends WifiHarvestCrudController
                     return $css;
                 }
             ],
-        ])->afterColumn('particulars');
+        ])->afterColumn('date_start');
     }
 
     public function setupShowOperation()
