@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Models\Model;
 
 class ExpenseCategory extends Model
 {
+    use CrudTrait;
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES

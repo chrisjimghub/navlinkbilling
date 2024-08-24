@@ -236,6 +236,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'expenses_update', 
             'expenses_delete', 
         ],
+        
+        'expense_categories' => [
+            'expense_categories_list',
+            'expense_categories_create', 
+            'expense_categories_update', 
+            'expense_categories_delete', 
+        ],
     ];
 
     /**
