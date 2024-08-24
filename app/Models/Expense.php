@@ -2,17 +2,21 @@
 
 namespace App\Models;
 
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use App\Models\User;
 use App\Models\Model;
+use App\Models\ExpenseCategory;
 
-class ExpenseCategory extends Model
+class Expense extends Model
 {
+    use CrudTrait;
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'expense_categories';
+    protected $table = 'expenses';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -30,11 +34,15 @@ class ExpenseCategory extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function expenses()
+    public function category()
     {
-        return $this->hasMany(Expense::class);
+        return $this->belongsTo(ExpenseCategory::class);
     }
 
+    public function receiver()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES
