@@ -44,11 +44,25 @@ class ExpenseCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::setFromDb(); 
+
+        $this->crud->removeColumns([
+            'expense_category_id',
+            'user_id',
+        ]);
+        
+        $this->crud->column('category')->after('description');
+        $this->crud->column('receiver')->label(__('app.expense.receiver'))->after('description');
+        $this->currencyFormatColumn('amount');
+
     }
 
     protected function setupShowOperation()
     {
         $this->setupListOperation();
+
+        $this->crud->modifyColumn('description', [
+            'limit' => 999,
+        ]);
     }
 
     /**
@@ -79,7 +93,7 @@ class ExpenseCrudController extends CrudController
         $this->crud->field('category')->after('description');
         $this->crud->field([
             'name' => 'receiver',
-            'label' => 'Received by',
+            'label' => __('app.expense.receiver'),
             'options'   => (function ($query) {
                 return $query->adminUsersOnly()->orderBy('name', 'ASC')->get();
             }),
