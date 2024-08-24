@@ -74,6 +74,10 @@ class ExpenseCrudController extends CrudController
 
     public function widgets()
     {
+        if (!auth()->user()->can('expenses_notice')) {
+            return;
+        }
+
         if ($this->crud->getOperation() == 'list') {
             $contents[] = [
                 'type'         => 'alert',
