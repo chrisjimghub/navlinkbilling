@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Billing;
+use Illuminate\Support\Carbon;
+use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -15,8 +18,8 @@ class ExpenseCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation { edit as traitEdit;}
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation { destroy as traitDestroy;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
@@ -35,6 +38,9 @@ class ExpenseCrudController extends CrudController
         $this->userPermissions();
     }
 
+    // TODO:: filters
+    // TODO:: export
+
     /**
      * Define what happens when the List operation is loaded.
      * 
@@ -43,6 +49,8 @@ class ExpenseCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->widgets();
+
         CRUD::setFromDb(); 
 
         $this->crud->removeColumns([
@@ -54,6 +62,28 @@ class ExpenseCrudController extends CrudController
         $this->crud->column('receiver')->label(__('app.expense.receiver'))->after('description');
         $this->currencyFormatColumn('amount');
 
+        $this->crud->modifyColumn('amount', [
+            'type'     => 'closure',
+            'function' => function($entry) {
+                $this->denyAccessIf($entry->id);
+                return $entry->amount;
+            }
+        ]);
+
+    }
+
+    public function widgets()
+    {
+        if ($this->crud->getOperation() == 'list') {
+            $contents[] = [
+                'type'         => 'alert',
+                'class'        => 'alert alert-default mb-3 text-dark',
+                'heading'      => __('app.expense.notice'),
+                'content'      => __('app.expense.notice_content'),
+            ];
+
+            Widget::add()->to('before_content')->type('div')->content($contents);
+        }
     }
 
     protected function setupShowOperation()
@@ -115,5 +145,36 @@ class ExpenseCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    public function edit($id)
+    {
+        $this->denyAccessIf($id);
+
+        $response = $this->traitEdit($id);
+
+        return $response;
+    }
+
+    public function destroy($id)
+    {
+        $this->denyAccessIf($id);
+
+        $response = $this->traitDestroy($id);
+
+        return $response;
+    }
+
+    private function denyAccessIf($id)
+    {
+        $model = modelInstance('Expense')->findOrFail($id);
+
+        $this->userPermissions();
+
+        if ($model->created_at->lt(now()->subWeek())) {
+            if (!auth()->user()->can('expenses_edit_old_data')) {
+                $this->crud->denyAccess(['update', 'delete']);
+            }
+        }
     }
 }

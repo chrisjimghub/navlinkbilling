@@ -177,5 +177,7 @@ return [
 
     'expense' => [
         'receiver' => 'Receive By',
+        'notice' => 'Notice!',
+        'notice_content' => 'Records inserted more than one week ago can no longer be edited. If you need to modify old data, please contact the administrator.',
     ]
 ];
