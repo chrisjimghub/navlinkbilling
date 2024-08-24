@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -18,6 +19,8 @@ class ExpenseCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
+    use CrudExtend;
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -28,6 +31,8 @@ class ExpenseCrudController extends CrudController
         CRUD::setModel(\App\Models\Expense::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/expense');
         CRUD::setEntityNameStrings('expense', 'expenses');
+        
+        $this->userPermissions();
     }
 
     /**
@@ -64,10 +69,18 @@ class ExpenseCrudController extends CrudController
         ]);
 
         $this->crud->removeFields([
-            // 'expense_category_id'
+            'expense_category_id',
+            'user_id',
         ]);
 
-        // TODO::
+        $this->crud->field('category')->after('description');
+        $this->crud->field([
+            'name' => 'receiver',
+            'label' => 'Received by',
+            'options'   => (function ($query) {
+                return $query->adminUsersOnly()->orderBy('name', 'ASC')->get();
+            }),
+        ])->after('description');
     }
 
     /**
