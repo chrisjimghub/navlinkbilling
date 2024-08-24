@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\ExpenseRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -39,12 +38,12 @@ class ExpenseCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
+        CRUD::setFromDb(); 
+    }
 
-        /**
-         * Columns can be defined using the fluent syntax:
-         * - CRUD::column('price')->type('number');
-         */
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**
@@ -59,11 +58,16 @@ class ExpenseCrudController extends CrudController
             // 'name' => 'required|min:2',
         ]);
         CRUD::setFromDb(); // set fields from db columns.
+    
+        $this->crud->modifyField('description', [
+            'type' => 'textarea',
+        ]);
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+        $this->crud->removeFields([
+            // 'expense_category_id'
+        ]);
+
+        // TODO::
     }
 
     /**
