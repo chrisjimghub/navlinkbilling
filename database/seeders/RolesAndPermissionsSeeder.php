@@ -235,6 +235,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'expenses_create', 
             'expenses_update', 
             'expenses_delete', 
+            'expenses_notice', 
             'expenses_edit_old_data', 
         ],
         
