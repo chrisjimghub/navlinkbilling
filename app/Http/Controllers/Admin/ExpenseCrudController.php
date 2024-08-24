@@ -60,7 +60,9 @@ class ExpenseCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation([
-            // 'name' => 'required|min:2',
+            'date' => 'required|date',
+            'description' => 'required|min:2',
+            'amount' => 'required|numeric|gt:0',
         ]);
         CRUD::setFromDb(); // set fields from db columns.
     
@@ -71,6 +73,7 @@ class ExpenseCrudController extends CrudController
         $this->crud->removeFields([
             'expense_category_id',
             'user_id',
+            'amount'
         ]);
 
         $this->crud->field('category')->after('description');
@@ -81,6 +84,12 @@ class ExpenseCrudController extends CrudController
                 return $query->adminUsersOnly()->orderBy('name', 'ASC')->get();
             }),
         ])->after('description');
+
+        $this->crud->field([   
+            'name' => 'amount',
+            'type' => 'number',
+            'attributes' => ["step" => "any"], 
+        ]);
     }
 
     /**
