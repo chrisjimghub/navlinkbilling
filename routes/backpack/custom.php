@@ -38,4 +38,6 @@ Route::group([
     Route::crud('billing-grouping', 'BillingGroupingCrudController');
     Route::crud('piso-wifi-collector', 'PisoWifiCollectorCrudController');
     Route::crud('wifi-harvest', 'WifiHarvestCrudController');
+    Route::crud('expense', 'ExpenseCrudController');
+    Route::crud('expense-category', 'ExpenseCategoryCrudController');
 }); // this should be the absolute last line of this file

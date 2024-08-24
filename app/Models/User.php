@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Expense;
 use App\Models\Customer;
 use App\Models\PisoWifiCollector;
 use App\Models\Traits\LogsActivity;
@@ -98,6 +99,11 @@ class User extends Authenticatable
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class, 'user_id');
+    }
+
     public function pisoWifiCollectors()
     {
         return $this->belongsToMany(PisoWifiCollector::class, 'piso_wifi_user')->withTimestamps();
@@ -107,7 +113,6 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Customer::class);
     }
-
     /*
     |--------------------------------------------------------------------------
     | SCOPES

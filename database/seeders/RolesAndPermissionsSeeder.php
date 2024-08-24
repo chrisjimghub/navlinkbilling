@@ -228,6 +228,22 @@ class RolesAndPermissionsSeeder extends Seeder
             'wifi_harvests_delete', 
             'wifi_harvests_harvested', 
         ],
+        
+        'expenses' => [
+            'expenses_list',
+            'expenses_show',
+            'expenses_create', 
+            'expenses_update', 
+            'expenses_delete', 
+            'expenses_edit_old_data', 
+        ],
+        
+        'expense_categories' => [
+            'expense_categories_list',
+            'expense_categories_create', 
+            'expense_categories_update', 
+            'expense_categories_delete', 
+        ],
     ];
 
     /**
