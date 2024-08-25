@@ -175,7 +175,7 @@ class ExpenseCrudController extends CrudController
 
         $this->userPermissions();
 
-        if ($model->created_at->lt(now()->subWeek())) {
+        if ($model->created_at->lt(now()->subDay())) {
             if (!auth()->user()->can('expenses_edit_old_data')) {
                 $this->crud->denyAccess(['update', 'delete']);
             }
