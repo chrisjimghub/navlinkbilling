@@ -254,6 +254,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'hotspot_vouchers_delete', 
             'hotspot_vouchers_notice', 
             'hotspot_vouchers_edit_old_data', 
+            'hotspot_vouchers_filters', 
         ],
     ];
 
