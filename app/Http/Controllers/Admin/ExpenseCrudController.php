@@ -54,7 +54,7 @@ class ExpenseCrudController extends CrudController
         CRUD::setFromDb(); 
 
         $this->crud->removeColumns([
-            'expense_category_id',
+            'category_id',
             'user_id',
         ]);
         

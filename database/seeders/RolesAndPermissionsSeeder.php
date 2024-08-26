@@ -239,11 +239,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'expenses_edit_old_data', 
         ],
         
-        'expense_categories' => [
-            'expense_categories_list',
-            'expense_categories_create', 
-            'expense_categories_update', 
-            'expense_categories_delete', 
+        'categories' => [
+            'categories_list',
+            'categories_create', 
+            'categories_update', 
+            'categories_delete', 
         ],
     ];
 

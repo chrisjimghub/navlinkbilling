@@ -15,16 +15,16 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->string('description')->nullable();
-            $table->unsignedBigInteger('expense_category_id')->nullable(); 
+            $table->unsignedBigInteger('category_id')->nullable(); 
             $table->unsignedBigInteger('user_id')->nullable();
             $table->decimal('amount', 8, 2); 
             $table->timestamps();
             $table->softDeletes();
 
             // Foreign key constraints
-            $table->foreign('expense_category_id')
+            $table->foreign('category_id')
                   ->references('id')
-                  ->on('expense_categories')
+                  ->on('categories')
                   ->onDelete('cascade');
 
             $table->foreign('user_id')
@@ -41,7 +41,7 @@ return new class extends Migration
     {
         Schema::table('expenses', function (Blueprint $table) {
             // Drop foreign keys first
-            $table->dropForeign(['expense_category_id']);
+            $table->dropForeign(['category_id']);
             $table->dropForeign(['user_id']);
         });
 

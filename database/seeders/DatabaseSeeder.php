@@ -35,6 +35,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CommunityStringsTableSeeder::class);
         $this->call(BillingCyclesTableSeeder::class);
         $this->call(BillingGroupingsTableSeeder::class);
-        $this->call(ExpenseCategoriesTableSeeder::class);
+        $this->call(CategoriesTableSeeder::class);
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\ValidateUniqueRule;
-use App\Http\Requests\ExpenseCategoryRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -13,7 +12,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class ExpenseCategoryCrudController extends CrudController
+class CategoryCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -30,9 +29,9 @@ class ExpenseCategoryCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\ExpenseCategory::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/expense-category');
-        CRUD::setEntityNameStrings('expense category', 'expense categories');
+        CRUD::setModel(\App\Models\Category::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/category');
+        CRUD::setEntityNameStrings('category', 'categories');
     
         $this->userPermissions();
     }

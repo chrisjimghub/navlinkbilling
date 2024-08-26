@@ -562,16 +562,16 @@ class MenusTableSeeder extends Seeder
             36 => 
             array (
                 'id' => 37,
-                'label' => 'Expense Categories',
+                'label' => 'Categories',
                 'icon' => 'las la-file-alt',
-                'url' => 'expense-category',
-                'permissions' => '["expense_categories_list"]',
+                'url' => 'category',
+                'permissions' => '["categories_list"]',
                 'parent_id' => NULL,
                 'lft' => 38,
                 'rgt' => 39,
                 'depth' => 1,
                 'created_at' => '2024-08-24 08:40:31',
-                'updated_at' => '2024-08-24 08:40:31',
+                'updated_at' => '2024-08-26 11:47:56',
                 'deleted_at' => NULL,
             ),
         ));
