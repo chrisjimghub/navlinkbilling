@@ -152,11 +152,6 @@ return [
     'notice_alert' => 'Notice!',
     'notice_alert_content' => 'Records inserted more than 24 hours ago can no longer be edited. If you need to modify old data, please contact the administrator.',
 
-    'todays_harvest' => 'Today\'s Harvest',
-    'todays_income' => 'Today\'s Income',
-    'months_income' => 'This Month\'s Income',
-    'years_income' => 'This Year\'s Income',
-
     'customer_portal' => [
         'next_bill' => 'Next Bill'
     ],
@@ -186,6 +181,15 @@ return [
 
     
     
+    'widget' => [
+        'todays_unit_harvest' => 'Today\'s unit must harvest',
+        'todays_harvest' => 'Today\'s harvest',
+        'months_harvest' => 'This month\'s harvest',
+        'years_harvest' => 'This year\'s harvest',
 
+        'todays_voucher_income' => 'Today\'s voucher income',
+        'months_voucher_income' => 'This month\'s voucher income',
+        'years_voucher_income' => 'This year\'s voucher income',
+    ],
 
 ];
