@@ -175,9 +175,10 @@ return [
         'date_required' => 'The date field is required.',
     ],
 
-    'expense' => [
-        'receiver' => 'Receive By',
-        'notice' => 'Notice!',
-        'notice_content' => 'Records inserted more than 24 hours ago can no longer be edited. If you need to modify old data, please contact the administrator.',
-    ]
+    
+    'receiver' => 'Receive By',
+    'notice_alert' => 'Notice!',
+    'notice_alert_content' => 'Records inserted more than 24 hours ago can no longer be edited. If you need to modify old data, please contact the administrator.',
+
+
 ];

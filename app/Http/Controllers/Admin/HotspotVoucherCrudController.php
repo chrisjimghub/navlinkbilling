@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Billing;
-use Illuminate\Support\Carbon;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class ExpenseCrudController
+ * Class HotspotVoucherCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class ExpenseCrudController extends CrudController
+class HotspotVoucherCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -23,7 +21,6 @@ class ExpenseCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
-
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -31,15 +28,12 @@ class ExpenseCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Expense::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/expense');
-        CRUD::setEntityNameStrings('expense', 'expenses');
+        CRUD::setModel(\App\Models\HotspotVoucher::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/hotspot-voucher');
+        CRUD::setEntityNameStrings('hotspot voucher', 'hotspot vouchers');
         
         $this->userPermissions();
     }
-
-    // TODO:: filters
-    // TODO:: export
 
     /**
      * Define what happens when the List operation is loaded.
@@ -55,11 +49,13 @@ class ExpenseCrudController extends CrudController
 
         $this->crud->removeColumns([
             'category_id',
+            'payment_method_id',
             'user_id',
         ]);
         
-        $this->crud->column('category')->after('description');
-        $this->crud->column('receiver')->label(__('app.receiver'))->after('description');
+        $this->crud->column('paymentMethod')->after('date');
+        $this->crud->column('category')->after('date');
+        $this->crud->column('receiver')->label(__('app.receiver'))->after('date');
         $this->currencyFormatColumn('amount');
 
         $this->crud->modifyColumn('amount', [
@@ -93,10 +89,6 @@ class ExpenseCrudController extends CrudController
     protected function setupShowOperation()
     {
         $this->setupListOperation();
-
-        $this->crud->modifyColumn('description', [
-            'limit' => 999,
-        ]);
     }
 
     /**
@@ -109,29 +101,26 @@ class ExpenseCrudController extends CrudController
     {
         CRUD::setValidation([
             'date' => 'required|date',
-            'description' => 'required|min:2',
             'amount' => 'required|numeric|gt:0',
         ]);
-        CRUD::setFromDb(); // set fields from db columns.
-    
-        $this->crud->modifyField('description', [
-            'type' => 'textarea',
-        ]);
+        CRUD::setFromDb(); 
 
         $this->crud->removeFields([
             'category_id',
             'user_id',
+            'payment_method_id',
             'amount'
         ]);
 
-        $this->crud->field('category')->after('description');
+        $this->crud->field('paymentMethod')->after('date');
+        $this->crud->field('category')->after('date');
         $this->crud->field([
             'name' => 'receiver',
             'label' => __('app.receiver'),
             'options'   => (function ($query) {
                 return $query->adminUsersOnly()->orderBy('name', 'ASC')->get();
             }),
-        ])->after('description');
+        ])->after('date');
 
         $this->crud->field([   
             'name' => 'amount',
@@ -171,12 +160,12 @@ class ExpenseCrudController extends CrudController
 
     private function denyAccessIf($id)
     {
-        $model = modelInstance('Expense')->findOrFail($id);
+        $model = modelInstance('HotspotVoucher')->findOrFail($id);
 
         $this->userPermissions();
 
         if ($model->created_at->lt(now()->subDay())) {
-            if (!auth()->user()->can('expenses_edit_old_data')) {
+            if (!auth()->user()->can('hotspot_vouchers_edit_old_data')) {
                 $this->crud->denyAccess(['update', 'delete']);
             }
         }

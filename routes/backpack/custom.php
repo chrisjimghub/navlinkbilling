@@ -40,4 +40,5 @@ Route::group([
     Route::crud('wifi-harvest', 'WifiHarvestCrudController');
     Route::crud('expense', 'ExpenseCrudController');
     Route::crud('category', 'CategoryCrudController');
+    Route::crud('hotspot-voucher', 'HotspotVoucherCrudController');
 }); // this should be the absolute last line of this file

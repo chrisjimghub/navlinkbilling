@@ -245,6 +245,16 @@ class RolesAndPermissionsSeeder extends Seeder
             'categories_update', 
             'categories_delete', 
         ],
+
+        'hotspot_vouchers' => [
+            'hotspot_vouchers_list',
+            'hotspot_vouchers_show',
+            'hotspot_vouchers_create', 
+            'hotspot_vouchers_update', 
+            'hotspot_vouchers_delete', 
+            'hotspot_vouchers_notice', 
+            'hotspot_vouchers_edit_old_data', 
+        ],
     ];
 
     /**

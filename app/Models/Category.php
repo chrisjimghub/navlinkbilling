@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Model;
+use App\Models\HotspotVoucher;
 
 class Category extends Model
 {
@@ -33,6 +34,11 @@ class Category extends Model
     public function expenses()
     {
         return $this->hasMany(Expense::class);
+    }
+
+    public function hotspotVouchers()
+    {
+        return $this->hasMany(HotspotVoucher::class);
     }
 
     /*

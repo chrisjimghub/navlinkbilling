@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Model;
-use App\Models\HotspotVoucher;
+use App\Models\Category;
+use App\Models\PaymentMethod;
 
-class PaymentMethod extends Model
+class HotspotVoucher extends Model
 {
-
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'payment_methods';
+    protected $table = 'hotspot_vouchers';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -32,14 +33,19 @@ class PaymentMethod extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function hotspotVouchers()
+    public function paymentMethod()
     {
-        return $this->hasMany(HotspotVoucher::class);
+        return $this->belongsTo(PaymentMethod::class);
     }
 
-    public function billings()
+    public function category()
     {
-        return $this->hasMany(Billing::class);
+        return $this->belongsTo(Category::class);
+    }
+
+    public function receiver()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /*
