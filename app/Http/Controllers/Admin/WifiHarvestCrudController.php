@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Controllers\Admin\Operations\HarvestedOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
 
 /**
  * Class WifiHarvestCrudController
@@ -28,6 +29,7 @@ class WifiHarvestCrudController extends CrudController
 
     use CrudExtend;
     use HarvestedOperation;
+    use FilterOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -45,12 +47,6 @@ class WifiHarvestCrudController extends CrudController
         $this->crud->query->harvestCrud();
     }
 
-    // TODO::
-    // filters: or a filter field number that return total > then the inputed amount
-        // Profit
-        // Break Even
-        // Net Loss
-
     /**
      * Define what happens when the List operation is loaded.
      * -
@@ -59,6 +55,16 @@ class WifiHarvestCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->filterQueries(function ($query) {
+            $dates = request()->input('date');
+            if ($dates) {
+                $dates = explode('-', $dates);
+                $dateStart = Carbon::parse($dates[0]);
+                $dateEnd = Carbon::parse($dates[1]);
+                $query->whereBetween('date_start', [$dateStart, $dateEnd]);
+            }
+        });
+
         $this->widgets();
 
         $this->accountColumnDetails(label: __('app.account'));
@@ -98,6 +104,17 @@ class WifiHarvestCrudController extends CrudController
                 return $entry->billingStatus->badge;
             },
             'escaped' => false
+        ]);
+    }
+
+    public function setupFilterOperation()
+    {
+        $this->crud->field([
+            'name' => 'date',
+            'type' => 'date_range',
+            'wrapper' => [
+                'class' => 'form-group col-md-3'
+            ]
         ]);
     }
 

@@ -227,6 +227,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'wifi_harvests_update', 
             'wifi_harvests_delete', 
             'wifi_harvests_harvested', 
+            'wifi_harvests_filters', 
         ],
         
         'expenses' => [
