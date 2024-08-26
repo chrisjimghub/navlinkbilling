@@ -227,6 +227,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'wifi_harvests_update', 
             'wifi_harvests_delete', 
             'wifi_harvests_harvested', 
+            'wifi_harvests_filters', 
         ],
         
         'expenses' => [
@@ -254,6 +255,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'hotspot_vouchers_delete', 
             'hotspot_vouchers_notice', 
             'hotspot_vouchers_edit_old_data', 
+            'hotspot_vouchers_filters', 
         ],
     ];
 

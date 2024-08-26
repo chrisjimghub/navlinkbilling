@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Models\HotspotVoucher;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
 
 /**
  * Class HotspotVoucherCrudController
@@ -23,6 +24,8 @@ class HotspotVoucherCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
+    use FilterOperation;
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -45,17 +48,19 @@ class HotspotVoucherCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->filterQueries(function ($query) {
+            $dates = request()->input('date');
+            if ($dates) {
+                $dates = explode('-', $dates);
+                $dateStart = Carbon::parse($dates[0]);
+                $dateEnd = Carbon::parse($dates[1]);
+                $query->whereBetween('date', [$dateStart, $dateEnd]);
+            }
+        });
+
         $this->notice();
 
         $this->widgets();
-
-        CRUD::setFromDb(); 
-
-        $this->crud->removeColumns([
-            'category_id',
-            'payment_method_id',
-            'user_id',
-        ]);
 
         $this->accountColumn();
         $this->crud->modifyColumn('account_id', [
@@ -73,10 +78,22 @@ class HotspotVoucherCrudController extends CrudController
             'wrapper' => false
         ]);
 
+        $this->crud->column('date')->type('date');
         $this->crud->column('paymentMethod')->after('date');
         $this->crud->column('category')->after('date');
         $this->crud->column('receiver')->label(__('app.receiver'))->after('date');
         $this->currencyFormatColumn('amount');
+    }
+
+    public function setupFilterOperation()
+    {
+        $this->crud->field([
+            'name' => 'date',
+            'type' => 'date_range',
+            'wrapper' => [
+                'class' => 'form-group col-md-3'
+            ]
+        ]);
     }
 
     public function widgets()
