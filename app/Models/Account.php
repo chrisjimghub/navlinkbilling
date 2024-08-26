@@ -9,6 +9,7 @@ use App\Models\Subscription;
 use App\Models\AccountCredit;
 use App\Models\AccountStatus;
 use App\Models\ContractPeriod;
+use App\Models\HotspotVoucher;
 use Illuminate\Support\Carbon;
 use App\Models\BillingGrouping;
 use App\Models\PisoWifiCollector;
@@ -80,6 +81,11 @@ class Account extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function hotspotVouchers()
+    {
+        return $this->hasMany(HotspotVoucher::class);
+    }
+
     public function pisoWifi()
     {
         return $this->hasOne(PisoWifiCollector::class);
@@ -379,13 +385,14 @@ class Account extends Model
 
         return $this->accountDetails(
             from: 'account',
-            id: $this->id,
+            accountId: $this->id,
             name: $name,
             location: $location,
             type: $type,
             subscription: $subscription, 
             mbps: $plannedApp->mbps,
-            installedDate: $this->instaled_date
+            installedDate: $this->installed_date,
+            data: null
         );
 
         // return $name .': ' . $subscription .' - ' . $location;

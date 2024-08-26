@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Model;
+use App\Models\Account;
 use App\Models\Category;
 use App\Models\PaymentMethod;
 
@@ -33,6 +34,11 @@ class HotspotVoucher extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
     public function paymentMethod()
     {
         return $this->belongsTo(PaymentMethod::class);

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('hotspot_vouchers', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('account_id');
             $table->date('date');
             $table->unsignedBigInteger('user_id')->nullable(); //received by
             $table->unsignedBigInteger('category_id')->nullable(); 
@@ -22,6 +23,11 @@ return new class extends Migration
             $table->softDeletes();
 
             // Foreign key constraints
+            $table->foreign('account_id')
+                  ->references('id')
+                  ->on('accounts')
+                  ->onDelete('cascade');
+
             $table->foreign('category_id')
                   ->references('id')
                   ->on('categories')

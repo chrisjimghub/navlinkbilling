@@ -52,20 +52,27 @@ class HotspotVoucherCrudController extends CrudController
             'payment_method_id',
             'user_id',
         ]);
-        
+
+        $this->accountColumn();
+        $this->crud->modifyColumn('account_id', [
+            'function' => function($entry)  {
+
+                $this->denyAccessIf($entry->id);
+
+                if ($entry->account) {
+                    return $entry->account->details_all;
+                }
+                
+                return;
+            },
+            'escaped' => false,
+            'wrapper' => false
+        ]);
+
         $this->crud->column('paymentMethod')->after('date');
         $this->crud->column('category')->after('date');
         $this->crud->column('receiver')->label(__('app.receiver'))->after('date');
         $this->currencyFormatColumn('amount');
-
-        $this->crud->modifyColumn('amount', [
-            'type'     => 'closure',
-            'function' => function($entry) {
-                $this->denyAccessIf($entry->id);
-                return $entry->amount;
-            }
-        ]);
-
     }
 
     public function notice()
@@ -110,6 +117,16 @@ class HotspotVoucherCrudController extends CrudController
             'user_id',
             'payment_method_id',
             'amount'
+        ]);
+
+        $this->accountField();
+        $this->crud->modifyField('account_id', [
+            'options'   => (function ($query) {
+                return $query
+                    ->allowedBill()
+                    ->withSubscription(4) //voucher
+                    ->get(); 
+            }), 
         ]);
 
         $this->crud->field('paymentMethod')->after('date');
