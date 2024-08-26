@@ -425,7 +425,7 @@ class UsersTableSeeder extends Seeder
             31 => 
             array (
                 'id' => 35,
-                'customer_id' => 1,
+                'customer_id' => NULL,
                 'name' => 'Egot, Chris Jim',
                 'email' => 'jimegot@yahoo.com.ph',
                 'email_verified_at' => NULL,
