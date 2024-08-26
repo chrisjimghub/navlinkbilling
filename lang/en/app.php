@@ -148,6 +148,15 @@ return [
     'gcash_button_pending' => 'Reprocess...',
     'gcash_button_pay' => 'Gcash pay',
 
+    'receiver' => 'Receive By',
+    'notice_alert' => 'Notice!',
+    'notice_alert_content' => 'Records inserted more than 24 hours ago can no longer be edited. If you need to modify old data, please contact the administrator.',
+
+    'todays_harvest' => 'Today\'s Harvest',
+    'todays_income' => 'Today\'s Income',
+    'months_income' => 'This Month\'s Income',
+    'years_income' => 'This Year\'s Income',
+
     'customer_portal' => [
         'next_bill' => 'Next Bill'
     ],
@@ -176,9 +185,7 @@ return [
     ],
 
     
-    'receiver' => 'Receive By',
-    'notice_alert' => 'Notice!',
-    'notice_alert_content' => 'Records inserted more than 24 hours ago can no longer be edited. If you need to modify old data, please contact the administrator.',
+    
 
 
 ];

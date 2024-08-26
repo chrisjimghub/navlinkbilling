@@ -217,7 +217,7 @@ class WifiHarvestCrudController extends CrudController
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
                 'value'         => $harvested.'/'.$totalSchedule,
-                'description'   => 'Today\'s Harvest',
+                'description'   => __('app.todays_harvest'),
                 'progress'      => widgetProgress($harvested, $totalSchedule), 
                 'progressClass' => 'progress-bar bg-success',
                 'hint'          => 'Piso Wi-Fi units must be collected today.',
@@ -229,10 +229,10 @@ class WifiHarvestCrudController extends CrudController
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
                 'value'         => $this->currencyFormatAccessor($total),
-                'description'   => 'Daily Income',
+                'description'   => __('app.todays_income'),
                 'progress'      => widgetProgress(now()->hour, 24), 
                 'progressClass' => 'progress-bar bg-info',
-                'hint'          => 'Today\'s harvest for '.now()->format(dateHumanReadable()).'.',
+                'hint'          => now()->format(dateHumanReadable()),
             ];
 
             $billingForMonth = clone $billing;
@@ -241,10 +241,10 @@ class WifiHarvestCrudController extends CrudController
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
                 'value'         => $this->currencyFormatAccessor($total),
-                'description'   => 'Monthly Income',
+                'description'   => __('app.months_income'),
                 'progress'      => widgetProgress(now()->day, now()->daysInMonth()), 
                 'progressClass' => 'progress-bar bg-warning',
-                'hint'          => 'This month\'s harvest for '.now()->format('M, Y').'.',
+                'hint'          => now()->format('M, Y'),
             ];
 
             $billingForYear = clone $billing;
@@ -253,10 +253,10 @@ class WifiHarvestCrudController extends CrudController
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
                 'value'         => $this->currencyFormatAccessor($total),
-                'description'   => 'Annual Income',
+                'description'   => __('app.years_income'),
                 'progress'      => widgetProgress(now()->month, 12), 
                 'progressClass' => 'progress-bar bg-dark',
-                'hint'          => 'Total harvest for the year '.date('Y').'.',
+                'hint'          => 'Jan - Dec '.date('Y'),
             ];
 
             Widget::add()->to('before_content')->type('div')->class('row')->content($contents);
