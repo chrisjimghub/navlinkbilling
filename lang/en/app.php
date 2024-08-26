@@ -178,6 +178,6 @@ return [
     'expense' => [
         'receiver' => 'Receive By',
         'notice' => 'Notice!',
-        'notice_content' => 'Records inserted more than one 24 hours ago can no longer be edited. If you need to modify old data, please contact the administrator.',
+        'notice_content' => 'Records inserted more than 24 hours ago can no longer be edited. If you need to modify old data, please contact the administrator.',
     ]
 ];
