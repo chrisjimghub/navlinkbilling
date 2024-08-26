@@ -11,17 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('expenses', function (Blueprint $table) {
+        Schema::create('hotspot_vouchers', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('account_id');
             $table->date('date');
-            $table->string('description')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable(); //received by
             $table->unsignedBigInteger('category_id')->nullable(); 
-            $table->unsignedBigInteger('user_id')->nullable();
             $table->decimal('amount', 8, 2); 
+            $table->unsignedBigInteger('payment_method_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             // Foreign key constraints
+            $table->foreign('account_id')
+                  ->references('id')
+                  ->on('accounts')
+                  ->onDelete('cascade');
+
             $table->foreign('category_id')
                   ->references('id')
                   ->on('categories')
@@ -31,6 +37,11 @@ return new class extends Migration
                   ->references('id')
                   ->on('users')
                   ->onDelete('cascade');
+
+            $table->foreign('payment_method_id')
+                ->references('id')
+                ->on('payment_methods')
+                ->onDelete('cascade');
         });
     }
 
@@ -39,12 +50,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('expenses', function (Blueprint $table) {
+        Schema::table('hotspot_vouchers', function (Blueprint $table) {
             // Drop foreign keys first
             $table->dropForeign(['category_id']);
             $table->dropForeign(['user_id']);
+            $table->dropForeign(['payment_method_id']);
         });
 
-        Schema::dropIfExists('expenses');
+        Schema::dropIfExists('hotspot_vouchers');
     }
 };

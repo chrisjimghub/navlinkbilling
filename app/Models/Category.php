@@ -5,16 +5,15 @@ namespace App\Models;
 use App\Models\Model;
 use App\Models\HotspotVoucher;
 
-class PaymentMethod extends Model
+class Category extends Model
 {
-
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'payment_methods';
+    protected $table = 'categories';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -32,14 +31,14 @@ class PaymentMethod extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
     public function hotspotVouchers()
     {
         return $this->hasMany(HotspotVoucher::class);
-    }
-
-    public function billings()
-    {
-        return $this->hasMany(Billing::class);
     }
 
     /*

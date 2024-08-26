@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Billing;
 use Illuminate\Support\Carbon;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
+use App\Models\HotspotVoucher;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class ExpenseCrudController
+ * Class HotspotVoucherCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class ExpenseCrudController extends CrudController
+class HotspotVoucherCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -23,7 +23,6 @@ class ExpenseCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
-
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 
@@ -31,15 +30,12 @@ class ExpenseCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Expense::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/expense');
-        CRUD::setEntityNameStrings('expense', 'expenses');
+        CRUD::setModel(\App\Models\HotspotVoucher::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/hotspot-voucher');
+        CRUD::setEntityNameStrings('hotspot voucher', 'hotspot vouchers');
         
         $this->userPermissions();
     }
-
-    // TODO:: filters
-    // TODO:: export
 
     /**
      * Define what happens when the List operation is loaded.
@@ -51,25 +47,81 @@ class ExpenseCrudController extends CrudController
     {
         $this->notice();
 
+        $this->widgets();
+
         CRUD::setFromDb(); 
 
         $this->crud->removeColumns([
             'category_id',
+            'payment_method_id',
             'user_id',
         ]);
-        
-        $this->crud->column('category')->after('description');
-        $this->crud->column('receiver')->label(__('app.receiver'))->after('description');
-        $this->currencyFormatColumn('amount');
 
-        $this->crud->modifyColumn('amount', [
-            'type'     => 'closure',
-            'function' => function($entry) {
+        $this->accountColumn();
+        $this->crud->modifyColumn('account_id', [
+            'function' => function($entry)  {
+
                 $this->denyAccessIf($entry->id);
-                return $entry->amount;
-            }
+
+                if ($entry->account) {
+                    return $entry->account->details_all;
+                }
+                
+                return;
+            },
+            'escaped' => false,
+            'wrapper' => false
         ]);
 
+        $this->crud->column('paymentMethod')->after('date');
+        $this->crud->column('category')->after('date');
+        $this->crud->column('receiver')->label(__('app.receiver'))->after('date');
+        $this->currencyFormatColumn('amount');
+    }
+
+    public function widgets()
+    {
+        if ($this->crud->getOperation() == 'list') {
+
+            $date = Carbon::now();
+            $month = $date->month;
+            $year = $date->year;
+
+            $total = HotspotVoucher::whereDate('date', $date)->get()->sum('amount');
+            $contents[] = [
+                'type'          => 'progress_white',
+                'class'         => 'card mb-3',
+                'value'         => $this->currencyFormatAccessor($total),
+                'description'   => __('app.widget.todays_voucher_income'),
+                'progress'      => widgetProgress(now()->hour, 24), 
+                'progressClass' => 'progress-bar bg-info',
+                'hint'          => now()->format(dateHumanReadable()),
+            ];
+
+            $total = HotspotVoucher::whereMonth('date', $month)->get()->sum('amount');
+            $contents[] = [
+                'type'          => 'progress_white',
+                'class'         => 'card mb-3',
+                'value'         => $this->currencyFormatAccessor($total),
+                'description'   => __('app.widget.months_voucher_income'),
+                'progress'      => widgetProgress(now()->day, now()->daysInMonth()), 
+                'progressClass' => 'progress-bar bg-warning',
+                'hint'          => now()->format('M, Y'),
+            ];
+
+            $total = HotspotVoucher::whereYear('date', $year)->get()->sum('amount');
+            $contents[] = [
+                'type'          => 'progress_white',
+                'class'         => 'card mb-3',
+                'value'         => $this->currencyFormatAccessor($total),
+                'description'   => __('app.widget.years_voucher_income'),
+                'progress'      => widgetProgress(now()->month, 12), 
+                'progressClass' => 'progress-bar bg-dark',
+                'hint'          => 'Jan - Dec '.date('Y'),
+            ];
+
+            Widget::add()->to('before_content')->type('div')->class('row')->content($contents);
+        }
     }
 
     public function notice()
@@ -93,10 +145,6 @@ class ExpenseCrudController extends CrudController
     protected function setupShowOperation()
     {
         $this->setupListOperation();
-
-        $this->crud->modifyColumn('description', [
-            'limit' => 999,
-        ]);
     }
 
     /**
@@ -109,29 +157,36 @@ class ExpenseCrudController extends CrudController
     {
         CRUD::setValidation([
             'date' => 'required|date',
-            'description' => 'required|min:2',
             'amount' => 'required|numeric|gt:0',
         ]);
-        CRUD::setFromDb(); // set fields from db columns.
-    
-        $this->crud->modifyField('description', [
-            'type' => 'textarea',
-        ]);
+        CRUD::setFromDb(); 
 
         $this->crud->removeFields([
             'category_id',
             'user_id',
+            'payment_method_id',
             'amount'
         ]);
 
-        $this->crud->field('category')->after('description');
+        $this->accountField();
+        $this->crud->modifyField('account_id', [
+            'options'   => (function ($query) {
+                return $query
+                    ->allowedBill()
+                    ->withSubscription(4) //voucher
+                    ->get(); 
+            }), 
+        ]);
+
+        $this->crud->field('paymentMethod')->after('date');
+        $this->crud->field('category')->after('date');
         $this->crud->field([
             'name' => 'receiver',
             'label' => __('app.receiver'),
             'options'   => (function ($query) {
                 return $query->adminUsersOnly()->orderBy('name', 'ASC')->get();
             }),
-        ])->after('description');
+        ])->after('date');
 
         $this->crud->field([   
             'name' => 'amount',
@@ -171,12 +226,12 @@ class ExpenseCrudController extends CrudController
 
     private function denyAccessIf($id)
     {
-        $model = modelInstance('Expense')->findOrFail($id);
+        $model = modelInstance('HotspotVoucher')->findOrFail($id);
 
         $this->userPermissions();
 
         if ($model->created_at->lt(now()->subDay())) {
-            if (!auth()->user()->can('expenses_edit_old_data')) {
+            if (!auth()->user()->can('hotspot_vouchers_edit_old_data')) {
                 $this->crud->denyAccess(['update', 'delete']);
             }
         }

@@ -2,19 +2,21 @@
 
 namespace App\Models;
 
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use App\Models\User;
 use App\Models\Model;
+use App\Models\Account;
+use App\Models\Category;
+use App\Models\PaymentMethod;
 
-class ExpenseCategory extends Model
+class HotspotVoucher extends Model
 {
-    use CrudTrait;
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'expense_categories';
+    protected $table = 'hotspot_vouchers';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -32,9 +34,24 @@ class ExpenseCategory extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function expenses()
+    public function account()
     {
-        return $this->hasMany(Expense::class);
+        return $this->belongsTo(Account::class);
+    }
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function receiver()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /*

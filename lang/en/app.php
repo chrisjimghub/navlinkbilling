@@ -148,6 +148,10 @@ return [
     'gcash_button_pending' => 'Reprocess...',
     'gcash_button_pay' => 'Gcash pay',
 
+    'receiver' => 'Receive By',
+    'notice_alert' => 'Notice!',
+    'notice_alert_content' => 'Records inserted more than 24 hours ago can no longer be edited. If you need to modify old data, please contact the administrator.',
+
     'customer_portal' => [
         'next_bill' => 'Next Bill'
     ],
@@ -175,9 +179,17 @@ return [
         'date_required' => 'The date field is required.',
     ],
 
-    'expense' => [
-        'receiver' => 'Receive By',
-        'notice' => 'Notice!',
-        'notice_content' => 'Records inserted more than one week ago can no longer be edited. If you need to modify old data, please contact the administrator.',
-    ]
+    
+    
+    'widget' => [
+        'todays_unit_harvest' => 'Today\'s unit must harvest',
+        'todays_harvest' => 'Today\'s harvest',
+        'months_harvest' => 'This month\'s harvest',
+        'years_harvest' => 'This year\'s harvest',
+
+        'todays_voucher_income' => 'Today\'s voucher income',
+        'months_voucher_income' => 'This month\'s voucher income',
+        'years_voucher_income' => 'This year\'s voucher income',
+    ],
+
 ];

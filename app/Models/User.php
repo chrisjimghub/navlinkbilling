@@ -99,6 +99,11 @@ class User extends Authenticatable
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function hotspotVouchers()
+    {
+        return $this->hasMany(HotspotVoucher::class, 'user_id');
+    }
+
     public function expenses()
     {
         return $this->hasMany(Expense::class, 'user_id');

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Models\User;
 use App\Models\Model;
-use App\Models\ExpenseCategory;
+use App\Models\Category;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 
 class Expense extends Model
 {
@@ -36,7 +36,7 @@ class Expense extends Model
     */
     public function category()
     {
-        return $this->belongsTo(ExpenseCategory::class, 'expense_category_id');
+        return $this->belongsTo(Category::class);
     }
 
     public function receiver()
