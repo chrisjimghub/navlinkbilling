@@ -110,7 +110,7 @@ class BillEventSubscriber
             
             $this->addOrUpdateParticular([
                 'description' => __('app.wifi_harvest.internet_fee'),
-                'amount' => -$this->billing->monthly_rate,
+                'amount' => $this->billing->monthly_rate,
             ]);
 
             $this->addOrUpdateParticular([
