@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Support\Carbon;
-use Backpack\CRUD\app\Library\Widget;
-use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Models\HotspotVoucher;
+use Backpack\CRUD\app\Library\Widget;
+use App\Http\Controllers\Admin\Traits\Widgets;
+use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
@@ -25,6 +26,7 @@ class HotspotVoucherCrudController extends CrudController
 
     use CrudExtend;
     use FilterOperation;
+    use Widgets;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -60,7 +62,7 @@ class HotspotVoucherCrudController extends CrudController
 
         $this->notice();
 
-        $this->widgets();
+        $this->widgetHotspotVoucher();
 
         $this->accountColumn();
         $this->crud->modifyColumn('account_id', [
@@ -94,51 +96,6 @@ class HotspotVoucherCrudController extends CrudController
                 'class' => 'form-group col-md-3'
             ]
         ]);
-    }
-
-    public function widgets()
-    {
-        if ($this->crud->getOperation() == 'list') {
-
-            $date = Carbon::now();
-            $month = $date->month;
-            $year = $date->year;
-
-            $total = HotspotVoucher::whereDate('date', $date)->get()->sum('amount');
-            $contents[] = [
-                'type'          => 'progress_white',
-                'class'         => 'card mb-3',
-                'value'         => $this->currencyFormatAccessor($total),
-                'description'   => __('app.widget.todays_voucher_income'),
-                'progress'      => widgetProgress(now()->hour, 24), 
-                'progressClass' => 'progress-bar bg-info',
-                'hint'          => now()->format(dateHumanReadable()),
-            ];
-
-            $total = HotspotVoucher::whereMonth('date', $month)->get()->sum('amount');
-            $contents[] = [
-                'type'          => 'progress_white',
-                'class'         => 'card mb-3',
-                'value'         => $this->currencyFormatAccessor($total),
-                'description'   => __('app.widget.months_voucher_income'),
-                'progress'      => widgetProgress(now()->day, now()->daysInMonth()), 
-                'progressClass' => 'progress-bar bg-warning',
-                'hint'          => now()->format('M, Y'),
-            ];
-
-            $total = HotspotVoucher::whereYear('date', $year)->get()->sum('amount');
-            $contents[] = [
-                'type'          => 'progress_white',
-                'class'         => 'card mb-3',
-                'value'         => $this->currencyFormatAccessor($total),
-                'description'   => __('app.widget.years_voucher_income'),
-                'progress'      => widgetProgress(now()->month, 12), 
-                'progressClass' => 'progress-bar bg-dark',
-                'hint'          => 'Jan - Dec '.date('Y'),
-            ];
-
-            Widget::add()->to('before_content')->type('div')->class('row')->content($contents);
-        }
     }
 
     public function notice()
