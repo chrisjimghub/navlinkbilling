@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\FetchOptions;
 use App\Models\Billing;
 use Illuminate\Support\Carbon;
 use App\Rules\UniqueMonthlyHarvest;
@@ -31,6 +32,7 @@ class WifiHarvestCrudController extends CrudController
     use HarvestedOperation;
     use FilterOperation;
     use Widgets;
+    use FetchOptions;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -58,11 +60,17 @@ class WifiHarvestCrudController extends CrudController
     {
         $this->filterQueries(function ($query) {
             $dates = request()->input('date');
+            $status = request()->input('status');
+
             if ($dates) {
                 $dates = explode('-', $dates);
                 $dateStart = Carbon::parse($dates[0]);
                 $dateEnd = Carbon::parse($dates[1]);
                 $query->whereBetween('date_start', [$dateStart, $dateEnd]);
+            }
+
+            if ($status) {
+                $query->where('billing_status_id', $status);
             }
         });
 
@@ -115,6 +123,18 @@ class WifiHarvestCrudController extends CrudController
             'type' => 'date_range',
             'wrapper' => [
                 'class' => 'form-group col-md-3'
+            ]
+        ]);
+
+        $this->crud->field([
+            'name' => 'status',
+            'type' => 'select_from_array',
+            'options' => [
+                4 => __('app.wifi_harvest.harvested'),
+                5 => __('app.wifi_harvest.unharvested'),
+            ],
+            'wrapper' => [
+                'class' => 'form-group col-md-2'
             ]
         ]);
     }
