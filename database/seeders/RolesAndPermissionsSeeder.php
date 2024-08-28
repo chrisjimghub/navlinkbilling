@@ -260,8 +260,6 @@ class RolesAndPermissionsSeeder extends Seeder
 
         'reports' => [
             'reports_list',
-            'reports_filters', 
-            'reports_export', 
         ],
     ];
 
