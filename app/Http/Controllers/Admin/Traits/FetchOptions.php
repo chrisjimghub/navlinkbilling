@@ -15,6 +15,35 @@ use App\Models\PlannedApplication;
 
 trait FetchOptions
 {
+    public function monthLists()
+    {
+        return [
+            "01" => "January",
+            "02" => "February",
+            "03" => "March",
+            "04" => "April",
+            "05" => "May",
+            "06" => "June",
+            "07" => "July",
+            "08" => "August",
+            "09" => "September",
+            "10" => "October",
+            "11" => "November",
+            "12" => "December",
+        ];
+    }
+
+    public function yearLists($endYear = 2010)
+    {
+        $yearOptions = [];
+
+        for ($startYear = date('Y'); $startYear >= $endYear; $startYear--) {
+            $yearOptions[$startYear] = $startYear;
+        }
+
+        return $yearOptions;
+    }
+
     public function customerLists()
     {
         $customers = Customer::all();

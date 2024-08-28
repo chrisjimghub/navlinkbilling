@@ -49,33 +49,23 @@ class ReportCrudController extends CrudController
     public function setupFilterOperation()
     {
         $this->crud->field([
-            'name' => 'period',
-            'label' => __('Billing Period'),
-            'type' => 'date_range',
+            'name'  => 'month',
+            'type'  => 'select_from_array',
+            'options' => $this->monthLists(),
             'wrapper' => [
-                'class' => 'form-group col-md-3'
-            ]
+                'class' => 'form-group col-md-2'
+            ],
         ]);
 
         $this->crud->field([
-            'name' => 'status',
-            'label' => __('Status'),
-            'type' => 'select_from_array',
-            'options' => $this->billingStatusLists([4,5]),
+            'name'  => 'year',
+            'type'  => 'select_from_array',
+            'options' => $this->yearLists(),
             'wrapper' => [
                 'class' => 'form-group col-md-2'
-            ]
+            ],
         ]);
-
-        $this->crud->field([
-            'name' => 'type',
-            'label' => __('Type'),
-            'type' => 'select_from_array',
-            'options' => $this->billingTypeLists(3),
-            'wrapper' => [
-                'class' => 'form-group col-md-2'
-            ]
-        ]);
+        
     }
 
     public function index()
