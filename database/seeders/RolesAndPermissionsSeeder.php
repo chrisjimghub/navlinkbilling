@@ -257,6 +257,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'hotspot_vouchers_edit_old_data', 
             'hotspot_vouchers_filters', 
         ],
+
+        'reports' => [
+            'reports_list',
+            'reports_filters', 
+            'reports_export', 
+        ],
     ];
 
     /**
