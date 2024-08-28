@@ -21,7 +21,7 @@ class ReportCrudController extends CrudController
 
     use CrudExtend;
     use FilterOperation;
-    // use ExportOperation;
+    use ExportOperation;
     use FetchOptions;
 
     /**
@@ -34,13 +34,27 @@ class ReportCrudController extends CrudController
         CRUD::setModel(\App\Models\Temp::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/report');
         CRUD::setEntityNameStrings('report', 'reports');
+
+        $this->userPermissions('reports');
+
+        $this->crud->allowAccess([
+            'filters',
+            'export'
+        ]);
     }
 
-    protected function setupListOperation()
+    public function export()
     {
-        $this->filterQueries(function ($query) {
-            // $this->billingFilterQueries($query);
-        });
+        CRUD::hasAccessOrFail('export');
+
+        // validate first
+        if ($this->crud->hasAccess('filters')) {
+            if (!$this->filterValidations()) {
+                return redirect()->back()->withInput(request()->input());
+            }
+        }
+
+        return $this->exportClass();
     }
 
     public function setupFilterOperation()

@@ -20,7 +20,7 @@
 
 @section('content')
       <div class="card card-body">
-          <form action="{{ url($crud->route) }}" method="GET">
+          <form action="{{ url($crud->route) }}/export" method="GET">
 
               @include('winex01.backpack-filter::filters.filter_lists')
 
