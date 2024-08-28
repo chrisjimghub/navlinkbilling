@@ -41,9 +41,6 @@ class ReportCrudController extends CrudController
         $this->filterQueries(function ($query) {
             // $this->billingFilterQueries($query);
         });
-
-        CRUD::setFromDb(); 
-        
     }
 
     public function setupFilterOperation()
@@ -60,7 +57,7 @@ class ReportCrudController extends CrudController
         $this->crud->field([
             'name'  => 'year',
             'type'  => 'select_from_array',
-            'options' => $this->yearLists(),
+            'options' => $this->yearLists(2020),
             'wrapper' => [
                 'class' => 'form-group col-md-2'
             ],
@@ -74,8 +71,6 @@ class ReportCrudController extends CrudController
 
         $this->data['crud'] = $this->crud;
         $this->data['title'] = $this->crud->getTitle() ?? mb_ucfirst($this->crud->entity_name_plural);
-
-        // 
 
         return view(backpack_view('admin.report'), $this->data);
     }
