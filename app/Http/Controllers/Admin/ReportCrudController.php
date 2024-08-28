@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
-use App\Http\Requests\ReportRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Winex01\BackpackFilter\Http\Controllers\Operations\ExportOperation;
