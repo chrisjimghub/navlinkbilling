@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Sales;
 use App\Models\Expense;
 use App\Models\Customer;
 use App\Models\PisoWifiCollector;
@@ -99,14 +100,19 @@ class User extends Authenticatable
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function hotspotVouchers()
+    public function sales()
     {
-        return $this->hasMany(HotspotVoucher::class, 'user_id');
+        return $this->hasMany(Sales::class, 'user_id');
     }
 
     public function expenses()
     {
         return $this->hasMany(Expense::class, 'user_id');
+    }
+
+    public function hotspotVouchers()
+    {
+        return $this->hasMany(HotspotVoucher::class, 'user_id');
     }
 
     public function pisoWifiCollectors()

@@ -236,6 +236,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'expenses_create', 
             'expenses_update', 
             'expenses_delete', 
+            'expenses_filters', 
             'expenses_notice', 
             'expenses_edit_old_data', 
         ],
@@ -258,11 +259,23 @@ class RolesAndPermissionsSeeder extends Seeder
             'hotspot_vouchers_filters', 
         ],
 
+        'sales' => [
+            'sales_list',
+            'sales_show',
+            'sales_create', 
+            'sales_update', 
+            'sales_delete', 
+            'sales_notice', 
+            'sales_edit_old_data', 
+            'sales_filters', 
+        ],
+
         'reports' => [
             'reports_list',
             'reports_filters',
             'reports_export',
         ],
+
     ];
 
     /**
