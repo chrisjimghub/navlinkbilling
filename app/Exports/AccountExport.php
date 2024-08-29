@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use App\Http\Controllers\Admin\FilterQueries\AccountFilterQueries;
 use App\Models\Account;
 use App\Exports\Traits\ExportHelper;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -13,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\Cell\Hyperlink;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use App\Http\Controllers\Admin\Traits\UrlQueryString;
+use App\Http\Controllers\Admin\FilterQueries\AccountFilterQueries;
 
 class AccountExport implements 
     WithCustomStartCell,
@@ -131,12 +131,13 @@ class AccountExport implements
                     $row = $beforeRow;
                     $sheet->setCellValue($col++ . $row, $entry->notes);
                     
-                    $sheet->setCellValue($col++ . $row, $entry->billingGrouping->name); 
+                    if ($entry->billingGrouping) {
+                        $sheet->setCellValue($col++ . $row, $entry->billingGrouping->name); 
+                    }
 
                     if ($otcLastRow > $row) {
                         $row = $otcLastRow;
                     }
-
                     $row++;
                 }
             },

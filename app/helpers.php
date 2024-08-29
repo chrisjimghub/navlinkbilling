@@ -270,3 +270,11 @@ if (! function_exists('widgetProgress')) {
 		return ($score / $maxScore) * 100; 
 	}
 }
+
+//month
+if (! function_exists('monthText')) {
+    function monthText($numericMonth) {
+		return Carbon::createFromFormat('m', $numericMonth)->format('F');
+	}
+}
+

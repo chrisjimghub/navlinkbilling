@@ -2,28 +2,37 @@
 
 namespace App\Exports;
 
-use App\Models\Temp;
-use App\Exports\Traits\ExportHelper;
+use App\Models\Expense;
+use App\Exports\BaseExport;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeSheet;
-use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ReportExport implements 
-    WithCustomStartCell,
-    ShouldAutoSize,
-    WithEvents
-{
-    use Exportable;
-    use ExportHelper;
+class ReportExport extends BaseExport {
+    
 
     protected $title = 'Reports';
 
+    protected $month;
+    protected $year;
+    protected $monthYear;
+    
+    public function __construct()
+    {
+        $this->month = request()->month;
+        $this->year = request()->year;
+
+        $month = null;
+        if ($this->month) {
+            $month = monthText($this->month);
+        }
+
+        $this->monthYear = "$month $this->year";
+    }
+
     protected function entries()
     {
-        return Temp::all();
+        return [];
     }
 
 
@@ -46,14 +55,6 @@ class ReportExport implements
                 // Define headers in row 5
                 $headers = [
                     __('app.row_num'), 
-                    __('app.customer_name'), 
-                    __('app.customer_date_birth'), 
-                    __('app.customer_contact'), 
-                    __('app.email'),
-                    __('app.customer_street'),
-                    __('app.customer_barangay'),
-                    __('app.customer_city_municipality'),
-                    __('app.customer_social'),
                 ];
 
                 // Write headers to the sheet
@@ -64,7 +65,9 @@ class ReportExport implements
                 }
 
                  // Freeze the first two columns (A and B)
-                 $sheet->freezePane('C6');
+                //  $sheet->freezePane('C6');
+
+                $this->expensesSheet($sheet);
             },
 
             AfterSheet::class => function(AfterSheet $event) {
@@ -83,5 +86,51 @@ class ReportExport implements
         ];
     }
 
-    
+    public function expensesSheet($sheet)
+    {
+        $spreadsheet = $sheet->getParent();
+        $sheet = new Worksheet($spreadsheet, $this->monthYear.' Expenses');
+        $spreadsheet->addSheet($sheet);
+
+        $this->excelTitle($sheet);
+        $this->setTextBold($sheet, 5);
+
+        // Define headers in row 5
+        $headers = [
+            __('app.row_num'), 
+            __('app.date'), 
+            __('app.description'),
+            __('app.receiver'),
+            __('app.category'),
+            __('app.amount'),
+        ];
+
+        // Write headers to the sheet
+        $col = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($col . '5', $header);
+            $col++;
+        }
+
+        $entries = Expense::whereMonth('date', $this->month)->whereYear('date', $this->year)->get();
+
+        $row = 6; 
+        $num = 1;
+        foreach ($entries as $entry) {
+            $col = 'A'; // reset col every row
+
+            $sheet->setCellValue($col++ . $row, $num++);
+            $sheet->setCellValue($col++ . $row, $entry->date);
+            $sheet->setCellValue($col++ . $row, $entry->description);
+            $sheet->setCellValue($col++ . $row, $entry->receiver->name);
+            $sheet->setCellValue($col++ . $row, $entry->category->name);
+
+            $this->setCellNumberFormat($sheet, $col . $row);
+            $sheet->setCellValue($col++ . $row, $entry->amount);
+            
+            $row++;
+        }
+
+        $this->styles($sheet);
+    }
 }

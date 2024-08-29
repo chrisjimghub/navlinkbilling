@@ -72,6 +72,11 @@ return [
     // Customer Validation
     'customer_select_field' => 'The customer field is required.',
 
+    'date' => 'Date',
+    'description' => 'Description',
+    'category' => 'Category',
+    'amount' => 'Amount',
+
     'installation_fee' => 'Installation Fee',
 
     // Menus
