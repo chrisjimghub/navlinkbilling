@@ -35,25 +35,13 @@ class ReportCrudController extends CrudController
         CRUD::setEntityNameStrings('report', 'reports');
 
         $this->userPermissions('reports');
-
-        $this->crud->allowAccess([
-            'filters',
-            'export'
-        ]);
     }
 
-    public function export()
+    protected function setupListOperation()
     {
-        CRUD::hasAccessOrFail('export');
-
-        // validate first
-        if ($this->crud->hasAccess('filters')) {
-            if (!$this->filterValidations()) {
-                return redirect()->back()->withInput(request()->input());
-            }
-        }
-
-        return $this->exportClass();
+        $this->filterQueries(function ($query) {
+            
+        });
     }
 
     public function setupFilterOperation()
@@ -75,16 +63,5 @@ class ReportCrudController extends CrudController
                 'class' => 'form-group col-md-2'
             ],
         ]);
-        
-    }
-
-    public function index()
-    {
-        $this->crud->hasAccessOrFail('list');
-
-        $this->data['crud'] = $this->crud;
-        $this->data['title'] = $this->crud->getTitle() ?? mb_ucfirst($this->crud->entity_name_plural);
-
-        return view(backpack_view('admin.report'), $this->data);
     }
 }
