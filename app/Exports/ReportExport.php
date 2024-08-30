@@ -68,6 +68,7 @@ class ReportExport extends BaseExport {
                 //  $sheet->freezePane('C6');
 
                 $this->expensesSheet($sheet);
+                $this->salesCollectionsSheet($sheet);
             },
 
             AfterSheet::class => function(AfterSheet $event) {
@@ -86,10 +87,65 @@ class ReportExport extends BaseExport {
         ];
     }
 
+    public function salesCollectionsSheet($sheet)
+    {
+        $spreadsheet = $sheet->getParent();
+        $sheet = new Worksheet($spreadsheet, 'Sales(Collection) '.$this->monthYear);
+        $spreadsheet->addSheet($sheet);
+
+        $this->excelTitle($sheet);
+        $this->setTextBold($sheet, 5);
+
+        // Define headers in row 5
+        $headers = [
+            __('app.row_num'), 
+            __('app.date'), 
+            __('app.receiver_paidthru'),
+            __('app.category'),
+            __('app.amount'),
+        ];
+
+        // Write headers to the sheet
+        $col = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($col . '5', $header);
+            $col++;
+        }
+
+        $entries = [];
+
+        // TODO:: Billing CRUD
+        // TODO:: Hotspot Vouchers
+        // TODO:: Wifi Harvest
+        // TODO:: Sales
+
+        
+
+
+
+
+        $row = 6; 
+        $num = 1;
+        foreach ($entries as $entry) {
+            $col = 'A'; // reset col every row
+
+            $sheet->setCellValue($col++ . $row, $num++);
+
+            // $this->setCellNumberFormat($sheet, $col . $row);
+            // $sheet->setCellValue($col++ . $row, $entry->amount);
+            
+            $row++;
+        }
+
+        
+
+        $this->styles($sheet);
+    }
+
     public function expensesSheet($sheet)
     {
         $spreadsheet = $sheet->getParent();
-        $sheet = new Worksheet($spreadsheet, $this->monthYear.' Expenses');
+        $sheet = new Worksheet($spreadsheet, 'Expenses '.$this->monthYear);
         $spreadsheet->addSheet($sheet);
 
         $this->excelTitle($sheet);
@@ -112,7 +168,7 @@ class ReportExport extends BaseExport {
             $col++;
         }
 
-        $entries = Expense::whereMonth('date', $this->month)->whereYear('date', $this->year)->get();
+        $entries = Expense::whereMonth('date', $this->month)->whereYear('date', $this->year)->orderBy('date', 'asc')->get();
 
         $row = 6; 
         $num = 1;

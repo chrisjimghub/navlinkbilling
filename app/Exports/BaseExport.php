@@ -35,7 +35,7 @@ class BaseExport implements
         return [];
     }
 
-    // @laravel excel, cant rename or the implement will cause error
+    // @laravel excel, cant rename or the implement/interface will cause error
     public function styles(Worksheet $sheet)
     {
         foreach (range('A', $sheet->getHighestColumn()) as $column) {

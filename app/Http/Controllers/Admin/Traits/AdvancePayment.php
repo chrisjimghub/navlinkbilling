@@ -14,25 +14,38 @@ trait AdvancePayment
         // NOTE:: this is just taking the label of id 1 in contract so it's not neccessary to use snapshots
         $oneMonthAdvanceLabel = $billing->account->contractPeriods()->where('contract_periods.id', 1)->first(); 
 
-        if ($oneMonthAdvanceLabel) {
-            // Create account credit for relevant particulars
-            foreach ($billing->particulars as $particular) {
-                if (Str::contains(strtolower($particular['description']), strtolower($oneMonthAdvanceLabel->name))) {
-                    // if label/name = name of ID=1 then deposit as credit
+        foreach ($billing->particulars as $particular) {
+            foreach ($this->advancePaymentKeys($oneMonthAdvanceLabel->name) as $key) {
+                if ( Str::contains(strtolower($particular['description']), strtolower($key)) ) {
                     AccountCredit::create([
                         'account_id' => $billing->account_id,
                         'amount' => $particular['amount'],
                     ]);
-                }
-                
-                // if label/name = Deposit Account Credit then deposit as credit
-                if (Str::contains(strtolower($particular['description']), strtolower("Deposit Account Credit"))) {
-                    AccountCredit::create([
-                        'account_id' => $billing->account_id,
-                        'amount' => $particular['amount'],
-                    ]);
+
+                    break;
                 }
             }
-        }
+        }//end foreach
     }
+
+    public function advancePaymentKeys($moreKeys = null)
+    {
+        $keys = [
+            'Deposit Account Credit',
+            'Advance Payment',
+            'Advanced Payment',
+            'Advanced Fee',
+        ];
+
+        if ($moreKeys) {
+            if (!is_array($moreKeys)) {
+                $moreKeys = (array) $moreKeys;
+            }
+
+            $keys = array_merge($keys, $moreKeys);
+        }
+
+        return $keys;
+    }
+
 }

@@ -154,6 +154,7 @@ return [
     'gcash_button_pay' => 'Gcash pay',
 
     'receiver' => 'Receive By',
+    'receiver_paidthru' => 'Received by/Paid Thru',
     'notice_alert' => 'Notice!',
     'notice_alert_content' => 'Records inserted more than 24 hours ago can no longer be edited. If you need to modify old data, please contact the administrator.',
 
@@ -186,8 +187,6 @@ return [
         'unharvested' => 'Unharvested',
     ],
 
-    
-    
     'widget' => [
         'todays_unit_harvest' => 'Today\'s unit must harvest',
         'todays_harvest' => 'Today\'s harvest',
