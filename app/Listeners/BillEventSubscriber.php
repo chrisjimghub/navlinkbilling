@@ -282,23 +282,12 @@ class BillEventSubscriber
     }
     
     /**
-     * Check if the string contains the pattern (n day) or (n days) and optionally "Pro-rated".
-     *
-     * @param string $string The string to check.
-     * @return bool True if the pattern is found, false otherwise.
-     */
-    public function containsDayPatternAndProRated($string)
-    {
-        return preg_match('/(Pro-rated\s*)?\(\d+\s*day(s?)\)|\(\s*Pro-rated\s*\d+\s*day(s?)\)/i', $string) === 1; 
-    }
-
-    /**
      * Remove items from the particulars array that contain the day pattern and optionally "Pro-rated".
      */
     public function removeItemsWithDayPatternAndProRated()
     {
         foreach ($this->particulars as $key => $item) {
-            if (isset($item['description']) && $this->containsDayPatternAndProRated($item['description'])) {
+            if (isset($item['description']) && containsDayPatternAndProRated($item['description'])) {
                 unset($this->particulars[$key]);
             }
         }

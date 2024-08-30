@@ -25,6 +25,19 @@ if (! function_exists('stringStartsWith')) {
 		return Str::startsWith($haystack, $needle);
 	}
 }
+
+if (! function_exists('containsDayPatternAndProRated')) {
+	/**
+     * Check if the string(particulars) contains the pattern (n day) or (n days) and optionally "Pro-rated".
+     *
+     * @param string $string The string to check.
+     * @return bool True if the pattern is found, false otherwise.
+     */
+    function containsDayPatternAndProRated($string)
+    {
+        return preg_match('/(Pro-rated\s*)?\(\d+\s*day(s?)\)|\(\s*Pro-rated\s*\d+\s*day(s?)\)/i', $string) === 1; 
+    }
+}
 // end Str
 
 if (! function_exists('modelInstance')) {
