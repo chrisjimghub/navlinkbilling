@@ -347,6 +347,17 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getParticularsAttribute($value)
+    {
+        // Ensure that the $value is always treated as an array
+        $data = json_decode($value, true);
+
+        return array_map(function($item) {
+            $item['amount'] = (float) $item['amount'];
+            return $item;
+        }, $data ?? []);
+    }
+
     // mode_of_payment
     public function getModeOfPaymentAttribute()
     {
