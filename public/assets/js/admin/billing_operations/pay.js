@@ -30,6 +30,7 @@ if (typeof pay != 'function') {
                     visible: true,
                     className: "bg-info",
                 },
+                
             },
             dangerMode: true,
         }).then((value) => {
