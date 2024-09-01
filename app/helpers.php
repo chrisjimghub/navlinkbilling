@@ -38,6 +38,29 @@ if (! function_exists('containsDayPatternAndProRated')) {
         return preg_match('/(Pro-rated\s*)?\(\d+\s*day(s?)\)|\(\s*Pro-rated\s*\d+\s*day(s?)\)/i', $string) === 1; 
     }
 }
+
+if (!function_exists('isAdvancePaymentWithoutMonth')) {
+    /**
+     * Check if the description contains "Advance Payment" (in various forms)
+     * but does not mention a month.
+     *
+     * @param string $description
+     * @return bool
+     */
+    function isAdvancePaymentWithoutMonth(string $description): bool
+    {
+        // Normalize the description to lowercase
+        $description = strtolower($description);
+
+        // Check for "advance" or "advanced" followed by "payment(s)" or "pay"
+        if (preg_match('/\badvance(d)?\s+(payment(s)?|pay)\b/i', $description) &&
+            !preg_match('/\b(january|february|march|april|may|june|july|august|september|october|november|december)\b/i', $description)) {
+            return true;
+        }
+
+        return false;
+    }
+}
 // end Str
 
 if (! function_exists('modelInstance')) {

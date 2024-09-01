@@ -215,7 +215,7 @@ class BillingCrudController extends CrudController
                 ],
                 
             ],
-            'hint' =>   '<span class="text-success">How to add advance payment: 
+            'hint' =>   '<span class="text-success">Adding an Advance Payment: 
                             <br><strong>Advance Payment ('.now()->addMonth()->format('F').')</strong>
                             <br><strong>Advance Payment for '.now()->addMonths(2)->format('F').'</strong>
                         </span>

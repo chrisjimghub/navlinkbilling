@@ -49,6 +49,7 @@ return [
     'billing_account_must_have_installed_date'         => 'The selected account must have installed date in his account record to proceed.',
     'billing_particulars_description_required'         => 'The particulars description is required.',
     'billing_particulars_amount_required'              => 'The particulars amount is required.',
+    'billing_particulars_month_required'               => 'If the description contains "Advance Payment," a month must be specified (e.g., "Advance Payment '.now()->addMonth()->format('F').'").',
 
     // Billing Type
     'billing_type' => 'Billing Type',

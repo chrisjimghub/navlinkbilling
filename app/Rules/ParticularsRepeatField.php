@@ -26,6 +26,11 @@ class ParticularsRepeatField implements ValidationRule
             if (is_null($particular->amount) || $particular->amount === '') {
                 $fail(__('app.billing_particulars_amount_required'));
             }
+
+            // Check if "Advance Payment" is mentioned but no month is specified
+            if (isAdvancePaymentWithoutMonth($particular->description)){
+                $fail(__('app.billing_particulars_month_required'));
+            }
         }
     }
 }
