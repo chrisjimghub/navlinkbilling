@@ -532,7 +532,7 @@ class MenusTableSeeder extends Seeder
             34 => 
             array (
                 'id' => 35,
-                'label' => 'Wifi harvests',
+                'label' => 'Wifi Harvests',
                 'icon' => 'las la-hand-holding-usd',
                 'url' => 'wifi-harvest',
                 'permissions' => '["wifi_harvests_list"]',
@@ -541,7 +541,7 @@ class MenusTableSeeder extends Seeder
                 'rgt' => 18,
                 'depth' => 2,
                 'created_at' => '2024-08-15 22:35:54',
-                'updated_at' => '2024-08-15 22:35:54',
+                'updated_at' => '2024-08-30 21:39:25',
                 'deleted_at' => NULL,
             ),
             35 => 

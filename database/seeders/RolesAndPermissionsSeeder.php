@@ -27,7 +27,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'billings_show', 
             'billings_update', 
             'billings_delete', 
-            'billings_button_pay', 
+            // 'billings_button_pay', unused?
             'billings_pay', 
             'billings_pay_using_credit', 
             'billings_change_plan', 
@@ -334,9 +334,11 @@ class RolesAndPermissionsSeeder extends Seeder
                     'name' => $rolePermission,
                     'guard_name' => $this->guardName,
                 ]);
-                
-                // assign role_permission to role
-               $permission->assignRole($role);
+
+                if (!in_array($rolePermission, $this->dontAssignPermissions())) {
+                    // assign role_permission to role
+                   $permission->assignRole($role);
+                }                
             }
         }
 
@@ -349,6 +351,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'olts',
             'raisepon2s',
             'subscriptions',
+            'account_credits',
+        ];
+    }
+
+    public function dontAssignPermissions()
+    {
+        return [
+            'billings_pay_using_credit',
         ];
     }
 

@@ -215,10 +215,9 @@ class BillingCrudController extends CrudController
                 ],
                 
             ],
-            'hint' =>   '<span class="text-success">Use these description to add account credit or advance payment: 
-                            <br>"<strong>'.ContractPeriod::find(1)->name.'</strong>" to advance 1 month.
-                            <br>"<strong>Deposit Account Credit</strong>" to add credit to account.
-                            <br>"<strong>Advance Payment for '.now()->addMonth()->format('F').'</strong>" to advance payment..
+            'hint' =>   '<span class="text-success">How to add advance payment: 
+                            <br><strong>Advance Payment ('.now()->addMonth()->format('F').')</strong>
+                            <br><strong>Advance Payment for '.now()->addMonths(2)->format('F').'</strong>
                         </span>
                       ',
             'init_rows' => 0, // number of empty rows to be initialized, by default 1

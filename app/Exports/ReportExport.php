@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Billing;
 use App\Models\Expense;
 use App\Exports\BaseExport;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -115,11 +116,19 @@ class ReportExport extends BaseExport {
         $entries = [];
 
         // TODO:: Billing CRUD
+        $billings = Billing::where('id', 2)
+                    ->firstOrFail();
+        
+        dd(
+            $billings->particulars
+        );
+        
+
         // TODO:: Hotspot Vouchers
         // TODO:: Wifi Harvest
         // TODO:: Sales
 
-        
+
 
 
 

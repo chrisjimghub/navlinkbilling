@@ -28,13 +28,11 @@ trait AdvancePayment
         }//end foreach
     }
 
+    // if you want to add more keys to save particulars description into accounts credits
     public function advancePaymentKeys($moreKeys = null)
     {
         $keys = [
-            'Deposit Account Credit',
-            'Advance Payment',
-            'Advanced Payment',
-            'Advanced Fee',
+            // 
         ];
 
         if ($moreKeys) {
