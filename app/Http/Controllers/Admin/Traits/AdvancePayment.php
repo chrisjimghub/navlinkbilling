@@ -21,8 +21,9 @@ trait AdvancePayment
         foreach ($billing->particulars as $particular) {
             $desc = $particular['description'];
 
+            $oneMonthDeposit = $oneMonthAdvanceLabel->name ?? null;
             // mostly use in installation, when having 1 month deposit
-            foreach ($this->advancePaymentKeys($oneMonthAdvanceLabel->name) as $key) {
+            foreach ($this->advancePaymentKeys($oneMonthDeposit) as $key) {
                 if ( Str::contains(strtolower($desc), strtolower($key)) ) {
                     AccountCredit::create([
                         'account_id' => $billing->account_id,
