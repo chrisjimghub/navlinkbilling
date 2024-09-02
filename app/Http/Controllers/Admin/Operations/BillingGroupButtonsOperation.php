@@ -54,11 +54,11 @@ trait BillingGroupButtonsOperation
             'operation' => 'serviceInterrupt',
         ]);
 
-        Route::post($segment.'/{id}/payUsingCredit', [
-            'as'        => $routeName.'.payUsingCredit',
-            'uses'      => $controller.'@payUsingCredit',
-            'operation' => 'payUsingCredit',
-        ]);
+        // Route::post($segment.'/{id}/payUsingCredit', [
+        //     'as'        => $routeName.'.payUsingCredit',
+        //     'uses'      => $controller.'@payUsingCredit',
+        //     'operation' => 'payUsingCredit',
+        // ]);
 
         Route::post($segment.'/{id}/changePlan', [
             'as'        => $routeName.'.changePlan',
@@ -80,7 +80,7 @@ trait BillingGroupButtonsOperation
     {
         CRUD::allowAccess([
             'pay', 
-            'payUsingCredit', 
+            // 'payUsingCredit', 
             'changePlan',
             'serviceInterrupt',
             'sendNotification',
@@ -117,9 +117,9 @@ trait BillingGroupButtonsOperation
             Widget::add()->type('script')->content('assets/js/admin/billing_operations/sendNotification.js');
         }
 
-        if ( $this->crud->hasAccess('payUsingCredit') ) {
-            Widget::add()->type('script')->content('assets/js/admin/billing_operations/payUsingCredit.js');
-        }
+        // if ( $this->crud->hasAccess('payUsingCredit') ) {
+        //     Widget::add()->type('script')->content('assets/js/admin/billing_operations/payUsingCredit.js');
+        // }
 
         if ( $this->crud->hasAccess('changePlan') ) {
             Widget::add()->type('script')->content('assets/js/admin/billing_operations/changePlan.js');
@@ -370,8 +370,8 @@ trait BillingGroupButtonsOperation
             DB::beginTransaction();
 
             $billing = Billing::findOrFail($id); 
-            $billing->markAsPaid();
             $billing->payment_method_id = request()->payment_method;
+            $billing->markAsPaid();
             $billing->saveQuietly();  
 
             $this->advancePayment($billing);

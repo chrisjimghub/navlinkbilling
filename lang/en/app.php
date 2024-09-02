@@ -49,6 +49,7 @@ return [
     'billing_account_must_have_installed_date'         => 'The selected account must have installed date in his account record to proceed.',
     'billing_particulars_description_required'         => 'The particulars description is required.',
     'billing_particulars_amount_required'              => 'The particulars amount is required.',
+    'billing_particulars_month_required'               => 'If the description contains "Advance Payment", ensure that only one correctly spelled month is specified (e.g., "Advance Payment '.now()->addMonth()->format('F').'").',
 
     // Billing Type
     'billing_type' => 'Billing Type',
@@ -71,6 +72,11 @@ return [
 
     // Customer Validation
     'customer_select_field' => 'The customer field is required.',
+
+    'date' => 'Date',
+    'description' => 'Description',
+    'category' => 'Category',
+    'amount' => 'Amount',
 
     'installation_fee' => 'Installation Fee',
 
@@ -149,6 +155,7 @@ return [
     'gcash_button_pay' => 'Gcash pay',
 
     'receiver' => 'Receive By',
+    'receiver_paidthru' => 'Received by/Paid Thru',
     'notice_alert' => 'Notice!',
     'notice_alert_content' => 'Records inserted more than 24 hours ago can no longer be edited. If you need to modify old data, please contact the administrator.',
 
@@ -177,10 +184,10 @@ return [
         'particulars_hint' => 'Enter a negative value for deductions and a positive value for non-deductions in the particulars amount. You can also leave it blank, and it will automatically populate with the basic particulars. You can also edit it later for each amount value.',  
         'particulars_hint_edit' => 'Enter a negative value for deductions and a positive value for non-deductions in the particulars amount.',
         'date_required' => 'The date field is required.',
+        'harvested' => 'Harvested',
+        'unharvested' => 'Unharvested',
     ],
 
-    
-    
     'widget' => [
         'todays_unit_harvest' => 'Today\'s unit must harvest',
         'todays_harvest' => 'Today\'s harvest',

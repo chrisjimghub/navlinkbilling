@@ -35,7 +35,7 @@ class DashboardCrudController extends CrudController
         ]);
     }
 
-    protected function setupExportRoutes($segment, $routeName, $controller)
+    protected function setupDashboardRoutes($segment, $routeName, $controller)
     {
         Route::get($segment, [
             'as'        => $routeName.'.dashboard',

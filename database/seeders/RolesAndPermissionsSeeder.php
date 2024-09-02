@@ -27,9 +27,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'billings_show', 
             'billings_update', 
             'billings_delete', 
-            'billings_button_pay', 
+            // 'billings_button_pay', unused?
             'billings_pay', 
-            'billings_pay_using_credit', 
+            // 'billings_pay_using_credit', 
             'billings_change_plan', 
             'billings_service_interrupt', 
             'billings_send_notification', 
@@ -236,6 +236,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'expenses_create', 
             'expenses_update', 
             'expenses_delete', 
+            'expenses_filters', 
             'expenses_notice', 
             'expenses_edit_old_data', 
         ],
@@ -257,6 +258,24 @@ class RolesAndPermissionsSeeder extends Seeder
             'hotspot_vouchers_edit_old_data', 
             'hotspot_vouchers_filters', 
         ],
+
+        'sales' => [
+            'sales_list',
+            'sales_show',
+            'sales_create', 
+            'sales_update', 
+            'sales_delete', 
+            'sales_notice', 
+            'sales_edit_old_data', 
+            'sales_filters', 
+        ],
+
+        'reports' => [
+            'reports_list',
+            'reports_filters',
+            'reports_export',
+        ],
+
     ];
 
     /**
@@ -315,9 +334,11 @@ class RolesAndPermissionsSeeder extends Seeder
                     'name' => $rolePermission,
                     'guard_name' => $this->guardName,
                 ]);
-                
-                // assign role_permission to role
-               $permission->assignRole($role);
+
+                if (!in_array($rolePermission, $this->dontAssignPermissions())) {
+                    // assign role_permission to role
+                   $permission->assignRole($role);
+                }                
             }
         }
 
@@ -330,6 +351,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'olts',
             'raisepon2s',
             'subscriptions',
+            'account_credits',
+        ];
+    }
+
+    public function dontAssignPermissions()
+    {
+        return [
+            'billings_pay_using_credit',
         ];
     }
 

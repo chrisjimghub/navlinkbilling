@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\FilterQueries\DateColumnFilterQueries;
 use App\Models\Billing;
 use Illuminate\Support\Carbon;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Winex01\BackpackFilter\Http\Controllers\Operations\ExportOperation;
 
 /**
  * Class ExpenseCrudController
@@ -23,6 +25,8 @@ class ExpenseCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
+    use ExportOperation;
+    use DateColumnFilterQueries;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -38,8 +42,10 @@ class ExpenseCrudController extends CrudController
         $this->userPermissions();
     }
 
-    // TODO:: filters
-    // TODO:: export
+    public function setupFilterOperation()
+    {
+        $this->dateColumnFilterField();
+    }
 
     /**
      * Define what happens when the List operation is loaded.
@@ -49,6 +55,10 @@ class ExpenseCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->filterQueries(function ($query) {
+            $this->dateColumnFilterQueries($query);
+        });
+
         $this->notice();
 
         CRUD::setFromDb(); 
@@ -70,6 +80,14 @@ class ExpenseCrudController extends CrudController
             }
         ]);
 
+        // CRUD::setFromDb(); this automatically create a field too, so we remove it manually. 
+        // or you can remove the CRUD::setFromDb and create the col manually
+        $this->crud->removeFields([
+            'description',
+            'category_id',
+            'user_id',
+            'amount'
+        ]);
     }
 
     public function notice()

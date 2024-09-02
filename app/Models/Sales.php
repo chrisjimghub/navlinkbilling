@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Model;
-use App\Models\Sales;
-use App\Models\HotspotVoucher;
+use App\Models\Category;
 
-class Category extends Model
+class Sales extends Model
 {
+
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'categories';
+    protected $table = 'sales';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -32,19 +33,14 @@ class Category extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function sales()
+    public function category()
     {
-        return $this->hasMany(Sales::class);
+        return $this->belongsTo(Category::class);
     }
 
-    public function expenses()
+    public function receiver()
     {
-        return $this->hasMany(Expense::class);
-    }
-
-    public function hotspotVouchers()
-    {
-        return $this->hasMany(HotspotVoucher::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /*
