@@ -137,16 +137,16 @@
         },
         {
             "name": "backpack/basset",
-            "version": "1.3.5",
+            "version": "1.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Backpack/basset.git",
-                "reference": "ffa775cab74d960bcbfa66741b1c88607680c45d"
+                "reference": "2c20d233d58c42b8c826688e9c613cab82bf62e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Backpack/basset/zipball/ffa775cab74d960bcbfa66741b1c88607680c45d",
-                "reference": "ffa775cab74d960bcbfa66741b1c88607680c45d",
+                "url": "https://api.github.com/repos/Laravel-Backpack/basset/zipball/2c20d233d58c42b8c826688e9c613cab82bf62e1",
+                "reference": "2c20d233d58c42b8c826688e9c613cab82bf62e1",
                 "shasum": ""
             },
             "require": {
@@ -205,22 +205,22 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Backpack/basset/issues",
-                "source": "https://github.com/Laravel-Backpack/basset/tree/1.3.5"
+                "source": "https://github.com/Laravel-Backpack/basset/tree/1.3.6"
             },
-            "time": "2024-07-16T16:33:26+00:00"
+            "time": "2024-08-28T10:12:55+00:00"
         },
         {
             "name": "backpack/crud",
-            "version": "6.7.30",
+            "version": "6.7.32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Backpack/CRUD.git",
-                "reference": "d036a3f4889686799c4ad309fae02fc345190203"
+                "reference": "c6b033e2d9e6810aab8b95b0002ff99ae35756f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Backpack/CRUD/zipball/d036a3f4889686799c4ad309fae02fc345190203",
-                "reference": "d036a3f4889686799c4ad309fae02fc345190203",
+                "url": "https://api.github.com/repos/Laravel-Backpack/CRUD/zipball/c6b033e2d9e6810aab8b95b0002ff99ae35756f0",
+                "reference": "c6b033e2d9e6810aab8b95b0002ff99ae35756f0",
                 "shasum": ""
             },
             "require": {
@@ -233,7 +233,7 @@
             },
             "require-dev": {
                 "orchestra/testbench": "^8.0|^9.0|^10.0",
-                "phpunit/phpunit": "^10.0|^9.0",
+                "phpunit/phpunit": "^10.0|^9.0|^11.0",
                 "spatie/laravel-translatable": "^6.0"
             },
             "suggest": {
@@ -299,9 +299,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Backpack/CRUD/issues",
-                "source": "https://github.com/Laravel-Backpack/CRUD/tree/6.7.30"
+                "source": "https://github.com/Laravel-Backpack/CRUD/tree/6.7.32"
             },
-            "time": "2024-08-19T10:29:13+00:00"
+            "time": "2024-08-28T15:44:53+00:00"
         },
         {
             "name": "backpack/filemanager",
@@ -6181,16 +6181,16 @@
         },
         {
             "name": "spatie/laravel-package-tools",
-            "version": "1.16.4",
+            "version": "1.16.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-package-tools.git",
-                "reference": "ddf678e78d7f8b17e5cdd99c0c3413a4a6592e53"
+                "reference": "c7413972cf22ffdff97b68499c22baa04eddb6a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/ddf678e78d7f8b17e5cdd99c0c3413a4a6592e53",
-                "reference": "ddf678e78d7f8b17e5cdd99c0c3413a4a6592e53",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/c7413972cf22ffdff97b68499c22baa04eddb6a2",
+                "reference": "c7413972cf22ffdff97b68499c22baa04eddb6a2",
                 "shasum": ""
             },
             "require": {
@@ -6229,7 +6229,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-package-tools/issues",
-                "source": "https://github.com/spatie/laravel-package-tools/tree/1.16.4"
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.16.5"
             },
             "funding": [
                 {
@@ -6237,7 +6237,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-03-20T07:29:11+00:00"
+            "time": "2024-08-27T18:56:10+00:00"
         },
         {
             "name": "spatie/laravel-permission",
