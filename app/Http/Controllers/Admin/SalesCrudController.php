@@ -3,31 +3,27 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\FilterQueries\DateColumnFilterQueries;
-use Illuminate\Support\Carbon;
-use App\Models\HotspotVoucher;
 use Backpack\CRUD\app\Library\Widget;
-use App\Http\Controllers\Admin\Traits\Widgets;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
+use Winex01\BackpackFilter\Http\Controllers\Operations\ExportOperation;
 
 /**
- * Class HotspotVoucherCrudController
+ * Class SalesCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class HotspotVoucherCrudController extends CrudController
+class SalesCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation { edit as traitEdit;}
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation { destroy as traitDestroy;}
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     use CrudExtend;
-    use FilterOperation;
-    use Widgets;
+    use ExportOperation;
     use DateColumnFilterQueries;
 
     /**
@@ -37,10 +33,10 @@ class HotspotVoucherCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\HotspotVoucher::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/hotspot-voucher');
-        CRUD::setEntityNameStrings('hotspot voucher', 'hotspot vouchers');
-        
+        CRUD::setModel(\App\Models\Sales::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/sales');
+        CRUD::setEntityNameStrings('sales', 'sales');
+
         $this->userPermissions();
     }
 
@@ -63,34 +59,38 @@ class HotspotVoucherCrudController extends CrudController
 
         $this->notice();
 
-        $this->widgetHotspotVoucher();
+        CRUD::setFromDb(); 
 
-        $this->accountColumn();
-        $this->crud->modifyColumn('account_id', [
-            'function' => function($entry)  {
+        $this->crud->removeColumns([
+            'category_id',
+            'user_id',
+        ]);
+        
+        $this->crud->column('category')->after('description');
+        $this->crud->column('receiver')->label(__('app.receiver'))->after('description');
+        $this->currencyFormatColumn('amount');
 
+        $this->crud->modifyColumn('amount', [
+            'type'     => 'closure',
+            'function' => function($entry) {
                 $this->denyAccessIf($entry->id);
-
-                if ($entry->account) {
-                    return $entry->account->details_all;
-                }
-                
-                return;
-            },
-            'escaped' => false,
-            'wrapper' => false
+                return $entry->amount;
+            }
         ]);
 
-        $this->crud->column('date')->type('date');
-        $this->crud->column('paymentMethod')->after('date');
-        $this->crud->column('category')->after('date');
-        $this->crud->column('receiver')->label(__('app.receiver'))->after('date');
-        $this->currencyFormatColumn('amount');
+        // CRUD::setFromDb(); this automatically create a field too, so we remove it manually. 
+        // or you can remove the CRUD::setFromDb and create the col manually
+        $this->crud->removeFields([
+            'description',
+            'category_id',
+            'user_id',
+            'amount'
+        ]);
     }
 
     public function notice()
     {
-        if (!auth()->user()->can('expenses_notice')) {
+        if (!auth()->user()->can('sales_notice')) {
             return;
         }
 
@@ -109,6 +109,10 @@ class HotspotVoucherCrudController extends CrudController
     protected function setupShowOperation()
     {
         $this->setupListOperation();
+
+        $this->crud->modifyColumn('description', [
+            'limit' => 999,
+        ]);
     }
 
     /**
@@ -121,36 +125,29 @@ class HotspotVoucherCrudController extends CrudController
     {
         CRUD::setValidation([
             'date' => 'required|date',
+            'description' => 'required|min:2',
             'amount' => 'required|numeric|gt:0',
         ]);
-        CRUD::setFromDb(); 
+        CRUD::setFromDb(); // set fields from db columns.
+    
+        $this->crud->modifyField('description', [
+            'type' => 'textarea',
+        ]);
 
         $this->crud->removeFields([
             'category_id',
             'user_id',
-            'payment_method_id',
             'amount'
         ]);
 
-        $this->accountField();
-        $this->crud->modifyField('account_id', [
-            'options'   => (function ($query) {
-                return $query
-                    ->allowedBill()
-                    ->withSubscription(4) //voucher
-                    ->get(); 
-            }), 
-        ]);
-
-        $this->crud->field('paymentMethod')->after('date');
-        $this->crud->field('category')->after('date');
+        $this->crud->field('category')->after('description');
         $this->crud->field([
             'name' => 'receiver',
             'label' => __('app.receiver'),
             'options'   => (function ($query) {
                 return $query->adminUsersOnly()->orderBy('name', 'ASC')->get();
             }),
-        ])->after('date');
+        ])->after('description');
 
         $this->crud->field([   
             'name' => 'amount',
@@ -190,12 +187,12 @@ class HotspotVoucherCrudController extends CrudController
 
     private function denyAccessIf($id)
     {
-        $model = modelInstance('HotspotVoucher')->findOrFail($id);
+        $model = modelInstance('Sales')->findOrFail($id);
 
         $this->userPermissions();
 
         if ($model->created_at->lt(now()->subDay())) {
-            if (!auth()->user()->can('hotspot_vouchers_edit_old_data')) {
+            if (!auth()->user()->can('sales_edit_old_data')) {
                 $this->crud->denyAccess(['update', 'delete']);
             }
         }

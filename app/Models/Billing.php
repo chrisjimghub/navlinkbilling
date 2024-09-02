@@ -347,6 +347,29 @@ class Billing extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getParticularsAttribute($value)
+    {
+        // Ensure that $value is always treated as a string
+        $value = $value ?? '[]';  // Use an empty JSON array if $value is null
+
+        // Decode the JSON string
+        $data = json_decode($value, true);
+
+        // Check if json_decode failed
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            // Handle the error or log it
+            // For example, you could return an empty array or a default value
+            return [];
+        }
+
+        // Map over the decoded data and convert 'amount' to float
+        return array_map(function($item) {
+            $item['amount'] = (float) $item['amount'];
+            return $item;
+        }, $data ?? []);
+    }
+
+
     // mode_of_payment
     public function getModeOfPaymentAttribute()
     {

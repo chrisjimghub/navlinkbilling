@@ -3,10 +3,8 @@
 namespace App\Models;
 
 use App\Models\Model;
-use App\Models\Sales;
-use App\Models\HotspotVoucher;
 
-class Category extends Model
+class Temp extends Model
 {
     /*
     |--------------------------------------------------------------------------
@@ -14,7 +12,7 @@ class Category extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'categories';
+    protected $table = 'temps';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -32,20 +30,6 @@ class Category extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function sales()
-    {
-        return $this->hasMany(Sales::class);
-    }
-
-    public function expenses()
-    {
-        return $this->hasMany(Expense::class);
-    }
-
-    public function hotspotVouchers()
-    {
-        return $this->hasMany(HotspotVoucher::class);
-    }
 
     /*
     |--------------------------------------------------------------------------
