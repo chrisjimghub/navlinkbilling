@@ -5,6 +5,89 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Number;
 
 // Str
+if (!function_exists('extractMonthAndConvertToDate')) {
+	/**
+	 * Extract month name from text and convert to the first day of the month in the specified year.
+	 *
+	 * @param string $text The text containing the month name.
+	 * @param int $year The year for the date.
+	 * @return string|null The formatted date or null if no month is found.
+	 */
+    function extractMonthAndConvertToDate($text, $year = null, $format = 'Y-m-d')
+    {
+		if (!$year) {
+			$year = date('Y');
+		}
+
+        // Define an array of month names
+        $monthNames = getMonthNames();
+
+        // Use regex to find the month name in the text
+        foreach ($monthNames as $monthName) {
+            if (stripos($text, $monthName) !== false) {
+                // Get the numeric representation of the month
+                $monthNumber = getMonthNumber($monthName);
+                if ($monthNumber) {
+                    // Create a Carbon instance for the 1st day of the found month in the specified year
+                    $date = Carbon::create($year, $monthNumber, 1);
+                    return $date->format($format); 
+                }
+            }
+        }
+
+        // Return null or handle the case where no month is found
+        return null;
+    }
+}
+
+if (!function_exists('getMonthNames')) {
+    function getMonthNames()
+    {
+        return [
+			'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
+		];
+    }
+}
+
+if (!function_exists('getMonthNumber')) {
+	/**
+	 * Get the numeric representation of a month based on its name.
+	 *
+	 * @param string $monthName The name of the month.
+	 * @return string|null The numeric representation of the month or null if not found.
+	 */
+    function getMonthNumber($monthName)
+    {
+        $months = [
+            'January' => '01',
+            'February' => '02',
+            'March' => '03',
+            'April' => '04',
+            'May' => '05',
+            'June' => '06',
+            'July' => '07',
+            'August' => '08',
+            'September' => '09',
+            'October' => '10',
+            'November' => '11',
+            'December' => '12'
+        ];
+
+        return $months[ucfirst($monthName)] ?? null;
+    }
+}
+
 if (! function_exists('strHumanReadable')) {
 	function strHumanReadable($string) {
 		// Convert camel case to snake case with underscores
@@ -39,28 +122,44 @@ if (! function_exists('containsDayPatternAndProRated')) {
     }
 }
 
-if (!function_exists('isAdvancePaymentWithoutMonth')) {
+if (!function_exists('containsAdvancePayment')) {
     /**
-     * Check if the description contains "Advance Payment" (in various forms)
-     * but does not mention a month.
+     * Check if the description contains any variation of "Advance Payment".
      *
      * @param string $description
      * @return bool
      */
-    function isAdvancePaymentWithoutMonth(string $description): bool
+    function containsAdvancePayment(string $description): bool
     {
-        // Normalize the description to lowercase
-        $description = strtolower($description);
+        $variations = ['advance payment', 'advanced payment', 'advance pay', 'advance payments'];
 
-        // Check for "advance" or "advanced" followed by "payment(s)" or "pay"
-        if (preg_match('/\badvance(d)?\s+(payment(s)?|pay)\b/i', $description) &&
-            !preg_match('/\b(january|february|march|april|may|june|july|august|september|october|november|december)\b/i', $description)) {
-            return true;
-        }
-
-        return false;
+        return Str::contains(strtolower($description), $variations);
     }
 }
+
+if (!function_exists('validParticularsAdvancePayment')) {
+    /**
+     * Validates if the description contains "Advance Payment" with exactly one month mentioned.
+     * Returns true only if "Advance Payment" is present with one month. Otherwise, returns false.
+     *
+     * @param string $description
+     * @return bool
+     */
+    function validParticularsAdvancePayment(string $description): bool
+    {
+        // Ensure that "Advance Payment" is present in the description
+        if (containsAdvancePayment($description)) {
+            // Find all occurrences of months
+            preg_match_all('/\b(january|february|march|april|may|june|july|august|september|october|november|december)\b/i', $description, $matches);
+
+            // Return true if exactly one month is found
+            return count($matches[0]) === 1;
+        }
+
+        return true; // Return true if "Advance Payment" is not in the description (no need to invalidate it)
+    }
+}
+
 // end Str
 
 if (! function_exists('modelInstance')) {

@@ -17,8 +17,9 @@ class ParticularsRepeatField implements ValidationRule
         $particulars = json_decode($value);
 
         foreach ($particulars as $particular) {
+            $desc = $particular->description;
 
-            if (!$particular->description) {
+            if (!$desc){
                 $fail(__('app.billing_particulars_description_required'));
             }
             
@@ -27,10 +28,14 @@ class ParticularsRepeatField implements ValidationRule
                 $fail(__('app.billing_particulars_amount_required'));
             }
 
-            // Check if "Advance Payment" is mentioned but no month is specified
-            if (isAdvancePaymentWithoutMonth($particular->description)){
-                $fail(__('app.billing_particulars_month_required'));
+            // Check if the description contains "Advance Payment" or its variations
+            if (containsAdvancePayment($desc)) {
+                // Now apply the detailed validation for "Advance Payment"
+                if (!validParticularsAdvancePayment($desc)) {
+                    $fail(__('app.billing_particulars_month_required'));
+                }
             }
         }
+
     }
 }

@@ -43,6 +43,14 @@ class BillingTypesTableSeeder extends Seeder
                 'updated_at' => '2024-08-17 16:04:26',
                 'deleted_at' => NULL,
             ),
+            3 => 
+            array (
+                'id' => 4,
+                'name' => 'Advance Payment',
+                'created_at' => '2024-09-02 09:17:02',
+                'updated_at' => '2024-09-02 09:17:02',
+                'deleted_at' => NULL,
+            ),
         ));
         
         
