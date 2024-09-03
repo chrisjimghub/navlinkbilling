@@ -37,26 +37,31 @@ class BillEventSubscriber
     {
         foreach ($event->accounts as $account) {
             // make sure generate or create only bill if the account has no current unpaid bill with a type of monthly
-            if (!$account->billings()->where(function ($query) {
-                $query->monthly()->unpaid();
-            })->exists()) {
+            $hasBill = $account->billings()->where(function ($query) {
+                $query->unpaid();
+                $query->whereIn('billing_type_id', [2,4]); // monthly/advance 
+            });
+
+            debug($hasBill->get()->toArray());
+
+            if (!$hasBill->exists()) {
                 // No unpaid monthly billings found, proceed to create a new billing
-                $attributes = [
-                    'account_id' => $account->id,
-                    'billing_type_id' => 2, // monthly
-                ];
-                
-                $values = [];
-                
                 $group = $account->billingGrouping;
                 $period = $this->billingPeriod($group);
-                $values['date_start'] = $period['date_start'];
-                $values['date_end'] = $period['date_end'];
-                $values['date_cut_off'] = $period['date_cut_off'];
-                
+
+                // check this attribute for duplicates
+                $attributes = [
+                    'account_id' => $account->id,
+                    'date_start' => $period['date_start'],
+                    'date_end' => $period['date_end'],
+                    'date_cut_off' => $period['date_cut_off'],
+                ];
+
                 // We use firstOrCreate to avoid duplicate if ever it has same billing period.
                 // also this will trigger the dispatch property in billing and run the BillProcessed event.
-                Billing::firstOrCreate($attributes, $values); 
+                Billing::firstOrCreate($attributes, [
+                    'billing_type_id' => 2, // monthly
+                ]);
             }
         }
     }

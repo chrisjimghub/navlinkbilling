@@ -34,7 +34,7 @@ class BillingRequest extends FormRequest
             'account_id' => 'required|integer|min:1',
             'billing_type_id' => [
                 'required',
-                'exists:billing_types,id',
+                'billing_type_id' => ['required', 'exists:billing_types,id', 'in:1,2'],
                 new UniqueAccountBillingType($accountId, $billingTypeId),
                 new UniqueBillingPeriodPerAccount($accountId, $dateStart, $dateEnd, $billingId),
             ],

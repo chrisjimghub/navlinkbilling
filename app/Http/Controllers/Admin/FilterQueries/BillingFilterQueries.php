@@ -18,7 +18,7 @@ trait BillingFilterQueries
         }
 
         if ($type) {
-            $query->{$type == 1 ? 'installment' : 'monthly'}();
+            $query->where('billing_type_id', $type);
         }
 
         if ($period) {
