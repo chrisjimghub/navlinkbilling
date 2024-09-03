@@ -18,12 +18,12 @@ trait AdvancePayment
         // NOTE:: this is just taking the label of id 1 in contract so it's not neccessary to use snapshots
         $oneMonthAdvanceLabel = $billing->account->contractPeriods()->where('contract_periods.id', 1)->first(); 
 
+        $depositKeys = $this->advancePaymentKeys($oneMonthAdvanceLabel->name ?? null);
+
         foreach ($billing->particulars as $particular) {
             $desc = $particular['description'];
-
-            $oneMonthDeposit = $oneMonthAdvanceLabel->name ?? null;
             // mostly use in installation, when having 1 month deposit
-            foreach ($this->advancePaymentKeys($oneMonthDeposit) as $key) {
+            foreach ($depositKeys as $key) {
                 if ( Str::contains(strtolower($desc), strtolower($key)) ) {
                     AccountCredit::create([
                         'account_id' => $billing->account_id,

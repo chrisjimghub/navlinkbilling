@@ -173,7 +173,7 @@ class BillingCrudController extends CrudController
             'name'        => 'billing_type_id', // the name of the db column
             'label'       => __('app.billing_type'), // the input label
             'type'        => 'radio',
-            'options'     =>  BillingType::where('id', '!=', 3)->pluck('name', 'id')->toArray(),
+            'options'     =>  BillingType::whereIn('id', [1,2])->pluck('name', 'id')->toArray(),
             // optional
             'inline'      => false, // show the radios all on the same line?
             'hint'        => __('app.billing_type_id_hint'),
