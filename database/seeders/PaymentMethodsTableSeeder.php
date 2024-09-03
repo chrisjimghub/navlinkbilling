@@ -43,6 +43,14 @@ class PaymentMethodsTableSeeder extends Seeder
                 'updated_at' => '2024-07-19 17:09:15',
                 'deleted_at' => NULL,
             ),
+            3 => 
+            array (
+                'id' => 4,
+                'name' => 'Bank/Check',
+                'created_at' => '2024-09-03 16:18:56',
+                'updated_at' => '2024-09-03 16:18:56',
+                'deleted_at' => NULL,
+            ),
         ));
         
         

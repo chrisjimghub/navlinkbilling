@@ -1,4 +1,5 @@
-if (typeof sendNotificationEntry != 'function') {
+<script>
+    if (typeof sendNotificationEntry != 'function') {
     $("[data-button-type=sendNotification]").unbind('click');
 
     function sendNotificationEntry(button) {
@@ -84,3 +85,4 @@ if (typeof sendNotificationEntry != 'function') {
         }
     }
 }
+</script>
