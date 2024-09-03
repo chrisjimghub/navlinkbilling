@@ -87,8 +87,7 @@ trait BillingGroupButtonsOperation
             'downloadInvoice',
         ]);
 
-        // load
-        $this->myWidgets();
+        Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
 
         CRUD::operation('billingGroupButtons', function () {
             CRUD::loadDefaultOperationSettingsFromConfig();
@@ -99,31 +98,6 @@ trait BillingGroupButtonsOperation
             $button = config('backpack.ui.view_namespace') == 'backpack.theme-coreuiv2::' ? 'billing_group_buttons' : 'billing_group_buttons_bs5';
             CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.'.$button, 'beginning');
         });
-    }
-
-    public function myWidgets()
-    {
-        Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
-        
-        if ( $this->crud->hasAccess('pay') ) {
-            Widget::add()->type('script')->content('assets/js/admin/billing_operations/pay.js');
-        }
-
-        if ( $this->crud->hasAccess('serviceInterrupt') ) {
-            Widget::add()->type('script')->content('assets/js/admin/billing_operations/serviceInterrupt.js');
-        }
-
-        if ( $this->crud->hasAccess('sendNotification') ) {
-            Widget::add()->type('script')->content('assets/js/admin/billing_operations/sendNotification.js');
-        }
-
-        // if ( $this->crud->hasAccess('payUsingCredit') ) {
-        //     Widget::add()->type('script')->content('assets/js/admin/billing_operations/payUsingCredit.js');
-        // }
-
-        if ( $this->crud->hasAccess('changePlan') ) {
-            Widget::add()->type('script')->content('assets/js/admin/billing_operations/changePlan.js');
-        }
     }
 
     public function downloadInvoice($id)
@@ -349,7 +323,7 @@ trait BillingGroupButtonsOperation
             ],
             'payment_method' => [
                 'required',
-                'in:1,3' // 1 = Cash, 3 = Gcash
+                'in:1,3,4' // cash,gcash,bank/check
             ]
             
         ], [

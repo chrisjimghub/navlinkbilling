@@ -131,4 +131,10 @@
     // make it so that the function above is run after each DataTable draw event
     // crud.addFunctionToDataTablesDrawEventQueue('payEntry');
 </script>
+
+@include('crud::buttons.billings.pay')
+@include('crud::buttons.billings.service_interrupt')
+@include('crud::buttons.billings.send_notification')
+@include('crud::buttons.billings.change_plan')
+{{-- @include('crud::buttons.billings.pay_using_credit') --}}
 @if (!request()->ajax()) @endpush @endif
