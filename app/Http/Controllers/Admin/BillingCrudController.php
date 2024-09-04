@@ -179,7 +179,7 @@ class BillingCrudController extends CrudController
             'hint'        => __('app.billing_type_id_hint'),
         ]);
 
-        $this->fieldDatePeriods();
+        // $this->fieldDatePeriods();
     }
 
 
@@ -217,7 +217,7 @@ class BillingCrudController extends CrudController
             ],
             'hint' =>   '<span class="text-success">Adding an Advance Payment: 
                             <br><strong>Advance Payment ('.now()->addMonth()->format('F').')</strong>
-                            <br><strong>Advance Payment for '.now()->addMonths(2)->format('F').'</strong>
+                            <br><strong>Advance Payment for '.now()->addMonth()->format('F').'</strong>
                         </span>
                       ',
             'init_rows' => 0, // number of empty rows to be initialized, by default 1
