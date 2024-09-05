@@ -100,6 +100,11 @@ class User extends Authenticatable
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function editedBillings()
+    {
+        return $this->hasMany(Billing::class, 'last_edited_by');
+    }
+
     public function sales()
     {
         return $this->hasMany(Sales::class, 'user_id');

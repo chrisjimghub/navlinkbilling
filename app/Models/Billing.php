@@ -55,6 +55,16 @@ class Billing extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($model) {
+            $model->last_edited_by = auth()->check() ? auth()->user()->id : null;
+        });
+    }
+
+
     public function isProRatedMonthly() : bool
     {
         if ($this->account_installed_date > $this->date_start) {
@@ -212,6 +222,11 @@ class Billing extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function lastEditedBy()
+    {
+        return $this->belongsTo(User::class, 'last_edited_by');
+    }
+
     public function paymentMethod()
     {
         return $this->belongsTo(PaymentMethod::class);
@@ -910,7 +925,6 @@ class Billing extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
-
     // Method to mark billing as paid
     public function markAsPaid()
     {

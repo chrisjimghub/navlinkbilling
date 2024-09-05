@@ -67,9 +67,6 @@ class BillingHistoryCrudController extends AdminBillingCrudController
             'downloadInvoice',
         ]);
 
-        // load
-        $this->myWidgets();
-
         CRUD::operation('billingGroupButtons', function () {
             CRUD::loadDefaultOperationSettingsFromConfig();
             Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
@@ -87,13 +84,12 @@ class BillingHistoryCrudController extends AdminBillingCrudController
 
     public function setupFilterOperation()
     {
-        // TODO:: replace with year & month filter
         $this->crud->field([
-            'name' => 'period',
-            'label' => __('Billing Period'),
-            'type' => 'date_range',
+            'name' => 'my',
+            'label' => __('Month Year'),
+            'type' => 'month',
             'wrapper' => [
-                'class' => 'form-group col-md-3'
+                'class' => 'form-group col-md-2'
             ]
         ]);
 
@@ -106,16 +102,6 @@ class BillingHistoryCrudController extends AdminBillingCrudController
                 'class' => 'form-group col-md-2'
             ]
         ]);
-
-        // $this->crud->field([
-        //     'name' => 'type',
-        //     'label' => __('Type'),
-        //     'type' => 'select_from_array',
-        //     'options' => $this->billingTypeLists(3),
-        //     'wrapper' => [
-        //         'class' => 'form-group col-md-2'
-        //     ]
-        // ]);
     }
     
     // we need this, because in the original BillingCrudController it was overrided so we will override the trait setupShowOperation here too
