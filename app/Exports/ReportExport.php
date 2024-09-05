@@ -110,160 +110,30 @@ class ReportExport extends BaseExport {
         // Write headers to the sheet
         $col = 'A';
         foreach ($headers as $header) {
-            // $sheet->setCellValue($col . '5', $header);
+            $sheet->setCellValue($col . '5', $header);
             $col++;
         }
 
-        // Get the month and year from the request
-        $month = request()->input('month');
-        $year = request()->input('year');
-
-        // Initialize the query
-        $query = Billing::with('account')->whereIn('billing_type_id', [1, 2]);
-
-        // TODO FIX:: use snapshot for installed_date for whereclause
-        // Apply month and year filters conditionally
-        if ($month) {
-            $query->where(function ($q) use ($month) {
-                // For billing_type_id == 1 (using installed_date from the account_snapshot json column)
-                $q->where(function ($q) use ($month) {
-                    $q->where('billing_type_id', 1)
-                      ->whereMonth('account_snapshot->account->installed_date', $month);
-                })
-                // For billing_type_id == 2 (using date_end from the billing model)
-                ->orWhere(function ($q) use ($month) {
-                    $q->where('billing_type_id', 2)
-                      ->whereMonth('date_end', $month);
-                });
-            });
-        }
-        
-        if ($year) {
-            $query->where(function ($q) use ($year) {
-                // For billing_type_id == 1 (using installed_date from the account_snapshot json column)
-                $q->where(function ($q) use ($year) {
-                    $q->where('billing_type_id', 1)
-                      ->whereYear('account_snapshot->account->installed_date', $year);
-                })
-                // For billing_type_id == 2 (using date_end from the billing model)
-                ->orWhere(function ($q) use ($year) {
-                    $q->where('billing_type_id', 2)
-                      ->whereYear('date_end', $year);
-                });
-            });
-        }
-        
-
-        // Execute the query
-        $billings = $query->get();
-
         $entries = [];
-        foreach ($billings as $billing) {
-            foreach ($billing->particulars as $particular) {
-                $date = null;
-                $by = null;
-                $description = $particular['description'];
-                $amount = $particular['amount'];
-
-                if ($billing->billing_type_id == 1) {
-                    // installation fee
-                    $date = $billing->account_snapshot['account']['installed_date'];
-                }elseif ($billing->billing_type_id == 2) {
-                    // monthly fee
-                    $date = $billing->date_end;
-                }
-
-                if ($billing->paymongo_reference_number != null) {
-                    $by = 'Online Payment';
-                }else {
-                    $by = $billing->lastEditedBy->name;
-                }
-
-
-                // TODO:: group deductions and deduct it to monthly fee?
-                // TODO:: group monthly fee, pro rated as P2p/Fiber Monthly Billing
-                // TODO:: reminder: there is also Pro-rated in service adjustment(negtaive value)
-
-                $entries[] = [
-                    'billing_id' => $billing->id,
-                    'date' => $date,
-                    'by' => $by,
-                    'category' => $description,
-                    'amount' => $amount,
-                ];
-            }//endForeach $partiulars
-        }//endForeach $billings
-
-        // dd(
-        //     $billings->toArray()
-        // );
-
-        dd($entries);
-
-        // $grouped = $billings->flatMap(function ($billing) {
-        //     return collect($billing->particulars)->map(function ($particular) use ($billing) {
-        //         $description = $particular['description'];
-        //         $amount = $particular['amount'];
-        
-        //         // Debugging output (optional, you can remove this later)
-        //         // dump("Description: $description, Amount: $amount");
-        
-        //         // Determine the base group name for "Monthly Fee" or "Pro Rated" descriptions
-        //         if (
-        //             stripos($description, 'Monthly Fee') !== false 
-        //             || stripos($description, 'Monthly-Fee') !== false
-        //             || stripos($description, 'Pro Rated') !== false 
-        //             || stripos($description, 'Pro-Rated') !== false
-        //             || stripos($description, 'ProRated') !== false
-        //         ) {
-        //             if ($billing->account->subscription_id == 1) { // p2p
-        //                 $description = 'P2P Monthly Billing';
-        //             } elseif ($billing->account->subscription_id == 2) { // fiber
-        //                 $description = 'Fiber Monthly Billing';
-        //             } else {
-        //                 $description = 'Other Monthly Billing'; // Default for other subscription_ids
-        //             }
-        //         } elseif (stripos($description, 'Service Interruptions') !== false) {
-        //             // Normalize "Service Interruptions" descriptions
-        //             $description = 'Service Interruptions';
-        //         }
-        
-        //         return [
-        //             'group' => $description,
-        //             'amount' => $amount
-        //         ];
-        //     });
-        // })->groupBy(function ($item) {
-        //     return $item['group'];
-        // })->map(function ($group) {
-        //     // Sum the 'amount' for each group
-        //     return $group->sum('amount');
-        // });
-        
-        // Debug output
-        // dd($grouped);
-        
-    
-        
+        $entries = array_merge($entries, $this->billingCrudEntries());
+        // dd($entries);
 
         // TODO:: Hotspot Vouchers
         // TODO:: Wifi Harvest
         // TODO:: Sales
-
-
-
-        $entries = [];
-
 
         $row = 6; 
         $num = 1;
         foreach ($entries as $entry) {
             $col = 'A'; // reset col every row
 
-            // $sheet->setCellValue($col++ . $row, $num++);
+            $sheet->setCellValue($col++ . $row, $num++);
+            $sheet->setCellValue($col++ . $row, $entry['date']);
+            $sheet->setCellValue($col++ . $row, $entry['by']);
+            $sheet->setCellValue($col++ . $row, $entry['category']);
 
-            // $this->setCellNumberFormat($sheet, $col . $row);
-            // $sheet->setCellValue($col++ . $row, $entry->amount);
+            $this->setCellNumberFormat($sheet, $col . $row);
+            $sheet->setCellValue($col++ . $row, $entry['amount']);
             
             $row++;
         }
@@ -319,5 +189,138 @@ class ReportExport extends BaseExport {
         }
 
         $this->styles($sheet);
+    }
+
+    private function billingCrudEntries()
+    {
+        $entries = [];
+
+        // Get the month and year from the request
+        $month = request()->input('month');
+        $year = request()->input('year');
+
+        // Initialize the query
+        $query = Billing::with('account')->whereIn('billing_type_id', [1, 2]);
+
+        // Apply month and year filters conditionally
+        if ($month) {
+            $query->where(function ($q) use ($month) {
+                // For billing_type_id == 1 (using installed_date from the account_snapshot json column)
+                $q->where(function ($q) use ($month) {
+                    $q->where('billing_type_id', 1)
+                      ->whereMonth('account_snapshot->account->installed_date', $month);
+                })
+                // For billing_type_id == 2 (using date_end from the billing model)
+                ->orWhere(function ($q) use ($month) {
+                    $q->where('billing_type_id', 2)
+                      ->whereMonth('date_end', $month);
+                });
+            });
+        }
+        
+        if ($year) {
+            $query->where(function ($q) use ($year) {
+                // For billing_type_id == 1 (using installed_date from the account_snapshot json column)
+                $q->where(function ($q) use ($year) {
+                    $q->where('billing_type_id', 1)
+                      ->whereYear('account_snapshot->account->installed_date', $year);
+                })
+                // For billing_type_id == 2 (using date_end from the billing model)
+                ->orWhere(function ($q) use ($year) {
+                    $q->where('billing_type_id', 2)
+                      ->whereYear('date_end', $year);
+                });
+            });
+        }
+
+        // Execute the query
+        $billings = $query->get();
+
+        foreach ($billings as $billing) {
+            $particulars = [];
+            foreach ($billing->particulars as $particular) {
+                $description = $particular['description'];
+                $amount = $particular['amount'];
+                
+                $particulars[] = [
+                    'category' => $description,
+                    'amount' => $amount,
+                ];
+            }//endForeach $partiulars
+
+            $date = null;
+            $by = null;
+            $categoryPrefix = null;
+            $typeInstallation = false;
+
+            if ($billing->billing_type_id == 1) {
+                // installation fee
+                $date = $billing->account_snapshot['account']['installed_date'];
+                $typeInstallation = true;
+            }elseif ($billing->billing_type_id == 2) {
+                // monthly fee
+                $date = $billing->date_end;
+            }
+
+            if ($billing->paymongo_reference_number != null) {
+                $by = 'Online Payment';
+            }else {
+                $by = $billing->lastEditedBy->name;
+            }
+
+            if ($billing->account->subscription_id == 1) { // p2p
+                $categoryPrefix = 'P2P ';
+            } elseif ($billing->account->subscription_id == 2) { // fiber
+                $categoryPrefix = 'Fiber ';
+            }            
+
+            // Group the categories and sum the amounts
+            $groupedAndSummed = collect($particulars)
+            ->groupBy(function ($item) use ($typeInstallation, $categoryPrefix) {
+                if ($typeInstallation) {
+                    return $categoryPrefix. 'Installation';
+                }
+
+                $monthlyKeywords = [
+                    'monthly fee', 
+                    'monthly-fee',
+                ];
+
+                // Convert category to lowercase for case-insensitive comparison
+                $categoryLower = strtolower($item['category']);
+
+                // Loop through the array of monthly-related keywords
+                foreach ($monthlyKeywords as $keyword) {
+                    if (str_contains($categoryLower, strtolower($keyword))) {
+                        return $categoryPrefix.'Monthly Billing';
+                    }
+                }
+
+                if (containsDayPatternAndProRated($categoryLower)) {
+                    return $categoryPrefix.'Monthly Billing';
+                }
+
+                // Group all negative amounts under "Monthly Billing"
+                if ($item['amount'] < 0) {
+                    return $categoryPrefix.'Monthly Billing';
+                }
+
+                // Otherwise, keep the original category
+                return $item['category'];
+            })
+            ->map(function ($group, $category) use ($date, $by) {
+                return [
+                    'date' => $date,
+                    'by' => $by,
+                    'category' => $category,
+                    'amount' => $group->sum('amount'),
+                ];
+            })
+            ->values(); // Reset array keys
+
+            $entries = array_merge($entries, $groupedAndSummed->toArray());
+        }//endForeach $billings
+
+        return $entries;
     }
 }
