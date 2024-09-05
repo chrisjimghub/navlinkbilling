@@ -422,19 +422,6 @@ class UsersTableSeeder extends Seeder
                 'created_at' => '2024-10-22 11:45:25',
                 'updated_at' => '2024-10-22 11:45:25',
             ),
-            31 => 
-            array (
-                'id' => 35,
-                'customer_id' => NULL,
-                'name' => 'Egot, Chris Jim',
-                'email' => 'jimegot@yahoo.com.ph',
-                'email_verified_at' => NULL,
-                'password' => '$2y$12$lOIp1HBpe2hgb3v9CyL8HuzO1ciJpEXFA.Y/d3.sO9jTAhHudwdE.',
-                'theme' => NULL,
-                'remember_token' => NULL,
-                'created_at' => '2024-10-22 11:52:48',
-                'updated_at' => '2024-10-22 11:52:48',
-            ),
         ));
         
         
