@@ -179,7 +179,7 @@ class BillingCrudController extends CrudController
             'hint'        => __('app.billing_type_id_hint'),
         ]);
 
-        // $this->fieldDatePeriods();
+        $this->fieldDatePeriods();
     }
 
 
