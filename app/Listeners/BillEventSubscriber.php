@@ -42,7 +42,7 @@ class BillEventSubscriber
                 $query->whereIn('billing_type_id', [2,4]); // monthly/advance 
             });
 
-            debug($hasBill->get()->toArray());
+            // debug($hasBill->get()->toArray());
 
             if (!$hasBill->exists()) {
                 // No unpaid monthly billings found, proceed to create a new billing
