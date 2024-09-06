@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use Faker\Factory as FakerFactory;
+use App\Models\Sales;
 use App\Models\Account;
 use App\Models\Billing;
 use App\Models\Expense;
@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use App\Models\BillingGrouping;
 use Illuminate\Console\Command;
 use App\Models\PlannedApplication;
+use Faker\Factory as FakerFactory;
 use Illuminate\Support\Facades\DB;
 use App\Models\AccountServiceInterruption;
 use App\Http\Controllers\Admin\Traits\GenerateBill;
@@ -215,9 +216,9 @@ class TestData extends Command
 
             // factories
             Expense::factory($this->option('expenses') ?? 50)->create();
-            Expense::factory($this->option('sales') ?? 50)->create();
+            Sales::factory($this->option('sales') ?? 50)->create();
 
-            // TODO:: wifi harvest factory
+            // wifi harvest factory
             $accounts = Account::factory($this->option('wifiHarvest') ?? 10)->pisoWifi()->connected()->withPivotData()->create();
             foreach ($accounts as $account) {
                 $billing = Billing::create([
