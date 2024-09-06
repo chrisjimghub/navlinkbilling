@@ -28,16 +28,17 @@ class TestData extends Command
      * @var string
      */
     protected $signature = 'test:data 
-        {--fiber= : Number of Fiber bill} 
-        {--p2p= : Number of P2P bill} 
-        {--advancePayment= : Number of bill with advance payment in particulars}
-        {--advancePayment2Month= : Number of bill with 2 months advance payment in particulars}
-        {--serviceInterruption= : Number of bill with service interruptions in particulars}
-        {--changePlan= : Number of bill with change plan or upgrade/downgrade}
-        {--excessWire= : Number of bill with exceess wire in particulars}
-        {--loremIpsum= : Number of bill with lorem ipsum in particulars}
-        {--installmentType= : Number of bill with type installment} 
-        {--paid= : Number of paid bill}
+        {--fiber= : Number of Fiber bill (int)} 
+        {--p2p= : Number of P2P bill (int)} 
+        {--advancePayment= : Number of bill with advance payment in particulars (int)}
+        {--advancePayment2Month= : Number of bill with 2 months advance payment in particulars (int)}
+        {--serviceInterruption= : Number of bill with service interruptions in particulars (int)}
+        {--changePlan= : Number of bill with change plan or upgrade/downgrade (int)}
+        {--excessWire= : Number of bill with exceess wire in particulars (int)}
+        {--loremIpsum= : Number of bill with lorem ipsum in particulars (int)}
+        {--installmentType= : Number of bill with type installment (int)} 
+        {--paid= : Number of paid bill (int)}
+        {--expenses= : Number of expenses factory (int)}
     ';
 
     /**
@@ -193,6 +194,12 @@ class TestData extends Command
             }
 
             // TODO:: expense factory
+
+
+
+
+
+            // TODO:: sales factory
             // TODO:: wifi harvest factory
             // TODO:: wifi voucher factory
         }
