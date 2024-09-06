@@ -41,6 +41,8 @@ class TestData extends Command
         {--paid= : Number of paid bill (int)}
         {--expenses= : Number of expenses factory (int)}
         {--sales= : Number of sales factory (int)}
+        {--wifiHarvest= : Number of wifi harvest factory (int)}
+        {--hotspotVoucher= : Number of hotspot voucher factory (int)}
     ';
 
     /**
@@ -70,7 +72,10 @@ class TestData extends Command
             ];
 
             // bill with 1 month advance payment
-            $billings = Billing::inRandomOrder()->limit($this->option('advancePayment') ?? 3)->get();
+            $billings = Billing::billingCrud()->whereHas('account', function ($query) {
+                $query->connected();
+            })->inRandomOrder()->limit($this->option('advancePayment') ?? 3)->get();
+            
             foreach ($billings as $billing) {
                 $month = Carbon::parse($billing->date_end)->addMonth()->format('F');
 
@@ -85,7 +90,10 @@ class TestData extends Command
             }
 
             // bill with 2 months advance payment
-            $billings = Billing::inRandomOrder()->limit($this->option('advancePayment2Month') ?? 2)->get();
+            $billings = Billing::billingCrud()->whereHas('account', function ($query) {
+                $query->connected();
+            })->inRandomOrder()->limit($this->option('advancePayment2Month') ?? 2)->get();
+
             foreach ($billings as $billing) {
                 $month = Carbon::parse($billing->date_end)->addMonth()->format('F');
                 $month2 = Carbon::parse($billing->date_end)->addMonths(2)->format('F');
@@ -107,7 +115,10 @@ class TestData extends Command
             }
 
             // bill with interruptions
-            $billings = Billing::inRandomOrder()->limit($this->option('serviceInterruption') ?? 5)->get();
+            $billings = Billing::billingCrud()->whereHas('account', function ($query) {
+                $query->connected();
+            })->inRandomOrder()->limit($this->option('serviceInterruption') ?? 5)->get();
+
             foreach ($billings as $billing) {
                 $subDays1 = rand(1, 10);
                 $subDays2 = rand(1, 10);
@@ -125,7 +136,10 @@ class TestData extends Command
             }
 
             // bill with upgrade/downgrade
-            $billings = Billing::inRandomOrder()->limit($this->option('changePlan') ?? 2)->get();
+            $billings = Billing::billingCrud()->whereHas('account', function ($query) {
+                $query->connected();
+            })->inRandomOrder()->limit($this->option('changePlan') ?? 2)->get();
+
             foreach ($billings as $billing) {
                 $dateChange = Carbon::parse($billing->date_end)->subDays(rand(8, 15));
                 $plannedApp = PlannedApplication::inRandomOrder()->first();
@@ -142,7 +156,10 @@ class TestData extends Command
             }
 
             // bill with Excess Wire
-            $billings = Billing::inRandomOrder()->limit($this->option('excessWire') ?? 5)->get();
+            $billings = Billing::billingCrud()->whereHas('account', function ($query) {
+                $query->connected();
+            })->inRandomOrder()->limit($this->option('excessWire') ?? 5)->get();
+
             foreach ($billings as $billing) {
                 $particulars = $billing->particulars; 
                 
@@ -155,7 +172,10 @@ class TestData extends Command
             }            
 
             // bill with Lorem Ipsum
-            $billings = Billing::inRandomOrder()->limit($this->option('loremIpsum') ?? 3)->get();
+            $billings = Billing::billingCrud()->whereHas('account', function ($query) {
+                $query->connected();
+            })->inRandomOrder()->limit($this->option('loremIpsum') ?? 3)->get();
+
             foreach ($billings as $billing) {
                 $particulars = $billing->particulars; 
                 
@@ -168,7 +188,7 @@ class TestData extends Command
             }
 
             // bill installment type
-            $accounts = Account::connected()->inRandomOrder()->limit($this->option('installmentType') ?? 10)->get();
+            $accounts = Account::billingCrud()->connected()->inRandomOrder()->limit($this->option('installmentType') ?? 10)->get();
             foreach ($accounts as $account) {
                 Billing::create([
                     'account_id' => $account->id,
@@ -177,7 +197,10 @@ class TestData extends Command
             }
 
             // paid bill
-            $billings = Billing::inRandomOrder()->limit($this->option('paid') ?? 10)->get();
+            $billings = Billing::billingCrud()->whereHas('account', function ($query) {
+                $query->connected();
+            })->inRandomOrder()->limit($this->option('paid') ?? 10)->get();
+            
             foreach ($billings as $billing) {
                 try {
                     DB::beginTransaction();
@@ -200,7 +223,11 @@ class TestData extends Command
             Expense::factory($this->option('sales') ?? 50)->create();
 
             // TODO:: wifi harvest factory
+            Account::factory($this->option('wifiHarvest') ?? 10)->pisoWifi()->connected()->withPivotData()->create();
+            // TODO:: bilings foreach
+
             // TODO:: wifi voucher factory
+            // Account::factory($this->option('hotspotVoucher') ?? 10)->pisoWifi()->connected()->withPivotData()->create();
         }
     }
 }
