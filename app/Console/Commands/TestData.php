@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Account;
 use App\Models\Billing;
+use App\Models\Expense;
 use App\Events\BillProcessed;
 use App\Models\PaymentMethod;
 use Illuminate\Support\Carbon;
@@ -39,6 +40,7 @@ class TestData extends Command
         {--installmentType= : Number of bill with type installment (int)} 
         {--paid= : Number of paid bill (int)}
         {--expenses= : Number of expenses factory (int)}
+        {--sales= : Number of sales factory (int)}
     ';
 
     /**
@@ -193,13 +195,10 @@ class TestData extends Command
                 } 
             }
 
-            // TODO:: expense factory
+            // factories
+            Expense::factory($this->option('expenses') ?? 50)->create();
+            Expense::factory($this->option('sales') ?? 50)->create();
 
-
-
-
-
-            // TODO:: sales factory
             // TODO:: wifi harvest factory
             // TODO:: wifi voucher factory
         }
