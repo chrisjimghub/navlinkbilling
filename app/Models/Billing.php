@@ -291,6 +291,7 @@ class Billing extends Model
         return $query->where('account_snapshot->subscription->id', 1); // 1 = P2P
     }
 
+    // This hardcoded scope date_cut_off is use in date_cut_off(no-longer use or removed) table widgets in dashboard.
     public function scopeCutOffAccounts($query)
     {
         return $this->monthly()

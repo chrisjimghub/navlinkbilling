@@ -265,7 +265,7 @@ class ReportExport extends BaseExport {
             if ($billing->paymongo_reference_number != null) {
                 $by = 'Online Payment';
             }else {
-                $by = $billing->lastEditedBy->name;
+                $by = $billing->lastEditedBy->name ?? null;
             }
 
             if ($billing->account->subscription_id == 1) { // p2p
@@ -320,6 +320,8 @@ class ReportExport extends BaseExport {
 
             $entries = array_merge($entries, $groupedAndSummed->toArray());
         }//endForeach $billings
+
+        dd($entries);
 
         return $entries;
     }
