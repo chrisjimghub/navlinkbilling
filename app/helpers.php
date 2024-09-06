@@ -181,6 +181,18 @@ if (! function_exists('modelInstance')) {
 }
 
 // DATES / related to dates
+if (! function_exists('randomDate')) {
+	function randomDate() {
+		// Get the start and end dates of the current year
+        $startOfYear = Carbon::now()->startOfYear();
+        $endOfYear = Carbon::now()->endOfYear();
+
+        // Generate a random date within the current year
+        return Carbon::createFromTimestamp(mt_rand($startOfYear->timestamp, $endOfYear->timestamp));
+	}
+}
+
+
 if (! function_exists('carbonInstance')) {
 	function carbonInstance($date) {
 		return Carbon::parse($date);

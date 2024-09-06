@@ -19,12 +19,7 @@ class ExpenseFactory extends Factory
      */
     public function definition(): array
     {
-        // Get the start and end dates of the current year
-        $startOfYear = Carbon::now()->startOfYear();
-        $endOfYear = Carbon::now()->endOfYear();
-
-        // Generate a random date within the current year
-        $randomDate = Carbon::createFromTimestamp(mt_rand($startOfYear->timestamp, $endOfYear->timestamp));
+        $randomDate = randomDate();
 
         return [
             'date' => $randomDate,

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Faker\Factory as FakerFactory;
 use App\Models\Account;
 use App\Models\Billing;
 use App\Models\Expense;
@@ -63,13 +64,7 @@ class TestData extends Command
 
             $this->generateBill(BillingGrouping::all());
 
-            $amounts = [
-                1 => 100,
-                2 => 200,
-                3 => 300,
-                4 => 400,
-                5 => 500,
-            ];
+            $faker = FakerFactory::create();
 
             // bill with 1 month advance payment
             $billings = Billing::billingCrud()->whereHas('account', function ($query) {
@@ -165,7 +160,7 @@ class TestData extends Command
                 
                 $particulars[] = [
                     'description' => 'Excess Wire',
-                    'amount' => $amounts[rand(1, 5)],
+                    'amount' => $faker->randomFloat(2, 100, 500),
                 ];
                 $billing->particulars = $particulars; 
                 $billing->save(); 
@@ -181,7 +176,7 @@ class TestData extends Command
                 
                 $particulars[] = [
                     'description' => 'Lorem Ipsum',
-                    'amount' => $amounts[rand(1, 5)] - rand(50, 300),
+                    'amount' => $faker->randomFloat(2, 100, 700),
                 ];
                 $billing->particulars = $particulars; 
                 $billing->save(); 
@@ -200,7 +195,7 @@ class TestData extends Command
             $billings = Billing::billingCrud()->whereHas('account', function ($query) {
                 $query->connected();
             })->inRandomOrder()->limit($this->option('paid') ?? 10)->get();
-            
+
             foreach ($billings as $billing) {
                 try {
                     DB::beginTransaction();
@@ -223,8 +218,38 @@ class TestData extends Command
             Expense::factory($this->option('sales') ?? 50)->create();
 
             // TODO:: wifi harvest factory
-            Account::factory($this->option('wifiHarvest') ?? 10)->pisoWifi()->connected()->withPivotData()->create();
-            // TODO:: bilings foreach
+            $accounts = Account::factory($this->option('wifiHarvest') ?? 10)->pisoWifi()->connected()->withPivotData()->create();
+            foreach ($accounts as $account) {
+                $billing = Billing::create([
+                    'account_id' => $account->id,
+                    'billing_type_id' => 3, // Harvest Piso Wifi 
+                    'date_start' => randomDate(),
+                ]);
+
+                $particulars = $billing->particulars ?? [];
+                
+                foreach ($particulars as &$item) {
+                    if (str_contains(strtolower($item['description']), 'revenue ')) {
+
+                        $item['amount'] = $faker->randomFloat(2, 1500, 5000);
+
+                    }elseif (str_contains(strtolower($item['description']), 'electric bill')) {
+                        
+                        $item['amount'] = -$faker->randomFloat(2, 400, 500);
+
+                    }elseif (str_contains(strtolower($item['description']), 'lessor')) {
+                        
+                        $item['amount'] = -$faker->randomFloat(2, 350, 700);
+
+                    }
+
+                }
+                unset($item); // Break the reference to avoid unexpected behavior
+
+                $billing->billing_status_id = rand(4,5); // 4=harvested, 5=unharvested
+                $billing->particulars = $particulars;
+                $billing->saveQuietly();
+            }
 
             // TODO:: wifi voucher factory
             // Account::factory($this->option('hotspotVoucher') ?? 10)->pisoWifi()->connected()->withPivotData()->create();
