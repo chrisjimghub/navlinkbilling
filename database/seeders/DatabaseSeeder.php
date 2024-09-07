@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call(BillingTypesTableSeeder::class); 
         $this->call(MenusTableSeeder::class); 
         $this->call(BillingStatusesTableSeeder::class); 
+        $this->call(StatusesTableSeeder::class); 
         $this->call(SettingsTableSeeder::class);
         $this->call(PaymentMethodsTableSeeder::class);
         $this->call(CommunityStringsTableSeeder::class);

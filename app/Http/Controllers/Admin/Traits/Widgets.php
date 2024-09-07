@@ -83,7 +83,7 @@ trait Widgets
             $month = $date->month;
             $year = $date->year;
 
-            $total = HotspotVoucher::whereDate('date', $date)->get()->sum('amount');
+            $total = HotspotVoucher::paid()->whereDate('date', $date)->get()->sum('amount');
             $contents[] = [
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
@@ -94,7 +94,7 @@ trait Widgets
                 'hint'          => now()->format(dateHumanReadable()),
             ];
 
-            $total = HotspotVoucher::whereMonth('date', $month)->get()->sum('amount');
+            $total = HotspotVoucher::paid()->whereMonth('date', $month)->get()->sum('amount');
             $contents[] = [
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',
@@ -105,7 +105,7 @@ trait Widgets
                 'hint'          => now()->format('M, Y'),
             ];
 
-            $total = HotspotVoucher::whereYear('date', $year)->get()->sum('amount');
+            $total = HotspotVoucher::paid()->whereYear('date', $year)->get()->sum('amount');
             $contents[] = [
                 'type'          => 'progress_white',
                 'class'         => 'card mb-3',

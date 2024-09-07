@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\Status;
 use App\Models\Account;
 use App\Models\Category;
 use App\Models\PaymentMethod;
@@ -26,7 +27,8 @@ class HotspotVoucherFactory extends Factory
             'user_id' => User::inRandomOrder()->whereNull('customer_id')->first(),
             'category_id' => Category::inRandomOrder()->first(),
             'amount' => $this->faker->randomFloat(2, 500, 1200),
-            'payment_method_id' => PaymentMethod::where('id', '!=', 2)->inRandomOrder()->first()->id,
+            'payment_method_id' => PaymentMethod::where('id', '!=', 2)->inRandomOrder()->first(),
+            'status_id' => Status::inRandomOrder()->first(),
         ];
     }
 }

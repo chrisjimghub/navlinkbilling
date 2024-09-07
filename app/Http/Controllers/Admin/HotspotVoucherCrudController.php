@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\FilterQueries\DateColumnFilterQueries;
-use Illuminate\Support\Carbon;
-use App\Models\HotspotVoucher;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\Widgets;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use App\Http\Controllers\Admin\FilterQueries\DateColumnFilterQueries;
+use App\Http\Controllers\Admin\FilterQueries\StatusColumnFilterQueries;
 use Winex01\BackpackFilter\Http\Controllers\Operations\FilterOperation;
 
 /**
@@ -29,6 +28,7 @@ class HotspotVoucherCrudController extends CrudController
     use FilterOperation;
     use Widgets;
     use DateColumnFilterQueries;
+    use StatusColumnFilterQueries;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -47,6 +47,7 @@ class HotspotVoucherCrudController extends CrudController
     public function setupFilterOperation()
     {
         $this->dateColumnFilterField();
+        $this->statusColumnFilterField();
     }
 
     /**
@@ -59,6 +60,7 @@ class HotspotVoucherCrudController extends CrudController
     {
         $this->filterQueries(function ($query) {
             $this->dateColumnFilterQueries($query);
+            $this->statusColumnFilterQueries($query);
         });
 
         $this->notice();
@@ -82,10 +84,19 @@ class HotspotVoucherCrudController extends CrudController
         ]);
 
         $this->crud->column('date')->type('date');
-        $this->crud->column('paymentMethod')->after('date');
-        $this->crud->column('category')->after('date');
-        $this->crud->column('receiver')->label(__('app.receiver'))->after('date');
+        $this->crud->column('receiver')->label(__('app.receiver'));
+        $this->crud->column('category');
+        $this->crud->column('status');
         $this->currencyFormatColumn('amount');
+        $this->crud->column('paymentMethod');
+        
+        $this->crud->modifyColumn('status', [
+            'type' => 'closure',
+            'function' => function ($entry) {
+                return $entry->status->badge;
+            },
+            'escaped' => false
+        ]);
     }
 
     public function notice()
@@ -198,6 +209,8 @@ class HotspotVoucherCrudController extends CrudController
             if (!auth()->user()->can('hotspot_vouchers_edit_old_data')) {
                 $this->crud->denyAccess(['update', 'delete']);
             }
+        }elseif ($model->isPaid()) {
+            $this->crud->denyAccess(['update', 'delete']);
         }
     }
 }
