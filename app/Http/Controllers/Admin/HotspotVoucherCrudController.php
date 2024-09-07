@@ -110,6 +110,7 @@ class HotspotVoucherCrudController extends CrudController
         $this->crud->column('paymentMethod');
 
         $this->crud->modifyColumn('paymentMethod', [
+            'label' => __('app.payment_method'),
             'type' => 'closure',
             'function' => function ($entry) {
                 $return = '';

@@ -171,6 +171,8 @@ return [
         'harvestor_required' => 'The harvestor / collector field is required.',
     ],
 
+    'payment_method' => 'Payment Method',
+
     'wifi_harvest' => [
         'total' => 'Net Income',
         'status' => 'Harvest Status',

@@ -27,8 +27,45 @@ class HotspotVoucherFactory extends Factory
             'user_id' => User::inRandomOrder()->whereNull('customer_id')->first(),
             'category_id' => Category::inRandomOrder()->first(),
             'amount' => $this->faker->randomFloat(2, 500, 1200),
-            'payment_method_id' => PaymentMethod::where('id', '!=', 2)->inRandomOrder()->first(),
-            'status_id' => Status::inRandomOrder()->first(),
+            // 'payment_method_id' => PaymentMethod::whereNotIn('id', [2,4])->inRandomOrder()->first(),
+            // 'status_id' => Status::inRandomOrder()->first(),
         ];
+    }
+
+    public function paidBankCheck(): static
+    {   
+        return $this->state(fn (array $attributes) => [
+            'status_id' => 1,
+            'payment_method_id' => 4, // bank/check
+            'bank_details' => $this->bankDetails()
+        ]);
+    }
+
+    public function bankDetails()
+    {
+        $data = [];
+
+        $data[] = [
+            'check_issued_date' => randomDate(),
+            'check_number' => $this->faker->unique()->numerify('##########'), // generates a unique 10-digit number
+        ];
+
+        return $data;
+    }
+
+    public function paid(): static
+    {   
+        return $this->state(fn (array $attributes) => [
+            'status_id' => 1,
+            'payment_method_id' => PaymentMethod::whereNotIn('id', [2,4])->inRandomOrder()->first(),
+        ]);
+    }
+
+    public function unpaid(): static
+    {   
+        return $this->state(fn (array $attributes) => [
+            'status_id' => 2,
+            'user_id' => null,
+        ]);
     }
 }

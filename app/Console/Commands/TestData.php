@@ -218,7 +218,9 @@ class TestData extends Command
             // factories
             Expense::factory($this->option('expenses') ?? 50)->create();
             Sales::factory($this->option('sales') ?? 50)->create();
-            HotspotVoucher::factory($this->option('hotspotVoucher') ?? 50)->create();                                                                                                                                                                                                   
+            HotspotVoucher::factory($this->option('hotspotVoucher') ?? 20)->paid()->create();                                                                                                                                                                                                   
+            HotspotVoucher::factory($this->option('hotspotVoucher') ?? 20)->unpaid()->create();                                                                                                                                                                                                   
+            HotspotVoucher::factory($this->option('hotspotVoucher') ?? 20)->paidBankCheck()->create();                                                                                                                                                                                                   
 
             // wifi harvest factory
             $accounts = Account::factory($this->option('wifiHarvest') ?? 10)->pisoWifi()->connected()->withPivotData()->create();
