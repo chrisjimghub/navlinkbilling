@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Rules\BankCheckRepeatField;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\Widgets;
 use App\Http\Controllers\Admin\Traits\CrudExtend;
@@ -86,8 +87,8 @@ class HotspotVoucherCrudController extends CrudController
         $this->crud->column('date')->type('date');
         $this->crud->column('receiver')->label(__('app.receiver'));
         $this->crud->column('category');
-        $this->crud->column('status');
         $this->currencyFormatColumn('amount');
+        $this->crud->column('status');
         $this->crud->column('paymentMethod');
         
         $this->crud->modifyColumn('status', [
@@ -130,17 +131,30 @@ class HotspotVoucherCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation([
+        Widget::add()->type('view')->view('crud::forms.hotspot_voucher');
+
+        $this->crud->setValidation([
             'date' => 'required|date',
             'amount' => 'required|numeric|gt:0',
+            'status' => 'required|numeric|in:1,2',
+            'paymentMethod' => ['sometimes', 'required_if:status,1'],
+            'bank_details' => [
+                'sometimes', 
+                'required_if:paymentMethod,4,', 
+                new BankCheckRepeatField(),
+            ],
+        ], [
+            'paymentMethod.required_if' => __('app.vouchers.validation.payment_method'),
         ]);
+        
         CRUD::setFromDb(); 
 
         $this->crud->removeFields([
             'category_id',
             'user_id',
             'payment_method_id',
-            'amount'
+            'amount',
+            'status_id',
         ]);
 
         $this->accountField();
@@ -153,7 +167,6 @@ class HotspotVoucherCrudController extends CrudController
             }), 
         ]);
 
-        $this->crud->field('paymentMethod')->after('date');
         $this->crud->field('category')->after('date');
         $this->crud->field([
             'name' => 'receiver',
@@ -168,6 +181,43 @@ class HotspotVoucherCrudController extends CrudController
             'type' => 'number',
             'attributes' => ["step" => "any"], 
         ]);
+
+        $this->crud->field('status');
+        $this->crud->field('paymentMethod');
+
+        $this->crud->modifyField('status', [
+            'wrapper' => [
+                'class' => 'form-group col-md-6'
+            ]
+        ]);
+        $this->crud->modifyField('paymentMethod', [
+            'wrapper' => [
+                'class' => 'form-group col-md-6'
+            ]
+        ]);
+
+        $this->crud->field([   // repeatable
+            'name'  => 'bank_details',
+            'type'  => 'repeat',
+            'fields' => [ // also works as: "fields"
+                [
+                    'name'    => 'check_issued_date',
+                    'type'    => 'date',
+                    'wrapper' => ['class' => 'form-group col-sm-4'],
+                ],
+                [
+                    'name'    => 'check_number',
+                    'type'    => 'number',
+                    'wrapper' => ['class' => 'form-group col-sm-8'],
+                ],
+                
+            ],
+            'init_rows' => 1,
+            'min_rows' => 1,
+            'max_rows' => 1,
+        ])->after('paymentMethod');
+
+        // dd(request()->all());
     }
 
     /**
