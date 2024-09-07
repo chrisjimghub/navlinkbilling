@@ -3,18 +3,29 @@
 namespace App\Http\Controllers\Admin\Traits;
 
 use App\Models\Otc;
+use App\Models\Status;
 use App\Models\Customer;
 use App\Models\BillingType;
 use App\Models\Subscription;
 use App\Models\AccountStatus;
-use App\Models\BillingGrouping;
 use App\Models\BillingStatus;
-use App\Models\CommunityString;
+use App\Models\PaymentMethod;
 use App\Models\ContractPeriod;
+use App\Models\BillingGrouping;
 use App\Models\PlannedApplication;
 
 trait FetchOptions
 {
+    public function paymentMethodLists()
+    {
+        return PaymentMethod::pluck('name', 'id')->toArray();
+    }
+
+    public function statusLists()
+    {
+        return Status::pluck('name', 'id')->toArray();
+    }
+ 
     public function monthLists()
     {
         return [

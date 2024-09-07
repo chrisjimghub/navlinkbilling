@@ -171,6 +171,8 @@ return [
         'harvestor_required' => 'The harvestor / collector field is required.',
     ],
 
+    'payment_method' => 'Payment Method',
+
     'wifi_harvest' => [
         'total' => 'Net Income',
         'status' => 'Harvest Status',
@@ -199,4 +201,11 @@ return [
         'years_voucher_income' => 'This year\'s voucher income',
     ],
 
+    'vouchers' => [
+        'validation' => [
+            'payment_method' => 'The payment method field is required when status is paid.',
+            'check_issued_date' => 'Check issued date field is required when payment method is bank/check.',
+            'check_number' => 'Check number field is required when payment method is bank/check.',
+        ]
+    ]
 ];
