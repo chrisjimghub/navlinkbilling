@@ -413,14 +413,14 @@ class UsersTableSeeder extends Seeder
             array (
                 'id' => 34,
                 'customer_id' => NULL,
-                'name' => 'Ivy Rose Tompon Losorata',
+                'name' => 'Ivory Rose Tompon Losorata',
                 'email' => 'ivyrose@ivyrose.com',
                 'email_verified_at' => NULL,
                 'password' => '$2y$12$LDsUNhwN5/hjnnAxw.8apuzwnR1Gu23h3sVR4kn3o5Kzs7Qkfu92u',
                 'theme' => NULL,
                 'remember_token' => NULL,
                 'created_at' => '2024-10-22 11:45:25',
-                'updated_at' => '2024-10-22 11:45:25',
+                'updated_at' => '2024-09-07 15:03:01',
             ),
         ));
         
