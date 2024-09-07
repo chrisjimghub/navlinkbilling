@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\FetchOptions;
 use App\Rules\BankCheckRepeatField;
 use Backpack\CRUD\app\Library\Widget;
 use App\Http\Controllers\Admin\Traits\Widgets;
@@ -30,6 +31,7 @@ class HotspotVoucherCrudController extends CrudController
     use Widgets;
     use DateColumnFilterQueries;
     use StatusColumnFilterQueries;
+    use FetchOptions;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -49,6 +51,15 @@ class HotspotVoucherCrudController extends CrudController
     {
         $this->dateColumnFilterField();
         $this->statusColumnFilterField();
+
+        $this->crud->field([
+            'name' => 'paymentMethod',
+            'type' => 'select_from_array',
+            'options' => $this->paymentMethodLists(),
+            'wrapper' => [
+                'class' => 'form-group col-md-2'
+            ]
+        ]);
     }
 
     /**
@@ -62,6 +73,13 @@ class HotspotVoucherCrudController extends CrudController
         $this->filterQueries(function ($query) {
             $this->dateColumnFilterQueries($query);
             $this->statusColumnFilterQueries($query);
+
+            $method = request()->input('paymentMethod');
+
+            if ($method) {
+                $query->where('payment_method_id', $method);
+            }
+
         });
 
         $this->notice();
@@ -90,6 +108,31 @@ class HotspotVoucherCrudController extends CrudController
         $this->currencyFormatColumn('amount');
         $this->crud->column('status');
         $this->crud->column('paymentMethod');
+
+        $this->crud->modifyColumn('paymentMethod', [
+            'type' => 'closure',
+            'function' => function ($entry) {
+                $return = '';
+                if ($entry->paymentMethod) {
+                    $return = $entry->paymentMethod->name;
+                }
+                
+                if ($entry->isPaid() && $entry->payment_method_id == 4) {
+                    $return .= '<br>';
+                    
+                    if ($entry->bank_details) {
+                        foreach ($entry->bank_details[0] as $field => $value) {
+    
+                            $return .= '<strong>'.strHumanreadable($field).'</strong>: '.$value ;
+                            $return .= '<br>';
+                        }
+                    }
+                }
+
+                return $return;
+            },
+            'escaped' => false
+        ]);
         
         $this->crud->modifyColumn('status', [
             'type' => 'closure',
