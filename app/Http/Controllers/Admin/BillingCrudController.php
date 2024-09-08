@@ -89,6 +89,16 @@ class BillingCrudController extends CrudController
                 'class' => 'form-group col-md-2'
             ]
         ]);
+
+        $this->crud->field([
+            'name' => 'paymentMethod',
+            'label' => __('app.payment_method'),
+            'type' => 'select_from_array',
+            'options' => $this->paymentMethodLists(),
+            'wrapper' => [
+                'class' => 'form-group col-md-2'
+            ]
+        ]);
     }
 
     /**

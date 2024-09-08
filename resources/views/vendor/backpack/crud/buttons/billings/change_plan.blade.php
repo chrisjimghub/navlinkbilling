@@ -1,5 +1,5 @@
 <script>
-    if (typeof changePlanModal != 'function') {
+    if (typeof buildOptionGroupHtml != 'function') {
     function buildOptionGroupHtml(data, selectedId) {
         var html;
 

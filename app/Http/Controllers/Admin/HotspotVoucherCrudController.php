@@ -54,6 +54,7 @@ class HotspotVoucherCrudController extends CrudController
 
         $this->crud->field([
             'name' => 'paymentMethod',
+            'label' => __('app.payment_method'),
             'type' => 'select_from_array',
             'options' => $this->paymentMethodLists(),
             'wrapper' => [

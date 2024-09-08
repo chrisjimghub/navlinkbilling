@@ -18,11 +18,16 @@
                     <li>
                         <a 
                             href="javascript:void(0)" 
-                            onclick="pay(this)" 
+                            onclick="payModal(this)" 
                             data-route="{{ url($crud->route.'/'.$entry->getKey().'/pay') }}" 
                             class="btn btn-sm btn-link text-success" 
-                            data-button-type="pay"
-                            title="Marked as paid?"
+                            data-button-type="payModal"
+                            title="Make Payments"
+                            data-billing-id="{{ $entry->getKey() }}"
+                            data-account-details="{{ $entry->account->details }}"
+                            data-route-fetch-options="{{ route('billing.fetchPaymentMethodOption') }}"
+                            data-particulars="{{ json_encode($entry->particulars) }}"
+                            data-total="{{ $entry->total }}"
                             >
                                 <i class="las la-thumbs-up"></i>
                                 {{ __('Pay') }}
