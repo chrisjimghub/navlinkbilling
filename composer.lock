@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6233134ea7a8ec5e29b234c7fe9781a1",
+    "content-hash": "ad7e94e424620702e20ce4df6681a952",
     "packages": [
         {
             "name": "backpack/activity-log",
@@ -9369,6 +9369,77 @@
             "time": "2024-04-12T11:20:37+00:00"
         },
         {
+            "name": "beyondcode/laravel-query-detector",
+            "version": "dev-l11-compatibility",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel-shift/laravel-query-detector.git",
+                "reference": "70d2888d46c94a148451a450bccf1bafbd7b6066"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel-shift/laravel-query-detector/zipball/70d2888d46c94a148451a450bccf1bafbd7b6066",
+                "reference": "70d2888d46c94a148451a450bccf1bafbd7b6066",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^5.5 || ^6.0 || ^7.0 || ^8.0 || ^9.0|^10.0 || ^11.0",
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "laravel/legacy-factories": "^1.0",
+                "orchestra/testbench": "^3.0 || ^4.0 || ^5.0 || ^6.0|^8.0 || ^9.0",
+                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0 || ^10.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "BeyondCode\\QueryDetector\\QueryDetectorServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "BeyondCode\\QueryDetector\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "BeyondCode\\QueryDetector\\Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/phpunit"
+                ],
+                "test-coverage": [
+                    "vendor/bin/phpunit --coverage-html coverage"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marcel Pociot",
+                    "email": "marcel@beyondco.de",
+                    "homepage": "https://beyondcode.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel N+1 Query Detector",
+            "homepage": "https://github.com/beyondcode/laravel-query-detector",
+            "keywords": [
+                "beyondcode",
+                "laravel-query-detector"
+            ],
+            "support": {
+                "source": "https://github.com/laravel-shift/laravel-query-detector/tree/l11-compatibility"
+            },
+            "time": "2024-03-01T22:17:48+00:00"
+        },
+        {
             "name": "brianium/paratest",
             "version": "v7.4.3",
             "source": {
@@ -12449,7 +12520,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "imokhles/signature-field-for-backpack": 20
+        "imokhles/signature-field-for-backpack": 20,
+        "beyondcode/laravel-query-detector": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
