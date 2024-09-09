@@ -83,8 +83,10 @@ trait PayNowOperation
 
         // if ($link) {
         //     debug($link);
-
-        //     $billing->paymongo_reference_number = $link->reference_number;
+        
+        //        $paymentDetails = $billing->payment_details;
+        //        $paymentDetails['paymongo_reference_number'] = $link->reference_number;
+        //       $billing->payment_details = $paymentDetails;
         //     $billing->billing_status_id = 3; // 3 = Pending...
         //     $billing->saveQuietly();
 

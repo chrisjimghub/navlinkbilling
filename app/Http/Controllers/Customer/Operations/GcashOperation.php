@@ -106,7 +106,12 @@ trait GcashOperation
         ]);
 
         if ($gcashSource) {
-            $billing->paymongo_reference_number = $gcashSource->id;
+            // Retrieve the current payment_details array
+            $paymentDetails = $billing->payment_details;
+            // Modify the array by adding the new key-value pair
+            $paymentDetails['paymongo_reference_number'] = $gcashSource->id;
+            // Reassign the modified array back to the payment_details attribute
+            $billing->payment_details = $paymentDetails;
             $billing->markAsPending();
             $billing->saveQuietly();
 
@@ -172,7 +177,7 @@ trait GcashOperation
         $id = $this->crud->getCurrentEntryId() ?? $id;
         
         $billing = Billing::findOrFail($id);
-        $reference = $billing->paymongo_reference_number;
+        $reference = $billing->payment_details['paymongo_reference_number'];
         
         if (Str::startsWith($reference, 'pay_')) {
             alertInfo('The bill is already paid.');
@@ -200,7 +205,9 @@ trait GcashOperation
             try {
                 DB::beginTransaction();
     
-                $billing->paymongo_reference_number = $payment->id;
+                $paymentDetails = $billing->payment_details;
+                $paymentDetails['paymongo_reference_number'] = $payment->id;
+                $billing->payment_details = $paymentDetails;
                 $billing->markAsPaid();
                 $billing->paymentMethodGcash();
                 $billing->saveQuietly();
