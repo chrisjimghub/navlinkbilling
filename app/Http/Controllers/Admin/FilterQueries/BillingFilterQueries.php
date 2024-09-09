@@ -8,7 +8,6 @@ trait BillingFilterQueries
 {
     public function billingFilterQueries($query)
     {
-        
         $status = request()->input('status');
         if ($status) {
             $query->where('billing_status_id', $status);
@@ -36,6 +35,12 @@ trait BillingFilterQueries
                 $query->whereMonth('date_end', $monthYear[1]);
                 $query->whereYear('date_end', $monthYear[0]);
             }
+        }
+
+        $method = request()->input('paymentMethod');
+
+        if ($method) {
+            $query->where('payment_method_id', $method);
         }
 
         return $query;

@@ -262,8 +262,12 @@ class ReportExport extends BaseExport {
                 $date = $billing->date_end;
             }
 
-            if ($billing->paymongo_reference_number != null) {
-                $by = 'Online Payment';
+            if ($billing->payment_details) {
+                $paymentDetails = $billing->payment_details;
+                if (array_key_exists('paymongo_reference_number', $paymentDetails) && $paymentDetails['paymongo_reference_number']) {
+                    $by = 'Online Payment';
+                }
+
             }else {
                 $by = $billing->lastEditedBy->name ?? null;
             }

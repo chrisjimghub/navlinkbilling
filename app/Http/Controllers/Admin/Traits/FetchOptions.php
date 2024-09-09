@@ -18,7 +18,7 @@ trait FetchOptions
 {
     public function paymentMethodLists()
     {
-        return PaymentMethod::pluck('name', 'id')->toArray();
+        return PaymentMethod::where('id', '!=', 2)->pluck('name', 'id')->toArray();
     }
 
     public function statusLists()

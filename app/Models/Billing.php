@@ -44,6 +44,7 @@ class Billing extends Model
         'particulars' => 'array',
         'account_snapshot' => 'array',
         'before_account_snapshot' => 'array',
+        'payment_details' => 'array',
     ];
 
     protected $attributes = [

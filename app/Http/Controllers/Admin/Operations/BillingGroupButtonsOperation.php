@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin\Operations;
 use App\Models\Billing;
 use App\Events\BillProcessed;
 use App\Models\AccountCredit;
+use App\Models\PaymentMethod;
 use Illuminate\Support\Carbon;
 use App\Rules\BillingMustBeUnpaid;
 use Illuminate\Support\Facades\DB;
+use App\Rules\BankCheckRepeatField;
 use App\Rules\UpgradePlanValidDate;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +20,7 @@ use App\Models\AccountServiceInterruption;
 use App\Rules\MustHaveEnoughAccountCredit;
 use LaravelDaily\Invoices\Facades\Invoice;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
+use App\Http\Controllers\Admin\Traits\FetchOptions;
 use App\Http\Controllers\Admin\Traits\AdvancePayment;
 use App\Http\Controllers\Admin\Traits\SendNotifications;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -26,6 +29,7 @@ trait BillingGroupButtonsOperation
 {
     use SendNotifications;
     use AdvancePayment;
+    use FetchOptions;
 
     /**
      * Define which routes are needed for this operation.
@@ -71,6 +75,17 @@ trait BillingGroupButtonsOperation
             'uses'      => $controller.'@downloadInvoice',
             'operation' => 'downloadInvoice',
         ]);
+
+        Route::get($segment.'/fetchPaymentMethodOption', [
+            'as'        => $routeName.'.fetchPaymentMethodOption',
+            'uses'      => $controller.'@fetchPaymentMethodOption',
+            'operation' => 'fetchPaymentMethodOption',
+        ]);
+    }
+
+    public function fetchPaymentMethodOption()
+    {
+        return $this->paymentMethodLists();
     }
 
     /**
@@ -94,7 +109,7 @@ trait BillingGroupButtonsOperation
             Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
         });
 
-        CRUD::operation(['list'], function () {
+        CRUD::operation(['list', 'show'], function () {
             $button = config('backpack.ui.view_namespace') == 'backpack.theme-coreuiv2::' ? 'billing_group_buttons' : 'billing_group_buttons_bs5';
             CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.'.$button, 'beginning');
         });
@@ -321,14 +336,24 @@ trait BillingGroupButtonsOperation
                 'exists:billings,id',
                 new BillingMustBeUnpaid($id),
             ],
-            'payment_method' => [
+            'paymentMethod' => [
                 'required',
                 'in:1,3,4' // cash,gcash,bank/check
-            ]
-            
+            ],
+            'checkIssuedDate' => [
+                'sometimes',
+                'required_if:paymentMethod,4,', 
+            ],
+            'checkNumber' => [
+                'sometimes',
+                'required_if:paymentMethod,4,', 
+            ],
         ], [
             'id.required' => 'Invalid billing item.',
             'id.exists' => 'The selected billing item does not exist.', 
+            'paymentMethod.required_if' => __('app.vouchers.validation.payment_method'),
+            'checkIssuedDate.required_if' => __('app.vouchers.validation.check_issued_date'),
+            'checkNumber.required_if' => __('app.vouchers.validation.check_number'),
         ]);
 
         // Check if validation fails
@@ -342,9 +367,20 @@ trait BillingGroupButtonsOperation
 
         try {
             DB::beginTransaction();
+            $paymentMethod = request()->input('paymentMethod');
 
             $billing = Billing::findOrFail($id); 
-            $billing->payment_method_id = request()->payment_method;
+            $billing->payment_method_id = $paymentMethod;
+
+            if ($paymentMethod == 4) { //bank/check
+                $paymentDetails = $billing->payment_details ?? [];
+                $paymentDetails = [
+                    'check_issued_date' => request()->input('checkIssuedDate'),
+                    'check_number' => request()->input('checkNumber'),
+                ];
+                $billing->payment_details = $paymentDetails;
+            }
+
             $billing->markAsPaid();
             $billing->saveQuietly();  
 

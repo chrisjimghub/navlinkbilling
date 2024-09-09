@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('billings', function (Blueprint $table) {
-            $table->string('paymongo_reference_number')->nullable()->after('cut_off_notified_at'); 
+            $table->json('payment_details')->nullable()->after('payment_method_id');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('billings', function (Blueprint $table) {
-            $table->dropColumn('paymongo_reference_number');
+            $table->dropColumn('payment_details');
         });
     }
 };
