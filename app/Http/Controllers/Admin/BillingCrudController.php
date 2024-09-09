@@ -156,8 +156,31 @@ class BillingCrudController extends CrudController
 
         $this->crud->column([
             'name' => 'paymentMethod',
-            'label' => __('app.billing_payment_method')
+            'label' => __('app.billing_payment_method'),
+            'type' => 'closure',
+            'function' => function ($entry) {
+                $return = '';
+                if ($entry->paymentMethod) {
+                    $return = $entry->paymentMethod->name;
+                }
+                
+                if ($entry->isPaid() && $entry->payment_method_id == 4) {
+                    if ($entry->payment_details) {
+                        $return .= '<br>';
+                        foreach ($entry->payment_details as $field => $value) {
+                            $return .= '<strong>'.strHumanreadable($field).'</strong>: '.$value ;
+                            $return .= '<br>';
+                        }
+                    }
+                }
+
+                return $return;
+            
+            },
+            'escaped' => false
         ]);
+
+
 
         $this->crud->column('created_at');
     }

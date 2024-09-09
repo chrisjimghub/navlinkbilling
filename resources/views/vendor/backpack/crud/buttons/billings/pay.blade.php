@@ -1,7 +1,7 @@
 <script>
 if (typeof paymentMethodsLists !== 'function') {
     function paymentMethodsLists(data) {
-        var html = ''; // Initialize an empty string for the HTML
+        var html =  `<option>-</option>`; // Initialize an empty string for the HTML
 
         // Loop through the object using Object.entries
         Object.entries(data).forEach(([id, label]) => {

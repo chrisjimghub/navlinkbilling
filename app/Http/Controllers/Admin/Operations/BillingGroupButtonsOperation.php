@@ -367,11 +367,19 @@ trait BillingGroupButtonsOperation
 
         try {
             DB::beginTransaction();
+            $paymentMethod = request()->input('paymentMethod');
 
             $billing = Billing::findOrFail($id); 
-            $billing->payment_method_id = request()->input('paymentMethod');
+            $billing->payment_method_id = $paymentMethod;
 
-            // add data to column account_snapshot
+            if ($paymentMethod == 4) { //bank/check
+                $paymentDetails = $billing->payment_details ?? [];
+                $paymentDetails = [
+                    'check_issued_date' => request()->input('checkIssuedDate'),
+                    'check_number' => request()->input('checkNumber'),
+                ];
+                $billing->payment_details = $paymentDetails;
+            }
 
             $billing->markAsPaid();
             $billing->saveQuietly();  
