@@ -37,11 +37,11 @@ class HotspotVoucherFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'status_id' => 1,
             'payment_method_id' => 4, // bank/check
-            'bank_details' => $this->bankDetails()
+            'payment_details' => $this->paymentDetails()
         ]);
     }
 
-    public function bankDetails()
+    public function paymentDetails()
     {
         $data = [];
 

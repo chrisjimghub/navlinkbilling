@@ -122,8 +122,8 @@ class HotspotVoucherCrudController extends CrudController
                 if ($entry->isPaid() && $entry->payment_method_id == 4) {
                     $return .= '<br>';
                     
-                    if ($entry->bank_details) {
-                        foreach ($entry->bank_details[0] as $field => $value) {
+                    if ($entry->payment_details) {
+                        foreach ($entry->payment_details[0] as $field => $value) {
     
                             $return .= '<strong>'.strHumanreadable($field).'</strong>: '.$value ;
                             $return .= '<br>';
@@ -183,7 +183,7 @@ class HotspotVoucherCrudController extends CrudController
             'amount' => 'required|numeric|gt:0',
             'status' => 'required|numeric|in:1,2',
             'paymentMethod' => ['sometimes', 'required_if:status,1'],
-            'bank_details' => [
+            'payment_details' => [
                 'sometimes', 
                 'required_if:paymentMethod,4,', 
                 new BankCheckRepeatField(),
@@ -242,7 +242,7 @@ class HotspotVoucherCrudController extends CrudController
         ]);
 
         $this->crud->field([   // repeatable
-            'name'  => 'bank_details',
+            'name'  => 'payment_details',
             'type'  => 'repeat',
             'fields' => [ // also works as: "fields"
                 [

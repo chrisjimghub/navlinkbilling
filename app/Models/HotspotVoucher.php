@@ -25,7 +25,7 @@ class HotspotVoucher extends Model
     // protected $hidden = [];
 
     protected $casts = [
-        'bank_details' => 'array',
+        'payment_details' => 'array',
     ];
 
     /*
