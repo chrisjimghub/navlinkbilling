@@ -10,9 +10,9 @@
 
     crud.field('paymentMethod').onChange(function(field) {
         if (field.value == 4) {  
-            crud.field('bank_details').show();
+            crud.field('payment_details').show();
         } else {
-            crud.field('bank_details').hide();
+            crud.field('payment_details').hide();
         }   
     }).change();    
 </script>    
