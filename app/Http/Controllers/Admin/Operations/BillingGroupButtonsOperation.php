@@ -109,7 +109,7 @@ trait BillingGroupButtonsOperation
             Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
         });
 
-        CRUD::operation(['list'], function () {
+        CRUD::operation(['list', 'show'], function () {
             $button = config('backpack.ui.view_namespace') == 'backpack.theme-coreuiv2::' ? 'billing_group_buttons' : 'billing_group_buttons_bs5';
             CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.'.$button, 'beginning');
         });

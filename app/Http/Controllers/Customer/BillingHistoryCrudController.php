@@ -72,7 +72,7 @@ class BillingHistoryCrudController extends AdminBillingCrudController
             Widget::add()->type('script')->content('assets/js/admin/swal_helper.js');
         });
 
-        CRUD::operation(['list'], function () {
+        CRUD::operation(['list', 'show'], function () {
             CRUD::addButton('line', 'billingGroupButtons', 'view', 'crud::buttons.customer.download_invoice');
         });
     }
