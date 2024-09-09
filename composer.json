@@ -42,8 +42,7 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",
         "pestphp/pest": "^2.0",
-        "pestphp/pest-plugin-laravel": "^2.0",
-        "beyondcode/laravel-query-detector": "dev-l11-compatibility"
+        "pestphp/pest-plugin-laravel": "^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -97,10 +96,6 @@
         "malek77z/signature-field-for-backpack": {
             "type": "vcs",
             "url": "https://github.com/malek77z/signature-field-for-backpack"
-        },
-        "beyondcode/laravel-query-detector": {
-            "type": "vcs",
-            "url": "https://github.com/laravel-shift/laravel-query-detector"
         }
     }
 }
