@@ -6,11 +6,13 @@ use App\Models\Billing;
 use Illuminate\Support\Str;
 use App\Models\AccountCredit;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Admin\Traits\LastEditedBy;
 use App\Http\Controllers\Admin\Traits\BillingPeriod;
 
 trait AdvancePayment
 {
     use BillingPeriod;
+    use LastEditedBy;
         
     public function advancePayment(Billing $billing)
     {
@@ -79,6 +81,7 @@ trait AdvancePayment
                     $record->payment_method_id = $billing->payment_method_id;
                     $record->markAsPaid();
                     $record->saveQuietly();
+                    $this->lastEditedBy($record);
                 }
             }
         }//end foreach

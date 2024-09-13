@@ -9,6 +9,19 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 trait ExportHelper
 {
+    // Method to rename a sheet
+protected function renameSheet(Worksheet $sheet, $newName): void
+    {
+        $sheet->setTitle($newName);
+    }
+
+
+    // Method to hide a specific column
+    protected function hideColumn(Worksheet $sheet, $columnLetter): void
+    {
+        $sheet->getColumnDimension($columnLetter)->setVisible(false);
+    }
+
     protected function setCellNumberFormat($sheet, $cellCoordinate)
     {
         $sheet->getStyle($cellCoordinate)->applyFromArray([
@@ -36,6 +49,20 @@ trait ExportHelper
             ],
         ]);
     }
+
+    // Method to set cell background color
+    protected function fillCellColor(Worksheet $sheet, $cellRange, $color): void
+    {
+        $sheet->getStyle($cellRange)->applyFromArray([
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => $color,
+                ],
+            ],
+        ]);
+    }
+
 
     protected function setTextLinkFormat(Worksheet $sheet, $cellCoordinate): void
     {

@@ -2,9 +2,11 @@
 
 namespace App\Exports;
 
+use App\Models\Sales;
 use App\Models\Billing;
 use App\Models\Expense;
 use App\Exports\BaseExport;
+use App\Models\HotspotVoucher;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -47,11 +49,9 @@ class ReportExport extends BaseExport {
         return [
             BeforeSheet::class => function(BeforeSheet $event) {
                 $sheet = $event->sheet->getDelegate(); // Get PhpSpreadsheet object
-
                 $this->excelTitle($sheet);
-                
                 $this->setTextBold($sheet, 5);
-
+                $this->renameSheet($sheet, $this->monthYear);
 
                 // Define headers in row 5
                 $headers = [
@@ -91,9 +91,11 @@ class ReportExport extends BaseExport {
     public function salesCollectionsSheet($sheet)
     {
         $spreadsheet = $sheet->getParent();
-        $sheetTitle = 'Collections'.$this->monthYear;
+        $sheetTitle = 'Collections '.$this->monthYear;
         $sheet = new Worksheet($spreadsheet, $sheetTitle);
         $spreadsheet->addSheet($sheet);
+
+        $this->hideColumn($sheet, 'B'); // Hide column B
 
         $this->excelTitle($sheet);
         $this->setTextBold($sheet, 5);
@@ -101,6 +103,7 @@ class ReportExport extends BaseExport {
         // Define headers in row 5
         $headers = [
             __('app.row_num'), 
+            __('Origin'), 
             __('app.date'), 
             __('app.receiver_paidthru'),
             __('app.category'),
@@ -115,12 +118,14 @@ class ReportExport extends BaseExport {
         }
 
         $entries = [];
-        $entries = array_merge($entries, $this->billingCrudEntries());
-        // dd($entries);
-
-        // TODO:: Hotspot Vouchers
-        // TODO:: Wifi Harvest
-        // TODO:: Sales
+        $entries = array_merge($entries, $this->billingCrudEntries()); 
+        $entries = array_merge($entries, $this->hotspotVouchersCrudEntries()); 
+        $entries = array_merge($entries, $this->salesCrudEntries()); 
+        $entries = array_merge($entries, $this->wifiHarvestCrudEntries()); 
+        $entries = collect($entries)->sortBy([
+            ['date', 'asc'],
+            ['category', 'asc']
+        ]);
 
         $row = 6; 
         $num = 1;
@@ -128,6 +133,7 @@ class ReportExport extends BaseExport {
             $col = 'A'; // reset col every row
 
             $sheet->setCellValue($col++ . $row, $num++);
+            $sheet->setCellValue($col++ . $row, $entry['from']);
             $sheet->setCellValue($col++ . $row, $entry['date']);
             $sheet->setCellValue($col++ . $row, $entry['by']);
             $sheet->setCellValue($col++ . $row, $entry['category']);
@@ -135,69 +141,137 @@ class ReportExport extends BaseExport {
             $this->setCellNumberFormat($sheet, $col . $row);
             $sheet->setCellValue($col++ . $row, $entry['amount']);
             
+            if ($entry['by'] == null) {
+                $this->fillCellColor($sheet, 'A'.$row.':'.$col.$row, 'FFFF0000'); // Fill range A1:D1 with red color
+            }
+
             $row++;
         }
-
-        
 
         $this->styles($sheet);
     }
 
-    public function expensesSheet($sheet)
+    private function wifiHarvestCrudEntries()
     {
-        $spreadsheet = $sheet->getParent();
-        $sheet = new Worksheet($spreadsheet, 'Expenses '.$this->monthYear);
-        $spreadsheet->addSheet($sheet);
+        $entries = [];
 
-        $this->excelTitle($sheet);
-        $this->setTextBold($sheet, 5);
+        $month = $this->month;
+        $year = $this->year;
 
-        // Define headers in row 5
-        $headers = [
-            __('app.row_num'), 
-            __('app.date'), 
-            __('app.description'),
-            __('app.receiver'),
-            __('app.category'),
-            __('app.amount'),
-        ];
+        // Initialize the query
+        $query = Billing::with('account')->where('billing_type_id', 3);
 
-        // Write headers to the sheet
-        $col = 'A';
-        foreach ($headers as $header) {
-            $sheet->setCellValue($col . '5', $header);
-            $col++;
+        // Apply month and year filters conditionally
+        if ($month) {
+            $query->whereMonth('date_start', $month);
+        }
+        
+        if ($year) {
+            $query->whereYear('date_start', $year);
         }
 
-        $entries = Expense::whereMonth('date', $this->month)->whereYear('date', $this->year)->orderBy('date', 'asc')->get();
+        // Execute the query
+        $billings = $query->get();
 
-        $row = 6; 
-        $num = 1;
-        foreach ($entries as $entry) {
-            $col = 'A'; // reset col every row
+        foreach ($billings as $billing) {
+            $by = null;
 
-            $sheet->setCellValue($col++ . $row, $num++);
-            $sheet->setCellValue($col++ . $row, $entry->date);
-            $sheet->setCellValue($col++ . $row, $entry->description);
-            $sheet->setCellValue($col++ . $row, $entry->receiver->name);
-            $sheet->setCellValue($col++ . $row, $entry->category->name);
+            if ($billing->payment_details) {
+                $paymentDetails = $billing->payment_details;
+                if (array_key_exists('paymongo_reference_number', $paymentDetails) && $paymentDetails['paymongo_reference_number']) {
+                    $by = 'Online Payment';
+                }
+            }else {
+                $by = $billing->lastEditedBy->name ?? null;
+            }
 
-            $this->setCellNumberFormat($sheet, $col . $row);
-            $sheet->setCellValue($col++ . $row, $entry->amount);
-            
-            $row++;
+            $category = 'Wifi Harvest';
+            $entries[] = [
+                'from' => $category,
+                'date' => $billing->date_start,
+                'by' => $by,
+                'category' => $category,
+                'amount' => $billing->total,
+            ];
+        }//endForeach $billings
+
+        return $entries;
+    }
+
+    private function salesCrudEntries()
+    {
+        $entries = [];
+
+        $month = $this->month;
+        $year = $this->year;
+
+        // Initialize the query
+        $query = Sales::query();
+        
+        if ($month) {
+            $query->whereMonth('date', $month);
         }
 
-        $this->styles($sheet);
+        if ($year) {
+            $query->whereYear('date', $year);
+        }
+
+        // Execute the query
+        $records = $query->get();
+
+        foreach ($records as $record) {
+            $entries[] = [
+                'from' => 'sales',
+                'date' => $record->date,
+                'by' => $record->receiver ? $record->receiver->name : null,
+                'category' => $record->category ? $record->category->name : null,
+                'amount' => $record->amount,
+            ];
+        }//endForeach $records
+
+        return $entries;
+    }
+
+    private function hotspotVouchersCrudEntries()
+    {
+        $entries = [];
+
+        $month = $this->month;
+        $year = $this->year;
+
+        // Initialize the query
+        $query = HotspotVoucher::with('account');
+        
+        if ($month) {
+            $query->whereMonth('date', $month);
+        }
+
+        if ($year) {
+            $query->whereYear('date', $year);
+        }
+
+        // Execute the query
+        $records = $query->get();
+
+        foreach ($records as $record) {
+            $entries[] = [
+                'from' => 'hotspot vouchers',
+                'date' => $record->date,
+                'by' => $record->receiver ? $record->receiver->name : null,
+                'category' => $record->category ? $record->category->name : null,
+                'amount' => $record->amount,
+            ];
+        }//endForeach $records
+
+        return $entries;
     }
 
     private function billingCrudEntries()
     {
         $entries = [];
 
-        // Get the month and year from the request
-        $month = request()->input('month');
-        $year = request()->input('year');
+        $month = $this->month;
+        $year = $this->year;
 
         // Initialize the query
         $query = Billing::with('account')->whereIn('billing_type_id', [1, 2]);
@@ -253,6 +327,8 @@ class ReportExport extends BaseExport {
             $categoryPrefix = null;
             $typeInstallation = false;
 
+            $by = $billing->lastEditedBy->name ?? null;
+
             if ($billing->billing_type_id == 1) {
                 // installation fee
                 $date = $billing->account_snapshot['account']['installed_date'];
@@ -267,9 +343,6 @@ class ReportExport extends BaseExport {
                 if (array_key_exists('paymongo_reference_number', $paymentDetails) && $paymentDetails['paymongo_reference_number']) {
                     $by = 'Online Payment';
                 }
-
-            }else {
-                $by = $billing->lastEditedBy->name ?? null;
             }
 
             if ($billing->account->subscription_id == 1) { // p2p
@@ -314,6 +387,7 @@ class ReportExport extends BaseExport {
             })
             ->map(function ($group, $category) use ($date, $by) {
                 return [
+                    'from' => 'billings',
                     'date' => $date,
                     'by' => $by,
                     'category' => $category,
@@ -325,8 +399,56 @@ class ReportExport extends BaseExport {
             $entries = array_merge($entries, $groupedAndSummed->toArray());
         }//endForeach $billings
 
-        dd($entries);
+        // dd($entries);
 
         return $entries;
+    }
+
+    private function expensesSheet($sheet)
+    {
+        $spreadsheet = $sheet->getParent();
+        $sheet = new Worksheet($spreadsheet, 'Expenses '.$this->monthYear);
+        $spreadsheet->addSheet($sheet);
+
+        $this->excelTitle($sheet);
+        $this->setTextBold($sheet, 5);
+
+        // Define headers in row 5
+        $headers = [
+            __('app.row_num'), 
+            __('app.date'), 
+            __('app.description'),
+            __('app.receiver'),
+            __('app.category'),
+            __('app.amount'),
+        ];
+
+        // Write headers to the sheet
+        $col = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($col . '5', $header);
+            $col++;
+        }
+
+        $entries = Expense::whereMonth('date', $this->month)->whereYear('date', $this->year)->orderBy('date', 'asc')->get();
+
+        $row = 6; 
+        $num = 1;
+        foreach ($entries as $entry) {
+            $col = 'A'; // reset col every row
+
+            $sheet->setCellValue($col++ . $row, $num++);
+            $sheet->setCellValue($col++ . $row, $entry->date);
+            $sheet->setCellValue($col++ . $row, $entry->description);
+            $sheet->setCellValue($col++ . $row, $entry->receiver->name);
+            $sheet->setCellValue($col++ . $row, $entry->category->name);
+
+            $this->setCellNumberFormat($sheet, $col . $row);
+            $sheet->setCellValue($col++ . $row, $entry->amount);
+            
+            $row++;
+        }
+
+        $this->styles($sheet);
     }
 }

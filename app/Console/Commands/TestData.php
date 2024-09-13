@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use App\Models\Sales;
 use App\Models\Account;
 use App\Models\Billing;
@@ -203,6 +204,7 @@ class TestData extends Command
                     DB::beginTransaction();
                     $billing->payment_method_id = PaymentMethod::where('id', '!=', 2)->inRandomOrder()->first()->id;
                     $billing->markAsPaid();
+                    $billing->last_edited_by = User::whereNull('customer_id')->inRandomOrder()->first()->id;
                     $billing->saveQuietly();  
         
                     $this->advancePayment($billing);

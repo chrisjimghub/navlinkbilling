@@ -20,6 +20,7 @@ use App\Models\AccountServiceInterruption;
 use App\Rules\MustHaveEnoughAccountCredit;
 use LaravelDaily\Invoices\Facades\Invoice;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
+use App\Http\Controllers\Admin\Traits\LastEditedBy;
 use App\Http\Controllers\Admin\Traits\FetchOptions;
 use App\Http\Controllers\Admin\Traits\AdvancePayment;
 use App\Http\Controllers\Admin\Traits\SendNotifications;
@@ -30,6 +31,7 @@ trait BillingGroupButtonsOperation
     use SendNotifications;
     use AdvancePayment;
     use FetchOptions;
+    use LastEditedBy;
 
     /**
      * Define which routes are needed for this operation.
@@ -383,8 +385,10 @@ trait BillingGroupButtonsOperation
 
             $billing->markAsPaid();
             $billing->saveQuietly();  
+            $this->lastEditedBy($billing);
 
             $this->advancePayment($billing);
+
 
             DB::commit();
 
