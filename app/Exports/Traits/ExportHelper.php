@@ -9,8 +9,10 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 trait ExportHelper
 {
+    // auto width resize is in base class export
+    
     // Method to rename a sheet
-protected function renameSheet(Worksheet $sheet, $newName): void
+    protected function renameSheet(Worksheet $sheet, $newName): void
     {
         $sheet->setTitle($newName);
     }

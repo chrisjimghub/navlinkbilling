@@ -12,13 +12,16 @@ use Maatwebsite\Excel\Events\BeforeSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ReportExport extends BaseExport {
-    
 
     protected $title = 'Reports';
 
     protected $month;
     protected $year;
     protected $monthYear;
+    protected $expenseTitle;
+    protected $collectionTitle;
+    protected $expenseEntriesTotalCount;
+    protected $collectionEntriesTotalCount;
     
     public function __construct()
     {
@@ -31,13 +34,63 @@ class ReportExport extends BaseExport {
         }
 
         $this->monthYear = "$month $this->year";
+
+        $this->expenseTitle = 'Expenses '.$this->monthYear;
+        $this->collectionTitle = 'Collections '.$this->monthYear;
+
+        $this->expenseEntriesTotalCount = $this->expenseEntries()->count();
+        $this->collectionEntriesTotalCount = $this->collectionEntries()->count();
     }
 
-    protected function entries()
+    public function collectionEntries()
     {
-        return [];
+        $entries = [];
+        $entries = array_merge($entries, $this->billingCrudEntries()); 
+        $entries = array_merge($entries, $this->hotspotVouchersCrudEntries()); 
+        $entries = array_merge($entries, $this->salesCrudEntries()); 
+        $entries = array_merge($entries, $this->wifiHarvestCrudEntries()); 
+        $entries = collect($entries)->sortBy([
+            ['date', 'asc'],
+            ['category', 'asc']
+        ]);
+
+        return $entries;
     }
 
+    public function expenseEntries()
+    {
+        $entries = Expense::query();
+
+        if ($this->month) {
+            $entries->whereMonth('date', $this->month);
+        }
+
+        if ($this->year) {
+            $entries->whereYear('date', $this->year);
+        }
+
+        return $entries->orderBy('date', 'asc')->get();
+    }
+
+    public function collectionCategories()
+    {
+        $uniqueCategories = $this->collectionEntries()->pluck('category')->unique();
+
+        // dd($uniqueCategories);
+
+        return $uniqueCategories;
+    }
+
+    public function expenseCategories()
+    {
+        $uniqueCategories = $this->expenseEntries()->map(function ($expense) {
+            return $expense->category->name;
+        })->unique();
+
+        // dd($uniqueCategories);
+
+        return $uniqueCategories;
+    }
 
     public function startCell(): string
     {
@@ -74,16 +127,44 @@ class ReportExport extends BaseExport {
 
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate(); // Get PhpSpreadsheet object
-                $row = 6; // Start from row 6 for data
-                $col = 'A'; // Starting column
+                
+                $highestRow = 1;
 
-                $num = 1;
-                foreach ($this->entries() as $entry) {
-                    $col = 'A'; // Reset column for each row
+                $row = 6; 
+                $startRow = $row;
+                foreach ($this->expenseCategories() as $category) {
+                    $col = 'B';
+                    $sheet->setCellValue($col.$row, $category);
 
-                    // $sheet->setCellValue($col++ . $row, $num++); 
+                    $sumIf = "=SUMIF('".$this->expenseTitle."'!E".$startRow.":E".($this->expenseEntriesTotalCount + $startRow).",\"=\"&B".$row.",'".$this->expenseTitle."'!F".$startRow.":F".($this->expenseEntriesTotalCount + $startRow).")";
+                    $sheet->setCellValue(++$col.$row, $sumIf);
+                    $this->setCellNumberFormat($sheet, $col . $row);
                     $row++;
                 }
+                
+                if ($row > $highestRow) {
+                    $highestRow = $row;
+                }
+
+                $row = 6; 
+                foreach ($this->collectionCategories() as $category) {
+                    $col = 'D';
+                    $sheet->setCellValue($col.$row, $category);
+                    // TODO:: colelction category sub total is zero
+                    $sumIf = "=SUMIF('".$this->collectionTitle."'!E".$startRow.":E".($this->collectionEntriesTotalCount + $startRow).",\"=\"&B".$row.",'".$this->collectionTitle."'!F".$startRow.":F".($this->collectionEntriesTotalCount + $startRow).")";
+                    $sheet->setCellValue(++$col.$row, $sumIf);
+                    $this->setCellNumberFormat($sheet, $col . $row);
+                    $row++;
+                }
+                
+                if ($row > $highestRow) {
+                    $highestRow = $row;
+                }
+
+
+
+
+                $this->styles($sheet);
             },
         ];
     }
@@ -91,8 +172,7 @@ class ReportExport extends BaseExport {
     public function salesCollectionsSheet($sheet)
     {
         $spreadsheet = $sheet->getParent();
-        $sheetTitle = 'Collections '.$this->monthYear;
-        $sheet = new Worksheet($spreadsheet, $sheetTitle);
+        $sheet = new Worksheet($spreadsheet, $this->collectionTitle);
         $spreadsheet->addSheet($sheet);
 
         $this->hideColumn($sheet, 'B'); // Hide column B
@@ -117,19 +197,9 @@ class ReportExport extends BaseExport {
             $col++;
         }
 
-        $entries = [];
-        $entries = array_merge($entries, $this->billingCrudEntries()); 
-        $entries = array_merge($entries, $this->hotspotVouchersCrudEntries()); 
-        $entries = array_merge($entries, $this->salesCrudEntries()); 
-        $entries = array_merge($entries, $this->wifiHarvestCrudEntries()); 
-        $entries = collect($entries)->sortBy([
-            ['date', 'asc'],
-            ['category', 'asc']
-        ]);
-
         $row = 6; 
         $num = 1;
-        foreach ($entries as $entry) {
+        foreach ($this->collectionEntries() as $entry) {
             $col = 'A'; // reset col every row
 
             $sheet->setCellValue($col++ . $row, $num++);
@@ -407,7 +477,7 @@ class ReportExport extends BaseExport {
     private function expensesSheet($sheet)
     {
         $spreadsheet = $sheet->getParent();
-        $sheet = new Worksheet($spreadsheet, 'Expenses '.$this->monthYear);
+        $sheet = new Worksheet($spreadsheet, $this->expenseTitle);
         $spreadsheet->addSheet($sheet);
 
         $this->excelTitle($sheet);
@@ -430,11 +500,9 @@ class ReportExport extends BaseExport {
             $col++;
         }
 
-        $entries = Expense::whereMonth('date', $this->month)->whereYear('date', $this->year)->orderBy('date', 'asc')->get();
-
         $row = 6; 
         $num = 1;
-        foreach ($entries as $entry) {
+        foreach ($this->expenseEntries() as $entry) {
             $col = 'A'; // reset col every row
 
             $sheet->setCellValue($col++ . $row, $num++);

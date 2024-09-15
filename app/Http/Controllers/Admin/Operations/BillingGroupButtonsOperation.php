@@ -389,7 +389,6 @@ trait BillingGroupButtonsOperation
 
             $this->advancePayment($billing);
 
-
             DB::commit();
 
             return notySuccess('The item has been marked as paid successfully.');
