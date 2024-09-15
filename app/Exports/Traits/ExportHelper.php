@@ -10,13 +10,48 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 trait ExportHelper
 {
     // auto width resize is in base class export
+
+    protected function setTextAlignment(Worksheet $sheet, $cellRange, $alignment): void
+    {
+        // Map alignment strings to PhpSpreadsheet constants
+        $alignmentMap = [
+            'left' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+            'right' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+            'center' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            'justify' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_JUSTIFY,
+        ];
+
+        // Set the alignment if valid, default to left if invalid
+        $sheet->getStyle($cellRange)->getAlignment()->setHorizontal(
+            $alignmentMap[$alignment] ?? \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT
+        );
+    }
+
+    protected function setColumnWidth(Worksheet $sheet, $column, $width): void
+    {
+        // Set the width of the specified column
+        $sheet->getColumnDimension($column)->setWidth($width);
+    }
+
+    protected function setTextSize(Worksheet $sheet, $cellCoordinate, $size): void
+    {
+        $sheet->getStyle($cellCoordinate)->applyFromArray([
+            'font' => [
+                'size' => $size,
+            ],
+        ]);
+    }
     
+    protected function centerText(Worksheet $sheet, $cellCoordinate): void
+    {
+        $sheet->getStyle($cellCoordinate)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+    }
+
     // Method to rename a sheet
     protected function renameSheet(Worksheet $sheet, $newName): void
     {
         $sheet->setTitle($newName);
     }
-
 
     // Method to hide a specific column
     protected function hideColumn(Worksheet $sheet, $columnLetter): void
@@ -53,9 +88,9 @@ trait ExportHelper
     }
 
     // Method to set cell background color
-    protected function fillCellColor(Worksheet $sheet, $cellRange, $color): void
+    protected function fillCellColor(Worksheet $sheet, $cellCoordinate, $color): void
     {
-        $sheet->getStyle($cellRange)->applyFromArray([
+        $sheet->getStyle($cellCoordinate)->applyFromArray([
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                 'startColor' => [
@@ -64,7 +99,6 @@ trait ExportHelper
             ],
         ]);
     }
-
 
     protected function setTextLinkFormat(Worksheet $sheet, $cellCoordinate): void
     {

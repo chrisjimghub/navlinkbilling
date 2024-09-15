@@ -17,7 +17,7 @@ class ReportExport extends BaseExport {
 
     protected $month;
     protected $year;
-    protected $monthYear;
+    protected $monthYear = '';
     protected $expenseTitle;
     protected $collectionTitle;
     protected $expenseEntriesTotalCount;
@@ -32,8 +32,17 @@ class ReportExport extends BaseExport {
         if ($this->month) {
             $month = monthText($this->month);
         }
+        
+        if ($month) {
+            $this->monthYear .= $month;
+        }
 
-        $this->monthYear = "$month $this->year";
+        if ($this->year) {
+            if ($month) {
+                $this->monthYear .= ' ';
+            }
+            $this->monthYear .= $this->year;
+        }
 
         $this->expenseTitle = 'Expenses '.$this->monthYear;
         $this->collectionTitle = 'Collections '.$this->monthYear;
@@ -45,9 +54,10 @@ class ReportExport extends BaseExport {
     public function collectionEntries()
     {
         $entries = [];
+
+        $entries = array_merge($entries, $this->salesCrudEntries()); 
         $entries = array_merge($entries, $this->billingCrudEntries()); 
         $entries = array_merge($entries, $this->hotspotVouchersCrudEntries()); 
-        $entries = array_merge($entries, $this->salesCrudEntries()); 
         $entries = array_merge($entries, $this->wifiHarvestCrudEntries()); 
         $entries = collect($entries)->sortBy([
             ['date', 'asc'],
@@ -74,7 +84,7 @@ class ReportExport extends BaseExport {
 
     public function collectionCategories()
     {
-        $uniqueCategories = $this->collectionEntries()->pluck('category')->unique();
+        $uniqueCategories = $this->collectionEntries()->pluck('category')->unique()->sort();
 
         // dd($uniqueCategories);
 
@@ -85,7 +95,7 @@ class ReportExport extends BaseExport {
     {
         $uniqueCategories = $this->expenseEntries()->map(function ($expense) {
             return $expense->category->name;
-        })->unique();
+        })->unique()->sort();
 
         // dd($uniqueCategories);
 
@@ -100,58 +110,23 @@ class ReportExport extends BaseExport {
     public function registerEvents(): array
     {
         return [
-            BeforeSheet::class => function(BeforeSheet $event) {
-                $sheet = $event->sheet->getDelegate(); // Get PhpSpreadsheet object
-                $this->excelTitle($sheet);
-                $this->setTextBold($sheet, 5);
-                $this->renameSheet($sheet, $this->monthYear);
-
-                // Define headers in row 5
-                $headers = [
-                    __('app.row_num'), 
-                ];
-
-                // Write headers to the sheet
-                $col = 'A';
-                foreach ($headers as $header) {
-                    $sheet->setCellValue($col . '5', $header);
-                    $col++;
-                }
-
-                 // Freeze the first two columns (A and B)
-                //  $sheet->freezePane('C6');
-
-                $this->expensesSheet($sheet);
-                $this->salesCollectionsSheet($sheet);
-            },
-
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate(); // Get PhpSpreadsheet object
-                
+                $this->renameSheet($sheet, 'Summary '.$this->monthYear);
+                $this->expensesSheet($sheet);
+                $this->salesCollectionsSheet($sheet);
+
+                $this->format($sheet);
+                $this->headers($sheet);
+
                 $highestRow = 1;
 
-                $row = 6; 
+                $row = 4; 
                 $startRow = $row;
                 foreach ($this->expenseCategories() as $category) {
-                    $col = 'B';
-                    $sheet->setCellValue($col.$row, $category);
-
-                    $sumIf = "=SUMIF('".$this->expenseTitle."'!E".$startRow.":E".($this->expenseEntriesTotalCount + $startRow).",\"=\"&B".$row.",'".$this->expenseTitle."'!F".$startRow.":F".($this->expenseEntriesTotalCount + $startRow).")";
-                    $sheet->setCellValue(++$col.$row, $sumIf);
-                    $this->setCellNumberFormat($sheet, $col . $row);
-                    $row++;
-                }
-                
-                if ($row > $highestRow) {
-                    $highestRow = $row;
-                }
-
-                $row = 6; 
-                foreach ($this->collectionCategories() as $category) {
                     $col = 'D';
                     $sheet->setCellValue($col.$row, $category);
-                    // TODO:: colelction category sub total is zero
-                    $sumIf = "=SUMIF('".$this->collectionTitle."'!E".$startRow.":E".($this->collectionEntriesTotalCount + $startRow).",\"=\"&B".$row.",'".$this->collectionTitle."'!F".$startRow.":F".($this->collectionEntriesTotalCount + $startRow).")";
+                    $sumIf = "=SUMIF('".$this->expenseTitle."'!E".$startRow.":E".($this->expenseEntriesTotalCount + $startRow).",\"=\"&".$col.$row.",'".$this->expenseTitle."'!F".$startRow.":F".($this->expenseEntriesTotalCount + $startRow).")";
                     $sheet->setCellValue(++$col.$row, $sumIf);
                     $this->setCellNumberFormat($sheet, $col . $row);
                     $row++;
@@ -161,12 +136,79 @@ class ReportExport extends BaseExport {
                     $highestRow = $row;
                 }
 
-
-
-
-                $this->styles($sheet);
+                $row = 4; 
+                foreach ($this->collectionCategories() as $category) {
+                    $col = 'I';
+                    $sheet->setCellValue($col.$row, $category);
+                    $sumIf = "=SUMIF('".$this->collectionTitle."'!E".$startRow.":E".($this->collectionEntriesTotalCount + $startRow).",\"=\"&".$col.$row.",'".$this->collectionTitle."'!F".$startRow.":F".($this->collectionEntriesTotalCount + $startRow).")";
+                    $sheet->setCellValue(++$col.$row, $sumIf);
+                    $this->setCellNumberFormat($sheet, $col . $row);
+                    $row++;
+                }
+                
+                if ($row > $highestRow) {
+                    $highestRow = $row;
+                }
+                
             },
         ];
+    }
+
+    public function format($sheet)
+    {
+        // adjust width
+        foreach ([
+            'B', 'C', 'F', 'G', 'K', 'L'
+        ] as $col) {
+            $this->setColumnWidth($sheet, $col, 2);
+        }
+        $this->setColumnWidth($sheet, 'D', 40);
+        $this->setColumnWidth($sheet, 'I', 40);
+        $this->setColumnWidth($sheet, 'H', 10);
+
+        // merge cells
+        foreach ([
+            'A1:K1',
+            'D2:K2',
+            'D3:E3',
+            'I3:J3',
+        ] as $range) {
+            $sheet->mergeCells($range); 
+            $this->centerText($sheet, $range);
+        }
+        
+        // align
+        $this->setTextAlignment($sheet, 'D', 'right');
+        $this->setTextAlignment($sheet, 'I', 'right');
+        $this->setTextAlignment($sheet, 'D2', 'center');
+
+        // font size
+        // $this->setTextSize($sheet, '3', 24);
+        // $this->setTextSize($sheet, '4', 16);
+        // $this->setTextSize($sheet, 'B5', 14);
+        // $this->setTextSize($sheet, 'D5', 14);
+
+        // bold
+        // $this->setTextBold($sheet, 3);
+        // $this->setTextBold($sheet, 4);
+        // $this->setTextBold($sheet, 5);
+
+        // fill color
+        // $this->fillCellColor($sheet, 'A4', 'FF366092');
+        // $this->fillCellColor($sheet, 'B4', 'FF4f81bc');
+
+        // $this->fillCellColor($sheet, 'A5', 'FF95b3d7');
+        // $this->fillCellColor($sheet, 'B5', 'FFb8cce4');
+        // $this->fillCellColor($sheet, 'D5', 'FFb8cce4');
+    }
+
+    public function headers($sheet)
+    {
+        $sheet->setCellValue('A1', __('NAVLINK TECHNOLOGY STATEMENT OF CASH FLOWS'));
+        $sheet->setCellValue('D2', __('Cash Flows from Operating Activities for ').$this->monthYear);
+        $sheet->setCellValue('A3', __('Total Expenses'));
+        $sheet->setCellValue('D3', __('CASH OUTFLOWS (EXPENSES)'));
+        $sheet->setCellValue('I3', __('CASH INFLOWS (SALES/COLLECTIONS)'));
     }
 
     public function salesCollectionsSheet($sheet)
