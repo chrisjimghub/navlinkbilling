@@ -115,14 +115,12 @@ class ReportExport extends BaseExport {
                 $this->renameSheet($sheet, 'Summary '.$this->monthYear);
                 $this->expensesSheet($sheet);
                 $this->salesCollectionsSheet($sheet);
-
-                $this->format($sheet);
                 $this->headers($sheet);
 
                 $highestRow = 1;
 
                 $row = 4; 
-                $startRow = $row;
+                $startRow = $row + 1;
                 foreach ($this->expenseCategories() as $category) {
                     $col = 'D';
                     $sheet->setCellValue($col.$row, $category);
@@ -150,21 +148,26 @@ class ReportExport extends BaseExport {
                     $highestRow = $row;
                 }
                 
+                $this->excelFormat($sheet, $highestRow);
             },
         ];
     }
 
-    public function format($sheet)
+    public function excelFormat($sheet, $highestRow)
     {
+        $this->setGlobalFontStyle($sheet, 'Century Gothic');
+
         // adjust width
         foreach ([
             'B', 'C', 'F', 'G', 'K', 'L'
         ] as $col) {
             $this->setColumnWidth($sheet, $col, 2);
         }
-        $this->setColumnWidth($sheet, 'D', 40);
-        $this->setColumnWidth($sheet, 'I', 40);
+        $this->setColumnWidth($sheet, 'D', 50);
+        $this->setColumnWidth($sheet, 'I', 50);
         $this->setColumnWidth($sheet, 'H', 10);
+        $this->setColumnWidth($sheet, 'E', 25);
+        $this->setColumnWidth($sheet, 'J', 25);
 
         // merge cells
         foreach ([
@@ -181,25 +184,81 @@ class ReportExport extends BaseExport {
         $this->setTextAlignment($sheet, 'D', 'right');
         $this->setTextAlignment($sheet, 'I', 'right');
         $this->setTextAlignment($sheet, 'D2', 'center');
+        $this->setTextAlignment($sheet, 'D3', 'center');
+        $this->setTextAlignment($sheet, 'I3', 'center');
 
-        // font size
-        // $this->setTextSize($sheet, '3', 24);
-        // $this->setTextSize($sheet, '4', 16);
-        // $this->setTextSize($sheet, 'B5', 14);
-        // $this->setTextSize($sheet, 'D5', 14);
+        // font color
+        $this->setTextColor($sheet, 'A1', 'FF4e80be');
+        $this->setTextColor($sheet, 'D2', 'FFffffff');
+        $this->setTextColor($sheet, '3', 'FF000000');
 
-        // bold
-        // $this->setTextBold($sheet, 3);
-        // $this->setTextBold($sheet, 4);
-        // $this->setTextBold($sheet, 5);
+        $this->setTextColor($sheet, 'E', 'FFf7ffff');
+        $this->setTextColor($sheet, 'E'.$highestRow, 'FFf7ffff');
+        $this->setTextColor($sheet, 'J', 'FF070304');
+        $this->setTextColor($sheet, 'J'.$highestRow, 'FF070304');
+
+        $this->setTextColor($sheet, 'D4:D'.$highestRow, 'FF7c99ba');
+        $this->setTextColor($sheet, 'I4:I'.$highestRow, 'FF7c99ba');
 
         // fill color
-        // $this->fillCellColor($sheet, 'A4', 'FF366092');
-        // $this->fillCellColor($sheet, 'B4', 'FF4f81bc');
+        $this->fillCellColor($sheet, 'A2:B2', 'FF366092');
+        
+        $this->fillCellColor($sheet, 'D2', 'FF4f81bc');
+        
+        $this->fillCellColor($sheet, 'D3:F3', 'FFb8cce4');
+        $this->fillCellColor($sheet, 'I3:K3', 'FFb8cce4');
+        
+        $this->fillCellColor($sheet, 'C2:C'.$highestRow, 'FFdbe4f1');
+        $this->fillCellColor($sheet, 'F4:F'.$highestRow, 'FFdbe4f1');
+        $this->fillCellColor($sheet, 'K4:K'.$highestRow, 'FFdbe4f1');
+        
+        $this->fillCellColor($sheet, 'E4:E'.$highestRow, 'FF95b3d7');
+        $this->fillCellColor($sheet, 'J4:J'.$highestRow, 'FF95b3d7');
 
-        // $this->fillCellColor($sheet, 'A5', 'FF95b3d7');
-        // $this->fillCellColor($sheet, 'B5', 'FFb8cce4');
-        // $this->fillCellColor($sheet, 'D5', 'FFb8cce4');
+        $this->fillCellColor($sheet, 'E'.$highestRow, 'FFdce6f0');
+        $this->fillCellColor($sheet, 'J'.$highestRow, 'FFdce6f0');
+
+        // font size
+        $this->setTextSize($sheet, '1', 20);
+        $this->setTextSize($sheet, '2', 16);
+        $this->setTextSize($sheet, 'D3:I3', 14);
+        $this->setTextSize($sheet, 'A3', 12);
+
+        // bold
+        $this->setTextBold($sheet, 'A1:I3');
+        $this->setTextBold($sheet, 'E');
+        $this->setTextBold($sheet, 'J');
+
+        // view settings
+        $this->disableGridlines($sheet);
+        $this->enablePageBreakView($sheet);
+
+        // Page setup
+        // Set page margins
+        $margins = $sheet->getPageMargins();
+        // Set header and footer margins
+        $margins->setHeader(0.30);
+        $margins->setFooter(0.30);
+        // Set top, left, right, and bottom margins
+        $margins->setTop(0.50);
+        $margins->setLeft(0.00);
+        $margins->setRight(0.00);
+        $margins->setBottom(0.00);
+
+        // Set page orientation to landscape
+        $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+        // Set the worksheet to fit on one page
+        $sheet->getPageSetup()->setFitToWidth(1);
+        $sheet->getPageSetup()->setFitToHeight(1);
+        
+        $this->setPageSize($sheet, 'A4');
+
+        // format cells
+        $this->formatAsAccountingPhp($sheet, 'E'); 
+        $this->formatAsAccountingPhp($sheet, 'J'); 
+
+        $this->setDefaultZoomLevel($sheet, 70); 
     }
 
     public function headers($sheet)
