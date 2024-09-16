@@ -331,6 +331,14 @@ class CategoriesTableSeeder extends Seeder
                 'updated_at' => '2024-09-14 15:31:38',
                 'deleted_at' => NULL,
             ),
+            39 => 
+            array (
+                'id' => 40,
+                'name' => 'VOUCHER SALES',
+                'created_at' => '2024-09-16 15:51:27',
+                'updated_at' => '2024-09-16 15:51:27',
+                'deleted_at' => NULL,
+            ),
         ));
         
         
