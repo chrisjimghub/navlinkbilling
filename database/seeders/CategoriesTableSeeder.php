@@ -307,6 +307,38 @@ class CategoriesTableSeeder extends Seeder
                 'updated_at' => '2024-08-26 08:27:27',
                 'deleted_at' => NULL,
             ),
+            36 => 
+            array (
+                'id' => 37,
+                'name' => 'MACHINE  SALES',
+                'created_at' => '2024-09-14 15:27:47',
+                'updated_at' => '2024-09-14 15:27:47',
+                'deleted_at' => NULL,
+            ),
+            37 => 
+            array (
+                'id' => 38,
+                'name' => 'WATER VENDO',
+                'created_at' => '2024-09-14 15:30:26',
+                'updated_at' => '2024-09-14 15:30:26',
+                'deleted_at' => NULL,
+            ),
+            38 => 
+            array (
+                'id' => 39,
+                'name' => 'PETTY CASH',
+                'created_at' => '2024-09-14 15:31:38',
+                'updated_at' => '2024-09-14 15:31:38',
+                'deleted_at' => NULL,
+            ),
+            39 => 
+            array (
+                'id' => 40,
+                'name' => 'VOUCHER SALES',
+                'created_at' => '2024-09-16 15:51:27',
+                'updated_at' => '2024-09-16 15:51:27',
+                'deleted_at' => NULL,
+            ),
         ));
         
         
