@@ -124,12 +124,19 @@ class ReportExport extends BaseExport {
                 foreach ($this->expenseCategories() as $category) {
                     $col = 'D';
                     $sheet->setCellValue($col.$row, $category);
-                    $sumIf = "=SUMIF('".$this->expenseTitle."'!E".$startRow.":E".($this->expenseEntriesTotalCount + $startRow).",\"=\"&".$col.$row.",'".$this->expenseTitle."'!F".$startRow.":F".($this->expenseEntriesTotalCount + $startRow).")";
+                    // $sumIf = "=SUMIF('".$this->expenseTitle."'!E".$startRow.":E".($this->expenseEntriesTotalCount + $startRow).",\"=\"&".$col.$row.",'".$this->expenseTitle."'!F".$startRow.":F".($this->expenseEntriesTotalCount + $startRow).")";
+                    $sumIf = $this->flowsSumIfFormula(
+                        $this->expenseTitle, 
+                        $startRow, 
+                        ($this->expenseEntriesTotalCount + $startRow), 
+                        $col.$row
+                    );
                     $sheet->setCellValue(++$col.$row, $sumIf);
-                    $this->setCellNumberFormat($sheet, $col . $row);
                     $row++;
                 }
                 
+                $expenseLastRow = $row;
+
                 if ($row > $highestRow) {
                     $highestRow = $row;
                 }
@@ -138,36 +145,101 @@ class ReportExport extends BaseExport {
                 foreach ($this->collectionCategories() as $category) {
                     $col = 'I';
                     $sheet->setCellValue($col.$row, $category);
-                    $sumIf = "=SUMIF('".$this->collectionTitle."'!E".$startRow.":E".($this->collectionEntriesTotalCount + $startRow).",\"=\"&".$col.$row.",'".$this->collectionTitle."'!F".$startRow.":F".($this->collectionEntriesTotalCount + $startRow).")";
+                    // $sumIf = "=SUMIF('".$this->collectionTitle."'!E".$startRow.":E".($this->collectionEntriesTotalCount + $startRow).",\"=\"&".$col.$row.",'".$this->collectionTitle."'!F".$startRow.":F".($this->collectionEntriesTotalCount + $startRow).")";
+                    $sumIf = $this->flowsSumIfFormula(
+                        $this->collectionTitle, 
+                        $startRow, 
+                        ($this->collectionEntriesTotalCount + $startRow), 
+                        $col.$row
+                    );
                     $sheet->setCellValue(++$col.$row, $sumIf);
-                    $this->setCellNumberFormat($sheet, $col . $row);
                     $row++;
                 }
                 
+                $collectionLastRow = $row;
+
                 if ($row > $highestRow) {
                     $highestRow = $row;
                 }
+
+                while ($expenseLastRow < $highestRow) {
+                    $col = 'D';
+                    $row = $expenseLastRow;
+                    $sumIf = $this->flowsSumIfFormula(
+                        $this->expenseTitle, 
+                        $startRow, 
+                        ($this->expenseEntriesTotalCount + $startRow), 
+                        $col.$row
+                    );
+                    $sheet->setCellValue(++$col.$row, $sumIf);
+                    
+                    $expenseLastRow++;
+                }
+
+                while ($collectionLastRow < $highestRow) {
+                    $col = 'D';
+                    $row = $collectionLastRow;
+                    $sumIf = $this->flowsSumIfFormula(
+                        $this->collectionTitle, 
+                        $startRow, 
+                        ($this->collectionEntriesTotalCount + $startRow), 
+                        $col.$row
+                    );
+                    $sheet->setCellValue(++$col.$row, $sumIf);
+                    
+                    $collectionLastRow++;
+                }
+
+                $sheet->setCellValue('D'.$highestRow, 'Total');
+                $sheet->setCellValue('I'.$highestRow, 'Total');
                 
-                $this->excelFormat($sheet, $highestRow);
+                $sheet->setCellValue('E'.$highestRow, '=SUM(E4:E'.($highestRow - 1).')');
+                $sheet->setCellValue('J'.$highestRow, '=SUM(J4:J'.($highestRow - 1).')');
+
+                // col A
+                $sheet->setCellValue('A4', '=E'.$highestRow);
+                $sheet->setCellValue('A6', '=J'.$highestRow);
+
+                $totalCashRow = ($highestRow - 6) / 2;
+                $totalCashRow = (int) $totalCashRow;
+
+                $sheet->setCellValue('A'.$totalCashRow, '=A6-A4');
+
+                $this->excelFormat($sheet, $highestRow, $totalCashRow);
             },
         ];
     }
 
-    public function excelFormat($sheet, $highestRow)
+    public function flowsSumIfFormula($sheetTitle, $startRow, $endRow, $criteriaCoordinate)
     {
+        return "=SUMIF('".$sheetTitle."'!E".$startRow.":E".$endRow.",\"=\"&".$criteriaCoordinate.",'".$sheetTitle."'!F".$startRow.":F".$endRow.")";
+    }
+
+    public function excelFormat($sheet, $highestRow, $totalCashRow)
+    {
+        $sheet->getColumnDimension('A')->setAutoSize(false); //override the auto set width in BaseExport class style method
+
         $this->setGlobalFontStyle($sheet, 'Century Gothic');
 
         // adjust width
-        foreach ([
-            'B', 'C', 'F', 'G', 'K', 'L'
-        ] as $col) {
-            $this->setColumnWidth($sheet, $col, 2);
+        $this->setColumnWidth($sheet, 'A', 39.07);
+        $this->setColumnWidth($sheet, 'B', 1.36);
+        $this->setColumnWidth($sheet, 'C', 1.36);
+        $this->setColumnWidth($sheet, 'D', 50.22);
+        $this->setColumnWidth($sheet, 'E', 19.94);
+        $this->setColumnWidth($sheet, 'F', 2.36);
+        $this->setColumnWidth($sheet, 'G', 2.22);
+        $this->setColumnWidth($sheet, 'H', 15.22);
+        $this->setColumnWidth($sheet, 'I', 36.8);
+        $this->setColumnWidth($sheet, 'J', 24.51);
+        $this->setColumnWidth($sheet, 'K', 2.36);
+        $this->setColumnWidth($sheet, 'L', 1.8);
+
+        // row height
+        $this->setRowHeight($sheet, 1, 42); 
+        for ($i = 2; $i <= $highestRow; $i++) {
+            $this->setRowHeight($sheet, $i, 22.5); 
         }
-        $this->setColumnWidth($sheet, 'D', 50);
-        $this->setColumnWidth($sheet, 'I', 50);
-        $this->setColumnWidth($sheet, 'H', 10);
-        $this->setColumnWidth($sheet, 'E', 25);
-        $this->setColumnWidth($sheet, 'J', 25);
 
         // merge cells
         foreach ([
@@ -180,12 +252,19 @@ class ReportExport extends BaseExport {
             $this->centerText($sheet, $range);
         }
         
+        // numeric col
+        $this->formatAsAccountingPhp($sheet, 'A2:A'.$highestRow, '"₱"#,##0.00'); 
+        $this->formatAsAccountingPhp($sheet, 'E'); 
+        $this->formatAsAccountingPhp($sheet, 'J');
+
         // align
         $this->setTextAlignment($sheet, 'D', 'right');
         $this->setTextAlignment($sheet, 'I', 'right');
         $this->setTextAlignment($sheet, 'D2', 'center');
-        $this->setTextAlignment($sheet, 'D3', 'center');
-        $this->setTextAlignment($sheet, 'I3', 'center');
+        $this->setTextAlignment($sheet, '3', 'center');
+        $this->setTextAlignment($sheet, 'E', 'center');
+        $this->setTextAlignment($sheet, 'J', 'center');
+        $this->setTextAlignment($sheet, 'A', 'center');
 
         // font color
         $this->setTextColor($sheet, 'A1', 'FF4e80be');
@@ -199,6 +278,8 @@ class ReportExport extends BaseExport {
 
         $this->setTextColor($sheet, 'D4:D'.$highestRow, 'FF7c99ba');
         $this->setTextColor($sheet, 'I4:I'.$highestRow, 'FF7c99ba');
+
+        $this->setTextColor($sheet, $highestRow, 'FF000000');
 
         // fill color
         $this->fillCellColor($sheet, 'A2:B2', 'FF366092');
@@ -218,16 +299,33 @@ class ReportExport extends BaseExport {
         $this->fillCellColor($sheet, 'E'.$highestRow, 'FFdce6f0');
         $this->fillCellColor($sheet, 'J'.$highestRow, 'FFdce6f0');
 
+        $this->fillCellColor($sheet, 'B3:B'.$highestRow, 'FF95b3d7');
+        $this->fillCellColor($sheet, 'A3', 'FF95b3d7');
+        $this->fillCellColor($sheet, 'A5', 'FF95b3d7');
+        $this->fillCellColor($sheet, 'A7', 'FF95b3d7');
+        $this->fillCellColor($sheet, 'A'.$highestRow, 'FF95b3d7');
+
         // font size
-        $this->setTextSize($sheet, '1', 20);
+        $this->setTextSize($sheet, 'A', 12);
+        $this->setTextSize($sheet, '1', 24);
         $this->setTextSize($sheet, '2', 16);
         $this->setTextSize($sheet, 'D3:I3', 14);
         $this->setTextSize($sheet, 'A3', 12);
+        $this->setTextSize($sheet, 'D'.$highestRow, 12);
+        $this->setTextSize($sheet, 'I'.$highestRow, 12);
+        $this->setTextSize($sheet, 'E'.$highestRow, 14);
+        $this->setTextSize($sheet, 'J'.$highestRow, 14);
+        $this->setTextSize($sheet, 'A'.$totalCashRow, 18);
 
         // bold
-        $this->setTextBold($sheet, 'A1:I3');
+        $this->setTextBold($sheet, '1');
+        $this->setTextBold($sheet, '2');
+        $this->setTextBold($sheet, '3');
+        $this->setTextBold($sheet, 'A');
         $this->setTextBold($sheet, 'E');
         $this->setTextBold($sheet, 'J');
+        $this->setTextBold($sheet, 'D'.$highestRow);
+        $this->setTextBold($sheet, 'I'.$highestRow);
 
         // view settings
         $this->disableGridlines($sheet);
@@ -252,12 +350,9 @@ class ReportExport extends BaseExport {
         $sheet->getPageSetup()->setFitToWidth(1);
         $sheet->getPageSetup()->setFitToHeight(1);
         
-        $this->setPageSize($sheet, 'A4');
+        $this->setPageSize($sheet, 'A4'); 
 
-        // format cells
-        $this->formatAsAccountingPhp($sheet, 'E'); 
-        $this->formatAsAccountingPhp($sheet, 'J'); 
-
+        // misc.
         $this->setDefaultZoomLevel($sheet, 70); 
     }
 
@@ -265,9 +360,11 @@ class ReportExport extends BaseExport {
     {
         $sheet->setCellValue('A1', __('NAVLINK TECHNOLOGY STATEMENT OF CASH FLOWS'));
         $sheet->setCellValue('D2', __('Cash Flows from Operating Activities for ').$this->monthYear);
-        $sheet->setCellValue('A3', __('Total Expenses'));
         $sheet->setCellValue('D3', __('CASH OUTFLOWS (EXPENSES)'));
         $sheet->setCellValue('I3', __('CASH INFLOWS (SALES/COLLECTIONS)'));
+        $sheet->setCellValue('A3', __('Total Expenses'));
+        $sheet->setCellValue('A5', __('SALES/COLLECTIONS'));
+        $sheet->setCellValue('A7', __('Cash at the end of the Period'));
     }
 
     public function salesCollectionsSheet($sheet)

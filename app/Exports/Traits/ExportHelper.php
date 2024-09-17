@@ -11,6 +11,19 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 trait ExportHelper
 {
     // auto width resize is in base class export
+    protected function setGlobalRowHeight(Worksheet $sheet, $height): void
+    {
+        // Set global default row height for the entire sheet
+        $sheet->getDefaultRowDimension()->setRowHeight($height);
+    }
+
+    protected function setRowHeight(Worksheet $sheet, $row, $height): void
+    {
+        // Set row height for specific rows
+        $sheet->getRowDimension($row)->setRowHeight($height);
+    }
+
+
     protected function setDefaultZoomLevel(Worksheet $sheet, int $zoomLevel): void
     {
         // Ensure zoom level is between 10 and 400
@@ -23,11 +36,12 @@ trait ExportHelper
         $sheetView->setZoomScale($zoomLevel);
     }
 
-    protected function formatAsAccountingPhp(Worksheet $sheet, string $cellCoordinate): void
+    protected function formatAsAccountingPhp(Worksheet $sheet, string $cellCoordinate, $formatCode = '_-"₱"* #,##0.00_-;[Red]_- "₱"* #,##0.00_-;_- "₱"* "-"??_-;_-@_-'): void
     {
         $sheet->getStyle($cellCoordinate)->applyFromArray([
             'numberFormat' => [
-                'formatCode' => '_-"₱"* #,##0.00_-;[Red]_- "₱"* #,##0.00_-;_- "₱"* "-"??_-;_-@_-'
+                'formatCode' => $formatCode
+                // 'formatCode' => '"₱"#,##0.00'
             ],
         ]);
     }
@@ -81,21 +95,34 @@ trait ExportHelper
         ]);
     }
 
-    protected function setTextAlignment(Worksheet $sheet, $cellRange, $alignment): void
+    protected function setTextAlignment(Worksheet $sheet, $cellRange, $horizontalAlignment, $verticalAlignment = 'middle'): void
     {
-        // Map alignment strings to PhpSpreadsheet constants
-        $alignmentMap = [
+        // Map horizontal alignment strings to PhpSpreadsheet constants
+        $horizontalAlignmentMap = [
             'left' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
             'right' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
             'center' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
             'justify' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_JUSTIFY,
         ];
 
-        // Set the alignment if valid, default to left if invalid
+        // Map vertical alignment strings to PhpSpreadsheet constants
+        $verticalAlignmentMap = [
+            'top' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
+            'middle' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            'bottom' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_BOTTOM,
+        ];
+
+        // Set horizontal alignment if valid, default to left if invalid
         $sheet->getStyle($cellRange)->getAlignment()->setHorizontal(
-            $alignmentMap[$alignment] ?? \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT
+            $horizontalAlignmentMap[$horizontalAlignment] ?? \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT
+        );
+
+        // Set vertical alignment if valid, default to middle if invalid
+        $sheet->getStyle($cellRange)->getAlignment()->setVertical(
+            $verticalAlignmentMap[$verticalAlignment] ?? \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
         );
     }
+
 
     protected function setColumnWidth(Worksheet $sheet, $column, $width): void
     {
