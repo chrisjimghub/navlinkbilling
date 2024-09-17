@@ -200,12 +200,12 @@ class ReportExport extends BaseExport {
                 $sheet->setCellValue('A4', '=E'.$highestRow);
                 $sheet->setCellValue('A6', '=J'.$highestRow);
 
-                $totalCashRow = ($highestRow - 6) / 2;
+                $totalCashRow = ($highestRow - 7) / 2;
+                $totalCashRow += 7;
                 $totalCashRow = (int) $totalCashRow;
-
                 $sheet->setCellValue('A'.$totalCashRow, '=A6-A4');
 
-                $this->excelFormat($sheet, $highestRow, $totalCashRow);
+                $this->excelFormat($sheet, $highestRow);
             },
         ];
     }
@@ -215,7 +215,7 @@ class ReportExport extends BaseExport {
         return "=SUMIF('".$sheetTitle."'!E".$startRow.":E".$endRow.",\"=\"&".$criteriaCoordinate.",'".$sheetTitle."'!F".$startRow.":F".$endRow.")";
     }
 
-    public function excelFormat($sheet, $highestRow, $totalCashRow)
+    public function excelFormat($sheet, $highestRow)
     {
         $sheet->getColumnDimension('A')->setAutoSize(false); //override the auto set width in BaseExport class style method
 
@@ -315,7 +315,7 @@ class ReportExport extends BaseExport {
         $this->setTextSize($sheet, 'I'.$highestRow, 12);
         $this->setTextSize($sheet, 'E'.$highestRow, 14);
         $this->setTextSize($sheet, 'J'.$highestRow, 14);
-        $this->setTextSize($sheet, 'A'.$totalCashRow, 18);
+        $this->setTextSize($sheet, 'A8:A'.$highestRow, 18);
 
         // bold
         $this->setTextBold($sheet, '1');
