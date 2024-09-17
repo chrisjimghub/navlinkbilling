@@ -61,12 +61,21 @@ class BillingCrudController extends CrudController
      */
     public function setupFilterOperation()
     {
+        // $this->crud->field([
+        //     'name' => 'period',
+        //     'label' => __('Billing Period'),
+        //     'type' => 'date_range',
+        //     'wrapper' => [
+        //         'class' => 'form-group col-md-3'
+        //     ]
+        // ]);
+        
         $this->crud->field([
-            'name' => 'period',
-            'label' => __('Billing Period'),
-            'type' => 'date_range',
+            'name' => 'my',
+            'label' => __('Month Year'),
+            'type' => 'month',
             'wrapper' => [
-                'class' => 'form-group col-md-3'
+                'class' => 'form-group col-md-2'
             ]
         ]);
 
