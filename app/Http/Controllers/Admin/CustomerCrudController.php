@@ -35,7 +35,7 @@ class CustomerCrudController extends CrudController
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
-     * 
+     *
      * @return void
      */
     public function setup()
@@ -49,7 +49,7 @@ class CustomerCrudController extends CrudController
 
     /**
      * Define what happens when the List operation is loaded.
-     * 
+     *
      * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
      * @return void
      */
@@ -59,18 +59,20 @@ class CustomerCrudController extends CrudController
         $this->crud->orderBy('first_name');
 
         CRUD::setFromDb(); // set columns from db columns.
-        
+
         $this->crud->modifyColumn('photo', [
-            'type'   => 'image',
+            'type' => 'image',
             'height' => '50px',
-            'width'  => '40px',
+            'width' => '40px',
             'orderable' => false,
+            'prefix' => 'storage/',
         ]);
 
         $this->crud->modifyColumn('signature', [
             'type' => 'image',
             'height' => '150px',
-            'width'  => '150px',
+            'width' => '150px',
+            'prefix' => 'storage/',
         ]);
 
         $this->crud->removeColumn('facebook_messenger_id');
@@ -84,7 +86,7 @@ class CustomerCrudController extends CrudController
 
     /**
      * Define what happens when the Create operation is loaded.
-     * 
+     *
      * @see https://backpackforlaravel.com/docs/crud-operation-create
      * @return void
      */
@@ -98,7 +100,7 @@ class CustomerCrudController extends CrudController
             'photo' => 'image|mimes:jpeg,png,jpg|max:2048',
             'email' => $this->nullableUniqueEmail()
         ]);
-        
+
         CRUD::setFromDb(); // set fields from db columns.
 
         $this->crud->modifyField('photo', [
@@ -114,14 +116,14 @@ class CustomerCrudController extends CrudController
             'view_namespace' => 'signature-field-for-backpack::fields',
         ]);
 
-        $this->crud->modifyField('date_of_birth', ['type' => 'date']);      
-        
+        $this->crud->modifyField('date_of_birth', ['type' => 'date']);
+
         $this->crud->removeField('facebook_messenger_id');
     }
 
     /**
      * Define what happens when the Update operation is loaded.
-     * 
+     *
      * @see https://backpackforlaravel.com/docs/crud-operation-update
      * @return void
      */
@@ -145,9 +147,15 @@ class CustomerCrudController extends CrudController
         $this->crud->hasAccessOrFail('import');
 
         $fileName = 'Customer Upload Template.xlsx';
-        
+
         $excludeColumns = [
-            'id', 'photo', 'facebook_messenger_id', 'signature', 'created_at', 'updated_at', 'deleted_at',
+            'id',
+            'photo',
+            'facebook_messenger_id',
+            'signature',
+            'created_at',
+            'updated_at',
+            'deleted_at',
         ];
 
         $headers = $this->getColumns('customers', $excludeColumns);
