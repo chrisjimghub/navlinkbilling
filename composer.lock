@@ -211,16 +211,16 @@
         },
         {
             "name": "backpack/crud",
-            "version": "6.7.34",
+            "version": "6.7.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Backpack/CRUD.git",
-                "reference": "1eaebf78da7f1a4f3af6e96abcf2fb069adc9995"
+                "reference": "f76027e8fd1e74315076ab32f5896b4e9110638f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Backpack/CRUD/zipball/1eaebf78da7f1a4f3af6e96abcf2fb069adc9995",
-                "reference": "1eaebf78da7f1a4f3af6e96abcf2fb069adc9995",
+                "url": "https://api.github.com/repos/Laravel-Backpack/CRUD/zipball/f76027e8fd1e74315076ab32f5896b4e9110638f",
+                "reference": "f76027e8fd1e74315076ab32f5896b4e9110638f",
                 "shasum": ""
             },
             "require": {
@@ -299,9 +299,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Backpack/CRUD/issues",
-                "source": "https://github.com/Laravel-Backpack/CRUD/tree/6.7.34"
+                "source": "https://github.com/Laravel-Backpack/CRUD/tree/6.7.37"
             },
-            "time": "2024-09-02T13:49:24+00:00"
+            "time": "2024-09-18T14:34:03+00:00"
         },
         {
             "name": "backpack/filemanager",
@@ -9886,16 +9886,16 @@
         },
         {
             "name": "maximebf/debugbar",
-            "version": "v1.22.5",
+            "version": "v1.22.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/maximebf/php-debugbar.git",
-                "reference": "1b5cabe0ce013134cf595bfa427bbf2f6abcd989"
+                "reference": "d7881b498f9e649610bf6ae91cdd6353859f75d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/1b5cabe0ce013134cf595bfa427bbf2f6abcd989",
-                "reference": "1b5cabe0ce013134cf595bfa427bbf2f6abcd989",
+                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/d7881b498f9e649610bf6ae91cdd6353859f75d2",
+                "reference": "d7881b498f9e649610bf6ae91cdd6353859f75d2",
                 "shasum": ""
             },
             "require": {
@@ -9948,9 +9948,9 @@
             ],
             "support": {
                 "issues": "https://github.com/maximebf/php-debugbar/issues",
-                "source": "https://github.com/maximebf/php-debugbar/tree/v1.22.5"
+                "source": "https://github.com/maximebf/php-debugbar/tree/v1.22.6"
             },
-            "time": "2024-09-09T08:05:55+00:00"
+            "time": "2024-09-16T11:47:59+00:00"
         },
         {
             "name": "mockery/mockery",
