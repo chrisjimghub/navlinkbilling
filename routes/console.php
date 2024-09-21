@@ -11,11 +11,9 @@ if (config('app.env') != 'production') {
     Schedule::command('auto:generate-bill')->everyThreeHours()->withoutOverlapping();
     Schedule::command('auto:send-notification')->everyThreeHours()->withoutOverlapping();
     Schedule::command('auto:send-cut-off-notification')->everyThreeHours()->withoutOverlapping();
-    Schedule::command('auto:collector-notification')->everyThreeHours()->withoutOverlapping();  // TODO::
+    Schedule::command('auto:collector-notification')->everyThreeHours()->withoutOverlapping();
 }
 
-Schedule::call(function (Schedule $schedule) {
-    $schedule->command('backup:clean')->daily()->at('23:30'); // 11:30 PM
-    $schedule->command('backup:run')->daily()->at('00:00');   // 12 Midnight
-})->daily();
-
+// Schedule backup commands
+Schedule::command('backup:clean')->daily()->at('23:30'); // 11:30 PM
+Schedule::command('backup:run')->daily()->at('00:00');   // 12 Midnight
