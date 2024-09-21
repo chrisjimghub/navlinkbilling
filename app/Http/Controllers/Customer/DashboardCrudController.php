@@ -20,7 +20,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
 class DashboardCrudController extends CrudController
-{   
+{
     use CustomerPermissions;
     use GcashOperation;
     use BillingPeriod;
@@ -33,16 +33,20 @@ class DashboardCrudController extends CrudController
             'gcash',
             'dashboard'
         ]);
+
+        if (!config('app-settings.gcash_pay_enabled')) {
+            $this->crud->denyAccess('gcash');
+        }
     }
 
     protected function setupDashboardRoutes($segment, $routeName, $controller)
     {
         Route::get($segment, [
-            'as'        => $routeName.'.dashboard',
-            'uses'      => $controller.'@dashboard',
+            'as' => $routeName . '.dashboard',
+            'uses' => $controller . '@dashboard',
             'operation' => 'dashboard',
         ]);
-    }    
+    }
 
     public function dashboard()
     {
@@ -51,10 +55,10 @@ class DashboardCrudController extends CrudController
         $this->data['title'] = trans('backpack::base.dashboard'); // set the page title
 
         $unpaidBills = Billing::monthly()
-                        ->notPaid() // this scope is different from unPaid check model 
-                        ->get();
-                        
-        foreach ($unpaidBills as $billing)  {
+            ->notPaid() // this scope is different from unPaid check model
+            ->get();
+
+        foreach ($unpaidBills as $billing) {
             $this->currentBillCard($billing);
         }
 
@@ -64,7 +68,7 @@ class DashboardCrudController extends CrudController
                 $query->unpaid();
             })
             ->get();
-        
+
         foreach ($accounts as $account) {
             $this->noCurrentBillCard($account);
         }
@@ -82,37 +86,42 @@ class DashboardCrudController extends CrudController
         $fee = currencyFormat($fee);
 
         $progressClass = 'bg-info';
-        $button = '<a href="'.route('dashboard.gcashPay', $billing->id).'" class="btn btn-default" style="background-color: #007bff; color: #ffffff;">'.__('app.gcash_button_pay').'</a>';
+        $button = '<a href="' . route('dashboard.gcashPay', $billing->id) . '" class="btn btn-default" style="background-color: #007bff; color: #ffffff;">' . __('app.gcash_button_pay') . '</a>';
 
         if ($billing->isPending()) {
-            $button = '<a href="'.route('dashboard.gcashPay', $billing->id).'" class="btn btn-outline btn-warning" style="">'.__('app.gcash_button_pending').'</a>';
+            $button = '<a href="' . route('dashboard.gcashPay', $billing->id) . '" class="btn btn-outline btn-warning" style="">' . __('app.gcash_button_pending') . '</a>';
             $progressClass = 'bg-warning';
         }
 
+        $gcashPayNote = 'Using Gcash Pay has ' . $fee . ' service fee.';
+        if (!$this->crud->hasAccess('gcash')) {
+            $button = null;
+            $gcashPayNote = null;
+        }
+
         $this->data['contents'][] = Widget::make([
-            'type'          => 'progress_white',
-            'class'         => 'card mb-2',
-            'value'         => '
+            'type' => 'progress_white',
+            'class' => 'card mb-2',
+            'value' => '
                 <div class="row">
-                    <div class="col">'.currencyFormat($billing->total).'</div>
+                    <div class="col">' . currencyFormat($billing->total) . '</div>
                     <div class="col">
-                        '.$button.'
+                        ' . $button . '
                     </div>
-                </div> 
+                </div>
             ',
-            // 'description'   => 'Using Gcash Pay has '.$fee.' service fee.',
-            'description'   => '
+            'description' => '
                                 <span class="text-danger">
-                                    Using Gcash Pay has '.$fee.' service fee.
+                                    ' . $gcashPayNote . '
                                 </span>
-                                <hr class="mb-2 mt-1">'.$billing->account->details,
-            'progress'      => 100,
-            'progressClass' => 'progress-bar '.$progressClass,
-            'hint'          => '
+                                <hr class="mb-2 mt-1">' . $billing->account->details,
+            'progress' => 100,
+            'progressClass' => 'progress-bar ' . $progressClass,
+            'hint' => '
                 <div class="" style="text-transform: none;">
-                    Bill generation: '.$billing->created_at->format('D, M j, Y').' <br>
-                    Cut-off date: '.Carbon::parse($billing->date_cut_off)->format('D, M j, Y').' <br>
-                    Bill period: '.$billing->period.' <br>
+                    Bill generation: ' . $billing->created_at->format('D, M j, Y') . ' <br>
+                    Cut-off date: ' . Carbon::parse($billing->date_cut_off)->format('D, M j, Y') . ' <br>
+                    Bill period: ' . $billing->period . ' <br>
                 </div>
             ',
         ]);
@@ -144,28 +153,28 @@ class DashboardCrudController extends CrudController
         }
 
         $cutOff = Carbon::parse($period['date_cut_off'])->format('D, M j, Y');
-        $billPeriod= Carbon::parse($period['date_start'])->format(dateHumanReadable()) . ' - '.
-                    Carbon::parse($period['date_end'])->format(dateHumanReadable());
+        $billPeriod = Carbon::parse($period['date_start'])->format(dateHumanReadable()) . ' - ' .
+            Carbon::parse($period['date_end'])->format(dateHumanReadable());
 
         $subDays = (int) Setting::get('days_before_generate_bill');
         $dateGenerate = Carbon::parse($period['date_end'])->subDays($subDays)->format('D, M j, Y');
 
         $this->data['contents'][] = Widget::make([
-            'type'          => 'progress_white',
-            'class'         => 'card mb-2',
-            'value'         => '
+            'type' => 'progress_white',
+            'class' => 'card mb-2',
+            'value' => '
                <div class="row">
-                    <div class="col">'.__('app.customer_portal.next_bill').'</div>
-               </div> 
+                    <div class="col">' . __('app.customer_portal.next_bill') . '</div>
+               </div>
             ',
-            'description'   => $account->details,
-            'progress'      => 100,
+            'description' => $account->details,
+            'progress' => 100,
             'progressClass' => 'progress-bar bg-dark',
-            'hint'          => '
+            'hint' => '
                 <div class="" style="text-transform: none;">
-                    Bill generation: '.$dateGenerate.' <br>
-                    Cut-off date: '.$cutOff.' <br>
-                    Bill period: '.$billPeriod.' <br>
+                    Bill generation: ' . $dateGenerate . ' <br>
+                    Cut-off date: ' . $cutOff . ' <br>
+                    Bill period: ' . $billPeriod . ' <br>
                 </div>
             ',
         ]);
