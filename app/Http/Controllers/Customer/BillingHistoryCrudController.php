@@ -35,7 +35,7 @@ class BillingHistoryCrudController extends AdminBillingCrudController
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
-     * 
+     *
      * @return void
      */
     public function setup()
@@ -59,6 +59,10 @@ class BillingHistoryCrudController extends AdminBillingCrudController
         //     'Dashboard' => backpack_url('dashboard'),
         //     $this->crud->entity_name => false,
         // ];
+
+        if (!config('app-settings.gcash_pay_enabled')) {
+            $this->crud->denyAccess('gcash');
+        }
     }
 
     protected function setupBillingGroupButtonsDefaults()
@@ -97,13 +101,13 @@ class BillingHistoryCrudController extends AdminBillingCrudController
             'name' => 'status',
             'label' => __('Status'),
             'type' => 'select_from_array',
-            'options' => $this->billingStatusLists([4,5]),
+            'options' => $this->billingStatusLists([4, 5]),
             'wrapper' => [
                 'class' => 'form-group col-md-2'
             ]
         ]);
     }
-    
+
     // we need this, because in the original BillingCrudController it was overrided so we will override the trait setupShowOperation here too
     // if we dont override it here it will cause an error because of the json columns, so by doing this we make sure that the preview
     // will use the setupListOperation columns define
@@ -115,7 +119,7 @@ class BillingHistoryCrudController extends AdminBillingCrudController
     public function exportClass()
     {
         $name = strHumanReadable($this->crud->entity_name);
-        
-        return (new BillingExport)->download($name.'-'.carbonNow().'.xlsx');
+
+        return (new BillingExport)->download($name . '-' . carbonNow() . '.xlsx');
     }
 }
