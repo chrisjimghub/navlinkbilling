@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6233134ea7a8ec5e29b234c7fe9781a1",
+    "content-hash": "973e75117bb10d3034df3f500bd9061d",
     "packages": [
         {
             "name": "backpack/activity-log",
@@ -9085,6 +9085,68 @@
             "time": "2024-08-26T13:32:45+00:00"
         },
         {
+            "name": "winex01/backpack-menu",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "/var/www/packages/packages/winex01/backpack-menu",
+                "reference": "42c53bafa7c6b293d9e5180e7a70b9988add4e05"
+            },
+            "require": {
+                "backpack/crud": "^6.7"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~5|~6",
+                "phpunit/phpunit": "~9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Winex01\\BackpackMenu\\BackpackMenuServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Winex01\\BackpackMenu\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Winex01\\BackpackMenu\\Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/phpunit --testdox"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Winnie A. Damayo",
+                    "email": "winnie131212592@gmail.com",
+                    "homepage": "https://github.com/winex01"
+                }
+            ],
+            "description": "Laravel backpack menu",
+            "homepage": "https://github.com/winex01/backpack-menu",
+            "keywords": [
+                "Backpack",
+                "Backpack Addon",
+                "Backpack for Laravel",
+                "BackpackMenu",
+                "Laravel"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": false
+            }
+        },
+        {
             "name": "winex01/backpack-permission-manager",
             "version": "1.2.3",
             "source": {
@@ -12377,7 +12439,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "imokhles/signature-field-for-backpack": 20
+        "imokhles/signature-field-for-backpack": 20,
+        "winex01/backpack-menu": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
