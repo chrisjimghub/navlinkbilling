@@ -26,7 +26,6 @@ Route::group([
     Route::crud('account-status', 'AccountStatusCrudController');
     Route::crud('account', 'AccountCrudController');
     Route::crud('billing', 'BillingCrudController');
-    Route::crud('menu', 'MenuCrudController');
     Route::crud('account-service-interruption', 'AccountServiceInterruptionCrudController');
     Route::crud('account-credit', 'AccountCreditCrudController');
     Route::crud('widget', 'WidgetCrudController');

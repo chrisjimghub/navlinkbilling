@@ -30,6 +30,7 @@
         "orangehill/iseed": "^3.0",
         "redsquirrelstudio/laravel-backpack-import-operation": "^1.6",
         "winex01/backpack-filter": "^1.1",
+        "winex01/backpack-menu": "^1.0",
         "winex01/backpack-permission-manager": "^1.2"
     },
     "require-dev": {
